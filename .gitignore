@@ -3,3 +3,4 @@
 *.a
 *.so
 *.dylib
+xrayglob_inline.c
