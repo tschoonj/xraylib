@@ -1,0 +1,141 @@
+Edges energies:
+Table of Isotopes, CD-ROM, 8th edition, Version 1.0, March 1996
+Richard B Firestone
+S Y Frank Chu, CD-ROM Editor
+Virginia S Shirley, Editor
+Wiley-Interscience
+
+Total cross sections, fluorescent yields, jump ratios:
+W.T. Elam, B.D. Ravel, J.R. Sieber,"A new database for X-Ray spectroscopic
+calculations", Radiation Physics and Chemistry, 63, pp. 121-128, 2002.
+
+Elastic scattering:
+D.E. Cullen, J.H. Hubbell, J.H. Kissel, EPDL97: The evaluated photon
+library, '97 Version. Lawrence Livermore National Laboratory Report
+UCRL-50400, vol. 6 Rev 5.
+
+Inelastic scattering:
+J H Hubbell, W J Veigele, E A Briggs, R T Brown, D T Cromer,  and R J
+Howerton, "UD  "Atomic form factors, incoherent scattering functions, and
+photon  scattering cross sections",  J. Phys. Chem. Ref. Data, Vol. 4, No.
+3, pag 471, 1975.
+
+Coster-Kronig transition probability:
+X-Ray Fluorescence Cross Sections for K and L X-Rays of the Elements
+M.O. Krause, C.W. Nestor, Jr., C.J. Sparks, Jr. and E. Ricci
+ORNL-5399, pag 120, 1978
+
+fluor_lines.dat
+===============
+
+This x-ray transition table provides the energies (in eV) for K transitions  connecting the K shell (n = 1) to the shells with principal quantum numbers  n = 2 to 4 and L transitions connecting the L1, L2, and L3 shells (n = 2) to the shells with principal quantum numbers n = 3 and 4. The elements covered  include Z = 10, neon to Z = 100, fermium.
+
+ Reference:
+
+ R.D. Deslattes, E.G. Kessler Jr., P. Indelicato, L. de Billy, E. Lindroth,
+ J. Anton, J.S. Coursey, D.J. Schwab, K. Olsen, and R.A. Dragoset (2003)
+ X-ray Transition Energies (version 1.0).
+ [Online] Available:
+ http://physics.nist.gov/XrayTrans
+ [2003, October 16]. National Institute of
+ Standards and Technology, Gaithersburg, MD.
+
+ Originally published as: R.D. Deslattes, E.G. Kessler, Jr., P. Indelicato, L. de Billy, E. Lindroth, and J. Anton, "X-ray transition energies: new approach to a comprehensive evaluation," Rev. Mod. Phys. 75, 35-99 (2003).
+
+
+ The data in this tabulation corresponds to the experimental values given in table 5 of the cited publication. If the experimental value is not available, it has been substituted by the theoretical value in the same table.
+
+ In addition, values for Z=3-9 for KL3 (Ka1) have been added from:
+    X-Ray Data Booklet
+    Section 1.2  X-RAY EMISSION ENERGIES
+    Jeffrey B. Kortright and Albert C. Thompson
+    http://xdb.lbl.gov/Section1/Sec_1-2.html
+
+ Column label:  The x-ray transition in IUPAC Notation
+
+radrate.dat
+===========
+
+X-ray emission rates for K and L shells
+
+ The data contained are in tables 13 and 14 of:
+  X-Ray Fluorescence Cross Sections for K and L X Rays of the elements
+  M. O. Krause, C. W. Nestor, C. J. Sparks and E. Ricci
+  ORNL-5399 (1978)
+
+  which cites:
+     [4] J.H. Scofield, Phys. Rev. A 9, 1041 (1974)
+     [5] J.H. Scofield, Phys. Rev. A 10, 1507 (1974)
+     [6] J.H. Scofield, Phys. Rev. A 12, 345 (1975)
+     [7] J.H. Scofield, in ATomic Intershell Processes, B, Crasemann,Ed.
+         vol. 1, Academic Press, 1975, chap. 6.
+     [8] Values for elements not listed in refs. 4-7 were interpolated
+         with the aid of Scofield's relativistic Hartree-Slater predictions [At. Data Nucl. Data Tables 14, 121 (1974)]
+
+
+ Labels are in iupac notation. Only radiation rates affecting single transition (not blended lines, ie. L1L23, L1O23 and L3N45 are present in Krause but they are not included in our tabulation) are used:
+
+
+          iupac     siegbahn
+   K-shell:
+          KL3     Ka1
+          KL2     Ka2   (calculated as KL23-KL3 in the tables)
+          KM3     Kb1
+          KM2     Kb3   (calculated as KM23-KM3 in the tables)
+   L-shell:
+          L3M5     La1
+          L2M4     Lb1
+          L1M3     Lb3
+          L2N4     Lg1
+          L3M1     Ll
+
+fi.dat
+======
+
+Anomalous scattering factor fi.
+ 
+ This data set contains data calculated by Lynn Kissel
+ (lkissel@llnl.gov). The original data is available from
+ ftp://www-phys.llnl.gov/rayleigh
+ and an interactive WWW interface is in 
+ http://www-phys.llnl.gov/V_Div/scattering/elastic.html
+ 
+ These data are computed for neutral atoms, only, entirely
+ within a local relativistic self-consistent potential
+ with the Slater local-exchange coefficient and Latter tail.
+ For a detailed discussion of the underlying validity of the
+ information contained in these directories see, for example:
+ 
+  Validity of Form-Factor, Modified-Form-Factor and
+  Anomalous-Scattering-Factor Approximations in Elastic Scattering
+  Calculations, by Lynn Kissel, B. Zhou, S. C. Roy, S. K. Sen Gupta and
+  R. H. Pratt, Acta Crystallographica Vol. A51, 271-288 (1995).
+ 
+  New Relativistic S-Matrix Results for Scattering - Beyond the Usual
+  Anomalous Factors/Beyond Impulse Approximation, by R. H. Pratt, Lynn
+  Kissel and P. M. Bergstrom, Jr., in Resonant Anomalous X-Ray
+  Scattering, edited by G. Materlik, C. J. Sparks and K. Fischer
+  (North-Holland: Amsterdam, 1994).
+ 
+  Elastic Scattering of Gamma-Rays and X-Rays by Atoms, by
+  P. P. Kane, Lynn Kissel, R. H. Pratt and S. C. Roy, Physics Reports
+  Vol. 140, 75-159 (1986).
+ 
+  Rayleigh Scattering - Elastic Photon Scattering by Bound
+  Electrons, by Lynn Kissel and R. H. Pratt, in Atomic Inner-Shell
+  Physics, edited by Bernd Crasemann (Plenum Publishing: New York,
+  1985).
+
+kissel_pe.dat
+=============
+
+Partial and Total Photoelectric cross sections.
+
+ This data set contains data calculated by Lynn Kissel
+ (lkissel@llnl.gov). The original data is available from
+ ftp://www-phys.llnl.gov/rayleigh
+ and an interactive WWW interface is in 
+ http://www-phys.llnl.gov/V_Div/scattering/elastic.html
+
+  For more information consult the references mentioned in the previous
+  paragraph.

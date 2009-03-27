@@ -1,0 +1,475 @@
+AtomicWeight
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                            Atomic Weight                         //
+//                                                                  //
+//          Z : atomic number                                       //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float AtomicWeight(int Z)
+
+CosKronTransProb
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Coster-Kronig transition probability          //
+//          Z : atomic number                                       //
+//          transition type :                                       //
+//            F1_TRANS  0                                           //
+//            F12_TRANS 1                                           //
+//            F13_TRANS 2                                           //
+//            FP13_TRANS 3                                          //
+//            F23_TRANS 4                                           //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CosKronTransProb(int Z, int trans)
+
+CS_FluorLine
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//            LG_LINE 4                                             //
+//            LB2_LINE 5                                            //
+//            MA_LINE 6                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_FluorLine(int Z, int line, float E)
+
+EdgeEnergy
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Absorption edge energy (keV)                  //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell :                                                 //
+//            K_SHELL  0                                            //
+//            L1_SHELL 1                                            //
+//            L2_SHELL 2                                            //
+//            L3_SHELL 3                                            //
+//            M1_SHELL 4                                            //
+//            M2_SHELL 5                                            //
+//            M3_SHELL 6                                            //
+//            M4_SHELL 7                                            //
+//            M5_SHELL 8                                            //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float EdgeEnergy(int Z, int shell)
+
+LineEnergy
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line energy (keV)                 //
+//                                                                  //
+//          Z : atomic number                                       //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//            LG_LINE 4                                             //
+//            LB2_LINE 5                                            //
+//            MA_LINE 6                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float LineEnergy(int Z, int line)
+
+FluorYield
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent Yield                             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell :                                                 //
+//            K_SHELL  0                                            //
+//            L1_SHELL 1                                            //
+//            L2_SHELL 2                                            //
+//            L3_SHELL 3                                            //
+//            M1_SHELL 4                                            //
+//            M2_SHELL 5                                            //
+//            M3_SHELL 6                                            //
+//            M4_SHELL 7                                            //
+//            M5_SHELL 8                                            //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float FluorYield(int Z, int shell)
+
+JumpFactor
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Jump Ratio                                    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell :                                                 //
+//            K_SHELL  0                                            //
+//            L1_SHELL 1                                            //
+//            L2_SHELL 2                                            //
+//            L3_SHELL 3                                            //
+//            M1_SHELL 4                                            //
+//            M2_SHELL 5                                            //
+//            M3_SHELL 6                                            //
+//            M4_SHELL 7                                            //
+//            M5_SHELL 8                                            //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float JumpFactor(int Z, int shell)
+
+DCSP_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Differential Rayleigh scattering cross section           // 
+//                for polarized beam (cm2/g/sterad)                 //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSP_Rayl(int Z, float E, float theta, float phi)
+
+DCSP_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//           Differential Compton scattering cross section          //
+//                for polarized beam (cm2/g/sterad)                 //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSP_Compt(int Z, float E, float theta, float phi)
+
+DCSP_KN
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//      Klein-Nishina differential scattering cross section         // 
+//                for polarized beam (barn/atom/sterad)             //
+//                                                                  //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSP_KN(float E, float theta, float phi)
+
+DCSP_Thoms
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//       Thomson differential scattering cross section              //
+//                for polarized beam (barn/atom/sterad)             //
+//                                                                  //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSP_Thoms(float theta, float phi)
+
+RadRate
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fractional Radiative Rate                     //
+//                                                                  //
+//          Z : atomic number                                       //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//            LG_LINE 4                                             //
+//            LB2_LINE 5                                            //
+//            MA_LINE 6                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float RadRate(int Z, int line)
+
+FF_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//          Atomic form factor for Rayleigh scattering              //
+//                                                                  //
+//          Z : atomic number                                       //
+//          q : momentum transfer                                   //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float FF_Rayl(int Z, float q)
+
+SF_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//       Incoherent scattering function for Compton scattering      //
+//                                                                  //
+//          Z : atomic number                                       //
+//          q : momentum transfer                                   //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float SF_Compt(int Z, float q)
+
+DCS_Thoms
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+// Thomson differential scattering cross section (barn/atom/sterad) //
+//                                                                  //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCS_Thoms(float theta)
+
+DCS_KN
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+// Klein-Nishina differential scatt cross sect (barn/atom/sterad)   //
+//                                                                  //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCS_KN(float E, float theta)
+
+DCS_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Rayleigh scattering cross section (cm2/g/sterad)   //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCS_Rayl(int Z, float E, float theta)
+
+DCS_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Compton scattering cross section (cm2/g/sterad)    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCS_Compt(int Z, float E, float theta)
+
+MomentTransf
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//    Momentum transfer for X-ray photon scattering (angstrom-1)    //
+//                                                                  //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float MomentTransf(float E, float theta)
+
+CS_KN
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Total klein-Nishina cross section (barn/atom)         //
+//                                                                  //
+//          E : Energy (keV)                                        //   
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_KN(float E)
+
+ComptonEnergy
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//              Photon energy after Compton scattering (keV)        //
+//                                                                  //
+//          E0 : Photon Energy before scattering (keV)              //   
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float ComptonEnergy(float E0, float theta)
+
+CS_Total
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (cm2/g)                    //
+//               (Photoelectric + Compton + Rayleigh)               //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Total(int Z, float E)
+
+CS_Photo
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Photoelectric absorption cross section  (cm2/g)          //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Photo(int Z, float E)
+
+CS_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Rayleigh scattering cross section  (cm2/g)            //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Rayl(int Z, float E)
+
+CS_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Compton scattering cross section  (cm2/g)             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Compt(int Z, float E) 
+
+CSb_FluorLine
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barn/atom)    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//            LG_LINE 4                                             //
+//            LB2_LINE 5                                            //
+//            MA_LINE 6                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_FluorLine(int Z, int line, float E)
+
+CSb_Total
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (barn/atom)                //
+//               (Photoelectric + Compton + Rayleigh)               //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Total(int Z, float E)
+
+CSb_Photo
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Photoelectric absorption cross section  (barn/atom)      //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Photo(int Z, float E)
+
+CSb_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Rayleigh scattering cross section  (barn/atom)        //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Rayl(int Z, float E)
+
+CSb_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Compton scattering cross section  (barn/atom)         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Compt(int Z, float E) 
+
+DCSb_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Rayleigh scattering cross sect (barn/atom/sterad)  //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSb_Rayl(int Z, float E, float theta)
+
+DCSb_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Compton scatt cross section (barn/atom/sterad)     //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSb_Compt(int Z, float E, float theta)
+
+DCSPb_Rayl
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Differential Rayleigh scattering cross section           // 
+//                for polarized beam (barn/atom/sterad)             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSPb_Rayl(int Z, float E, float theta, float phi)
+
+DCSPb_Compt
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//           Differential Compton scattering cross section          //
+//                for polarized beam (barn/atom/sterad)             //
+//          Z : atomic number                                       //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSPb_Compt(int Z, float E, float theta, float phi)
+
+Fi
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Anomalous Scattering Factor Fi                  //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float Fi(int Z, float E)
+
+Fii
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Anomalous Scattering Factor Fii                  //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float Fii(int Z, float E)
+
+
+
