@@ -1,0 +1,130 @@
+PROGNAME = libxrl
+SUFFIX_SH=.so
+SUFFIX_ST=.a
+NAME = xraylib
+VERSION = 2.11
+CC = gcc
+LDOPTS = 
+LIBS = 
+INCLUDES = 
+LIBPATH = 
+SHELL = /bin/bash
+PYTHON_INCLUDE = /usr/include/python
+
+#FFLAGS are compiler dependent!!!
+#compiler = g95
+#F2003 = g95
+#FFLAGS += -fmod=../include
+
+#compiler = ifort
+#F2003 = ifort
+#FFLAGS += -module ../include
+
+KERNEL=$(shell uname -s)
+
+ifeq ($(KERNEL), Linux)
+#Linux OS detected
+SUFFIX_SH=.so
+SHARED=-shared
+CFLAGS = -fPIC
+SHARED_PYTHON=$(SHARED)
+LINKER_IDL=gcc
+SHARED_IDL=-shared
+else 
+ifeq ($(KERNEL), Darwin)
+#Mac OS detected
+#detect processor type
+PROCESSOR=$(shell uname -p)
+SUFFIX_SH=.dylib
+CFLAGS= -fno-common
+SHARED= -dynamiclib -install_name ${PWD}/../lib/$(PROGNAME)$(SUFFIX_SH)
+SHARED_PYTHON = -dynamiclib -install_name ${PWD}/../bin/_xraylib$(SUFFIX_SH)
+LINKER_IDL=ld
+ifeq ($(PROCESSOR),i386)
+SHARED_IDL=-flat_namespace -undefined suppress -bundle -L${IDL_INCLUDE}/../bin/bin.darwin.i386/ 
+else
+SHARED_IDL=-flat_namespace -undefined suppress -bundle -L${IDL_INCLUDE}/../bin/bin.darwin.ppc/ 
+endif
+endif
+endif
+
+
+
+#CFLAGS+=-Wfatal-errors
+#CFLAGS+=-m32
+
+OBJ = xrayvars.o cross_sections.o \
+scattering.o atomicweight.o edges.o fluor_lines.o fluor_yield.o jump.o \
+coskron.o radrate.o cs_line.o polarized.o splint.o cs_barns.o fi.o fii.o \
+kissel_pe.o
+
+EXTERNAL_OBJ = xrayfiles.o xrayglob.o
+
+EXTERNAL_SRC = xrayfiles.c xrayglob.c
+
+INLINE_OBJ = xrayglob_inline.o xrayfiles_inline.o
+
+SRC = xrayvars.c cross_sections.c \
+scattering.c atomicweight.c edges.c fluor_lines.c fluor_yield.c jump.c \
+coskron.c radrate.c cs_line.c polarized.c splint.c cs_barns.c fi.c fii.c \
+kissel_pe.c
+
+INLINE_SRC = xrayglob_inline.c xrayfiles_inline.c
+
+#------------- commands ----------------
+
+%.o : %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+
+all: external
+
+
+external: $(EXTERNAL_OBJ) $(OBJ)
+	rm -f $(PROGNAME)$(SUFFIX_ST)
+	rm -f ../lib/$(PROGNAME)$(SUFFIX_ST) ../lib/$(PROGNAME)$(SUFFIX_SH)
+	ar cru ../lib/$(PROGNAME)$(SUFFIX_ST) $(EXTERNAL_OBJ) $(OBJ)
+	ranlib ../lib/$(PROGNAME)$(SUFFIX_ST)
+	$(CC) $(SHARED) -o ../lib/$(PROGNAME)$(SUFFIX_SH) $(EXTERNAL_OBJ) $(OBJ)
+
+python: xraylib.i $(EXTERNAL_OBJ) $(OBJ) xrayglob_inline.c
+	rm -f xraylib_wrap.c
+	swig -python xraylib.i
+	cp xraylib.py ../bin/
+	$(CC) $(CFLAGS) -c xraylib_wrap.c -I$(PYTHON_INCLUDE)
+	$(CC) -Wall $(SHARED_PYTHON) xraylib_wrap.o $(EXTERNAL_OBJ) $(OBJ) -o ../bin/_xraylib$(SUFFIX_SH)
+
+idl:	$(EXTERNAL_OBJ) $(OBJ) xraylib_idl.c
+	$(CC) $(CFLAGS) -c xraylib_idl.c -I${IDL_INCLUDE}
+	$(LINKER_IDL) $(SHARED_IDL) xraylib_idl.o $(INLINE_OBJ) $(OBJ) -o ../idl/$(PROGNAME).so
+
+perl:	perl_stamp
+
+perl_stamp: xraylib.i $(EXTERNAL_SRC) $(SRC) 
+	rm -f $(PROGNAME)$(SUFFIX_ST)
+	rm -f xraylib_wrap.c
+	swig -perl xraylib.i
+	rm -f perl/*.c perl/*.o perl/xraylib.pm
+	mv xraylib.pm perl/
+	cp *.c perl/
+	make -C perl -f Makefile_perl external
+	touch perl_stamp
+
+fortran: xraylib_wrap.F90 $(EXTERNAL_OBJ) $(OBJ) 
+	rm -f $(PROGNAME)$(SUFFIX_ST)
+	rm -f ../lib/$(PROGNAME)$(SUFFIX_ST) ../lib/$(PROGNAME)$(SUFFIX_SH)
+	$(F2003) $(FFLAGS) -c xraylib_wrap.F90
+	ar cru ../lib/$(PROGNAME)$(SUFFIX_ST) $(EXTERNAL_OBJ) $(OBJ) xraylib_wrap.o
+	ranlib ../lib/$(PROGNAME)$(SUFFIX_ST)
+	$(CC) $(SHARED) -o ../lib/$(PROGNAME)$(SUFFIX_SH) $(EXTERNAL_OBJ) $(OBJ) xraylib_wrap.o
+
+test: $(EXTERNAL_OBJ) $(OBJ)
+	rm -f $(PROGNAME)$(SUFFIX_ST)	
+#	ar cru $(PROGNAME)$(SUFFIX_ST) $(EXTERNAL_OBJ) $(OBJ)
+#	ranlib $(PROGNAME)$(SUFFIX_ST)
+#	ar cru ../lib/$(PROGNAME) $(EXTERNAL_OBJ) $(OBJ)
+#	ranlib ../lib/$(PROGNAME)
+#	$(CC) -shared ../lib/$(PROGNAME_SHARED) $(EXTERNAL_OBJ) $(OBJ)
+	$(CC) $(SHARED) -o ../lib/$(PROGNAME)$(SUFFIX_SH) $(EXTERNAL_OBJ) $(OBJ)
+
+clean:
+	rm -f $(PROGNAME)$(SUFFIX_ST) *.lo *.o *~ core external_stamp xrayglob_inline.c inline_stamp prdata perl_stamp

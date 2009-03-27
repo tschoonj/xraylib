@@ -1,0 +1,15 @@
+VERSION=2.11
+
+
+
+default: xraylib.pm Makefile.PL
+	rm -fr Makefile blib pm_to_blib
+	MK_TYPE=inline perl Makefile.PL PREFIX=../../perl VERSION=$(VERSION)	
+	make -f Makefile
+	make -f Makefile install
+
+external: xraylib.pm Makefile.PL
+	rm -fr Makefile blib pm_to_blib
+	MK_TYPE=external perl Makefile.PL PREFIX=../../perl VERSION=$(VERSION)	
+	make -f Makefile
+	make -f Makefile install

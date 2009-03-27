@@ -1,0 +1,12 @@
+void XRayInit(void)
+{
+}
+
+
+
+
+
+
+
+
+

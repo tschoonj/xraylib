@@ -1,0 +1,174 @@
+Version 2.11
+
+Complete rewrite of the IDL bindings, using the DLM approach.
+Definition of the COMMON block XRAYLIB containing all the xraylib macros. This
+has the advantage that these convenient variables can now be used inside
+functions and procedures. An example is provided in xrlexample5.pro.
+
+In order for IDL to find the XRayLib DLM at runtime it is necessary that the
+user makes sure that the IDL_DLM_PATH environment variable points to the idl
+subdirectory of the xraylib installation folder!
+
+Version 2.10
+
+Minor changes: adjusted the placing of xraylib.mod into lib for the gfortran
+compiler
+Definition of two macros in xraylib.h: XRL_VERSION_MAJOR and XRL_VERSION_MINOR
+Recalculation (smoothing) of second derivatives of kissel cross section data. This was done to avoid erratic behaviour of interpolation near absorption edges.
+Support for IDL bindings on Mac (Tested on an Intel Mac running Mac OS X 10.4 and IDL 7.0)
+Minor changes to install.sh: Python bindings disabled when running on Mac etc...
+
+Version 2.9
+
+Introduction of partial photoelectric cross sections (data of L. Kissel) ->
+kissel_pe.dat
+New functions were added based on these partial PE CS:
+// Kissel Photoelectric cross sections
+float CS_Photo_Total(int Z, float E);
+float CSb_Photo_Total(int Z, float E);
+float CS_Photo_Partial(int Z, int shell, float E);
+float CSb_Photo_Partial(int Z, int shell, float E);
+
+// XRF cross sections using Kissel partial photoelectric cross sections
+float CS_FluorLine_Kissel(int Z, int line, float E);
+float CSb_FluorLine_Kissel(int Z, int line, float E);
+
+// Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total
+// photoelectric cross sections
+float CS_Total_Kissel(int Z, float E);
+float CSb_Total_Kissel(int Z, float E); 
+
+The user is now given the opportunity to choose at installation time between
+hardcoding the data or calling the data at run time with XRayInit. 
+
+TODO: rewrite the IDL bindings completely in favor of the DLM approach,
+recommended by IDL 
+
+
+Version 2.8
+
+All the physical data is now hardcoded during the compilation phase, making
+the initialization at run time redundant. (Thanks to Teemu Ikonen for
+contributing the code)
+Added bindings for Perl and Fortran 2003. For use of the Fortran 2003, a
+recent compiler like Intel Fortran 10.0, G95 or GFortran 4.3.0 is needed. 
+The installation scripts are now gone and have been replaced by a Makefile
+Partial support for Mac OS X -> C, C++ dynamic libraries compile and run, as
+well as the Fortran and Perl bindings. The Python bindings do not work. The
+IDL bindings have not been tested yet.
+Examples for C shared libraries, Perl and Fortran bindings were added.
+SWIG is now a requirement for using the Perl and Python bindings.
+
+Version 2.7
+
+- Added anomalous scattering factor Fii (fii.c, fii.dat)
+
+Version 2.6
+
+Fixed installation of dynamic library for c++ (libxrl++.so)
+
+
+Version 2.5
+
+Major updates from previous version (2.4):
+
+- Added anomalous scattering factor Fi (fi.c, fi.dat)
+
+Fixed bugs and updates from previous version (2.4):
+
+- Fixed bugs on installation scripts
+
+- Fixed problems with swig and python new releases
+
+
+Version 2.4
+
+Fixed bugs and updates from previous version (2.3):
+
+- Fixed bugs on installation scripts
+
+
+Version 2.3
+
+Major updates from previous version (2.2):
+
+- All partial lines added to CS_FluorLine in cs_line.c
+
+Fixed bugs and updates from previous version (2.2):
+
+-
+
+Version 2.2
+
+Major updates from previous version (2.1):
+
+- Partial lines included
+
+Fixed bugs and updates from previous version (2.1):
+
+- ShellName expanded in xrayglob.c, SHELLNUM increased to 28 in xrayglob.h
+
+- Shell names #define placed in file shells.h
+
+- LineName expanded in xrayglob.c, LINENUM increased to 50 in xrayglob.h
+
+- Line names #define placed in file lines.h
+
+- fluor_lines.dat updated by file with partial lines
+
+- radrate.dat updated by file with partial lines
+
+- Fluorescence Energy converted from eV to KeV (/1000)
+
+- xraylib.i modified
+
+- KA_LINE, KB_LINE, LA_LINE and LB_LINE are now calculated in terms of
+  partial lines in fluor_lines.c and radrates.c
+
+- shells.pro and lines.pro defines the lines and shells names for IDL
+
+- documentation updated
+
+- Only 4 lines in CS_FluorLine (file cs_line.dat)
+  KA, KB, LA, LB 
+
+- Example of use with C program added
+
+To be done:
+
+- Add more lines in CS_FluorLine (file cs_line.dat) 
+
+- Write documentation in a more organized way
+
+- Improve example
+
+Version 2.1
+
+Fixed bugs and updates from previous version (2.0):
+
+- Python and IDL exited after an error/warning message
+
+- Added flags ExitStatus, HardExit
+
+- Added Functions SetHardExit, GetExitStatus, SetExitStatus
+
+- Warning messages added for non-available lines, transitions, etc.
+
+- Banner text moved in doc directory
+
+- In fluor_lines.dat unexistent fluorescent lines reproduced previous line
+  Unexistent lines removed
+
+- edges.dat and corresponding documentation in xraydoc.txt updated
+
+- include/xraylib.h defined as symbolic link to src/include.h
+
+- made install.sh script
+
+- output precision changed to %.5g in script
+
+To be done:
+
+- fluorescent line LB corresponds to LB1
+- fluorescent line LA corresponds to LA1 ?? 
+- in radrate.dat fluorescent line LA does not correspond to anything
