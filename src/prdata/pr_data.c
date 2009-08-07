@@ -2,7 +2,7 @@
 #include "xraylib.h"
 #include "xrayglob.h"
 
-#define OUTFILE "xrayglob_inline.c"
+#define OUTFILE "../xrayglob_inline.c"
 #define FLOAT_PER_LINE 4
 #define INT_PER_LINE 10
 #define NAME_PER_LINE 4

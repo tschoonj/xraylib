@@ -1,4 +1,3 @@
-#include <math.h>
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"

@@ -4,3 +4,10 @@
 *.so
 *.dylib
 xrayglob_inline.c
+Makefile.in
+config.h.in
+configure
+build
+aclocal.m4
+autom4te.cache
+build-aux
