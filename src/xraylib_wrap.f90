@@ -6,22 +6,6 @@
 !Warning: can ony be compiled with Intel Fortran 10 or later, GFortran 4.3.0 or later and G95
 
 
-!Compiler checks are performed using the preprocessor
-
-
-#if defined(__INTEL_COMPILER) && __INTEL_COMPILER >= 1000
-#warning Using a valid Intel Fortran Compiler
-#elif defined(__INTEL_COMPILER) && __INTEL_COMPILER < 1000
-#error When using an Intel Fortran Compiler, make sure it is at least version 10.0
-#elif defined(__G95__)
-#warning Using the G95 compiler
-#elif defined(__GFORTRAN__) && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
-#warning Using a valid GFortran Compiler
-#elif defined(__GNUC__)
-#error Version of GFortran must be at least 4.3.0
-#else
-#warning Using an unknown compiler, may not compile/run correctly
-#endif
 
 
       
