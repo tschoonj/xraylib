@@ -1,5 +1,5 @@
-SUBDIRS = include src example
+SUBDIRS = include src example idl
 
 
-EXTRA_DIST = data 
+EXTRA_DIST = data idl 
 

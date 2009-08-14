@@ -1,17 +1,11 @@
 #include <stdio.h>
-#include "export.h"
+#include "idl_export.h"
 #include "xraylib.h"
-#include <stdbool.h>
 
 
 extern int HardExit, ExitStatus;
 
 
-#ifdef __i386__
-bool arch64=false;
-#elif defined(__x86_64__)
-bool arch64=true;
-#endif
 
 extern void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[]);
 extern void IDL_CDECL IDL_SetHardExit(int argc, IDL_VPTR argv[]);
