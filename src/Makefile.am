@@ -1,4 +1,4 @@
-SUBDIRS = prdata .
+SUBDIRS = prdata 
 xraylibincludedir=${includedir}/xraylib
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
@@ -23,13 +23,17 @@ nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
 libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
-EXTRA_DIST = xraylib_idl.c libxrlidl.dlm
+EXTRA_DIST = xraylib_idl.c libxrlidl.dlm perl/Makefile.PL perl/Makefile_perl xraylib.i
 
 
-if ENABLE_IDL
 
 all: 
+if ENABLE_IDL
 	make idlxrl
+endif
+if ENABLE_PERL
+	make perlxrl
+endif
 
 #I'm not sure how portable this .libs link location is...
 #Maybe this could be rewritten using libtool...
@@ -37,14 +41,43 @@ idlxrl:	xraylib_idl.c libxrl.la
 	$(CC) @IDL_LD_FLAGS@ -I@RSIIDL_DIR@/external/include $(AM_CPPFLAGS) -o libxrlidl.so $(CFLAGS)  @IDL_CFLAGS@ ${top_srcdir}/src/xraylib_idl.c -L${top_builddir}/src/.libs -lxrl
 	cp ${top_srcdir}/src/libxrlidl.dlm .
 
-install-exec-local: idlxrl
+
+perlxrl: libxrl.la xraylib.i
+	cp -R ${top_srcdir}/src/perl .
+	chmod a+w perl
+	$(SWIG) -o perl/xraylib_wrap.c -outdir perl -perl xraylib.i
+#	rm -f perl/xraylib.pm perl/xraylib_wrap.c
+#	mv xraylib.pm perl
+#	mv xraylib_wrap.c perl
+#	echo "prefix: $(prefix)"
+	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
+
+
+install-exec-local:
+if ENABLE_IDL
 	$(MKDIR_P) $(prefix)/dlm
 	$(INSTALL) libxrlidl.so libxrlidl.dlm $(prefix)/dlm
-uninstall-local:
-	rm -f $(prefix)/dlm/libxrlidl.so $(prefix)/dlm/libxrlidl.dlm
-
 endif
+if ENABLE_PERL
+	$(MAKE) $(AM_MAKEFLAGS) -C perl install
+endif
+
+
+
+uninstall-local:
+if ENABLE_IDL
+	rm -f $(prefix)/dlm/libxrlidl.so $(prefix)/dlm/libxrlidl.dlm
+endif
+if ENABLE_PERL
+#	$(MAKE) $(AM_MAKEFLAGS) -C perl uninstall
+#	perl uninstall doesn't work... it's unsafe according to them.
+#	So we'll have to do it ourselves
+#	let's use the .packlist file for this.
+	find $(prefix) -name '.packlist' | xargs cat | xargs rm -f
+	find $(prefix) -name '.packlist' | xargs rm -f
+endif
+
 clean-local:
-	rm -f xrayglob_inline.c xraylib.mod
+	rm -f xrayglob_inline.c xraylib.mod xraylib_wrap.c
 
 	

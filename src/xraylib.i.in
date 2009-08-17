@@ -1,0 +1,15 @@
+%module xraylib
+
+%{
+#include "@abs_top_srcdir@/include/xraylib.h"
+%}
+%include "@abs_top_srcdir@/include/xraylib.h"
+%include "@abs_top_srcdir@/include/shells.h"
+%include "@abs_top_srcdir@/include/lines.h"
+
+
+
+
+
+
+

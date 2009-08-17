@@ -13,7 +13,7 @@ AC_SUBST(LIB_AGE)
 #LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
 #LT_INIT([dlopen])
-AC_LIBTOOL_DLOPEN
+#AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
 AC_PROG_CC
@@ -86,7 +86,7 @@ ENDMODULE f2003_test
         if test "x$enable_fortran2003" = xcheck ; then
 		AC_MSG_WARN([no compiler supporting f90 extensions was found on the system. The fortran bindings will not be built.])
 		VALID_FORTRAN=no
-	elif test "x$enable_fortran2003" = yes ; then
+	elif test "x$enable_fortran2003" = xyes ; then
 		AC_MSG_ERROR([--enable-fortran2003 was given but no compiler that supports f90 extensions was found on the system.])
 	fi
 
@@ -193,9 +193,10 @@ if test "x$enable_idl" != xno ; then
 		  esac
 
 		AC_ARG_WITH([rsiidl-libdir],[AS_HELP_STRING([--with-rsiidl-bindir],[set location of the rsi-idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
-		AC_CHECK_FILES([$IDL_LIBBIN/libidl.so $IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN=yes],[RSIIDL_HASBIN=no])	
-		if test "x$RSIIDL_HASBIN" = xno ; then
-			AC_MSG_ERROR([libidl.so could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --enable-rsiidl-libdir to match the location of the IDL libraries])
+		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])	
+		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])	
+		if test "x$RSIIDL_HASBIN_SO" = xno && test "x$RSIIDL_HASBIN_DY" = xno  ; then
+			AC_MSG_ERROR([libidl.so or libidl.dylib could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-rsiidl-libdir to match the location of the IDL libraries])
 		fi
 		VALID_IDL=yes
 		AC_PROG_MKDIR_P
@@ -212,10 +213,62 @@ fi #test "x$enable_idl" != xno
 
 AM_CONDITIONAL([ENABLE_IDL],[test x$VALID_IDL = xyes])
 
+#search for swig which is necessary for both the perl and python bindings
+AC_CHECK_PROGS([SWIG],[swig],["noswig"])
+#find and xargs are necessary for the uninstallation of the perl bindings
+AC_CHECK_PROGS([FIND],[find],["nofind"])
+AC_CHECK_PROGS([XARGS],[xargs],["noxargs"])
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile])
+
+
+#perl bindings
+AC_ARG_ENABLE([perl],[AS_HELP_STRING([--disable-perl],[build without the perl bindings])],[enable_perl=$enableval],[enable_perl=check])
+
+VALID_PERL=
+
+if test "x$SWIG" = xnoswig && test "x$enable_perl" = xyes ; then
+	AC_MSG_ERROR([--enable-perl was given as an option but swig was not found on the system])
+fi
+if test "x$FIND" = xnofind && test "x$enable_perl" = xyes ; then
+	AC_MSG_ERROR([--enable-perl was given as an option but find was not found on the system])
+fi
+if test "x$SWIG" = xnoxargs && test "x$enable_perl" = xyes ; then
+	AC_MSG_ERROR([--enable-perl was given as an option but xargs was not found on the system])
+fi
+
+if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$FIND" != xnofind && test "x$XARGS" != xnoargs ;  then
+	#search for perl executable (although I can't imagine a modern system without perl...)
+	if test -z $PERL ; then
+		AC_CHECK_PROGS(PERL,[perl perl5],["noperl"])
+	fi
+	if test "x$PERL" = xnoperl ; then
+		if test "x$enable_perl" = xyes ; then
+			AC_MSG_ERROR([--enable-perl was given as an option but Perl was not found on the system.])
+		else
+			AC_MSG_WARN([no perl was found on the system. The perl bindings will not be built.])
+			VALID_PERL=no
+		fi
+	else
+			#everything ok -> let's build those bindings
+			VALID_PERL=yes
+			AC_MSG_NOTICE([Building with Perl bindings])
+	fi
+else
+VALID_PERL=no
+fi #test enable perl
+
+
+AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
+
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile src/xraylib.i])
 AC_CONFIG_HEADERS([config.h])
 
-
+abs_top_builddir=`pwd -P`
+AC_SUBST(abs_top_builddir)
+abs_top_srcdir=`AS_DIRNAME([$0])`
+cd $abs_top_srcdir
+abs_top_srcdir=`pwd -P`
+cd $abs_top_builddir
+AC_SUBST(abs_top_srcdir)
 
 AC_OUTPUT
