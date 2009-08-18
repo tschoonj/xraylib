@@ -13,6 +13,10 @@ endif
 if ENABLE_IDL
   check_SCRIPTS += xrlexample4.sh
 endif
+if ENABLE_PYTHON
+  check_SCRIPTS += xrlexample5.sh
+endif
+
 
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
@@ -28,7 +32,7 @@ endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py
 
 
 #test the idl bindings using this script
@@ -41,10 +45,17 @@ xrlexample4.sh:
 #test the perl bindings
 xrlexample2.sh:
 	echo "Testing perl bindings"
-	echo "unset PERL5LIB" > xrlexample2.sh
-	echo "unset PERLLIB" >> xrlexample2.sh
+#	echo "unset PERL5LIB" > xrlexample2.sh
+#	echo "unset PERLLIB" >> xrlexample2.sh
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/src/perl/blib/lib:${top_builddir}/src/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
 	chmod +x xrlexample2.sh
 
+#test the python bindings
+xrlexample5.sh:
+	echo "Testing python bindings"
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
+	chmod +x xrlexample5.sh
+
+
 clean-local:
-	rm -rf xrlexample4.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh

@@ -36,8 +36,9 @@ AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in lib
 
 
 
-
+#
 #fortran 2003 bindings
+#
 
 AC_ARG_ENABLE([fortran2003], [AS_HELP_STRING([--disable-fortran2003],[build without the Fortran 2003 bindings])],[enable_fortran2003=$enableval],[enable_fortran2003=check] )
 
@@ -98,8 +99,11 @@ fi
 
 AM_CONDITIONAL([ENABLE_FORTRAN],[test x$VALID_FORTRAN = xyes])
 
-
+#
 #idl bindings
+#
+
+
 AC_ARG_ENABLE([idl],[AS_HELP_STRING([--disable-idl],[build without the idl bindings])],[enable_idl=$enableval],[enable_idl=check])
 
 VALID_IDL=
@@ -123,7 +127,7 @@ if test "x$enable_idl" != xno ; then
 			VALID_IDL=no
 		else
 			#binaries were found...
-			AC_MSG_RESULT([yes, in $IDL_PATH])
+		#	AC_MSG_RESULT([yes, in $IDL_PATH])
 			RSIIDL_BINDIR=`AS_DIRNAME([$RSIIDL_BIN])`
 		fi
 	else
@@ -220,8 +224,10 @@ AC_CHECK_PROGS([FIND],[find],["nofind"])
 AC_CHECK_PROGS([XARGS],[xargs],["noxargs"])
 
 
-
+#
 #perl bindings
+#
+
 AC_ARG_ENABLE([perl],[AS_HELP_STRING([--disable-perl],[build without the perl bindings])],[enable_perl=$enableval],[enable_perl=check])
 
 VALID_PERL=
@@ -236,16 +242,27 @@ if test "x$SWIG" = xnoxargs && test "x$enable_perl" = xyes ; then
 	AC_MSG_ERROR([--enable-perl was given as an option but xargs was not found on the system])
 fi
 
+MMFOUND=
 if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$FIND" != xnofind && test "x$XARGS" != xnoargs ;  then
 	#search for perl executable (although I can't imagine a modern system without perl...)
 	if test -z $PERL ; then
 		AC_CHECK_PROGS(PERL,[perl perl5],["noperl"])
+		if test "x$PERL" != xnoperl ; then
+			#see if the Perl distribution has the MakeMaker module (at least version 6.31)
+			AS_IF([ $PERL -M'ExtUtils::MakeMaker 6.31' -e "exit 0;"],[MMFOUND=true],[MMFOUND=false])
+		fi
 	fi
-	if test "x$PERL" = xnoperl ; then
+	
+
+	if test "x$PERL" = xnoperl || test "x$MMFOUND" = xfalse ; then
 		if test "x$enable_perl" = xyes ; then
-			AC_MSG_ERROR([--enable-perl was given as an option but Perl was not found on the system.])
+			if test "x$PERL" = xnoperl ; then
+				AC_MSG_ERROR([--enable-perl was given as an option but Perl was not found on the system.])
+			elif test "x$MMFOUND" = x$false ; then
+				AC_MSG_ERROR([--enable-perl was given as an option but the ExtUtils::MakeMaker module was not found on the system or did not meet the minimum version requirement.])
+			fi
 		else
-			AC_MSG_WARN([no perl was found on the system. The perl bindings will not be built.])
+			AC_MSG_WARN([perl was not found on the system or the installation was incomplete (ExtUtils::MakeMaker requirement). The perl bindings will not be built.])
 			VALID_PERL=no
 		fi
 	else
@@ -257,10 +274,83 @@ else
 VALID_PERL=no
 fi #test enable perl
 
-
 AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile src/xraylib.i])
+#
+#Python bindings
+#
+
+
+AC_ARG_ENABLE([python],[AS_HELP_STRING([--disable-python],[build without the python bindings])],[enable_python=$enableval],[enable_python=check])
+
+VALID_PYTHON=
+
+if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes ; then
+	#don't even bother when swig is not found
+	AC_MSG_ERROR([--enable-python was given as an option but swig was not found on the system])
+elif test "x$SWIG" = xswig && test "x$enable_python" != xno ; then
+	#verify the python installation
+	AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
+	if test "x$PYTHON_FOUND" = xtrue ; then
+		#let's try to use python-config
+		AC_CHECK_PROGS([PYTHON_CONFIG],[python-config $PYTHON-config],"nopython-config")
+		PYTHON_LIBS=
+		PYTHON_INCDIR=
+		if test "x$PYTHON_CONFIG" != xnopython-config ; then
+			#we found it!
+			#try it first though -> if the python installation is incomplete, python-config will exit with a bunch of errors
+			AC_MSG_CHECKING([whether $PYTHON_CONFIG works properly])
+			AS_IF([$PYTHON_CONFIG --includes],[
+				PYTHON_INCDIR=`$PYTHON_CONFIG --includes`
+				PYTHON_LIBS=`$PYTHON_CONFIG --libs`
+				VALID_PYTHON=yes
+			],[
+			if test "x$enable_python" = xyes ; then
+				AC_MSG_ERROR([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+			else
+				AC_MSG_WARN([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+			fi
+			VALID_PYTHON=no])
+		else
+			if test "x$enable_python" = xyes ; then
+				AC_MSG_ERROR([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+			else
+				AC_MSG_WARN([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+			fi
+			VALID_PYTHON=no
+		fi
+	fi
+fi
+
+
+
+
+if test "x$VALID_PYTHON" = xyes ; then
+AC_MSG_NOTICE([Building with Python bindings])
+#transform PYTHON_INCDIR and PYTHON_LIBS
+PYTHON_INCLUDE_FIXED="'`echo $PYTHON_INCDIR | sed "s/\s/','/g" | sed "s/-I//g" `'"
+PYTHON_LIBS_FIXED="'`echo $PYTHON_LIBS | sed "s/\s/','/g" | sed "s/-l//g" `'"
+echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
+echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
+
+AC_SUBST(PYTHON_INCLUDE_FIXED)
+AC_SUBST(PYTHON_LIBS_FIXED)
+AC_SUBST(PYTHON_XRL_VERSION,$VERSION)
+
+fi
+AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
+
+
+
+
+
+
+
+
+
+
+
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

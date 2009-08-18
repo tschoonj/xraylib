@@ -50,13 +50,13 @@ perlxrl: libxrl.la xraylib.i
 #	mv xraylib.pm perl
 #	mv xraylib_wrap.c perl
 #	echo "prefix: $(prefix)"
-	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
+	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
 
 
 install-exec-local:
 if ENABLE_IDL
-	$(MKDIR_P) $(prefix)/dlm
-	$(INSTALL) libxrlidl.so libxrlidl.dlm $(prefix)/dlm
+	$(MKDIR_P) $(DESTDIR)$(prefix)/dlm
+	$(INSTALL) libxrlidl.so libxrlidl.dlm $(DESTDIR)$(prefix)/dlm
 endif
 if ENABLE_PERL
 	$(MAKE) $(AM_MAKEFLAGS) -C perl install
@@ -66,18 +66,23 @@ endif
 
 uninstall-local:
 if ENABLE_IDL
-	rm -f $(prefix)/dlm/libxrlidl.so $(prefix)/dlm/libxrlidl.dlm
+	rm -f $(DESTDIR)$(prefix)/dlm/libxrlidl.so $(DESTDIR)$(prefix)/dlm/libxrlidl.dlm
 endif
 if ENABLE_PERL
 #	$(MAKE) $(AM_MAKEFLAGS) -C perl uninstall
 #	perl uninstall doesn't work... it's unsafe according to them.
 #	So we'll have to do it ourselves
 #	let's use the .packlist file for this.
-	find $(prefix) -name '.packlist' | xargs cat | xargs rm -f
-	find $(prefix) -name '.packlist' | xargs rm -f
+	find $(DESTDIR)$(prefix) -name '.packlist' | xargs cat | xargs rm -f
+	find $(DESTDIR)$(prefix) -name '.packlist' | xargs rm -f
 endif
 
 clean-local:
-	rm -f xrayglob_inline.c xraylib.mod xraylib_wrap.c
+	rm -f xrayglob_inline.c xraylib.mod perl/xraylib_wrap.* 
+	rm -f perl/pm_to_blib
+	rm -f perl/xraylib.bs
+	rm -f perl/xraylib.pm
+	rm -rf perl/blib
+	rm -f perl/Makefile perl/Makefile_perl perl/Makefile.PL
 
 	
