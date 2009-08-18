@@ -247,10 +247,10 @@ if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$FIND" != x
 	#search for perl executable (although I can't imagine a modern system without perl...)
 	if test -z $PERL ; then
 		AC_CHECK_PROGS(PERL,[perl perl5],["noperl"])
-		if test "x$PERL" != xnoperl ; then
-			#see if the Perl distribution has the MakeMaker module (at least version 6.31)
-			AS_IF([ $PERL -M'ExtUtils::MakeMaker 6.31' -e "exit 0;"],[MMFOUND=true],[MMFOUND=false])
-		fi
+	fi
+	if test "x$PERL" != xnoperl ; then
+		#see if the Perl distribution has the MakeMaker module (at least version 6.31)
+		AS_IF([ $PERL -M'ExtUtils::MakeMaker 6.31' -e "exit 0;"],[MMFOUND=true],[MMFOUND=false])
 	fi
 	
 
@@ -328,8 +328,8 @@ fi
 if test "x$VALID_PYTHON" = xyes ; then
 AC_MSG_NOTICE([Building with Python bindings])
 #transform PYTHON_INCDIR and PYTHON_LIBS
-PYTHON_INCLUDE_FIXED="'`echo $PYTHON_INCDIR | sed "s/\s/','/g" | sed "s/-I//g" `'"
-PYTHON_LIBS_FIXED="'`echo $PYTHON_LIBS | sed "s/\s/','/g" | sed "s/-l//g" `'"
+PYTHON_INCLUDE_FIXED="'`echo $PYTHON_INCDIR | sed -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
+PYTHON_LIBS_FIXED="'`echo $PYTHON_LIBS | sed -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
 echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
 echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
 

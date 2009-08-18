@@ -1,4 +1,4 @@
 default: xraylib.pm Makefile.PL
 	rm -fr Makefile blib pm_to_blib
-	perl Makefile.PL INSTALL_BASE=$(INSTALL_BASE) VERSION=$(VERSION) LIBS="-L../.libs -lxrl"	
+	$(PERL) Makefile.PL INSTALL_BASE=$(INSTALL_BASE) VERSION=$(VERSION) LIBS="-L../.libs -lxrl"	
 	make

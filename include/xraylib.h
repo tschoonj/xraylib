@@ -22,7 +22,7 @@
 #define KB_LINE 1
 #define LA_LINE 2
 #define LB_LINE 3
-      
+
 #define F1_TRANS   0    
 #define F12_TRANS  1     
 #define F13_TRANS  2    
@@ -35,7 +35,7 @@ void XRayInit(void);
 // Error Handling
 void SetHardExit(int hard_exit);
 void SetExitStatus(int exit_status);
-int GetExitStatus();
+int GetExitStatus(void);
 	
 // Atomic weights
 float AtomicWeight(int Z);

@@ -50,7 +50,7 @@ perlxrl: libxrl.la xraylib.i
 #	mv xraylib.pm perl
 #	mv xraylib_wrap.c perl
 #	echo "prefix: $(prefix)"
-	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
+	$(MAKE) $(AM_MAKEFLAGS)	PERL=$(PERL) INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
 
 
 install-exec-local:
