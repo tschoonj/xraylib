@@ -1,0 +1,42 @@
+xraylib
+=======
+
+
+Installation Instructions
+=========================
+
+xraylib follows the standard GNU installation procedure. To compile xraylib you will need at least an ANSI C-compiler. Depending on the requested bindings, other compilers will be required additionally.
+
+After unpacking the distribution the Makefiles can be prepared using the configure command:
+
+	./configure
+
+You can then build the library and the bindings which can be built as determined by configure by typing,
+
+	make
+
+To verify that the build went ok use,
+
+	make check
+
+The installation can be performed with the command
+
+	make install
+
+The default installation directory prefix is /usr/local. Installing in this directory will require root privileges on most systems.
+
+The installation directory can be changed with the --prefix option to configure. Consult the "Further information" section below for instructions on installing the library in another location or changing other default compilation options.
+
+
+
+		-----------------------------------------------
+
+
+
+
+
+
+Platform Specific Compilation Notes
+===================================
+
+

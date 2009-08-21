@@ -1,8 +1,13 @@
 #python bindings for xraylib
 
+
+
+EXTRA_DIST = xraylib
+
+
 if ENABLE_PYTHON
 all:
-	make pythonxrl
+	$(MAKE) pythonxrl
 
 
 
@@ -18,15 +23,18 @@ pythonxrl: ${top_builddir}/src/xraylib.i
 install-exec-local:
 	$(MKDIR_P) $(DESTDIR)$(pythondir)
 	$(MKDIR_P) $(DESTDIR)$(pyexecdir)
-	$(INSTALL) xraylib.py $(DESTDIR)$(pythondir)
+	$(MKDIR_P) $(DESTDIR)$(bindir)
+	$(INSTALL) xraylib.py xrayhelp.py xraymessages.py $(DESTDIR)$(pythondir)
 	$(INSTALL) _xraylib.* $(DESTDIR)$(pyexecdir)
+	$(INSTALL) ${top_srcdir}/python/xraylib $(DESTDIR)$(bindir)
 
 uninstall-local:
-	rm -f $(DESTDIR)$(pythondir)/xraylib.py
+	rm -f $(DESTDIR)$(pythondir)/xraylib.py $(DESTDIR)$(pythondir)/xrayhelp.py $(DESTDIR)$(pythondir)/xraymessages.py
 	rm -f $(DESTDIR)$(pyexecdir)/_xraylib.*
+	rm -f $(DESTDIR)$(bindir)/xraylib
 
 clean-local:
-	rm -rf xraylib_wrap.c build
+	rm -rf xraylib_wrap.c build xraylib _xraylib.* xraylib.py
 
 
 

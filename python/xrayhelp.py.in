@@ -1,7 +1,7 @@
 import string
 
 def display_func(func_name):
-    fp = open('../doc/xrayhelp.txt', 'r')
+    fp = open('@prefix@/share/xraylib/xrayhelp.txt', 'r')
     file_lines = fp.readlines()
     fp.close()
     for i in range(len(file_lines)):

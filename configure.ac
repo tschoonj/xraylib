@@ -330,13 +330,17 @@ AC_MSG_NOTICE([Building with Python bindings])
 #transform PYTHON_INCDIR and PYTHON_LIBS
 PYTHON_INCLUDE_FIXED="'`echo $PYTHON_INCDIR | sed -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
 PYTHON_LIBS_FIXED="'`echo $PYTHON_LIBS | sed -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
-echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
-echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
+#echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
+#echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
 
 AC_SUBST(PYTHON_INCLUDE_FIXED)
 AC_SUBST(PYTHON_LIBS_FIXED)
 AC_SUBST(PYTHON_XRL_VERSION,$VERSION)
-
+AC_SUBST(PYTHONDIR,$pythondir)
+AC_SUBST(PKGPYTHONDIR,$pkgpythondir)
+AC_SUBST(PYEXECDIR,$pyexecdir)
+AC_SUBST(PKGPYEXECDIR,$pkgpyexecdir)
+AC_SUBST(XRLDATADIR,[`echo ${prefix}`/share/xraylib])
 fi
 AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
 
@@ -350,7 +354,7 @@ AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

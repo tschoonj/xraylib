@@ -471,5 +471,108 @@ Fii
 //////////////////////////////////////////////////////////////////////
 >>> float Fii(int Z, float E)
 
+CSb_Photo_Total
+///////////////////////////////////////////////////////////
+//                                                       //
+//        Photoelectric cross section  (barns/atom)      //
+//                  Using the Kissel data                //
+//                                                       //
+//    Z : atomic number                                  //
+//    E : energy (keV)                                   //
+//                                                       //
+///////////////////////////////////////////////////////////
+>>> float CSb_Photo_Total(int Z, float E)
 
+CS_Photo_Total
+///////////////////////////////////////////////////////////
+//                                                       //
+//        Photoelectric cross section  (cm2/g)           //
+//                  Using the Kissel data                //
+//                                                       //
+//    Z : atomic number                                  //
+//    E : energy (keV)                                   //
+//                                                       //
+///////////////////////////////////////////////////////////
+>>> float CS_Photo_Total(int Z, float E)
 
+CSb_Photo_Partial
+///////////////////////////////////////////////////////////
+//                                                       //
+//   Partial Photoelectric cross section  (barns/elec)   //
+//                  Using the Kissel data                //
+//                                                       //
+//    Z : atomic number                                  //
+//    shell : shell                                      //
+//    E : energy (keV)                                   //
+//                                                       //
+///////////////////////////////////////////////////////////
+>>> float CSb_Photo_Partial(int Z, int shell, float E)
+
+CS_Photo_Partial
+///////////////////////////////////////////////////////////
+//                                                       //
+//   Partial Photoelectric cross section  (cm2/g)        //
+//                  Using the Kissel data                //
+//                                                       //
+//    Z : atomic number                                  //
+//    shell : shell                                      //
+//    E : energy (keV)                                   //
+//                                                       //
+///////////////////////////////////////////////////////////
+>>> float CS_Photo_Partial(int Z, int shell, float E)
+
+CS_FluorLine_Kissel
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_FluorLine_Kissel(int Z, int line, float E)
+
+CSb_FluorLine_Kissel
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_FluorLine_Kissel(int Z, int line, float E)
+
+CS_Total_Kissel
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (cm2/g)                    //
+//         (Photoelectric (Kissel) + Compton + Rayleigh)            //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Total_Kissel(int Z, float E) 
+
+CSb_Total_Kissel
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (barn/atom)                //
+//         (Photoelectric (Kissel) + Compton + Rayleigh)            //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Total_Kissel(int Z, float E)

@@ -1,4 +1,18 @@
-Version 2.11
+Version 2.12 Tom Schoonjans 
+
+Build system has changed completely: the new system is based on autoconf,
+automake and libtool. Tests were conducted on different systems using
+different compilers. An overview:
+C-library: linux (Fedora 10 (gcc 4.3.2) and 11 (gcc 4.4.0), both 64-bit), Mac OS X (Leopard (gcc 4.0.1 and gcc 4.4.0) Intel 32-bit), Solaris 10 (Sun C 5.10 32-bit)
+Fortran bindings: linux (Fedora 10 (gfortran 4.3.2) and 11 (gfortran 4.4.0), both 64-bit), Mac OS X (Leopard (gfortran 4.4.0, g95 and ifort) Intel 32-bit), Solaris 10 (Sun Fortran 95 8.4 32-bit)
+Perl bindings: linux (Fedora 10 (perl 5.10.0) and 11 (perl 5.10.0), both 64-bit), Mac OS X (Leopard (perl 5.8.9) Intel 32-bit), Solaris 10 (perl 5.8.4 32-bit)
+Python bindings and xraylib executable: linux (Fedora 10 (python 2.5) and 11 (python 2.6), both 64-bit), Mac OS X (Leopard (python 2.5) Intel 32-bit)
+IDL bindings: linux (Fedora 10 (idl 7.1) 64-bit), Mac OS X (Leopard idl 7.0 Intel 32-bit)
+
+A spec file and pkg-config files were added as well. RPM
+packages were created for Fedora 10 and 11 x86_64 systems. 
+
+Version 2.11 Tom Schoonjans
 
 Complete rewrite of the IDL bindings, using the DLM approach.
 Definition of the COMMON block XRAYLIB containing all the xraylib macros. This
@@ -9,7 +23,7 @@ In order for IDL to find the XRayLib DLM at runtime it is necessary that the
 user makes sure that the IDL_DLM_PATH environment variable points to the idl
 subdirectory of the xraylib installation folder!
 
-Version 2.10
+Version 2.10 Tom Schoonjans
 
 Minor changes: adjusted the placing of xraylib.mod into lib for the gfortran
 compiler
@@ -18,7 +32,7 @@ Recalculation (smoothing) of second derivatives of kissel cross section data. Th
 Support for IDL bindings on Mac (Tested on an Intel Mac running Mac OS X 10.4 and IDL 7.0)
 Minor changes to install.sh: Python bindings disabled when running on Mac etc...
 
-Version 2.9
+Version 2.9 Tom Schoonjans
 
 Introduction of partial photoelectric cross sections (data of L. Kissel) ->
 kissel_pe.dat
@@ -45,7 +59,7 @@ TODO: rewrite the IDL bindings completely in favor of the DLM approach,
 recommended by IDL 
 
 
-Version 2.8
+Version 2.8 Tom Schoonjans
 
 All the physical data is now hardcoded during the compilation phase, making
 the initialization at run time redundant. (Thanks to Teemu Ikonen for

@@ -2,7 +2,7 @@
 #define _XRAYLIB_H
 
 #define XRAYLIB_MAJOR 2
-#define XRAYLIB_MINOR 11
+#define XRAYLIB_MINOR 12
 
 
 //#define ZMAX 120
@@ -10,10 +10,11 @@
 #define PI  3.14159265359
 #endif
 
-#define AVOGNUM 0.602252        // Avogadro number (mol-1 * barn-1 * cm2) 
-#define KEV2ANGST 12.398520   // keV to angstrom-1 conversion factor 
-#define MEC2 511.0034         // electron rest mass (keV) 
-#define RE2 0.07940775        // square of classical electron radius (barn)
+//values taken from physics.nist.gov
+#define AVOGNUM 0.602214179        // Avogadro number (mol-1 * barn-1 * cm2) 
+#define KEV2ANGST 12.39841875   // keV to angstrom-1 conversion factor 
+#define MEC2 510.998910         // electron rest mass (keV) 
+#define RE2 0.079407877        // square of classical electron radius (barn)
 
 #include "shells.h"
 #include "lines.h"

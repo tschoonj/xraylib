@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/xraylib
+
+Name: xraylib Fortran 2003 bindings
+Description: xraylib provides access to x-ray related physical data
+Version: @VERSION@
+Requires: 
+Conflicts:
+Libs: -L${libdir} -lxrlf03
+Cflags: -I${includedir}
+

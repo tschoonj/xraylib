@@ -29,11 +29,14 @@ EXTRA_DIST = xraylib_idl.c libxrlidl.dlm perl/Makefile.PL perl/Makefile_perl xra
 
 all: 
 if ENABLE_IDL
-	make idlxrl
+	$(MAKE) idlxrl
 endif
 if ENABLE_PERL
-	make perlxrl
+	$(MAKE) perlxrl
 endif
+
+
+
 
 #I'm not sure how portable this .libs link location is...
 #Maybe this could be rewritten using libtool...
@@ -50,8 +53,7 @@ perlxrl: libxrl.la xraylib.i
 #	mv xraylib.pm perl
 #	mv xraylib_wrap.c perl
 #	echo "prefix: $(prefix)"
-	$(MAKE) $(AM_MAKEFLAGS)	PERL=$(PERL) INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
-
+	$(MAKE) $(AM_MAKEFLAGS)	MAKE=$(MAKE) PERL=$(PERL) INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
 
 install-exec-local:
 if ENABLE_IDL
@@ -73,8 +75,9 @@ if ENABLE_PERL
 #	perl uninstall doesn't work... it's unsafe according to them.
 #	So we'll have to do it ourselves
 #	let's use the .packlist file for this.
-	find $(DESTDIR)$(prefix) -name '.packlist' | xargs cat | xargs rm -f
-	find $(DESTDIR)$(prefix) -name '.packlist' | xargs rm -f
+	find $(DESTDIR)$(prefix) -name '.packlist' | xargs cat | xargs rm -vf
+	find $(DESTDIR)$(prefix) -name '.packlist' | xargs rm -fv
+	find $(DESTDIR)$(prefix) -name 'perllocal.pod' | xargs rm -fv
 endif
 
 clean-local:

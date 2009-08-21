@@ -1,6 +1,6 @@
 def display_banner():
     print
-    fp = open('../doc/xraybanner.txt', 'r')
+    fp = open('@prefix@/share/xraylib/xraybanner.txt', 'r')
     for line in fp.readlines():
         print line,
     fp.close()
@@ -23,7 +23,7 @@ def display_help():
     print
     print "Available X-ray library functions"
     print
-    fp = open('../doc/xrayfunc.txt', 'r')
+    fp = open('@prefix@/share/xraylib/xrayfunc.txt', 'r')
     for line in fp.readlines():
         print line,
     fp.close()
@@ -33,7 +33,7 @@ def display_doc():
     print
     print "X-ray data documentation"
     print
-    fp = open('../doc/xraydoc.txt', 'r')
+    fp = open('@prefix@/share/xraylib/xraydoc.txt', 'r')
     for line in fp.readlines():
         print line,
     fp.close()

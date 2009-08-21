@@ -1,0 +1,110 @@
+#do not try this on other systems than linux
+%define _pkgpythondir %{_prefix}/lib/python@PYTHON_VERSION@/site-packages
+%define _pkgpyexecdir %{_libdir}/python@PYTHON_VERSION@/site-packages
+
+
+
+Name: xraylib
+Version: @VERSION@	
+Release:	1%{?dist}
+Summary: A library for X-ray matter interactions cross sections for X-ray fluorescence applications: core C library
+Group:	 Applications/Engineering and Scientific	
+License: GPL
+Packager: Tom.Schoonjans <Tom.Schoonjans@UGent.be>	
+URL: http://github.com/tschoonj/xraylib
+Source: xraylib-%{version}.tar.gz	
+BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
+BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig	
+
+%description
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available.
+
+This rpm package provides only the core C library.
+
+%package devel
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: development package
+Requires: glibc-devel glibc-headers pkgconfig
+
+%description devel
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available.
+
+This rpm package provides the necessary libraries, headers etc to start your own xraylib based development.
+
+%package fortran
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: fortran bindings
+Requires: pkgconfig libgfortran >= 4.3.0 gcc-gfortran >= 4.3.0
+
+%description fortran 
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available.
+
+This rpm package provides the fortran 2003 bindings of xraylib.
+
+%package python
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python bindings
+Requires: python
+
+%description python
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
+
+This rpm package provides the python bindings of xraylib and a command utility.
+
+
+
+
+
+
+
+%prep
+%setup -q
+
+
+%build
+%configure --disable-idl --disable-perl FC=gfortran 
+make %{?_smp_mflags}
+
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+libtool --finish $RPM_BUILD_ROOT%{_libdir}
+rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root)
+
+%{_libdir}/libxrl.so.*
+
+%files devel
+%defattr(-,root,root)
+%{_libdir}/libxrl.so
+%{_libdir}/libxrl.a
+%{_includedir}/xraylib/*.h
+%{_libdir}/pkgconfig/libxrl.pc
+
+%files fortran
+%defattr(-,root,root)
+
+%{_libdir}/libxrlf03.so.*
+%{_libdir}/libxrlf03.so
+%{_libdir}/libxrlf03.a
+%{_includedir}/xraylib/*.mod
+%{_libdir}/pkgconfig/libxrlf03.pc
+
+%files python
+%defattr(-,root,root)
+%{_bindir}/xraylib
+%{_pkgpythondir}/xraylib.py*
+%{_pkgpythondir}/xrayhelp.py*
+%{_pkgpythondir}/xraymessages.py*
+%{_pkgpyexecdir}/_xraylib.*
+%{_prefix}/share/xraylib
+
+
+
+%changelog
+* Thu Aug 20 2009 Tom Schoonjans
+- Initial spec file. Perl bindings not included.
