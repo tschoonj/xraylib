@@ -13,3 +13,4 @@ autom4te.cache
 build-aux
 *.swp
 defbuild
+*~

@@ -1,3 +1,18 @@
+
+#Copyright (c) 2009, Tom Schoonjans
+#All rights reserved.
+
+#Redistribution and use in source and binary forms, with or without
+#modification, are permitted provided that the following conditions are met:
+#    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+#    * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
+
+#THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
 AC_INIT([xraylib],[2.12],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -10,9 +25,9 @@ AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
 
 #at least version 2.0 of libtool is necessary for creating the fortran bindings
-#LT_PREREQ([2.0.0])
+LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
-#LT_INIT([dlopen])
+LT_INIT([dlopen disable-fast-install])
 #AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
@@ -107,6 +122,7 @@ AM_CONDITIONAL([ENABLE_FORTRAN],[test x$VALID_FORTRAN = xyes])
 AC_ARG_ENABLE([idl],[AS_HELP_STRING([--disable-idl],[build without the idl bindings])],[enable_idl=$enableval],[enable_idl=check])
 
 VALID_IDL=
+ARCHFLAGS=
 
 if test "x$enable_idl" != xno ; then  
 #search for header and libraries
@@ -172,20 +188,33 @@ if test "x$enable_idl" != xno ; then
 		      AC_MSG_ERROR([IRIX is currently not supported. Disable the bindings with --disable-idl])
 		      ;;
 #IDL 7.1 might cause problems on Darwin -> makes distinction between i386 and x86_64... to be verified
-		    i686-*-darwin*)
-		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
-		      IDL_CFLAGS="-fPIC"
-		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
-		      ;;
+#universal bundles would be ideal but unfortunately libtool doesn't seem to support those
+#IDL 7.0 and older will cause problems on Mac OS X 10.6 (Snow Leopard): since all compilers generate 64-bit binaries by default but these IDL version come in a 32-bit format. For now the solution seems to be to disable the perl and python bindings because these don't have 32-bit libraries. 
+#
+#		    i686-*-darwin*)
+#		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
+#		      IDL_CFLAGS="-fPIC -arch i386 -arch x86_64 -arch ppc"
+#		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle -arch i386 -arch x86_64 -arch ppc"
+#		      ;;
 
 		    i386-*-darwin*)
-		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
-		      IDL_CFLAGS="-fPIC"
-		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+			#see if we have the x86_64 folder (IDL 7.1 for Mac has these)
+			if test -d $RSIIDL_BINDIR/bin.darwin.x86_64 ; then
+		      		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.x86_64
+		      		IDL_CFLAGS="-fPIC"
+				ARCHFLAGS="-arch x86_64"
+		      		IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+			else
+	    			IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
+				IDL_CFLAGS="-fPIC"
+				ARCHFLAGS="-arch i386"
+				IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+		        fi
 		      ;;
 
 		    ppc*-darwin*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.ppc
+		      ARCHFLAGS="-arch ppc"
 		      IDL_CFLAGS="-fPIC"
 		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
 		      ;;
@@ -214,6 +243,8 @@ if test "x$enable_idl" != xno ; then
 		AC_MSG_NOTICE([Building with IDL bindings])
 	fi
 fi #test "x$enable_idl" != xno
+
+AC_SUBST(ARCHFLAGS)
 
 AM_CONDITIONAL([ENABLE_IDL],[test x$VALID_IDL = xyes])
 
@@ -354,7 +385,7 @@ AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile src/prdata/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

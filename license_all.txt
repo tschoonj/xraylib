@@ -1,4 +1,3 @@
-/*
 Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
@@ -9,37 +8,3 @@ modification, are permitted provided that the following conditions are met:
     * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-
-
-#define ZMAX 120
-#define MAXFILENAMESIZE 1000
-#define SHELLNUM 28
-#define SHELLNUM_K SHELLNUM+3
-#define LINENUM 50
-#define TRANSNUM 5
-
-#ifndef VARSH
-#define VARSH
-
-//////////////////////////////////////////////////////////////////////
-/////            Functions                                       /////
-//////////////////////////////////////////////////////////////////////
-void XRayInit(void);
-void ErrorExit(char *error_message);
-
-
-//////////////////////////////////////////////////////////////////////
-/////            Variables                                       /////
-//////////////////////////////////////////////////////////////////////
-
-extern int HardExit;
-extern int ExitStatus;
-extern char XRayLibDir[];
-
-extern char ShellName[][5];
-extern char LineName[][5];
-extern char TransName[][5];
-
-#endif

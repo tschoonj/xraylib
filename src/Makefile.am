@@ -1,10 +1,33 @@
-SUBDIRS = prdata 
+
+#Copyright (c) 2009, Tom Schoonjans
+#All rights reserved.
+
+#Redistribution and use in source and binary forms, with or without
+#modification, are permitted provided that the following conditions are met:
+#    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+#    * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
+
+#THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+
+
 xraylibincludedir=${includedir}/xraylib
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 
 
 lib_LTLIBRARIES=libxrl.la
+noinst_PROGRAMS=prdata
+prdata_SOURCES = pr_data.c xrayvars.c cross_sections.c \
+scattering.c atomicweight.c edges.c fluor_lines.c fluor_yield.c jump.c \
+coskron.c radrate.c cs_line.c polarized.c splint.c cs_barns.c fi.c fii.c \
+kissel_pe.c splint.h xrayglob.h xrayvars.h xrayglob.c xrayfiles.c
+prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
+
+
+
 if ENABLE_FORTRAN
   lib_LTLIBRARIES+=libxrlf03.la
 endif
@@ -12,11 +35,13 @@ libxrl_la_SOURCES = xrayvars.c cross_sections.c \
 scattering.c atomicweight.c edges.c fluor_lines.c fluor_yield.c jump.c \
 coskron.c radrate.c cs_line.c polarized.c splint.c cs_barns.c fi.c fii.c \
 kissel_pe.c xrayfiles_inline.c splint.h xrayglob.h xrayvars.h
+libxrl_la_CFLAGS = $(ARCHFLAGS)
 if ENABLE_FORTRAN
  libxrlf03_la_SOURCES = xraylib_wrap.f90
  libxrlf03_la_LIBADD = libxrl.la
+ libxrlf03_la_FCFLAGS = $(ARCHFLAGS)
  libxrlf03_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
- xraylibinclude_HEADERS = xraylib.mod
+ nodist_xraylibinclude_HEADERS = xraylib.mod
 endif
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
@@ -35,14 +60,15 @@ if ENABLE_PERL
 	$(MAKE) perlxrl
 endif
 
-
+#$(EXEEXT) is necessary to allow compilation in cygwin
+xrayglob_inline.c: prdata$(EXEEXT)
+	XRAYLIB_DIR=${top_srcdir} ./prdata$(EXEEXT)
 
 
 #I'm not sure how portable this .libs link location is...
 #Maybe this could be rewritten using libtool...
 idlxrl:	xraylib_idl.c libxrl.la
-	$(CC) @IDL_LD_FLAGS@ -I@RSIIDL_DIR@/external/include $(AM_CPPFLAGS) -o libxrlidl.so $(CFLAGS)  @IDL_CFLAGS@ ${top_srcdir}/src/xraylib_idl.c -L${top_builddir}/src/.libs -lxrl
-	cp ${top_srcdir}/src/libxrlidl.dlm .
+	$(CC) $(ARCHFLAGS) @IDL_LD_FLAGS@ -I@RSIIDL_DIR@/external/include $(AM_CPPFLAGS) -o libxrlidl.so $(CFLAGS)  @IDL_CFLAGS@ ${top_srcdir}/src/xraylib_idl.c -L${top_builddir}/src/.libs -lxrl
 
 
 perlxrl: libxrl.la xraylib.i
@@ -53,12 +79,12 @@ perlxrl: libxrl.la xraylib.i
 #	mv xraylib.pm perl
 #	mv xraylib_wrap.c perl
 #	echo "prefix: $(prefix)"
-	$(MAKE) $(AM_MAKEFLAGS)	MAKE=$(MAKE) PERL=$(PERL) INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
+	$(MAKE) $(AM_MAKEFLAGS)	ARCHFLAGS="$(ARCHFLAGS)" MAKE=$(MAKE) PERL=$(PERL) INSTALL_BASE=$(DESTDIR)$(prefix) VERSION=$(VERSION) -C perl -f Makefile_perl
 
 install-exec-local:
 if ENABLE_IDL
 	$(MKDIR_P) $(DESTDIR)$(prefix)/dlm
-	$(INSTALL) libxrlidl.so libxrlidl.dlm $(DESTDIR)$(prefix)/dlm
+	$(INSTALL) libxrlidl.so ${srcdir}/libxrlidl.dlm $(DESTDIR)$(prefix)/dlm
 endif
 if ENABLE_PERL
 	$(MAKE) $(AM_MAKEFLAGS) -C perl install
@@ -75,8 +101,8 @@ if ENABLE_PERL
 #	perl uninstall doesn't work... it's unsafe according to them.
 #	So we'll have to do it ourselves
 #	let's use the .packlist file for this.
-	find $(DESTDIR)$(prefix) -name '.packlist' | xargs cat | xargs rm -vf
-	find $(DESTDIR)$(prefix) -name '.packlist' | xargs rm -fv
+	find $(DESTDIR)$(prefix) -name '.packlist' | grep xraylib | xargs cat | xargs rm -vf
+	find $(DESTDIR)$(prefix) -name '.packlist' | grep xraylib | xargs rm -fv
 	find $(DESTDIR)$(prefix) -name 'perllocal.pod' | xargs rm -fv
 endif
 
@@ -87,5 +113,6 @@ clean-local:
 	rm -f perl/xraylib.pm
 	rm -rf perl/blib
 	rm -f perl/Makefile perl/Makefile_perl perl/Makefile.PL
+	rm -f libxrlidl.so libxrlidl.dlm
 
 	

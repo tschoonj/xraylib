@@ -1,3 +1,18 @@
+
+#Copyright (c) 2009, Tom Schoonjans
+#All rights reserved.
+
+#Redistribution and use in source and binary forms, with or without
+#modification, are permitted provided that the following conditions are met:
+#    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+#    * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
+
+#THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#Makefile.am for the examples. These can be used to verify that the compilation went ok by typing in "make check" 
+
+
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 
 
@@ -21,12 +36,13 @@ endif
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
 xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
+xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
   xrlexample3_SOURCES = xrlexample3.f90
   xrlexample3_LDADD = ../src/libxrlf03.la
   xrlexample3_CPPFLAGS = -I../src
-  xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS}
+  xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
   xrlexample3_FCFLAGS = ${xrlexample3_CPPFLAGS}
 endif
 
@@ -39,7 +55,9 @@ EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py
 xrlexample4.sh: 
 	echo "Testing IDL bindings"
 	echo "unset IDL_STARTUP" > xrlexample4.sh
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"../src:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
+	echo "ln -s ${top_srcdir}/src/libxrlidl.dlm ${top_builddir}/src/libxrlidl.dlm" >> xrlexample4.sh
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/src:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
+	echo "rm -f ${top_builddir}/src/libxrlidl.dlm" >> xrlexample4.sh
 	chmod +x xrlexample4.sh	
 
 #test the perl bindings

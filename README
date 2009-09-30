@@ -23,9 +23,11 @@ More information about xraylib
 
 The project homepage is http://ftp.esrf.eu/pub/scisoft/xraylib/readme.html
 
-See the NEWS file for recent changes to the library.
+See the Changelog file for recent changes to the library.
 
 In 2004 an article was published about xraylib: A. Brunetti, M. Sanchez del Rio, B. Golosio, A. Simionovici and A. Somogyi, "A library for X-ray matter interaction cross sections for X-ray fluorescence applications",  Spectrochimica Acta B 59 (2004) 1725-1731 (doi: http://dx.doi.org/10.1016/j.sab.2004.03.014)
+
+We recently started a mailinglist. Subscription is possible at https://lists.ugent.be/sympa/info/xraylib
 
 Reporting bugs
 ==============
