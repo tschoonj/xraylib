@@ -72,7 +72,9 @@ idlxrl:	xraylib_idl.c libxrl.la
 
 
 perlxrl: libxrl.la xraylib.i
+if !ABS_SRC_BUILD_EQUAL
 	cp -R ${top_srcdir}/src/perl .
+endif
 	chmod a+w perl
 	$(SWIG) -o perl/xraylib_wrap.c -outdir perl -perl xraylib.i
 #	rm -f perl/xraylib.pm perl/xraylib_wrap.c

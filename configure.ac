@@ -13,7 +13,7 @@
 
 
 
-AC_INIT([xraylib],[2.12],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.12.1],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
@@ -395,5 +395,8 @@ cd $abs_top_srcdir
 abs_top_srcdir=`pwd -P`
 cd $abs_top_builddir
 AC_SUBST(abs_top_srcdir)
+
+
+AM_CONDITIONAL([ABS_SRC_BUILD_EQUAL],[test x$abs_top_builddir = x$abs_top_srcdir])
 
 AC_OUTPUT

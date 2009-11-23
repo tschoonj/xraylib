@@ -1,3 +1,8 @@
+Version 2.12.1 Tom Schoonjans
+
+Fixed bug in installation scripts that caused the perl and IDL bindings
+compilation phase to fail under certain circumstances
+
 Version 2.12 Tom Schoonjans 
 
 Build system has changed completely: the new system is based on autoconf,

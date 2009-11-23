@@ -1,4 +1,4 @@
-xraylib v2.12 (beta) revised August 2009
+xraylib v2.12.1 (beta) revised November 2009
 Authors: A. Brunetti, M. S. del Rio, T. Schoonjans, T. Ikonen , B. Golosio,
          A. Simionovici, A. Somogyi
          ESRF, Grenoble, France, Univ. di Sassari, Italy, Ghent University,
