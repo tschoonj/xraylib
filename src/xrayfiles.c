@@ -52,7 +52,8 @@ void XRayInit(void)
   int Z, iE;
   int shell, line, trans;
   float E, prob;
-   
+  char buffer[1024];
+
   HardExit = 0;
   ExitStatus = 0;
 
@@ -311,17 +312,24 @@ void XRayInit(void)
     ErrorExit("File radrate.dat not found");
     return;
   }
+  int read_error=0;
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", line_name);
-    fscanf(fp,"%f", &prob);  
+    fscanf(fp,"%f", &prob);
+    read_error=1;
     for (line=0; line<LINENUM; line++) {
       if (strcmp(line_name, LineName[line]) == 0) {
 	RadRate_arr[Z][line] = prob;
 	// printf("%d\t%s\t%e\n", Z, LineName[line], prob);
+	read_error=0;
 	break;
       } 
+    }
+    if (read_error) {
+    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n");
+	ErrorExit(buffer);
     }
   }
   fclose(fp);

@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define MAXFILENAMESIZE 1000
 #define SHELLNUM 28
 #define SHELLNUM_K SHELLNUM+3
-#define LINENUM 50
+#define LINENUM 150
 #define TRANSNUM 5
 
 #ifndef VARSH
@@ -39,7 +39,7 @@ extern int ExitStatus;
 extern char XRayLibDir[];
 
 extern char ShellName[][5];
-extern char LineName[][5];
+extern char LineName[][6];
 extern char TransName[][5];
 
 #endif

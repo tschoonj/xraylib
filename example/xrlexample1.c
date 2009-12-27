@@ -27,6 +27,7 @@ int main()
   printf("Zr L1 edge energy: %f\n",EdgeEnergy(40,L1_SHELL));
   printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",CS_FluorLine(82,LA_LINE,20.0));
   printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",CS_FluorLine_Kissel(82,LA_LINE,20.0));
+  printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
 
   return 0;
 }

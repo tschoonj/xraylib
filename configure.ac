@@ -13,11 +13,11 @@
 
 
 
-AC_INIT([xraylib],[2.12.1],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.13],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
-LIB_CURRENT=1
+LIB_CURRENT=2
 LIB_REVISION=0
 LIB_AGE=0
 AC_SUBST(LIB_CURRENT)
@@ -385,7 +385,7 @@ AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

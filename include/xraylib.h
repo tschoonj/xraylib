@@ -16,7 +16,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define _XRAYLIB_H
 
 #define XRAYLIB_MAJOR 2
-#define XRAYLIB_MINOR 12
+#define XRAYLIB_MINOR 13
 
 
 //#define ZMAX 120
