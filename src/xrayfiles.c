@@ -407,6 +407,7 @@ void XRayInit(void)
     for (shell = 0 ; shell < SHELLNUM_K ; shell++) {
       fscanf(fp,"%i",&NE_Photo_Partial_Kissel[Z][shell]);
       if (NE_Photo_Partial_Kissel[Z][shell] == 0 ) continue;
+      fscanf(fp,"%lf",&EdgeEnergy_Kissel[Z][shell]);
       E_Photo_Partial_Kissel[Z][shell]=(double*)malloc(NE_Photo_Partial_Kissel[Z][shell]*sizeof(double));
       Photo_Partial_Kissel[Z][shell]=(double*)malloc(NE_Photo_Partial_Kissel[Z][shell]*sizeof(double));
       Photo_Partial_Kissel2[Z][shell]=(double*)malloc(NE_Photo_Partial_Kissel[Z][shell]*sizeof(double));

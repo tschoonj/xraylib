@@ -218,7 +218,10 @@ int main(void)
 //added by Tom Schoonjans 07/04/2008
   fprintf(f, "float Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
-  
+
+  fprintf(f, "double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
+  PR_MATD(ZMAX+1, SHELLNUM_K, EdgeEnergy_Kissel);
+
   PR_NUMVEC1D(NE_Photo_Total_Kissel, "NE_Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,E_Photo_Total_Kissel,"E_Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel,"Photo_Total_Kissel");
