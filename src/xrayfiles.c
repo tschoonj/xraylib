@@ -54,7 +54,7 @@ void XRayInit(void)
   float E, prob;
   char buffer[1024];
 
-  HardExit = 0;
+  HardExit = 1;
   ExitStatus = 0;
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
@@ -221,28 +221,62 @@ void XRayInit(void)
   }
   fclose(fp);
 
+  int read_error=0;
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fluor_lines.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
     ErrorExit("File fluor_lines.dat not found");
     return;
   }
+  HardExit=0;
+  char **error_lines=NULL;
+  int nerror_lines=0;
+  int i;
+  int found_error_line;
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", line_name);
     fscanf(fp,"%f", &E);  
     E /= 1000.0;
+    read_error=1;
     for (line=0; line<LINENUM; line++) {
       if (strcmp(line_name, LineName[line]) == 0) {
 	LineEnergy_arr[Z][line] = E;
-	// printf("%d\t%s\t%e\n", Z, LineName[line], E);
+	//printf("%d\t%s\t%e\n", Z, LineName[line], E);
+        read_error=0;
 	break;
       } 
     }
+    found_error_line=0;
+    if (read_error) {
+        if (nerror_lines == 0) {
+		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
+		error_lines[0] = strdup(line_name);
+	}
+	else {
+		found_error_line = 0;
+		for (i = 0 ; i < nerror_lines ; i++) {
+			if (strcmp(line_name,error_lines[i]) == 0) {
+				found_error_line = 1;
+				break;
+			}
+		}
+		if (!found_error_line) {
+	    			sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+				ErrorExit(buffer);
+				error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
+				error_lines[nerror_lines-1] = strdup(line_name);
+		}
+	}
+    }
   }
   fclose(fp);
-
+  HardExit=1;
+  if (read_error) {
+    sprintf(buffer,"Exiting due to too many errors\n");
+    ErrorExit(buffer);
+  }
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fluor_yield.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
@@ -312,7 +346,6 @@ void XRayInit(void)
     ErrorExit("File radrate.dat not found");
     return;
   }
-  int read_error=0;
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -328,7 +361,7 @@ void XRayInit(void)
       } 
     }
     if (read_error) {
-    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n");
+    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
 	ErrorExit(buffer);
     }
   }
