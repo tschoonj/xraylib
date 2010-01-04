@@ -13,7 +13,7 @@
 
 
 
-AC_INIT([xraylib],[2.13],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.60],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
@@ -24,7 +24,13 @@ AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
 
-#at least version 2.0 of libtool is necessary for creating the fortran bindings
+AC_USE_SYSTEM_EXTENSIONS
+AC_CHECK_FUNCS([strndup strdup])
+
+
+
+
+#at least version 2.0 of libtool is required for creating the fortran bindings
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
 LT_INIT([dlopen disable-fast-install])
@@ -38,7 +44,7 @@ AC_CANONICAL_HOST
 
 
 #headers check
-AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h])
+AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h])
 
 
 

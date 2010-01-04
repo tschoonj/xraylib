@@ -32,6 +32,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "shells.h"
 #include "lines.h"
+#include "xraylib-parser.h"
 
 #define KA_LINE 0
 #define KB_LINE 1
