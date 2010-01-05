@@ -13,8 +13,11 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 
 #include <stdio.h>
-#include "idl_export.h"
 #include "xraylib.h"
+#include <string.h>
+#include <malloc.h>
+
+#include "idl_export.h"
 
 
 extern int HardExit, ExitStatus;
@@ -70,6 +73,7 @@ extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel(int argc, IDL_VPTR argv[]);
 
+extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_GetExitStatus,"GETEXITSTATUS", 0 , 0 , 0 , 0},
@@ -117,6 +121,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CSb_FluorLine_Kissel,"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
 	{IDL_CS_Total_Kissel,"CS_TOTAL_KISSEL", 2 , 2 , 0 , 0},
 	{IDL_CSb_Total_Kissel,"CSB_TOTAL_KISSEL", 2 , 2 , 0 , 0},
+	{IDL_CompoundParser,"COMPOUNDPARSER",1, 1, 0, 0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -353,6 +358,60 @@ XRL_4IFFF(DCSP_Rayl)
 XRL_4IFFF(DCSP_Compt)
 XRL_4IFFF(DCSPb_Rayl)
 XRL_4IFFF(DCSPb_Compt)
+
+
+void release(UCHAR *memPtr) {
+	free(memPtr);
+}
+
+
+
+IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
+	struct compoundData cd;	
+	IDL_VPTR rv;
+
+	IDL_ENSURE_STRING(argv[0]);
+	IDL_ENSURE_SCALAR(argv[0]);
+
+	if (CompoundParser(IDL_VarGetString(argv[0]),&cd) == 0) {
+		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
+	}
+	
+	//success!
+	IDL_MEMINT array_dims[] = {1,cd.nElements};
+	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
+	void *sdef;
+	struct compoundData_IDL {
+		IDL_LONG nElements;
+		IDL_LONG nAtomsAll;
+		IDL_LONG Elements[cd.nElements];
+		double massFractions[cd.nElements];
+	};
+	struct compoundData_IDL *cdi;
+	IDL_STRUCT_TAG_DEF s_tags[] = {
+		{"NELEMENTS", 0, (void *) IDL_TYP_LONG},
+		{"NATOMSALL", 0, (void *) IDL_TYP_LONG},
+		{"ELEMENTS", array_dims, (void *) IDL_TYP_LONG},
+		{"MASSFRACTIONS", array_dims, (void *) IDL_TYP_DOUBLE},
+		{0}
+	};
+	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL));
+	cdi->nElements = cd.nElements;
+	cdi->nAtomsAll = cd.nAtomsAll;
+	memcpy(cdi->Elements,cd.Elements,sizeof(int)*cd.nElements);
+	memcpy(cdi->massFractions,cd.massFractions,sizeof(double)*cd.nElements);
+	free(cd.massFractions);
+	free(cd.Elements);
+	sdef = IDL_MakeStruct(NULL,s_tags);
+	ilDims[0] = 1;
+	rv=IDL_ImportArray(1,ilDims, IDL_TYP_STRUCT,(UCHAR *) cdi, release,sdef);
+
+	return rv;
+}
+
+
+
+
 
 int IDL_Load (void) 
 {
