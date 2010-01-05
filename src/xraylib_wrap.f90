@@ -28,6 +28,21 @@ MODULE xraylib
 USE, INTRINSIC :: ISO_C_BINDING
 IMPLICIT NONE
 
+TYPE, BIND(C) :: compoundData_C
+        INTEGER (C_INT) :: nElements
+        INTEGER (C_INT) :: nAtomsAll
+        TYPE (C_PTR) :: Elements
+        TYPE (C_PTR) :: massFractions
+ENDTYPE 
+
+TYPE :: compoundData_F
+        INTEGER (C_INT) :: nElements
+        INTEGER (C_INT) :: nAtomsAll
+        INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
+        REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
+ENDTYPE 
+
+
 !Constants
 
 
@@ -614,8 +629,31 @@ INTERFACE
 		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
 	ENDFUNCTION CSb_Total_Kissel
 
-
+        FUNCTION CompoundParser(compoundString, cd) BIND(C,NAME='CompoundParser')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPORT :: compoundData_C
+                IMPLICIT NONE
+                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compoundString
+                TYPE(compoundData_C),INTENT(INOUT) :: cd
+                INTEGER (KIND=C_INT) :: CompoundParser
+        ENDFUNCTION
+                
 
 ENDINTERFACE
+
+CONTAINS
+!subroutine to associate a C structure with the correspond Fortran structure
+SUBROUTINE compoundDataAssoc(in_C, out_F)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE(compoundData_C),INTENT(IN) :: in_C
+        TYPE(compoundData_F),INTENT(INOUT) :: out_F
+
+        out_F%nElements = in_C%nElements
+        out_F%nAtomsAll = in_C%nAtomsAll
+        CALL C_F_POINTER(in_C%Elements,out_F%Elements,[out_F%nElements])
+        CALL C_F_POINTER(in_C%massFractions,out_F%massFractions,[out_F%nElements])
+
+ENDSUBROUTINE compoundDataAssoc
 
 ENDMODULE

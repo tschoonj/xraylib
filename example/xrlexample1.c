@@ -28,6 +28,25 @@ int main()
   printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",CS_FluorLine(82,LA_LINE,20.0));
   printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",CS_FluorLine_Kissel(82,LA_LINE,20.0));
   printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
+  //parser test for Ca(HCO3)2 (calcium bicarbonate)
+  struct compoundData cdtest;
+  if (CompoundParser("Ca(HCO3)2",&cdtest) == 0)
+	return 1;
+  int i;
+  printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
+  for (i = 0 ; i < cdtest.nElements ; i++)
+    printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
 
+  FREE_COMPOUND_DATA(cdtest)
+
+  //parser test for SiO2 (quartz)
+  if (CompoundParser("SiO2",&cdtest) == 0)
+	return 1;
+
+  printf("SiO2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
+  for (i = 0 ; i < cdtest.nElements ; i++)
+    printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+
+  FREE_COMPOUND_DATA(cdtest)
   return 0;
 }

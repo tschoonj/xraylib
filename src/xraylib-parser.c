@@ -63,9 +63,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 	int nbracket_pairs=0;
 
 	for (i = 0 ; compoundString[i] != '\0' ; i++) {
-		fprintf(stdout,"%c",compoundString[i]);
 		if (compoundString[i] == '(') {
-			fprintf(stdout,"joske\n");
 			nbrackets++;
 			if (nbrackets == 1) {
 				brackets_begin_locs = (char **) realloc((char **) brackets_begin_locs,sizeof(char *)*++nbracket_pairs);
@@ -73,7 +71,6 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			}
 		}
 		else if (compoundString[i] == ')') {
-			fprintf(stdout,"joske2\n");
 			nbrackets--;
 			if (nbrackets == 0) {
 				brackets_end_locs = (char **) realloc((char **) brackets_end_locs,sizeof(char *)*nbracket_pairs);
@@ -87,36 +84,31 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 		}
 		else if (compoundString[i] == ' '){
 			sprintf(buffer,"xraylib-parser: spaces are not allowed in compound formula\n");
-		//	ErrorExit(buffer);
-			fprintf(stdout,buffer);
+			ErrorExit(buffer);
 			return 0;
 		}
 		else if (islower(compoundString[i]) || isdigit(compoundString[i])) {}
 		else {
 			sprintf(buffer,"xraylib-parser: invalid character detected %c\n",compoundString[i]);
-//			ErrorExit(buffer);
-			fprintf(stdout,buffer);
+			ErrorExit(buffer);
 			return 0;
 		}
 
 		if (nbrackets < 0) {
 			sprintf(buffer,"xraylib-parser: brackets not matching\n");
-		//	ErrorExit(buffer);
-			fprintf(stdout,buffer);
+			ErrorExit(buffer);
 			return 0;
 		}
 
 	}
 	if (nuppers == 0 && nbracket_pairs == 0) {
 		sprintf(buffer,"xraylib-parser: Chemical formula contains no elements\n");
-	//	ErrorExit(buffer);
-		fprintf(stdout,buffer);
+		ErrorExit(buffer);
 		return 0;
 	}
 	if (nbrackets > 0) {
 		sprintf(buffer,"xraylib-parser: brackets not matching\n");
-		//ErrorExit(buffer);
-		fprintf(stdout,buffer);
+		ErrorExit(buffer);
 		return 0;
 	}
 
@@ -128,7 +120,6 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 	//parse locally
 	for (i = 0 ; i < nuppers ; i++) {
 		if (islower(upper_locs[i][1]) && !islower(upper_locs[i][2])) {
-			fprintf(stdout,"case1\n");
 			//second letter is lowercase and third one isn't -> valid
 			tempElement = strndup(upper_locs[i],2);
 			//get corresponding atomic number
@@ -136,8 +127,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			res = bsearch(&key,MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula\n",tempElement);
-			//	ErrorExit(buffer);
-			fprintf(stdout,buffer);
+				ErrorExit(buffer);
 				return 0;	
 			}
 			//determine element subscript
@@ -156,17 +146,14 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			free(tempElement);
 		}	
 		else if (!islower(upper_locs[i][1])) {
-			fprintf(stdout,"case2\n");
 			//second letter is not lowercase -> valid
 			tempElement = strndup(upper_locs[i],1);
-			fprintf(stdout,"tempElement: %s\n",tempElement);
 			//get corresponding atomic number
 			key.name = tempElement;	
 			res = bsearch(&key,MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula\n",tempElement);
-			//	ErrorExit(buffer);
-			fprintf(stdout,buffer);
+				ErrorExit(buffer);
 				return 0;	
 			}
 			//determine element subscript
@@ -187,8 +174,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 		else {
 			//error
 			sprintf(buffer,"xraylib-parser: invalid chemical formula\n");
-		//	ErrorExit(buffer);
-			fprintf(stdout,buffer);
+			ErrorExit(buffer);
 			return 0;	
 		}
 		//atomic number identification ok -> add it to the array if necessary
@@ -228,7 +214,6 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 	for (i = 0 ; i < nbracket_pairs ; i++) {
 		tempBracketAtoms = (struct compoundAtoms *) malloc(sizeof(struct compoundAtoms));
 		tempBracketString = strndup(brackets_begin_locs[i]+1,(size_t) (brackets_end_locs[i]-brackets_begin_locs[i]-1));
-		fprintf(stdout,"tempBracketString: %s\n",tempBracketString);
 		tempBracketAtoms->nElements = 0;
 		tempBracketAtoms->singleElements = NULL;
 		//recursive call
@@ -303,7 +288,6 @@ int CompoundParser(char compoundString[], struct compoundData *cd) {
 
 	rvCPS=CompoundParserSimple(compoundString,&ca);
 
-	fprintf(stdout,"rvCPS: %i\n",rvCPS);
 	if (rvCPS) {
 		cd->nElements = ca.nElements;
 		cd->nAtomsAll = 0;
@@ -317,24 +301,13 @@ int CompoundParser(char compoundString[], struct compoundData *cd) {
 			cd->Elements[i] = ca.singleElements[i].Element;
 			cd->massFractions[i] = AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms/sum;
 		}
-		fprintf(stdout,"nElements: %i\n",ca.nElements);
-		for (i = 0 ; i < ca.nElements ; i++) 
-			fprintf(stdout,"Element: %i   nAtoms: %i  massFraction: %lf\n",cd->Elements[i],cd->singleElements[i].nAtoms,cd->massFractions[i]);
+//		fprintf(stdout,"nElements: %i\n",ca.nElements);
+//		for (i = 0 ; i < ca.nElements ; i++) 
+//			fprintf(stdout,"Element: %i   nAtoms: %i  massFraction: %lf\n",cd->Elements[i],ca.singleElements[i].nAtoms,cd->massFractions[i]);
 			
 		return 1;
 	}
 	else
 		return 0;
 }
-
-int main (int argc, char *argv[]) {
-	char testCompound[] = "SiO23(Fe2S(H2O)4)2Fe3";
-	struct compoundData cd;
-
-	if (argc > 1)	
-		CompoundParser(argv[1],&cd);
-
-	return 0;
-}
-
 

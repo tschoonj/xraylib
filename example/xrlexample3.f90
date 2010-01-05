@@ -1,4 +1,3 @@
-
 !Copyright (c) 2009, Tom Schoonjans
 !All rights reserved.
 
@@ -17,6 +16,13 @@ USE xraylib
 
 IMPLICIT NONE
 
+TYPE (compoundData_C) :: cd_C
+TYPE (compoundData_F) :: cd_F
+
+CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'// C_NULL_CHAR
+CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
+INTEGER :: i
+
 CALL XRayInit()
 CALL SetHardExit(1)
 
@@ -28,5 +34,29 @@ WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (jump approx): ',
 WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (Kissel): ',CS_FluorLine_Kissel(82,LA_LINE,20.0)
 WRITE (6,'(A,F12.6)') 'Bi M1N2 radiative rate: ',RadRate(83,M1N2_LINE)
 
+!CompoundParser tests
+IF (CompoundParser(compound1,cd_C) == 0) THEN
+        CALL EXIT(1)
+ENDIF
+CALL compoundDataAssoc(cd_C,cd_F)
+WRITE (6,'(A,I4,A,I4,A)') 'Ca(HCO3)2 contains ',cd_F%nAtomsAll,' atoms and ',cd_F%nElements,' elements'
+DO i=1,cd_F%nElements
+        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd_F%Elements(i),' : ',cd_F%massFractions(i)*100.0_C_DOUBLE,' %'
+ENDDO
+
+!Free the memory allocated for the arrays
+DEALLOCATE(cd_F%Elements,cd_F%massFractions)
+
+
+IF (CompoundParser(compound2,cd_C) == 0) THEN
+        CALL EXIT(1)
+ENDIF
+CALL compoundDataAssoc(cd_C,cd_F)
+WRITE (6,'(A,I4,A,I4,A)') 'SiO2 contains ',cd_F%nAtomsAll,' atoms and ',cd_F%nElements,' elements'
+DO i=1,cd_F%nElements
+        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd_F%Elements(i),' : ',cd_F%massFractions(i)*100.0_C_DOUBLE,' %'
+ENDDO
+
+DEALLOCATE(cd_F%Elements,cd_F%massFractions)
 
 ENDPROGRAM

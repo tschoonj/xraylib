@@ -1,4 +1,3 @@
-
 #Copyright (c) 2009, Tom Schoonjans
 #All rights reserved.
 
@@ -44,7 +43,7 @@ AC_CANONICAL_HOST
 
 
 #headers check
-AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h])
+AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h])
 
 
 
@@ -79,7 +78,7 @@ if test "x$enable_fortran2003" != xno ; then
 	#check if it supports the required fortran 2003 features -> more thorough testing is certainly possible but looks a bit like overkill to me (Tom Schoonjans)
 		AC_MSG_CHECKING([whether the fortran compiler supports the 2003 features])
 		AC_LANG_PUSH(Fortran)
-		AC_COMPILE_IFELSE([[
+		AC_RUN_IFELSE([[
 MODULE f2003_test
 USE, INTRINSIC ::ISO_C_BINDING 
 INTERFACE
@@ -90,8 +89,27 @@ INTERFACE
 		INTEGER (KIND=C_INT), INTENT(IN) :: bar
 		REAL (KIND=C_DOUBLE), INTENT(IN) :: morebar
 	ENDFUNCTION foo
+	FUNCTION strlen(s) BIND(C,NAME='strlen')
+		USE, INTRINSIC ::ISO_C_BINDING 
+		IMPLICIT NONE
+		CHARACTER (KIND=C_CHAR),DIMENSION(*) :: s
+		INTEGER (C_SIZE_T) :: strlen		
+	ENDFUNCTION
 ENDINTERFACE
 ENDMODULE f2003_test
+PROGRAM f2003_main
+USE :: f2003_test
+IMPLICIT NONE
+
+CHARACTER (LEN=10,KIND=C_CHAR) :: string = C_CHAR_'123456789' // C_NULL_CHAR
+
+IF (strlen(string) /= 9) THEN 
+	CALL EXIT(1)
+ELSE
+	CALL EXIT(0)
+ENDIF
+
+ENDPROGRAM f2003_main
 	]],[VALID_FORTRAN=yes],[VALID_FORTRAN=no] )
 		AC_LANG_POP(Fortran)
 		rm f2003_test.mod
