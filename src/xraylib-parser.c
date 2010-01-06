@@ -83,31 +83,31 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			upper_locs[nuppers-1] = compoundString+i;
 		}
 		else if (compoundString[i] == ' '){
-			sprintf(buffer,"xraylib-parser: spaces are not allowed in compound formula\n");
+			sprintf(buffer,"xraylib-parser: spaces are not allowed in compound formula");
 			ErrorExit(buffer);
 			return 0;
 		}
 		else if (islower(compoundString[i]) || isdigit(compoundString[i])) {}
 		else {
-			sprintf(buffer,"xraylib-parser: invalid character detected %c\n",compoundString[i]);
+			sprintf(buffer,"xraylib-parser: invalid character detected %c",compoundString[i]);
 			ErrorExit(buffer);
 			return 0;
 		}
 
 		if (nbrackets < 0) {
-			sprintf(buffer,"xraylib-parser: brackets not matching\n");
+			sprintf(buffer,"xraylib-parser: brackets not matching");
 			ErrorExit(buffer);
 			return 0;
 		}
 
 	}
 	if (nuppers == 0 && nbracket_pairs == 0) {
-		sprintf(buffer,"xraylib-parser: Chemical formula contains no elements\n");
+		sprintf(buffer,"xraylib-parser: Chemical formula contains no elements");
 		ErrorExit(buffer);
 		return 0;
 	}
 	if (nbrackets > 0) {
-		sprintf(buffer,"xraylib-parser: brackets not matching\n");
+		sprintf(buffer,"xraylib-parser: brackets not matching");
 		ErrorExit(buffer);
 		return 0;
 	}
@@ -126,7 +126,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			key.name = tempElement;	
 			res = bsearch(&key,MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 			if (res == NULL) {
-				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula\n",tempElement);
+				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
 				return 0;	
 			}
@@ -152,7 +152,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			key.name = tempElement;	
 			res = bsearch(&key,MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 			if (res == NULL) {
-				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula\n",tempElement);
+				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
 				return 0;	
 			}
@@ -173,7 +173,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 		}
 		else {
 			//error
-			sprintf(buffer,"xraylib-parser: invalid chemical formula\n");
+			sprintf(buffer,"xraylib-parser: invalid chemical formula");
 			ErrorExit(buffer);
 			return 0;	
 		}

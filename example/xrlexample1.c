@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include <stdio.h>
 #include "xraylib.h"
+#include <stdlib.h>
 
 int main()
 {
