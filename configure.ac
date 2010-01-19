@@ -12,7 +12,8 @@
 
 
 
-AC_INIT([xraylib],[2.60],[Tom.Schoonjans@UGent.be])
+AC_PREREQ([2.60])
+AC_INIT([xraylib],[2.13],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 

@@ -62,6 +62,13 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 	char **brackets_end_locs=NULL;
 	int nbracket_pairs=0;
 
+	if (islower(compoundString[0]) || isdigit(compoundString[0]) || islower(compoundString[1]) || isdigit(compoundString[1])) {
+		sprintf(buffer,"xraylib-parser: invalid chemical formula. Found a lowercase character or digit where not allowed");
+		ErrorExit(buffer);
+		return 0;	
+	}
+
+
 	for (i = 0 ; compoundString[i] != '\0' ; i++) {
 		if (compoundString[i] == '(') {
 			nbrackets++;
