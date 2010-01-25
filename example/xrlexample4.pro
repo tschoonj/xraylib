@@ -33,6 +33,7 @@ cdtest = CompoundParser('SiO2')
 PRINT,'SiO2 contains ',cdtest.nAtomsAll, ' and ',cdtest.nElements,' elements'
 FOR i=0L,cdtest.nElements-1 DO PRINT,'Element ',cdtest.Elements[i],' : ',cdtest.massFractions[i]*100.0,' %'
 
+PRINT,'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP("Ca(HCO3)2",10.0) 
 
 
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check

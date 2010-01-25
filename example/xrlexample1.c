@@ -49,5 +49,8 @@ int main()
     printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
 
   FREE_COMPOUND_DATA(cdtest)
+
+  printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0) );
+
   return 0;
 }

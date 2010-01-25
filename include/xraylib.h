@@ -151,8 +151,6 @@ float DCSPb_Rayl_CP(char compound[], float E, float theta, float phi);
 float DCSPb_Compt_CP(char compound[], float E, float theta, float phi);
 float CS_Photo_Total_CP(char compound[], float E);
 float CSb_Photo_Total_CP(char compound[], float E);
-float CS_Photo_Partial_CP(char compound[], int shell, float E);
-float CSb_Photo_Partial_CP(char compound[], int shell, float E);
 float CS_Total_Kissel_CP(char compound[], float E); 
 float CSb_Total_Kissel_CP(char compound[], float E); 
 

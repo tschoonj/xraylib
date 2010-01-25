@@ -24,4 +24,5 @@ if __name__ == '__main__' :
 	print "Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f" % CS_FluorLine(82,LA_LINE,20.0)
 	print "Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f" % CS_FluorLine_Kissel(82,LA_LINE,20.0)
   	print "Bi M1N2 radiative rate: %f" % RadRate(83,M1N2_LINE)
+        print "Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f" % CS_Rayl_CP("Ca(HCO3)2",10.0)
 	sys.exit(0)

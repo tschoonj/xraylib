@@ -59,4 +59,5 @@ ENDDO
 
 DEALLOCATE(cd_F%Elements,cd_F%massFractions)
 
+WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP("Ca(HCO3)2",10.0)
 ENDPROGRAM

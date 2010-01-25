@@ -30,6 +30,7 @@ printf("Zr L1 edge energy: %f\n",xraylib::EdgeEnergy(40,$xraylib::L1_SHELL));
 printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",xraylib::CS_FluorLine(82,$xraylib::LA_LINE,20.0));
 printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",xraylib::CS_FluorLine_Kissel(82,$xraylib::LA_LINE,20.0));
 printf("Bi M1N2 radiative rate: %f\n",xraylib::RadRate(83,$xraylib::M1N2_LINE));
+printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",xraylib::CS_Rayl_CP("Ca(HCO3)2",10.0) );
 
 
 exit 0;
