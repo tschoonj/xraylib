@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define MAXFILENAMESIZE 1000
 #define SHELLNUM 28
 #define SHELLNUM_K SHELLNUM+3
-#define LINENUM 380
+#define LINENUM 381
 #define TRANSNUM 5
 
 #ifndef VARSH

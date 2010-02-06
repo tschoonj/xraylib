@@ -187,34 +187,26 @@ if test "x$enable_idl" != xno ; then
 #		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.sgi
 		      AC_MSG_ERROR([IRIX is currently not supported. Disable the bindings with --disable-idl])
 		      ;;
-#IDL 7.1 might cause problems on Darwin -> makes distinction between i386 and x86_64... to be verified
-#universal bundles would be ideal but unfortunately libtool doesn't seem to support those
-#IDL 7.0 and older will cause problems on Mac OS X 10.6 (Snow Leopard): since all compilers generate 64-bit binaries by default but these IDL version come in a 32-bit format. For now the solution seems to be to disable the perl and python bindings because these don't have 32-bit libraries. 
-#
-#		    i686-*-darwin*)
-#		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
-#		      IDL_CFLAGS="-fPIC -arch i386 -arch x86_64 -arch ppc"
-#		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle -arch i386 -arch x86_64 -arch ppc"
-#		      ;;
-
-		    i386-*-darwin*)
-			#see if we have the x86_64 folder (IDL 7.1 for Mac has these)
+		    x86_64-*-darwin*)
 			if test -d $RSIIDL_BINDIR/bin.darwin.x86_64 ; then
 		      		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.x86_64
 		      		IDL_CFLAGS="-fPIC"
-				ARCHFLAGS="-arch x86_64"
 		      		IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
 			else
-	    			IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
-				IDL_CFLAGS="-fPIC"
-				ARCHFLAGS="-arch i386"
-				IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+				AC_MSG_ERROR([You appear to be running an IDL version on Mac OS X Snow Leopard that does not have the required 64-bit IDL libraries. Please upgrade your IDL installation to at least version 7.1])
 		        fi
+		      ;;
+
+
+
+		    i386-*-darwin*)
+	    		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
+			IDL_CFLAGS="-fPIC"
+			IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
 		      ;;
 
 		    ppc*-darwin*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.ppc
-		      ARCHFLAGS="-arch ppc"
 		      IDL_CFLAGS="-fPIC"
 		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
 		      ;;

@@ -251,6 +251,8 @@ void XRayInit(void)
     found_error_line=0;
     if (read_error) {
         if (nerror_lines == 0) {
+	    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+		ErrorExit(buffer);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(line_name);
 	}
@@ -263,17 +265,17 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    			sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
-				ErrorExit(buffer);
-				error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
-				error_lines[nerror_lines-1] = strdup(line_name);
+	    		sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+			ErrorExit(buffer);
+			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
+			error_lines[nerror_lines-1] = strdup(line_name);
 		}
 	}
     }
   }
   fclose(fp);
   HardExit=1;
-  if (read_error) {
+  if (nerror_lines > 0) {
     sprintf(buffer,"Exiting due to too many errors\n");
     ErrorExit(buffer);
   }
@@ -346,6 +348,7 @@ void XRayInit(void)
     ErrorExit("File radrate.dat not found");
     return;
   }
+  HardExit=0;
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -360,12 +363,37 @@ void XRayInit(void)
 	break;
       } 
     }
+    found_error_line=0;
     if (read_error) {
-    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
-	ErrorExit(buffer);
+        if (nerror_lines == 0) {
+	    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+		ErrorExit(buffer);
+		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
+		error_lines[0] = strdup(line_name);
+	}
+	else {
+		found_error_line = 0;
+		for (i = 0 ; i < nerror_lines ; i++) {
+			if (strcmp(line_name,error_lines[i]) == 0) {
+				found_error_line = 1;
+				break;
+			}
+		}
+		if (!found_error_line) {
+	    		sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+			ErrorExit(buffer);
+			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
+			error_lines[nerror_lines-1] = strdup(line_name);
+		}
+	}
     }
   }
   fclose(fp);
+  HardExit=1;
+  if (nerror_lines > 0) {
+    sprintf(buffer,"Exiting due to too many errors\n");
+    ErrorExit(buffer);
+  }
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fi.dat");
