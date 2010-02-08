@@ -154,6 +154,11 @@ float CSb_Photo_Total_CP(char compound[], float E);
 float CS_Total_Kissel_CP(char compound[], float E); 
 float CSb_Total_Kissel_CP(char compound[], float E); 
 
+//Refractive indices functions
+float Refractive_Index_Re(char compound[], float E, float density);
+float Refractive_Index_Im(char compound[], float E, float density);
+
+
 
 
 #endif
