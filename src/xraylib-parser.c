@@ -62,7 +62,7 @@ static int compareMendeljevElements(const void *i1, const void *i2) {
 	return strcmp(ca1->name,ca2->name);
 }
 
-int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
+int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct MendeljevElement *MendeljevArrayLocal) {
 
 	int nbrackets=0;
 	int nuppers=0;
@@ -142,7 +142,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			tempElement = strndup(upper_locs[i],2);
 			//get corresponding atomic number
 			key.name = tempElement;	
-			res = bsearch(&key,MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
+			res = bsearch(&key,MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
@@ -168,7 +168,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 			tempElement = strndup(upper_locs[i],1);
 			//get corresponding atomic number
 			key.name = tempElement;	
-			res = bsearch(&key,MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
+			res = bsearch(&key,MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
@@ -235,7 +235,7 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 		tempBracketAtoms->nElements = 0;
 		tempBracketAtoms->singleElements = NULL;
 		//recursive call
-		if (CompoundParserSimple(tempBracketString,tempBracketAtoms) == 0) {
+		if (CompoundParserSimple(tempBracketString,tempBracketAtoms,MendeljevArrayLocal) == 0) {
 			return 0;
 		}
 		free(tempBracketString);
@@ -300,11 +300,22 @@ int CompoundParser(char compoundString[], struct compoundData *cd) {
 	struct compoundAtoms ca = {0,NULL};
 	int rvCPS,i;
 	double sum = 0.0;
+	//to ensure that the CompoundParser function is threadsafe, work with a local copy of MendeljevArray
+	struct MendeljevElement *MendeljevArrayLocal;
 
-	//sort MendeljevArray
-	qsort(MendeljevArray,107,sizeof(struct MendeljevElement),compareMendeljevElements);
+	MendeljevArrayLocal = (struct MendeljevElement *) malloc(sizeof(struct MendeljevElement)*107);
 
-	rvCPS=CompoundParserSimple(compoundString,&ca);
+	for (i = 0 ; i < 107 ; i++) {
+		MendeljevArrayLocal[i].name = strdup(MendeljevArray[i].name); 
+		MendeljevArrayLocal[i].number = MendeljevArray[i].number; 
+	}
+
+
+
+	//sort MendeljevArrayLocal
+	qsort(MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
+
+	rvCPS=CompoundParserSimple(compoundString,&ca,MendeljevArrayLocal);
 
 	if (rvCPS) {
 		cd->nElements = ca.nElements;
@@ -319,9 +330,13 @@ int CompoundParser(char compoundString[], struct compoundData *cd) {
 			cd->Elements[i] = ca.singleElements[i].Element;
 			cd->massFractions[i] = AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms/sum;
 		}
-//		fprintf(stdout,"nElements: %i\n",ca.nElements);
-//		for (i = 0 ; i < ca.nElements ; i++) 
-//			fprintf(stdout,"Element: %i   nAtoms: %i  massFraction: %lf\n",cd->Elements[i],ca.singleElements[i].nAtoms,cd->massFractions[i]);
+		free(ca.singleElements);
+
+		//cleanup
+		for (i = 0 ; i < 107 ; i++) {
+			free(MendeljevArrayLocal[i].name); 
+		}
+		free(MendeljevArrayLocal); 
 			
 		return 1;
 	}
