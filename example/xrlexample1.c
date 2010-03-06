@@ -52,5 +52,8 @@ int main()
 
   printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0) );
 
+  printf("CS2 Refractive Index at 0.00210395 keV (589.30 nm): %lf + %lf i\n",Refractive_Index_Re("CS2",0.00210395,1.261),Refractive_Index_Im("CS2",0.00210395,1.261));
+
+
   return 0;
 }
