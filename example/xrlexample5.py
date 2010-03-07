@@ -25,4 +25,7 @@ if __name__ == '__main__' :
 	print "Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f" % CS_FluorLine_Kissel(82,LA_LINE,20.0)
   	print "Bi M1N2 radiative rate: %f" % RadRate(83,M1N2_LINE)
         print "Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f" % CS_Rayl_CP("Ca(HCO3)2",10.0)
+	print "CS2 Refractive Index at 10.0 keV : %g - %g i" % (Refractive_Index_Re("CS2",10.0,1.261),Refractive_Index_Im("CS2",10.0,1.261))
+	print "C16H14O3 Refractive Index at 1 keV : %g - %g i" % (Refractive_Index_Re("C16H14O3",1.0,1.2),Refractive_Index_Im("C16H14O3",1.0,1.2))
+	print "SiO2 Refractive Index at 5 keV : %g - %g i" % (Refractive_Index_Re("SiO2",5.0,2.65),Refractive_Index_Im("SiO2",5.0,2.65))
 	sys.exit(0)

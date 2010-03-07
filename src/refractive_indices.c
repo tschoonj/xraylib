@@ -32,6 +32,7 @@ float Refractive_Index_Re(char compound[], float E, float density) {
 		delta += cd.massFractions[i]*KD*(cd.Elements[i]+Fi(cd.Elements[i],E))/AtomicWeight(cd.Elements[i])/E/E;
 	}
 
+
 	FREE_COMPOUND_DATA(cd)
 
 	return 1.0-(delta*density);
@@ -42,7 +43,7 @@ float Refractive_Index_Re(char compound[], float E, float density) {
 
 float Refractive_Index_Im(char compound[], float E, float density) {
 
-	//9.8663479e-11 is calculated by planck's constant * speed of light / 4Pi
-	return -1.0*CS_Total_CP(compound,E)*density*9.8663479e-11/E;	
+	//9.8663479e-9 is calculated by planck's constant * speed of light / 4Pi
+	return CS_Total_CP(compound,E)*density*9.8663479e-9/E;	
 
 }
