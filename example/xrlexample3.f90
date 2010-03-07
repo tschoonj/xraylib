@@ -1,4 +1,3 @@
-
 !Copyright (c) 2009, Tom Schoonjans
 !All rights reserved.
 
@@ -17,6 +16,14 @@ USE xraylib
 
 IMPLICIT NONE
 
+TYPE (compoundData_C) :: cd_C
+TYPE (compoundData_F) :: cd_F
+
+!C_NULL_CHAR needs to be added since these strings will be passed to C functions
+CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'// C_NULL_CHAR
+CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
+INTEGER :: i
+
 CALL XRayInit()
 CALL SetHardExit(1)
 
@@ -28,6 +35,41 @@ WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (jump approx): ',
 WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (Kissel): ',CS_FluorLine_Kissel(82,LA_LINE,20.0)
 WRITE (6,'(A,F12.6)') 'Bi M1N2 radiative rate: ',RadRate(83,M1N2_LINE)
 WRITE (6,'(A,F12.6)') 'U M3O3 Fluorescence Line Energy: ',LineEnergy(92,M3O3_LINE);
+
+!CompoundParser tests
+IF (CompoundParser(compound1,cd_C) == 0) THEN
+        CALL EXIT(1)
+ENDIF
+CALL compoundDataAssoc(cd_C,cd_F)
+WRITE (6,'(A,I4,A,I4,A)') 'Ca(HCO3)2 contains ',cd_F%nAtomsAll,' atoms and ',cd_F%nElements,' elements'
+DO i=1,cd_F%nElements
+        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd_F%Elements(i),' : ',cd_F%massFractions(i)*100.0_C_DOUBLE,' %'
+ENDDO
+
+!Free the memory allocated for the arrays
+DEALLOCATE(cd_F%Elements,cd_F%massFractions)
+
+
+IF (CompoundParser(compound2,cd_C) == 0) THEN
+        CALL EXIT(1)
+ENDIF
+CALL compoundDataAssoc(cd_C,cd_F)
+WRITE (6,'(A,I4,A,I4,A)') 'SiO2 contains ',cd_F%nAtomsAll,' atoms and ',cd_F%nElements,' elements'
+DO i=1,cd_F%nElements
+        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd_F%Elements(i),' : ',cd_F%massFractions(i)*100.0_C_DOUBLE,' %'
+ENDDO
+
+DEALLOCATE(cd_F%Elements,cd_F%massFractions)
+
+WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2'//C_NULL_CHAR,10.0)
+
+WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'CS2 Refractive Index at 10.0 keV : ', &
+        Refractive_Index_Re('CS2'//C_NULL_CHAR,10.0,1.261),' - ',Refractive_Index_Im('CS2'//C_NULL_CHAR,10.0,1.261),' i'  
+WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'C16H14O3 Refractive Index at 1 keV : ', &
+        Refractive_Index_Re('C16H14O3'//C_NULL_CHAR,1.0,1.2),' - ',Refractive_Index_Im('C16H14O3'//C_NULL_CHAR,1.0,1.2),' i'  
+WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'SiO2 Refractive Index at 5.0 keV : ', &
+        Refractive_Index_Re('SiO2'//C_NULL_CHAR,5.0,2.65),' - ',Refractive_Index_Im('SiO2'//C_NULL_CHAR,5.0,2.65),' i'  
+
 
 
 ENDPROGRAM

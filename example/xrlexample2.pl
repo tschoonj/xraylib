@@ -31,6 +31,10 @@ printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",xraylib::CS
 printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",xraylib::CS_FluorLine_Kissel(82,$xraylib::LA_LINE,20.0));
 printf("Bi M1N2 radiative rate: %f\n",xraylib::RadRate(83,$xraylib::M1N2_LINE));
 printf("U M3O3 Fluorescence Line Energy: %f\n",xraylib::LineEnergy(92,$xraylib::M3O3_LINE));
+printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",xraylib::CS_Rayl_CP("Ca(HCO3)2",10.0) );
+printf("CS2 Refractive Index at 10.0 keV : %g - %g i\n",xraylib::Refractive_Index_Re("CS2",10.0,1.261),xraylib::Refractive_Index_Im("CS2",10.0,1.261));
+printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",xraylib::Refractive_Index_Re("C16H14O3",1.0,1.2),xraylib::Refractive_Index_Im("C16H14O3",1.0,1.2));
+printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",xraylib::Refractive_Index_Re("SiO2",5.0,2.65),xraylib::Refractive_Index_Im("SiO2",5.0,2.65));
 
 
 exit 0;

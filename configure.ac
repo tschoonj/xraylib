@@ -1,4 +1,3 @@
-
 #Copyright (c) 2009, Tom Schoonjans
 #All rights reserved.
 
@@ -13,6 +12,7 @@
 
 
 
+AC_PREREQ([2.60])
 AC_INIT([xraylib],[2.13],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
@@ -24,7 +24,13 @@ AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
 
-#at least version 2.0 of libtool is necessary for creating the fortran bindings
+AC_USE_SYSTEM_EXTENSIONS
+AC_CHECK_FUNCS([strndup strdup])
+
+
+
+
+#at least version 2.0 of libtool is required for creating the fortran bindings
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
 LT_INIT([dlopen disable-fast-install])
@@ -38,7 +44,7 @@ AC_CANONICAL_HOST
 
 
 #headers check
-AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h])
+AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h])
 
 
 
@@ -76,6 +82,16 @@ if test "x$enable_fortran2003" != xno ; then
 		AC_COMPILE_IFELSE([[
 MODULE f2003_test
 USE, INTRINSIC ::ISO_C_BINDING 
+
+TYPE, BIND(C) :: test_C
+	INTEGER (C_INT) :: arrayLen
+	TYPE (C_PTR) :: cpointer
+ENDTYPE
+
+TYPE :: test_F
+	INTEGER (C_INT), DIMENSION(:), POINTER :: fpointer
+ENDTYPE
+
 INTERFACE
 	FUNCTION foo (bar,morebar) BIND(C,NAME='foo')
 		USE, INTRINSIC ::ISO_C_BINDING 
@@ -84,8 +100,34 @@ INTERFACE
 		INTEGER (KIND=C_INT), INTENT(IN) :: bar
 		REAL (KIND=C_DOUBLE), INTENT(IN) :: morebar
 	ENDFUNCTION foo
+	FUNCTION strlen(s) BIND(C,NAME='strlen')
+		USE, INTRINSIC ::ISO_C_BINDING 
+		IMPLICIT NONE
+		CHARACTER (KIND=C_CHAR),DIMENSION(*) :: s
+		INTEGER (C_SIZE_T) :: strlen		
+	ENDFUNCTION
 ENDINTERFACE
 ENDMODULE f2003_test
+PROGRAM f2003_main
+USE f2003_test
+IMPLICIT NONE
+
+CHARACTER (LEN=10,KIND=C_CHAR) :: string = C_CHAR_'123456789' // C_NULL_CHAR
+TYPE (test_C) :: tester_C
+TYPE (test_F) :: tester_F
+
+
+
+IF (strlen(string) /= 9) THEN 
+	CALL EXIT(1)
+ELSE
+	CALL EXIT(0)
+ENDIF
+
+!next line should produce a compile-time error when using g95
+CALL C_F_POINTER(tester_C%cpointer,tester_F%fpointer,[tester_C%arrayLen])
+
+ENDPROGRAM f2003_main
 	]],[VALID_FORTRAN=yes],[VALID_FORTRAN=no] )
 		AC_LANG_POP(Fortran)
 		rm f2003_test.mod

@@ -94,6 +94,7 @@ extern double *Photo_Total_Kissel[ZMAX+1];
 extern double *Photo_Total_Kissel2[ZMAX+1];
 
 extern float Electron_Config_Kissel[ZMAX+1][SHELLNUM_K];
+extern double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K];
 
 extern int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K];
 extern double *E_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K];

@@ -91,7 +91,13 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
   if (E <= 0.0) {
     ErrorExit("Energy <= 0.0 in function CSb_Photo_Partial");
   }
-  if (Electron_Config_Kissel[Z][shell] < 1.0E-06 || EdgeEnergy(Z,shell) > E) {
+  if (Electron_Config_Kissel[Z][shell] < 1.0E-06){
+    ErrorExit("selected orbital is unoccupied");
+    return 0.0;
+  } 
+  
+  if (EdgeEnergy_Kissel[Z][shell] > E) {
+    ErrorExit("selected energy cannot excite the orbital: energy must be greater than the absorption edge energy");
     return 0.0;
   } 
   else {

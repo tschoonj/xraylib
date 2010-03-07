@@ -13,8 +13,11 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 
 #include <stdio.h>
-#include "idl_export.h"
 #include "xraylib.h"
+#include <string.h>
+#include <stdlib.h>
+
+#include "idl_export.h"
 
 
 extern int HardExit, ExitStatus;
@@ -69,7 +72,32 @@ extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Total_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Photo_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Rayl_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Compt_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Total_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Rayl_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Compt_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCS_Rayl_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCS_Compt_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCSb_Rayl_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCSb_Compt_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCSP_Rayl_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCSP_Compt_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCSPb_Rayl_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_DCSPb_Compt_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Total_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Total_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Partial_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Partial_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Re(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Im(int argc, IDL_VPTR argv[]);
 
+extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_GetExitStatus,"GETEXITSTATUS", 0 , 0 , 0 , 0},
@@ -117,6 +145,29 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CSb_FluorLine_Kissel,"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
 	{IDL_CS_Total_Kissel,"CS_TOTAL_KISSEL", 2 , 2 , 0 , 0},
 	{IDL_CSb_Total_Kissel,"CSB_TOTAL_KISSEL", 2 , 2 , 0 , 0},
+	{IDL_CompoundParser,"COMPOUNDPARSER",1, 1, 0, 0},
+	{IDL_CS_Total_CP,"CS_TOTAL_CP",2,2,0,0},
+	{IDL_CS_Photo_CP,"CS_PHOTO_CP",2,2,0,0},
+	{IDL_CS_Rayl_CP,"CS_RAYL_CP",2,2,0,0},
+	{IDL_CS_Compt_CP,"CS_COMPT_CP",2,2,0,0},
+	{IDL_CSb_Total_CP,"CSB_TOTAL_CP",2,2,0,0},
+	{IDL_CSb_Photo_CP,"CSB_PHOTO_CP",2,2,0,0},
+	{IDL_CSb_Rayl_CP,"CSB_RAYL_CP",2,2,0,0},
+	{IDL_CSb_Compt_CP,"CSB_COMPT_CP",2,2,0,0},
+	{IDL_DCS_Rayl_CP,"DCS_RAYL_CP",3,3,0,0},
+	{IDL_DCS_Compt_CP,"DCS_COMPT_CP",3,3,0,0},
+	{IDL_DCSb_Rayl_CP,"DCSB_RAYL_CP",3,3,0,0},
+	{IDL_DCSb_Compt_CP,"DCSB_COMPT_CP",3,3,0,0},
+	{IDL_DCSP_Rayl_CP,"DCSP_RAYL_CP",4,4,0,0},
+	{IDL_DCSP_Compt_CP,"DCSP_COMPT_CP",4,4,0,0},
+	{IDL_DCSPb_Rayl_CP,"DCSPB_RAYL_CP",4,4,0,0},
+	{IDL_DCSPb_Compt_CP,"DCSPB_COMPT_CP",4,4,0,0},
+	{IDL_CS_Photo_Total_CP,"CS_PHOTO_TOTAL_CP",2,2,0,0},
+	{IDL_CSb_Photo_Total_CP,"CSB_PHOTO_TOTAL_CP",2,2,0,0},
+	{IDL_CS_Total_Kissel_CP,"CS_TOTAL_KISSEL_CP",2,2,0,0},
+	{IDL_CSb_Total_Kissel_CP,"CSB_TOTAL_KISSEL_CP",2,2,0,0},
+	{IDL_Refractive_Index_Re,"REFRACTIVE_INDEX_RE",3,3,0,0},
+	{IDL_Refractive_Index_Im,"REFRACTIVE_INDEX_IM",3,3,0,0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -154,6 +205,8 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   int Z;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
   Z = IDL_LongScalar(argv[0]);\
   \
   out_var = IDL_Gettmp();\
@@ -169,6 +222,8 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float E;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
   E = (float) IDL_DoubleScalar(argv[0]);\
   \
   out_var = IDL_Gettmp();\
@@ -186,6 +241,10 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float E;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
   Z = IDL_LongScalar(argv[0]);\
   E = (float)IDL_DoubleScalar(argv[1]);\
   \
@@ -203,6 +262,10 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   int Z2;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
   Z = IDL_LongScalar(argv[0]);\
   Z2 = IDL_LongScalar(argv[1]);\
   \
@@ -220,6 +283,10 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float Z2;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
   Z = (float) IDL_DoubleScalar(argv[0]);\
   Z2 = (float) IDL_DoubleScalar(argv[1]);\
   \
@@ -238,6 +305,12 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float Z3;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
   Z = IDL_LongScalar(argv[0]);\
   Z2 = (float) IDL_DoubleScalar(argv[1]);\
   Z3 = (float) IDL_DoubleScalar(argv[2]);\
@@ -257,6 +330,12 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float Z3;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
   Z = (float) IDL_DoubleScalar(argv[0]);\
   Z2 = (float) IDL_DoubleScalar(argv[1]);\
   Z3 = (float) IDL_DoubleScalar(argv[2]);\
@@ -276,6 +355,12 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float Z3;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
   Z = IDL_LongScalar(argv[0]);\
   Z2 = IDL_LongScalar(argv[1]);\
   Z3 = (float) IDL_DoubleScalar(argv[2]);\
@@ -296,6 +381,14 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   float Z4;\
   IDL_VPTR out_var;\
   \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
   Z = IDL_LongScalar(argv[0]);\
   Z2 = (float) IDL_DoubleScalar(argv[1]);\
   Z3 = (float) IDL_DoubleScalar(argv[2]);\
@@ -304,6 +397,106 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_FLOAT;\
   out_var->value.f = name(Z, Z2, Z3, Z4);\
+  \
+  return out_var;\
+}
+
+//2 arguments: 1 string, 1 float
+#define XRL_2SF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  char *compound;\
+  float E;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_ENSURE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  compound = IDL_VarGetString(argv[0]);\
+  E = (float)IDL_DoubleScalar(argv[1]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(compound, E);\
+  \
+  return out_var;\
+}
+
+//3 arguments: 1 string, 2 float
+#define XRL_3SFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  char *compound;\
+  float E;\
+  float theta;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_ENSURE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  compound = IDL_VarGetString(argv[0]);\
+  E = (float)IDL_DoubleScalar(argv[1]);\
+  theta = (float)IDL_DoubleScalar(argv[2]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(compound, E,theta);\
+  \
+  return out_var;\
+}
+
+//4 arguments: 1 string, 3 float
+#define XRL_4SFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  char *compound;\
+  float E;\
+  float theta;\
+  float phi;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_ENSURE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  compound = IDL_VarGetString(argv[0]);\
+  E = (float)IDL_DoubleScalar(argv[1]);\
+  theta = (float)IDL_DoubleScalar(argv[2]);\
+  phi = (float)IDL_DoubleScalar(argv[3]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(compound, E,theta,phi);\
+  \
+  return out_var;\
+}
+
+//3 arguments: 1 string, 1 int, 1 float
+#define XRL_3SIF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  char *compound;\
+  int shell;\
+  float E;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_ENSURE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  compound = IDL_VarGetString(argv[0]);\
+  shell = (int)IDL_LongScalar(argv[1]);\
+  E = (float)IDL_DoubleScalar(argv[2]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(compound, shell,E);\
   \
   return out_var;\
 }
@@ -353,6 +546,86 @@ XRL_4IFFF(DCSP_Rayl)
 XRL_4IFFF(DCSP_Compt)
 XRL_4IFFF(DCSPb_Rayl)
 XRL_4IFFF(DCSPb_Compt)
+
+XRL_2SF(CS_Total_CP)
+XRL_2SF(CS_Photo_CP)
+XRL_2SF(CS_Rayl_CP)
+XRL_2SF(CS_Compt_CP)
+XRL_2SF(CSb_Total_CP)
+XRL_2SF(CSb_Photo_CP)
+XRL_2SF(CSb_Rayl_CP)
+XRL_2SF(CSb_Compt_CP)
+XRL_3SFF(DCS_Rayl_CP)
+XRL_3SFF(DCS_Compt_CP)
+XRL_3SFF(DCSb_Rayl_CP)
+XRL_3SFF(DCSb_Compt_CP)
+XRL_4SFFF(DCSP_Rayl_CP)
+XRL_4SFFF(DCSP_Compt_CP)
+XRL_4SFFF(DCSPb_Rayl_CP)
+XRL_4SFFF(DCSPb_Compt_CP)
+XRL_2SF(CS_Photo_Total_CP)
+XRL_2SF(CSb_Photo_Total_CP)
+XRL_3SIF(CS_Photo_Partial_CP)
+XRL_3SIF(CSb_Photo_Partial_CP)
+XRL_2SF(CS_Total_Kissel_CP)
+XRL_2SF(CSb_Total_Kissel_CP)
+XRL_3SFF(Refractive_Index_Re)
+XRL_3SFF(Refractive_Index_Im)
+
+
+
+void release(UCHAR *memPtr) {
+	free(memPtr);
+}
+
+
+
+IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
+	struct compoundData cd;	
+	IDL_VPTR rv;
+
+	IDL_ENSURE_STRING(argv[0]);
+	IDL_ENSURE_SCALAR(argv[0]);
+
+	if (CompoundParser(IDL_VarGetString(argv[0]),&cd) == 0) {
+		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
+	}
+	
+	//success!
+	IDL_MEMINT array_dims[] = {1,cd.nElements};
+	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
+	void *sdef;
+	struct compoundData_IDL {
+		IDL_LONG nElements;
+		IDL_LONG nAtomsAll;
+		IDL_LONG Elements[cd.nElements];
+		double massFractions[cd.nElements];
+	};
+	struct compoundData_IDL *cdi;
+	IDL_STRUCT_TAG_DEF s_tags[] = {
+		{"NELEMENTS", 0, (void *) IDL_TYP_LONG},
+		{"NATOMSALL", 0, (void *) IDL_TYP_LONG},
+		{"ELEMENTS", array_dims, (void *) IDL_TYP_LONG},
+		{"MASSFRACTIONS", array_dims, (void *) IDL_TYP_DOUBLE},
+		{0}
+	};
+	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL));
+	cdi->nElements = cd.nElements;
+	cdi->nAtomsAll = cd.nAtomsAll;
+	memcpy(cdi->Elements,cd.Elements,sizeof(int)*cd.nElements);
+	memcpy(cdi->massFractions,cd.massFractions,sizeof(double)*cd.nElements);
+	free(cd.massFractions);
+	free(cd.Elements);
+	sdef = IDL_MakeStruct(NULL,s_tags);
+	ilDims[0] = 1;
+	rv=IDL_ImportArray(1,ilDims, IDL_TYP_STRUCT,(UCHAR *) cdi, release,sdef);
+
+	return rv;
+}
+
+
+
+
 
 int IDL_Load (void) 
 {
