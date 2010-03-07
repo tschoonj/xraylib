@@ -15,6 +15,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #ifndef _XRAYLIB_H
 #define _XRAYLIB_H
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
 #define XRAYLIB_MAJOR 2
 #define XRAYLIB_MINOR 13
 
@@ -133,33 +140,36 @@ float CS_Total_Kissel(int Z, float E);
 float CSb_Total_Kissel(int Z, float E); 
 
 //Cross Section functions using the compound parser
-float CS_Total_CP(char compound[], float E);
-float CS_Photo_CP(char compound[], float E);
-float CS_Rayl_CP(char compound[], float E);
-float CS_Compt_CP(char compound[], float E); 
-float CSb_Total_CP(char compound[], float E);
-float CSb_Photo_CP(char compound[], float E);
-float CSb_Rayl_CP(char compound[], float E);
-float CSb_Compt_CP(char compound[], float E); 
-float DCS_Rayl_CP(char compound[], float E, float theta);
-float DCS_Compt_CP(char compound[], float E, float theta);
-float DCSb_Rayl_CP(char compound[], float E, float theta);
-float DCSb_Compt_CP(char compound[], float E, float theta);
-float DCSP_Rayl_CP(char compound[], float E, float theta, float phi);
-float DCSP_Compt_CP(char compound[], float E, float theta, float phi);
-float DCSPb_Rayl_CP(char compound[], float E, float theta, float phi);
-float DCSPb_Compt_CP(char compound[], float E, float theta, float phi);
-float CS_Photo_Total_CP(char compound[], float E);
-float CSb_Photo_Total_CP(char compound[], float E);
-float CS_Total_Kissel_CP(char compound[], float E); 
-float CSb_Total_Kissel_CP(char compound[], float E); 
+float CS_Total_CP(const char compound[], float E);
+float CS_Photo_CP(const char compound[], float E);
+float CS_Rayl_CP(const char compound[], float E);
+float CS_Compt_CP(const char compound[], float E); 
+float CSb_Total_CP(const char compound[], float E);
+float CSb_Photo_CP(const char compound[], float E);
+float CSb_Rayl_CP(const char compound[], float E);
+float CSb_Compt_CP(const char compound[], float E); 
+float DCS_Rayl_CP(const char compound[], float E, float theta);
+float DCS_Compt_CP(const char compound[], float E, float theta);
+float DCSb_Rayl_CP(const char compound[], float E, float theta);
+float DCSb_Compt_CP(const char compound[], float E, float theta);
+float DCSP_Rayl_CP(const char compound[], float E, float theta, float phi);
+float DCSP_Compt_CP(const char compound[], float E, float theta, float phi);
+float DCSPb_Rayl_CP(const char compound[], float E, float theta, float phi);
+float DCSPb_Compt_CP(const char compound[], float E, float theta, float phi);
+float CS_Photo_Total_CP(const char compound[], float E);
+float CSb_Photo_Total_CP(const char compound[], float E);
+float CS_Total_Kissel_CP(const char compound[], float E); 
+float CSb_Total_Kissel_CP(const char compound[], float E); 
 
 //Refractive indices functions
-float Refractive_Index_Re(char compound[], float E, float density);
-float Refractive_Index_Im(char compound[], float E, float density);
+float Refractive_Index_Re(const char compound[], float E, float density);
+float Refractive_Index_Im(const char compound[], float E, float density);
 
 
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

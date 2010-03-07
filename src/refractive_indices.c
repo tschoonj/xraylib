@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Bruno Golosio''AS IS'' AND ANY E
 #include <stdlib.h>
 #include <math.h>
 
-float Refractive_Index_Re(char compound[], float E, float density) {
+float Refractive_Index_Re(const char compound[], float E, float density) {
 	struct compoundData cd;
 	float delta = 0.0;
 	int i;
@@ -41,7 +41,7 @@ float Refractive_Index_Re(char compound[], float E, float density) {
 
 
 
-float Refractive_Index_Im(char compound[], float E, float density) {
+float Refractive_Index_Im(const char compound[], float E, float density) {
 
 	//9.8663479e-9 is calculated by planck's constant * speed of light / 4Pi
 	return CS_Total_CP(compound,E)*density*9.8663479e-9/E;	

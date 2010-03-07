@@ -70,7 +70,7 @@ struct compoundData {
  */
 
 
-int CompoundParser(char compoundString[], struct compoundData *cd);
+int CompoundParser(const char compoundString[], struct compoundData *cd);
 
 
 #endif

@@ -296,14 +296,16 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct
 
 
 
-int CompoundParser(char compoundString[], struct compoundData *cd) {
+int CompoundParser(const char compoundString[], struct compoundData *cd) {
 	struct compoundAtoms ca = {0,NULL};
 	int rvCPS,i;
 	double sum = 0.0;
 	//to ensure that the CompoundParser function is threadsafe, work with a local copy of MendeljevArray
 	struct MendeljevElement *MendeljevArrayLocal;
+	char *compoundStringCopy;
 
 	MendeljevArrayLocal = (struct MendeljevElement *) malloc(sizeof(struct MendeljevElement)*107);
+	compoundStringCopy = strdup(compoundString);
 
 	for (i = 0 ; i < 107 ; i++) {
 		MendeljevArrayLocal[i].name = strdup(MendeljevArray[i].name); 
@@ -315,7 +317,7 @@ int CompoundParser(char compoundString[], struct compoundData *cd) {
 	//sort MendeljevArrayLocal
 	qsort(MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
 
-	rvCPS=CompoundParserSimple(compoundString,&ca,MendeljevArrayLocal);
+	rvCPS=CompoundParserSimple(compoundStringCopy,&ca,MendeljevArrayLocal);
 
 	if (rvCPS) {
 		cd->nElements = ca.nElements;
@@ -337,7 +339,8 @@ int CompoundParser(char compoundString[], struct compoundData *cd) {
 			free(MendeljevArrayLocal[i].name); 
 		}
 		free(MendeljevArrayLocal); 
-			
+		free(compoundStringCopy);
+
 		return 1;
 	}
 	else

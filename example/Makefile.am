@@ -1,5 +1,5 @@
 
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009,2010, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,9 @@ endif
 if ENABLE_PYTHON
   check_SCRIPTS += xrlexample5.sh
 endif
+if ENABLE_CXX
+  check_PROGRAMS += xrlexample6
+endif
 
 
 xrlexample1_SOURCES = xrlexample1.c
@@ -45,6 +48,14 @@ if ENABLE_FORTRAN
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
   xrlexample3_FCFLAGS = ${xrlexample3_CPPFLAGS}
 endif
+
+if ENABLE_CXX
+  xrlexample6_SOURCES = xrlexample6.cpp
+  xrlexample6_LDADD = ../src/libxrl.la
+endif
+
+
+
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 

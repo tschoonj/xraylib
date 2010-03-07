@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xraylib.h"
 #include <stdlib.h>
 
-float CS_Total_CP(char compound[], float E) {
+float CS_Total_CP(const char compound[], float E) {
 	struct compoundData cd;
 	int i;
 	double rv = 0.0;
@@ -33,7 +33,7 @@ float CS_Total_CP(char compound[], float E) {
 }
 
 #define CS_CP_F(function) \
-	float function ## _CP(char compound[], float E) {\
+	float function ## _CP(const char compound[], float E) {\
 		struct compoundData cd;\
 		int i;\
 		double rv = 0.0;\
@@ -53,7 +53,7 @@ float CS_Total_CP(char compound[], float E) {
 
 
 #define CS_CP_FF(function) \
-	float function ## _CP(char compound[], float E, float theta) {\
+	float function ## _CP(const char compound[], float E, float theta) {\
 		struct compoundData cd;\
 		int i;\
 		double rv = 0.0;\
@@ -73,7 +73,7 @@ float CS_Total_CP(char compound[], float E) {
 
 
 #define CS_CP_FFF(function) \
-	float function ## _CP(char compound[], float E, float theta, float phi) {\
+	float function ## _CP(const char compound[], float E, float theta, float phi) {\
 		struct compoundData cd;\
 		int i;\
 		double rv = 0.0;\
@@ -93,7 +93,7 @@ float CS_Total_CP(char compound[], float E) {
 
 
 #define CS_CP_IF(function) \
-	float function ## _CP(char compound[], int line, float E) {\
+	float function ## _CP(const char compound[], int line, float E) {\
 		struct compoundData cd;\
 		int i;\
 		double rv = 0.0;\

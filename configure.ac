@@ -38,7 +38,10 @@ LT_INIT([dlopen disable-fast-install])
 AC_PROG_LIBTOOL
 
 AC_PROG_CC
-
+#this next line may never be reached...
+if test -z $CC ; then
+	AC_MSG_ERROR([no C compiler was found on the system.])
+fi
 
 AC_CANONICAL_HOST
 
@@ -409,8 +412,13 @@ AC_SUBST(XRLDATADIR,[`echo ${prefix}`/share/xraylib])
 fi
 AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
 
-
-
+#C++ example
+AC_PROG_CXX
+if test $CXX ; then
+	AC_MSG_NOTICE([C++ example enabled])
+	AC_SUBST(CXX)
+	AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
+fi
 
 
 
