@@ -94,6 +94,8 @@ extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Partial_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Partial_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Re(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Im(int argc, IDL_VPTR argv[]);
 
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
@@ -164,6 +166,8 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CSb_Photo_Total_CP,"CSB_PHOTO_TOTAL_CP",2,2,0,0},
 	{IDL_CS_Total_Kissel_CP,"CS_TOTAL_KISSEL_CP",2,2,0,0},
 	{IDL_CSb_Total_Kissel_CP,"CSB_TOTAL_KISSEL_CP",2,2,0,0},
+	{IDL_Refractive_Index_Re,"REFRACTIVE_INDEX_RE",3,3,0,0},
+	{IDL_Refractive_Index_Im,"REFRACTIVE_INDEX_IM",3,3,0,0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -565,6 +569,8 @@ XRL_3SIF(CS_Photo_Partial_CP)
 XRL_3SIF(CSb_Photo_Partial_CP)
 XRL_2SF(CS_Total_Kissel_CP)
 XRL_2SF(CSb_Total_Kissel_CP)
+XRL_3SFF(Refractive_Index_Re)
+XRL_3SFF(Refractive_Index_Im)
 
 
 

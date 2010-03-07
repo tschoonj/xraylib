@@ -19,6 +19,7 @@ IMPLICIT NONE
 TYPE (compoundData_C) :: cd_C
 TYPE (compoundData_F) :: cd_F
 
+!C_NULL_CHAR needs to be added since these strings will be passed to C functions
 CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'// C_NULL_CHAR
 CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
 INTEGER :: i
@@ -59,5 +60,15 @@ ENDDO
 
 DEALLOCATE(cd_F%Elements,cd_F%massFractions)
 
-WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP("Ca(HCO3)2",10.0)
+WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2'//C_NULL_CHAR,10.0)
+
+WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'CS2 Refractive Index at 10.0 keV : ', &
+        Refractive_Index_Re('CS2'//C_NULL_CHAR,10.0,1.261),' - ',Refractive_Index_Im('CS2'//C_NULL_CHAR,10.0,1.261),' i'  
+WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'C16H14O3 Refractive Index at 1 keV : ', &
+        Refractive_Index_Re('C16H14O3'//C_NULL_CHAR,1.0,1.2),' - ',Refractive_Index_Im('C16H14O3'//C_NULL_CHAR,1.0,1.2),' i'  
+WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'SiO2 Refractive Index at 5.0 keV : ', &
+        Refractive_Index_Re('SiO2'//C_NULL_CHAR,5.0,2.65),' - ',Refractive_Index_Im('SiO2'//C_NULL_CHAR,5.0,2.65),' i'  
+
+
+
 ENDPROGRAM
