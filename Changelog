@@ -1,7 +1,22 @@
 Version 2.13.0 Tom Schoonjans
 
--Expanded the radrate database (150 lines available now, including M lines)
-
+-Expanded the radrate database (150 linetypes available now, including M lines)
+-More line energies: the new database was calculated using the edge energy
+database and contains every theoretical possible transition. 381 linetypes are
+available
+-Kissel database fixes: since the Kissel edge energies do not correspond to
+the ones found in the edge energy database this could lead to unpredictable
+behaviour near the edges. This has been fixed by using the Kissel calculated
+edge energies.
+-Compound parser: we have added a parser for compounds which will determine
+information such as number of different elements, number of atoms per element
+and weight fractions. This parser has been coupled with several cross section
+functions.
+-Refractive indices: we added two functions that calculate the real and
+imaginary parts of the refractive index of a given compound.
+-Numerous bugfixes: an important one would be the restoration of IDL support
+on Mac OS X Snow Leopard
+-Creation of IDL bindings rpm
 
 Version 2.12.1 Tom Schoonjans
 

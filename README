@@ -27,6 +27,8 @@ See the Changelog file for recent changes to the library.
 
 In 2004 an article was published about xraylib: A. Brunetti, M. Sanchez del Rio, B. Golosio, A. Simionovici and A. Somogyi, "A library for X-ray matter interaction cross sections for X-ray fluorescence applications",  Spectrochimica Acta B 59 (2004) 1725-1731 (doi: http://dx.doi.org/10.1016/j.sab.2004.03.014)
 
+If you would publish scientific results that were obtained using xraylib, please refer to this paper.
+
 We recently started a mailinglist. Subscription is possible at https://lists.ugent.be/sympa/info/xraylib
 
 Reporting bugs

@@ -47,7 +47,7 @@ Not all bindings have been tested on each of these platforms. The following tabl
  Fortran |   x   |     x    |    x    |    x   |
   Perl   |   x   |     x    |    x    |    x   |
  Python  |   x   |     x    |         |    x   |
-   IDL   |   x   |x (32-bit)|         |        |
+   IDL   |   x   |     x    |         |        |
 
 
 
@@ -68,6 +68,8 @@ Hints for Mac OS X
 
 Standard Mac OS X installations do not come with a C compiler. You can install this essential compiler by installing the XCode package which can be found on the Mac OS X cd or can be downloaded from the Apple Developer Connection website.
 A free Fortran compiler can be downloaded from macports.org.
+
+When compiling the IDL bindings on Snow Leopard, make sure that you are using IDL 7.1. Older IDL versions do not have the necessary 64-bit libraries
 
 
 Hints for Solaris

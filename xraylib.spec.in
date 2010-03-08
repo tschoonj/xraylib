@@ -1,4 +1,4 @@
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009, 2010, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@ Version: @VERSION@
 Release:	1%{?dist}
 Summary: A library for X-ray matter interactions cross sections for X-ray fluorescence applications: core C library
 Group:	 Applications/Engineering and Scientific	
-License: GPL
+License: BSD 
 Packager: Tom.Schoonjans <Tom.Schoonjans@UGent.be>	
 URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
@@ -62,7 +62,14 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the python bindings of xraylib and a command utility.
 
+%package idl
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: IDL bindings
+Requires: xraylib-python
 
+%description idl
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
+
+This rpm package provides the IDL bindings of xraylib.
 
 
 
@@ -73,8 +80,8 @@ This rpm package provides the python bindings of xraylib and a command utility.
 
 
 %build
-%configure --disable-idl --disable-perl FC=gfortran 
-make %{?_smp_mflags}
+%configure --disable-perl FC=gfortran 
+make 
 
 
 %install
@@ -83,9 +90,32 @@ make install DESTDIR=$RPM_BUILD_ROOT
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
+cat >$RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/xraylib.sh <<EOF
+if test -z \${IDL_PATH} ; then
+        IDL_PATH="<IDL_DEFAULT>:%{_prefix}/pro"
+else
+        IDL_PATH=\$IDL_PATH:%{_prefix}/pro
+fi
+
+if test -z \${IDL_DLM_PATH} ; then
+        IDL_DLM_PATH="<IDL_DEFAULT>:%{_prefix}/dlm"
+else
+        IDL_DLM_PATH=\$IDL_DLM_PATH:%{_prefix}/dlm
+fi
+
+export IDL_PATH IDL_DLM_PATH
+EOF
+
+chmod 0644 $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/xraylib.sh
+
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root)
@@ -117,8 +147,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgpyexecdir}/_xraylib.*
 %{_prefix}/share/xraylib
 
+%files idl
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/profile.d/xraylib.sh
+%{_prefix}/dlm/libxrlidl.so
+%{_prefix}/dlm/libxrlidl.dlm
+%{_prefix}/pro/xraylib_shells.pro
+%{_prefix}/pro/xraylib_help.pro
+%{_prefix}/pro/xraylib_lines.pro
+%{_prefix}/pro/xraylib.pro
+
 
 
 %changelog
+* Mon Mar 08 2010 Tom Schoonjans
+- Added IDL bindings
+- ldconfig line
+
 * Thu Aug 20 2009 Tom Schoonjans
 - Initial spec file. Perl bindings not included.

@@ -1,4 +1,4 @@
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009, 2010 Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -13,7 +13,7 @@
 
 
 AC_PREREQ([2.60])
-AC_INIT([xraylib],[2.13],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.13.0],[Tom.Schoonjans@UGent.be])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 

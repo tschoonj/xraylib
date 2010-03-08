@@ -139,3 +139,8 @@ Partial and Total Photoelectric cross sections.
 
   For more information consult the references mentioned in the previous
   paragraph.
+
+Refractive indices
+==================
+
+The real (1-delta) and imaginary (beta) part of the refractive indices are calculated according to the formulas that can be found for example in the PhD thesises of Peter Cloetens, Carsten Raven and Timm Weitkamp 

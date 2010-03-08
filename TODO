@@ -1,6 +1,4 @@
 Write bindings for Matlab and Octave
-Add a parser for compounds
-Add database for refractive indices
 Add database for structure effects
 Improve support on Windows platforms
 ...

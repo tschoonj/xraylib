@@ -1,2 +1,2 @@
 python bindings don't compile on Solaris 10 when selecting the cc compiler. The compiler flags are those corresponding with gcc causing the compilation to fail.
-python and perl bindings don't compile on Mac OS X 10.6 when IDL buildings are built for the i386 architecture. This bug is probably not present when using IDL 7.1 but this has not been tested by the xraylib authors.
+python bindings only work with python > 2.4
