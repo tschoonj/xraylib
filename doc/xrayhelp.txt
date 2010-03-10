@@ -576,3 +576,273 @@ CSb_Total_Kissel
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> float CSb_Total_Kissel(int Z, float E)
+
+CS_Total_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (cm2/g)                    //
+//               (Photoelectric + Compton + Rayleigh)               //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Total_CP(const char compound[], float E);
+
+
+CS_Photo_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Photoelectric absorption cross section  (cm2/g)          //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Photo_CP(const char compound[], float E);
+
+
+CS_Rayl_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Rayleigh scattering cross section  (cm2/g)            //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Rayl_CP(const char compound[], float E);
+
+CS_Compt_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Compton scattering cross section  (cm2/g)             //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Compt_CP(const char compound[], float E); 
+
+
+CSb_Total_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (barn/atom)                //
+//               (Photoelectric + Compton + Rayleigh)               //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Total_CP(const char compound[], float E);
+
+CSb_Photo_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Photoelectric absorption cross section  (barn/atom)      //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Photo_CP(const char compound[], float E);
+
+CSb_Rayl_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Rayleigh scattering cross section  (barn/atom)        //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Rayl_CP(const char compound[], float E);
+
+CSb_Compt_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Compton scattering cross section  (barn/atom)         //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Compt_CP(const char compound[], float E); 
+
+DCS_Rayl_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Rayleigh scattering cross section (cm2/g/sterad)   //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCS_Rayl_CP(const char compound[], float E, float theta);
+
+DCS_Compt_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Compton scattering cross section (cm2/g/sterad)    //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCS_Compt_CP(const char compound[], float E, float theta);
+
+DCSb_Rayl_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Rayleigh scattering cross sect (barn/atom/sterad)  //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSb_Rayl_CP(const char compound[], float E, float theta);
+
+DCSb_Compt_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//  Differential Compton scatt cross section (barn/atom/sterad)     //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSb_Compt_CP(const char compound[], float E, float theta);
+
+DCSP_Rayl_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Differential Rayleigh scattering cross section           // 
+//                for polarized beam (cm2/g/sterad)                 //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSP_Rayl_CP(const char compound[], float E, float theta, float phi);
+
+DCSP_Compt_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//           Differential Compton scattering cross section          //
+//                for polarized beam (cm2/g/sterad)                 //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSP_Compt_CP(const char compound[], float E, float theta, float phi);
+
+DCSPb_Rayl_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Differential Rayleigh scattering cross section           // 
+//                for polarized beam (barn/atom/sterad)             //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSPb_Rayl_CP(const char compound[], float E, float theta, float phi);
+
+
+DCSPb_Compt_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//           Differential Compton scattering cross section          //
+//                for polarized beam (barn/atom/sterad)             //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : Energy (keV)                                        //
+//          theta : scattering polar angle (rad)                    //
+//          phi : scattering azimuthal angle (rad)                  //
+//                                                                  //
+//////////////////////////////////////////////////// /////////////////
+>>> float DCSPb_Compt_CP(const char compound[], float E, float theta, float phi);
+
+CS_Photo_Total_CP
+///////////////////////////////////////////////////////////
+//                                                       //
+//        Photoelectric cross section  (cm2/g)           //
+//                  Using the Kissel data                //
+//                                                       //
+//          compound : chemical formula                  //
+//    	    E : energy (keV)                             //
+//                                                       //
+///////////////////////////////////////////////////////////
+>>> float CS_Photo_Total_CP(const char compound[], float E);
+
+CSb_Photo_Total_CP
+///////////////////////////////////////////////////////////
+//                                                       //
+//        Photoelectric cross section  (barns/atom)      //
+//                  Using the Kissel data                //
+//                                                       //
+//          compound : chemical formula                  //
+//    	    E : energy (keV)                             //
+//                                                       //
+///////////////////////////////////////////////////////////
+>>> float CSb_Photo_Total_CP(const char compound[], float E);
+
+CS_Total_Kissel_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (cm2/g)                    //
+//         (Photoelectric (Kissel) + Compton + Rayleigh)            //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Total_Kissel_CP(const char compound[], float E); 
+
+CSb_Total_Kissel_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Total cross section  (barn/atom)                //
+//         (Photoelectric (Kissel) + Compton + Rayleigh)            //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_Total_Kissel_CP(const char compound[], float E); 
+
+Refractive_Index_Re
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Refractive Index real part (1-alpha)              //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//          density : compound density (g/cm3)                      //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float Refractive_Index_Re(const char compound[], float E, float density);
+
+Refractive_Index_Im
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Refractive Index imaginary part (beta)            //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//          density : compound density (g/cm3)                      //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float Refractive_Index_Im(const char compound[], float E, float density);
