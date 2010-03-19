@@ -12,7 +12,7 @@
 
 
 SUBDIRS = include src example idl python doc data
-
+ACLOCAL_AMFLAGS = -I m4
 
 pkgconfigdir=$(libdir)/pkgconfig
 pkgconfig_DATA=libxrl.pc

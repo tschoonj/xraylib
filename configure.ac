@@ -23,6 +23,8 @@ LIB_AGE=0
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
+AC_CONFIG_MACRO_DIR([m4])
+
 
 AC_USE_SYSTEM_EXTENSIONS
 AC_CHECK_FUNCS([strndup strdup])
@@ -360,33 +362,47 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno ; then
 	#verify the python installation
 	AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
 	if test "x$PYTHON_FOUND" = xtrue ; then
-		#let's try to use python-config
-		AC_CHECK_PROGS([PYTHON_CONFIG],[python-config $PYTHON-config],"nopython-config")
-		PYTHON_LIBS=
-		PYTHON_INCDIR=
-		if test "x$PYTHON_CONFIG" != xnopython-config ; then
-			#we found it!
-			#try it first though -> if the python installation is incomplete, python-config will exit with a bunch of errors
-			AC_MSG_CHECKING([whether $PYTHON_CONFIG works properly])
-			AS_IF([$PYTHON_CONFIG --includes],[
-				PYTHON_INCDIR=`$PYTHON_CONFIG --includes`
-				PYTHON_LIBS=`$PYTHON_CONFIG --libs`
-				VALID_PYTHON=yes
-			],[
+		PYTHON_CPPFLAGS=
+		PYTHON_LDFLAGS=
+		AX_PYTHON_DEVEL
+		if test "x$PYTHON_CPPFLAGS" = x ; then
 			if test "x$enable_python" = xyes ; then
-				AC_MSG_ERROR([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+				AC_MSG_ERROR([Could not determine the Python.h location])
 			else
-				AC_MSG_WARN([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
-			fi
-			VALID_PYTHON=no])
-		else
-			if test "x$enable_python" = xyes ; then
-				AC_MSG_ERROR([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
-			else
-				AC_MSG_WARN([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+				AC_MSG_WARN([Could not determine the Python.h location])
 			fi
 			VALID_PYTHON=no
+		else
+			VALID_PYTHON=yes
 		fi
+
+#		#let's try to use python-config
+#		AC_CHECK_PROGS([PYTHON_CONFIG],[python-config $PYTHON-config],"nopython-config")
+#		PYTHON_LIBS=
+#		PYTHON_INCDIR=
+#		if test "x$PYTHON_CONFIG" != xnopython-config ; then
+#			#we found it!
+#			#try it first though -> if the python installation is incomplete, python-config will exit with a bunch of errors
+#			AC_MSG_CHECKING([whether $PYTHON_CONFIG works properly])
+#			AS_IF([$PYTHON_CONFIG --includes],[
+#				PYTHON_INCDIR=`$PYTHON_CONFIG --includes`
+#				PYTHON_LIBS=`$PYTHON_CONFIG --libs`
+#				VALID_PYTHON=yes
+#			],[
+#			if test "x$enable_python" = xyes ; then
+#				AC_MSG_ERROR([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+#			else
+#				AC_MSG_WARN([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+#			fi
+#			VALID_PYTHON=no])
+#		else
+#			if test "x$enable_python" = xyes ; then
+#				AC_MSG_ERROR([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+#			else
+#				AC_MSG_WARN([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
+#			fi
+#			VALID_PYTHON=no
+#		fi
 	fi
 fi
 
@@ -396,8 +412,8 @@ fi
 if test "x$VALID_PYTHON" = xyes ; then
 AC_MSG_NOTICE([Building with Python bindings])
 #transform PYTHON_INCDIR and PYTHON_LIBS
-PYTHON_INCLUDE_FIXED="'`echo $PYTHON_INCDIR | sed -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
-PYTHON_LIBS_FIXED="'`echo $PYTHON_LIBS | sed -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
+PYTHON_INCLUDE_FIXED="'`echo $PYTHON_CPPFLAGS | sed -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
+PYTHON_LIBS_FIXED="'`echo $PYTHON_LDFLAGS | sed -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
 #echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
 #echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
 
