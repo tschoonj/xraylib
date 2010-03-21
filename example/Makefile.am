@@ -93,7 +93,7 @@ xrlexample5.sh:
 #test the java bindings
 xrlexample7.sh:
 	echo "Testing java bindings"
-	echo "$(JAVAC) -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
+	echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
 	chmod +x xrlexample7.sh
 
