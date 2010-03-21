@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2010, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -11,16 +10,27 @@
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-SUBDIRS = include src example idl python doc data java
-ACLOCAL_AMFLAGS = -I m4
+if ENABLE_JAVA
 
-pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA=libxrl.pc
-if ENABLE_FORTRAN
-  pkgconfig_DATA += libxrlf03.pc
+#java bindings for xraylib
+xrljavadir = $(prefix)/share/xraylib/java
+xrljava_JAVA = xraylib.java xraylibConstants.java xraylibJNI.java 
+
+EXTRA_DIST =
+
+
+
+#all:
+#$(MAKE) javaxrl
+
+xraylib.java: ${top_builddir}/src/xraylib.i
+	$(SWIG) -java -o xraylib_wrap.c ${top_builddir}/src/xraylib.i
+	$(CC) -c $(CCSHARED) $(CFLAGS) $(JAVACFLAGS) xraylib_wrap.c $(JAVAINC)
+	$(JAVALDSHARED) $(CFLAGS) xraylib_wrap.o $(JAVADYNAMICLINKING) -L@abs_top_builddir@/src/.libs -lxrl -o $(JAVALIBRARYPREFIX)xraylib$(JAVASO)
+
+install-exec-local:
+	$(MKDIR_P) $(DESTDIR)$(xrljavadir)
+	$(INSTALL) $(JAVALIBRARYPREFIX)xraylib$(JAVASO) $(DESTDIR)$(xrljavadir)
+
+
 endif
-
-
-EXTRA_DIST = idl doc xraylib.spec.in xraylib.spec
-
-

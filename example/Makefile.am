@@ -1,4 +1,3 @@
-
 #Copyright (c) 2009,2010, Tom Schoonjans
 #All rights reserved.
 
@@ -34,7 +33,9 @@ endif
 if ENABLE_CXX
   check_PROGRAMS += xrlexample6
 endif
-
+if ENABLE_JAVA
+  check_SCRIPTS += xrlexample7.sh
+endif
 
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
@@ -59,7 +60,7 @@ endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java
 
 
 #test the idl bindings using this script
@@ -89,8 +90,14 @@ xrlexample5.sh:
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
 	chmod +x xrlexample5.sh
 
+#test the java bindings
+xrlexample7.sh:
+	echo "Testing java bindings"
+	echo "$(JAVAC) -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
+	chmod +x xrlexample7.sh
 
 
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh

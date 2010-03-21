@@ -1,31 +1,14 @@
 # ===========================================================================
-#       http://www.gnu.org/software/autoconf-archive/ax_prog_javac.html
+#    http://www.gnu.org/software/autoconf-archive/ax_prog_javac_works.html
 # ===========================================================================
 #
 # SYNOPSIS
 #
-#   AX_PROG_JAVAC
+#   AX_PROG_JAVAC_WORKS
 #
 # DESCRIPTION
 #
-#   AX_PROG_JAVAC tests an existing Java compiler. It uses the environment
-#   variable JAVAC then tests in sequence various common Java compilers. For
-#   political reasons, it starts with the free ones.
-#
-#   If you want to force a specific compiler:
-#
-#   - at the configure.in level, set JAVAC=yourcompiler before calling
-#   AX_PROG_JAVAC
-#
-#   - at the configure level, setenv JAVAC
-#
-#   You can use the JAVAC variable in your Makefile.in, with @JAVAC@.
-#
-#   *Warning*: its success or failure can depend on a proper setting of the
-#   CLASSPATH env. variable.
-#
-#   TODO: allow to exclude compilers (rationale: most Java programs cannot
-#   compile with some compilers like guavac).
+#   Internal use ONLY.
 #
 #   Note: This is part of the set of autoconf M4 macros for Java programs.
 #   It is VERY IMPORTANT that you download the whole set, some macros depend
@@ -64,25 +47,27 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 6
+#serial 5
 
-AU_ALIAS([AC_PROG_JAVAC], [AX_PROG_JAVAC])
-AC_DEFUN([AX_PROG_JAVAC],[
-if test "x$JAVAPREFIX" = x; then
-        #test "x$JAVAC" = x && AC_CHECK_PROGS(JAVAC, "gcj -C" guavac jikes javac)
-        test "x$JAVAC" = x && AC_CHECK_PROGS(JAVAC, javac)
+AU_ALIAS([AC_PROG_JAVAC_WORKS], [AX_PROG_JAVAC_WORKS])
+AC_DEFUN([AX_PROG_JAVAC_WORKS],[
+AC_CACHE_CHECK([if $JAVAC works], ac_cv_prog_javac_works, [
+JAVA_TEST=Test.java
+CLASS_TEST=Test.class
+cat << \EOF > $JAVA_TEST
+/* [#]line __oline__ "configure" */
+public class Test {
+}
+EOF
+if AC_TRY_COMMAND($JAVAC $JAVACFLAGS $JAVA_TEST) >/dev/null 2>&1; then
+  ac_cv_prog_javac_works=yes
 else
-        #test "x$JAVAC" = x && AC_CHECK_PROGS(JAVAC, "gcj -C" guavac jikes javac, $JAVAPREFIX)
-        test "x$JAVAC" = x && AC_CHECK_PROGS(JAVAC, javac, $JAVAPREFIX)
+  AC_MSG_WARN([The Java compiler $JAVAC failed (see config.log, check the CLASSPATH?)])
+  echo "configure: failed program was:" >&AC_FD_CC
+  cat $JAVA_TEST >&AC_FD_CC
+  JAVAC=
 fi
-#test "x$JAVAC" = x && AC_MSG_WARN([no acceptable Java compiler found in \$PATH])
-if test "x$JAVAC" = x ; then
-	AC_MSG_WARN([no acceptable Java compiler found in \$PATH])
-	JAVAC=
-else
-	AX_PROG_JAVAC_WORKS
-fi
-
-
+rm -f $JAVA_TEST $CLASS_TEST
+])
 AC_PROVIDE([$0])dnl
 ])

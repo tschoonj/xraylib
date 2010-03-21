@@ -12,10 +12,13 @@
 
 
 
-AC_PREREQ([2.60])
 AC_INIT([xraylib],[2.13.0],[Tom.Schoonjans@UGent.be])
+AC_PREREQ([2.60])
+AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AC_CANONICAL_HOST
+
 
 LIB_CURRENT=2
 LIB_REVISION=0
@@ -428,13 +431,89 @@ AC_SUBST(XRLDATADIR,[`echo ${prefix}`/share/xraylib])
 fi
 AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
 
+
+#
+#Java bindings
+#
+
+AC_ARG_ENABLE([java],[AS_HELP_STRING([--disable-java],[build without the java bindings])],[enable_java=$enableval],[enable_java=check])
+
+VALID_JAVA=
+
+if test "x$SWIG" = xnoswig && test "x$enable_java" = xyes ; then
+	#don't even bother when swig is not found
+	AC_MSG_ERROR([--enable-java was given as an option but swig was not found on the system])
+elif test "x$SWIG" = xswig && test "x$enable_java" != xno ; then
+	#search for java compiler
+	AX_PROG_JAVAC
+	#search for java virtual machine
+	AX_PROG_JAVA
+	#search for location of jni.h, using javah
+	AX_PROG_JAVAH
+	if test "x$JAVAC" = x || test "x$JAVA" = x || test "x$JAVACPPFLAGS" = x ; then
+		if "x$enable_java" = xyes ; then 
+			AC_MSG_ERROR([Cannot build java bindings])
+		else
+			AC_MSG_WARN([Cannot build java bindings])
+			VALID_JAVA=no
+		fi
+	else
+		VALID_JAVA=yes
+	fi
+fi
+
+if test "x$VALID_JAVA" = xyes ; then
+	AC_MSG_NOTICE([Building with java bindings])
+	case $host in
+		*-*-darwin*)
+			JAVADYNAMICLINKING="-dynamiclib -framework JavaVM"
+			JAVACFLAGS=""
+			JAVALIBRARYPREFIX="lib"
+			JAVASO=".jnilib"
+			LDSHARED="cc -bundle -undefined suppress -flat_namespace"
+			CCSHARED=""
+			JAVALDSHARED='$(CC)'
+			JAVACXXSHARED='$(CXX)'
+
+			;;
+		*)
+			SO=".so"
+			JAVADYNAMICLINKING=""
+			JAVACFLAGS=""
+			JAVALIBRARYPREFIX="lib"
+			JAVASO=$SO
+			LDSHARED="gcc -shared"
+			CCSHARED="-fpic"
+			JAVALDSHARED='$(LDSHARED)'
+			JAVACXXSHARED='$(CXXSHARED)'
+			;;
+	esac
+
+	JAVAINC=$JAVACPPFLAGS
+	JAVAROOT='$(builddir)'
+	AC_SUBST(JAVAROOT)
+	AC_SUBST(JAVA)
+	AC_SUBST(JAVAC)
+	AC_SUBST(JAVAINC)
+	AC_SUBST(JAVADYNAMICLINKING)
+	AC_SUBST(JAVALIBRARYPREFIX)
+	AC_SUBST(JAVASO)
+	AC_SUBST(JAVALDSHARED)
+	AC_SUBST(JAVACXXSHARED)
+	AC_SUBST(JAVACFLAGS)
+	AC_SUBST(CCSHARED)
+
+fi
+AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA != x])
+
+
 #C++ example
 AC_PROG_CXX
 if test $CXX ; then
 	AC_MSG_NOTICE([C++ example enabled])
 	AC_SUBST(CXX)
-	AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
 fi
+AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
 
 
 
@@ -443,7 +522,7 @@ fi
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

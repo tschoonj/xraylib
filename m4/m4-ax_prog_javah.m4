@@ -25,19 +25,34 @@
 
 AU_ALIAS([AC_PROG_JAVAH], [AX_PROG_JAVAH])
 AC_DEFUN([AX_PROG_JAVAH],[
-AC_REQUIRE([AC_CANONICAL_SYSTEM])dnl
+#AC_REQUIRE([AC_CANONICAL_SYSTEM])dnl
 AC_REQUIRE([AC_PROG_CPP])dnl
 AC_PATH_PROG(JAVAH,javah)
-if test x"`eval 'echo $ac_cv_path_JAVAH'`" != x ; then
-  AC_TRY_CPP([#include <jni.h>],,[
+if test "x$ac_cv_path_JAVAH" != x ; then
+    AC_MSG_CHECKING([for jni.h and jni_md.h headers])
+    if test -L $ac_cv_path_JAVAH ; then
+	while test -L $ac_cv_path_JAVAH 
+	 do 
+	 ac_cv_path_JAVAH=`readlink $ac_cv_path_JAVAH`
+	 done
+    fi
     ac_save_CPPFLAGS="$CPPFLAGS"
 changequote(, )dnl
-    ac_dir=`echo $ac_cv_path_JAVAH | sed 's,\(.*\)/[^/]*/[^/]*$,\1/include,'`
-    ac_machdep=`echo $build_os | sed 's,[-0-9].*,,' | sed 's,cygwin,win32,'`
+    ac_dir=`echo $ac_cv_path_JAVAH | sed 's,\(.*\)/[^/]*/[^/]*$,\1/,'`
+    ac_machdep=`echo $host_os | sed 's,[-0-9].*,,' | sed 's,cygwin,win32,'`
 changequote([, ])dnl
-    CPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir -I$ac_dir/$ac_machdep"
-    AC_TRY_CPP([#include <jni.h>],
-               ac_save_CPPFLAGS="$CPPFLAGS",
-               AC_MSG_WARN([unable to include <jni.h>]))
-    CPPFLAGS="$ac_save_CPPFLAGS"])
+    JAVACPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir/include -I$ac_dir/Headers -I$ac_dir/include/$ac_machdep"
+    CPPFLAGS=$JAVACPPFLAGS
+    AC_PREPROC_IFELSE(
+    	[AC_LANG_PROGRAM([[#include <jni.h>]],[[#include <jni_md.h>]])],
+	AC_MSG_RESULT([ok])
+	CPPFLAGS="$ac_save_CPPFLAGS",
+	AC_MSG_RESULT([could not find jni.h]
+	JAVACPPFLAGS=
+	CPPFLAGS="$ac_save_CPPFLAGS",
+	)
+    )
+else
+    AC_MSG_WARN([Could not locate javah])
+    JAVACPPFLAGS=
 fi])

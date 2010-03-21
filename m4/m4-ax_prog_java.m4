@@ -105,9 +105,11 @@
 AU_ALIAS([AC_PROG_JAVA], [AX_PROG_JAVA])
 AC_DEFUN([AX_PROG_JAVA],[
 if test x$JAVAPREFIX = x; then
-        test x$JAVA = x && AC_CHECK_PROGS(JAVA, kaffe java)
+        #test x$JAVA = x && AC_CHECK_PROGS(JAVA, kaffe java)
+        test x$JAVA = x && AC_CHECK_PROGS(JAVA, java)
 else
-        test x$JAVA = x && AC_CHECK_PROGS(JAVA, kaffe java, $JAVAPREFIX)
+        #test x$JAVA = x && AC_CHECK_PROGS(JAVA, kaffe java, $JAVAPREFIX)
+        test x$JAVA = x && AC_CHECK_PROGS(JAVA, java, $JAVAPREFIX)
 fi
 test x$JAVA = x && AC_MSG_ERROR([no acceptable Java virtual machine found in \$PATH])
 AX_PROG_JAVA_WORKS
