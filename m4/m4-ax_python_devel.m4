@@ -80,13 +80,16 @@ AC_DEFUN([AX_PYTHON_DEVEL],[
 
 	AC_PATH_PROG([PYTHON],[python[$PYTHON_VERSION]])
 	if test -z "$PYTHON"; then
-	   AC_MSG_ERROR([Cannot find python$PYTHON_VERSION in your system path])
+	   AC_MSG_WARN([Cannot find python$PYTHON_VERSION in your system path])
 	   PYTHON_VERSION=""
+	   PYTHON_CPPFLAGS=
+	   PYTHON=
 	fi
 
 	#
 	# Check for a version of Python >= 2.1.0
 	#
+	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for a version of Python >= '2.1.0'])
 	ac_supports_python_ver=`$PYTHON -c "import sys; \
 		ver = sys.version.split ()[[0]]; \
@@ -94,25 +97,23 @@ AC_DEFUN([AX_PYTHON_DEVEL],[
 	if test "$ac_supports_python_ver" != "True"; then
 		if test -z "$PYTHON_NOVERSIONCHECK"; then
 			AC_MSG_RESULT([no])
-			AC_MSG_FAILURE([
+			AC_MSG_WARN([
 This version of the AC@&t@_PYTHON_DEVEL macro
 doesn't work properly with versions of Python before
-2.1.0. You may need to re-run configure, setting the
-variables PYTHON_CPPFLAGS, PYTHON_LDFLAGS, PYTHON_SITE_PKG,
-PYTHON_EXTRA_LIBS and PYTHON_EXTRA_LDFLAGS by hand.
-Moreover, to disable this check, set PYTHON_NOVERSIONCHECK
-to something else than an empty string.
-])
+2.1.0.])
+			PYTHON=
 		else
 			AC_MSG_RESULT([skip at user request])
 		fi
 	else
 		AC_MSG_RESULT([yes])
 	fi
+	fi
 
 	#
 	# if the macro parameter ``version'' is set, honour it
 	#
+	if test x$PYTHON != x ; then
 	if test -n "$1"; then
 		AC_MSG_CHECKING([for a version of Python $1])
 		ac_supports_python_ver=`$PYTHON -c "import sys; \
@@ -122,33 +123,39 @@ to something else than an empty string.
 	   	   AC_MSG_RESULT([yes])
 		else
 			AC_MSG_RESULT([no])
-			AC_MSG_ERROR([this package requires Python $1.
+			AC_MSG_WARN([this package requires Python $1.
 If you have it installed, but it isn't the default Python
-interpreter in your system path, please pass the PYTHON_VERSION
+interpreter in your system path, please pass the PYTHON
 variable to configure. See ``configure --help'' for reference.
 ])
 			PYTHON_VERSION=""
+			PYTHON=
 		fi
+	fi
 	fi
 
 	#
 	# Check if you have distutils, else fail
 	#
+	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for the distutils Python package])
 	ac_distutils_result=`$PYTHON -c "import distutils" 2>&1`
 	if test -z "$ac_distutils_result"; then
 		AC_MSG_RESULT([yes])
 	else
 		AC_MSG_RESULT([no])
-		AC_MSG_ERROR([cannot import Python module "distutils".
+		AC_MSG_WARN([cannot import Python module "distutils".
 Please check your Python installation. The error was:
 $ac_distutils_result])
 		PYTHON_VERSION=""
+		PYTHON=
+	fi
 	fi
 
 	#
 	# Check for Python include path
 	#
+	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for Python include path])
 	if test -z "$PYTHON_CPPFLAGS"; then
 		python_path=`$PYTHON -c "import distutils.sysconfig; \
@@ -160,10 +167,12 @@ $ac_distutils_result])
 	fi
 	AC_MSG_RESULT([$PYTHON_CPPFLAGS])
 	AC_SUBST([PYTHON_CPPFLAGS])
+	fi
 
 	#
 	# Check for Python library path
 	#
+	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for Python library path])
 	if test -z "$PYTHON_LDFLAGS"; then
 		# (makes two attempts to ensure we've got a version number
@@ -239,18 +248,22 @@ EOD`
 		fi
 
 		if test -z "PYTHON_LDFLAGS"; then
-			AC_MSG_ERROR([
+			AC_MSG_WARN([
   Cannot determine location of your Python DSO. Please check it was installed with
-  dynamic libraries enabled, or try setting PYTHON_LDFLAGS by hand.
+  dynamic libraries enabled.
 			])
+			PYTHON_VERSION=""
+			PYTHON=
 		fi
 	fi
 	AC_MSG_RESULT([$PYTHON_LDFLAGS])
 	AC_SUBST([PYTHON_LDFLAGS])
+	fi
 
 	#
 	# Check for site packages
 	#
+	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for Python site-packages path])
 	if test -z "$PYTHON_SITE_PKG"; then
 		PYTHON_SITE_PKG=`$PYTHON -c "import distutils.sysconfig; \
@@ -305,11 +318,9 @@ EOD`
 	AC_MSG_RESULT([$pythonexists])
 
         if test ! "x$pythonexists" = "xyes"; then
-	   AC_MSG_FAILURE([
+	   AC_MSG_WARN([
   Could not link test program to Python. Maybe the main Python library has been
-  installed in some non-standard library path. If so, pass it to configure,
-  via the LDFLAGS environment variable.
-  Example: ./configure LDFLAGS="-L/usr/non-standard-path/python/lib"
+  installed in some non-standard library path. 
   ============================================================================
    ERROR!
    You probably have to install the development version of the Python package
@@ -317,6 +328,8 @@ EOD`
   ============================================================================
 	   ])
 	  PYTHON_VERSION=""
+	  PYTHON=
+	fi
 	fi
 
 	#

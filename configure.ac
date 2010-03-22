@@ -201,10 +201,11 @@ if test "x$enable_idl" != xno ; then
 		AC_PATH_PROGS([RSIIDL_BIN], [idl],[],[$RSIIDL_BINDIR])
 		if test -z "$RSIIDL_BIN" ; then
 			AC_MSG_ERROR([RSI-IDL binaries not found user-supplied $RSIIDL_BINDIR. Wrong value for --with-rsiidl-bindir])
+			VALID_IDL=no
 		fi	
 	fi
 	#moving on...
-	if test -n "$RSIIDL_BINDIR" ; then
+	if test -n "$RSIIDL_BINDIR" && test "x$VALID_IDL" != xno ; then
 		RSIIDL_DIR=`AS_DIRNAME([$RSIIDL_BINDIR])`
 		#if this test succeeds then using version 5.6 or greater
 		RSIIDL_INCDIR="$RSIIDL_DIR/external/include"
@@ -216,9 +217,11 @@ if test "x$enable_idl" != xno ; then
 			AC_CHECK_FILE(["$RSIIDL_INCDIR/export.h"],[RSIIDL_HASINC=yes],[RSIIDL_HASINC=no])
 		fi
 		if test "x$RSIIDL_HASINC" = xno ; then
-			AC_MSG_ERROR([RSI-IDL header file was not found in $RSIIDL_INCDIR. This most likely indicates a problem with the IDL installation.])
+			AC_MSG_WARN([RSI-IDL header file was not found in $RSIIDL_INCDIR. This most likely indicates a problem with the IDL installation.])
+			VALID_IDL=no
 		fi
 		#check for path to libidl.so
+		if test "x$VALID_IDL" != xno ; then
   		case "$host" in
 
 		    x86_64-*-linux*)
@@ -235,7 +238,8 @@ if test "x$enable_idl" != xno ; then
 
 		    *-sgi*)
 #		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.sgi
-		      AC_MSG_ERROR([IRIX is currently not supported. Disable the bindings with --disable-idl])
+		      AC_MSG_WARN([IRIX is currently not supported. Disable the bindings with --disable-idl])
+			VALID_IDL=no
 		      ;;
 		    x86_64-*-darwin*)
 			if test -d $RSIIDL_BINDIR/bin.darwin.x86_64 ; then
@@ -243,7 +247,8 @@ if test "x$enable_idl" != xno ; then
 		      		IDL_CFLAGS="-fPIC"
 		      		IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
 			else
-				AC_MSG_ERROR([You appear to be running an IDL version on Mac OS X Snow Leopard that does not have the required 64-bit IDL libraries. Please upgrade your IDL installation to at least version 7.1])
+				AC_MSG_WARN([You appear to be running an IDL version on Mac OS X Snow Leopard that does not have the required 64-bit IDL libraries. Please upgrade your IDL installation to at least version 7.1])
+			VALID_IDL=no
 		        fi
 		      ;;
 
@@ -260,19 +265,27 @@ if test "x$enable_idl" != xno ; then
 		      IDL_CFLAGS="-fPIC"
 		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
 		      ;;
+		   *-solaris-*)
+		      AC_MSG_WARN([Solaris is currently not supported. Disable the bindings with --disable-idl])
+			VALID_IDL=no
+		      ;;
 
 		   *)
-		      AC_MSG_ERROR([Could not detect platform for IDL.])
+		      AC_MSG_WARN([Could not detect platform for IDL.])
+			VALID_IDL=no
 		      ;;
 
 		  esac
 
+		if test "x$VALID_IDL" != xno ; then
 		AC_ARG_WITH([rsiidl-libdir],[AS_HELP_STRING([--with-rsiidl-bindir],[set location of the rsi-idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])	
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])	
 		if test "x$RSIIDL_HASBIN_SO" = xno && test "x$RSIIDL_HASBIN_DY" = xno  ; then
-			AC_MSG_ERROR([libidl.so or libidl.dylib could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-rsiidl-libdir to match the location of the IDL libraries])
+			AC_MSG_WARN([libidl.so or libidl.dylib could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-rsiidl-libdir to match the location of the IDL libraries])
+			VALID_IDL=no
 		fi
+		if test "x$VALID_IDL" != xno ; then
 		VALID_IDL=yes
 		AC_PROG_MKDIR_P
 		AC_PROG_INSTALL
@@ -283,6 +296,9 @@ if test "x$enable_idl" != xno ; then
 		AC_SUBST(IDL_CFLAGS)
 		AC_SUBST(IDL_LD_FLAGS)
 		AC_MSG_NOTICE([Building with IDL bindings])
+		fi
+		fi
+	fi
 	fi
 fi #test "x$enable_idl" != xno
 
@@ -368,7 +384,7 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno ; then
 		PYTHON_CPPFLAGS=
 		PYTHON_LDFLAGS=
 		AX_PYTHON_DEVEL
-		if test "x$PYTHON_CPPFLAGS" = x ; then
+		if test "x$PYTHON" = x ; then
 			if test "x$enable_python" = xyes ; then
 				AC_MSG_ERROR([Could not determine the Python.h location])
 			else
