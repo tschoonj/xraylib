@@ -145,7 +145,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgpythondir}/xrayhelp.py*
 %{_pkgpythondir}/xraymessages.py*
 %{_pkgpyexecdir}/_xraylib.*
-%{_prefix}/share/xraylib
+%{_prefix}/share/xraylib/*.txt
 
 %files idl
 %defattr(-,root,root)
@@ -160,6 +160,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Mar 22 2010 Tom Schoonjans
+- Python files modified so they don't contain java files
+
 * Mon Mar 08 2010 Tom Schoonjans
 - Added IDL bindings
 - ldconfig line

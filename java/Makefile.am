@@ -32,5 +32,10 @@ install-exec-local:
 	$(MKDIR_P) $(DESTDIR)$(xrljavadir)
 	$(INSTALL) $(JAVALIBRARYPREFIX)xraylib$(JAVASO) $(DESTDIR)$(xrljavadir)
 
+#uninstall-local:
+#rm -f $(DESTDIR)
+
+clean-local:
+	rm -rf classxrljava.stamp $(JAVALIBRARYPREFIX)xraylib$(JAVASO) *.java *.class xraylib_wrap.* 
 
 endif
