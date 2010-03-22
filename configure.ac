@@ -447,11 +447,15 @@ elif test "x$SWIG" = xswig && test "x$enable_java" != xno ; then
 	#search for java compiler
 	AX_PROG_JAVAC
 	#search for java virtual machine
-	AX_PROG_JAVA
+	if test "x$JAVAC" != x ; then
+		AX_PROG_JAVA
+	fi
 	#search for location of jni.h, using javah
-	AX_PROG_JAVAH
+	if test "x$JAVAC" != x && test "x$JAVA" != x ; then
+		AX_PROG_JAVAH
+	fi
 	if test "x$JAVAC" = x || test "x$JAVA" = x || test "x$JAVACPPFLAGS" = x ; then
-		if "x$enable_java" = xyes ; then 
+		if test "x$enable_java" = xyes ; then 
 			AC_MSG_ERROR([Cannot build java bindings])
 		else
 			AC_MSG_WARN([Cannot build java bindings])
@@ -475,6 +479,17 @@ if test "x$VALID_JAVA" = xyes ; then
 			JAVALDSHARED='$(CC)'
 			JAVACXXSHARED='$(CXX)'
 
+			;;
+		*-*-solaris*)
+			SO=".so"
+			JAVADYNAMICLINKING=""
+			JAVACFLAGS=""
+			JAVALIBRARYPREFIX="lib"
+			JAVASO=$SO
+			LDSHARED="ld -G"
+			CCSHARED=""
+			JAVALDSHARED='$(LDSHARED)'
+			JAVACXXSHARED='$(CXXSHARED)'
 			;;
 		*)
 			SO=".so"
@@ -505,7 +520,7 @@ if test "x$VALID_JAVA" = xyes ; then
 	AC_SUBST(CCSHARED)
 
 fi
-AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA != x])
+AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
 
 
 #C++ example
