@@ -21,23 +21,23 @@ int main()
   //if something goes wrong, the test will end with EXIT_FAILURE
   SetHardExit(1);
 
-  printf("Example of C++ program using xraylib\n");
-  printf("Ca K-alpha Fluorescence Line Energy: %f\n",
+  std::printf("Example of C++ program using xraylib\n");
+  std::printf("Ca K-alpha Fluorescence Line Energy: %f\n",
 	 LineEnergy(20,KA_LINE));
-  printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",CS_Photo_Partial(26,L3_SHELL,6.0));
-  printf("Zr L1 edge energy: %f\n",EdgeEnergy(40,L1_SHELL));
-  printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",CS_FluorLine(82,LA_LINE,20.0));
-  printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",CS_FluorLine_Kissel(82,LA_LINE,20.0));
-  printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
-  printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
+  std::printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",CS_Photo_Partial(26,L3_SHELL,6.0));
+  std::printf("Zr L1 edge energy: %f\n",EdgeEnergy(40,L1_SHELL));
+  std::printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",CS_FluorLine(82,LA_LINE,20.0));
+  std::printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",CS_FluorLine_Kissel(82,LA_LINE,20.0));
+  std::printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
+  std::printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
   //parser test for Ca(HCO3)2 (calcium bicarbonate)
   struct compoundData cdtest;
   if (CompoundParser("Ca(HCO3)2",&cdtest) == 0)
 	return 1;
   int i;
-  printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
+  std::printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
   for (i = 0 ; i < cdtest.nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+    std::printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
 
   FREE_COMPOUND_DATA(cdtest)
 
@@ -45,17 +45,17 @@ int main()
   if (CompoundParser("SiO2",&cdtest) == 0)
 	return 1;
 
-  printf("SiO2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
+  std::printf("SiO2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
   for (i = 0 ; i < cdtest.nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+    std::printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
 
   FREE_COMPOUND_DATA(cdtest)
 
-  printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0) );
+  std::printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0) );
 
-  printf("CS2 Refractive Index at 10.0 keV : %g - %g i\n",Refractive_Index_Re("CS2",10.0,1.261),Refractive_Index_Im("CS2",10.0,1.261));
-  printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",Refractive_Index_Re("C16H14O3",1.0,1.2),Refractive_Index_Im("C16H14O3",1.0,1.2));
-  printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",Refractive_Index_Re("SiO2",5.0,2.65),Refractive_Index_Im("SiO2",5.0,2.65));
+  std::printf("CS2 Refractive Index at 10.0 keV : %g - %g i\n",Refractive_Index_Re("CS2",10.0,1.261),Refractive_Index_Im("CS2",10.0,1.261));
+  std::printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",Refractive_Index_Re("C16H14O3",1.0,1.2),Refractive_Index_Im("C16H14O3",1.0,1.2));
+  std::printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",Refractive_Index_Re("SiO2",5.0,2.65),Refractive_Index_Im("SiO2",5.0,2.65));
 
 
 }

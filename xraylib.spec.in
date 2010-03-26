@@ -80,7 +80,11 @@ This rpm package provides the IDL bindings of xraylib.
 
 
 %build
-%configure --disable-perl FC=gfortran 
+%configure --disable-perl --disable-java --enable-idl --enable-fortran2003 --enable-python FC=gfortran 
+#necessary to fix rpath issues during rpmbuild
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
 make 
 
 
@@ -116,6 +120,7 @@ rm -rf $RPM_BUILD_ROOT
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
+
 
 %files
 %defattr(-,root,root)

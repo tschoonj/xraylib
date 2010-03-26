@@ -39,16 +39,17 @@ Platforms known to compile and run xraylib
 	Solaris 10 (32-bit/64-bit)
 	Mac OS X (32-bit/64-bit)
 	Windows (Cygwin, static version only)
+	FreeBSD (64-bit)
 
 Not all bindings have been tested on each of these platforms. The following table summarizes the current status.
 
-	 | Linux | Mac OS X | Solaris | Cygwin |
-------------------------------------------------
- Fortran |   x   |     x    |    x    |    x   |
-  Perl   |   x   |     x    |    x    |    x   |
- Python  |   x   |     x    |         |    x   |
-   IDL   |   x   |     x    |         |        |
-
+	 | Linux | Mac OS X | Solaris | Cygwin | FreeBSD |
+----------------------------------------------------------
+ Fortran |   x   |     x    |    x    |    x   |    x    |
+  Perl   |   x   |     x    |    x    |    x   |    x    |
+ Python  |   x   |     x    |         |    x   |         |
+   IDL   |   x   |     x    |         |        |         |
+  Java   |   x   |     x    |    ?    |    ?   |         |
 
 
 		-----------------------------------------------
@@ -83,7 +84,7 @@ on the PATH.  A typical PATH should include the directories
 For example,
 
   $ PATH=/opt/SUNWspro/bin:/usr/ccs/bin:/usr/ucb:$PATH
-  $ ./configure CC=cc CFLAGS=-O
+  $ ./configure CC=cc 
 
 Use gmake instead of make. To do this, invoke:
 

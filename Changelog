@@ -17,7 +17,8 @@ imaginary parts of the refractive index of a given compound.
 -Numerous bugfixes: an important one would be the restoration of IDL support
 on Mac OS X Snow Leopard
 -Creation of IDL bindings rpm
--Added Java bindings (requires Sun JAVA compiler)
+-Added Java bindings (requires Sun JAVA compiler): works on Linux and Mac Os X
+-Verified support on FreeBSD 8.0 64-bit
 
 Version 2.12.1 Tom Schoonjans
 

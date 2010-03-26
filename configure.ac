@@ -541,7 +541,11 @@ AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
 
 #C++ example
 AC_PROG_CXX
-if test $CXX ; then
+AC_PROG_CXXCPP
+AC_LANG_PUSH([C++])
+AC_CHECK_HEADERS([cstdio cstdlib], ,[CXX=""])
+AC_LANG_POP([C++])
+if test x$CXX != x ; then
 	AC_MSG_NOTICE([C++ example enabled])
 	AC_SUBST(CXX)
 fi

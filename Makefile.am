@@ -21,6 +21,6 @@ if ENABLE_FORTRAN
 endif
 
 
-EXTRA_DIST = idl doc xraylib.spec.in xraylib.spec
+EXTRA_DIST = idl doc xraylib.spec.in 
 
 

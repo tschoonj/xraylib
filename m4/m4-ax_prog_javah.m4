@@ -33,7 +33,9 @@ if test "x$ac_cv_path_JAVAH" != x ; then
     if test -L $ac_cv_path_JAVAH ; then
 	while test -L $ac_cv_path_JAVAH 
 	 do 
-	 ac_cv_path_JAVAH=`readlink $ac_cv_path_JAVAH`
+dnl	 ac_cv_path_JAVAH=`readlink $ac_cv_path_JAVAH`
+dnl 	since readlink doesn't appear on all systems (I hate Solaris...), let's use an awk trick
+ 	 ac_cv_path_JAVAH=`ls -l $ac_cv_path_JAVAH | awk -F\> '{print $NF}'` 
 	 done
     fi
     ac_save_CPPFLAGS="$CPPFLAGS"
