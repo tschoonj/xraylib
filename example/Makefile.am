@@ -100,4 +100,4 @@ xrlexample7.sh:
 
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.java xrlexample7.class
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class

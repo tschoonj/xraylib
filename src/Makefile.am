@@ -115,7 +115,9 @@ clean-local:
 	rm -f perl/xraylib.bs
 	rm -f perl/xraylib.pm
 	rm -rf perl/blib
-	rm -f perl/Makefile perl/Makefile_perl perl/Makefile.PL
-	rm -f libxrlidl.so libxrlidl.dlm
+	rm -f perl/Makefile
+	rm -f libxrlidl.so 
 	rm -rf libxrlidl.so.dSYM
-	
+if !ABS_SRC_BUILD_EQUAL
+	rm -rf perl
+endif

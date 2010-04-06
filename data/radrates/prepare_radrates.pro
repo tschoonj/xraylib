@@ -13,7 +13,7 @@
 
 ;little IDL script that produces a radrate.dat file based on a number of SPEC type files
 
-radfiles = ['KShellRatesScofieldHS.dat', 'LShellRatesCampbell.dat','MShellRates.dat']
+radfiles = ['KShellRates.dat', 'LShellRates.dat','MShellRates.dat']
 
 line=''
 struct_template = {element:0, transition:'',probability:0.0D}

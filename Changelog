@@ -1,3 +1,10 @@
+Version 2.13.1 Tom Schoonjans
+
+-Corrected radrate database: 2.13.0 was using scofield for K and campbell for
+L instead of Krause data
+-"make clean" now works properly
+
+
 Version 2.13.0 Tom Schoonjans
 
 -Expanded the radrate database (150 linetypes available now, including M lines)
