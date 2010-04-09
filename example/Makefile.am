@@ -16,7 +16,7 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 
 
 #since the C lib will always be built, always check xrlexample1
-check_PROGRAMS = xrlexample1
+check_PROGRAMS = xrlexample1$(EXEEXT)
 if ENABLE_FORTRAN
   check_PROGRAMS += xrlexample3
 endif
@@ -31,7 +31,7 @@ if ENABLE_PYTHON
   check_SCRIPTS += xrlexample5.sh
 endif
 if ENABLE_CXX
-  check_PROGRAMS += xrlexample6
+  check_PROGRAMS += xrlexample6$(EXEEXT)
 endif
 if ENABLE_JAVA
   check_SCRIPTS += xrlexample7.sh
@@ -57,6 +57,9 @@ endif
 
 
 
+if ENABLE_CROSS
+TESTS_ENVIRONMENT = path="${top_builddir}/src/.libs" $(WINE)
+endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 

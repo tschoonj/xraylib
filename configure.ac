@@ -62,8 +62,39 @@ AC_CHECK_LIB([m],[exp],[],[AC_MSG_ERROR([the exp function must be present in lib
 AC_CHECK_LIB([m],[cos],[],[AC_MSG_ERROR([the cos function must be present in libm])])
 AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in libm])])
 
+#
+#Some code is necessary in case we are cross compiling with mingw on a platform different from cygwin -> Wine is necessary!
+#
+WINE=
+DISABLE_BINDINGS=no
+CROSS_COMPILING=
 
 
+
+
+if test "x$cross_compiling" = "xyes" ; then
+	case "$build" in
+		*-apple-darwin* | *-linux*)
+		#disable all the bindings!
+		DISABLE_BINDINGS=yes
+		#look for wine
+		AC_CHECK_PROGS([WINE],[wine],["nowine"])
+		#enable wine for examples
+#		AC_SUBST([TESTS_ENVIRONMENT],[ $WINE])
+		;;
+		*)
+		  AC_MSG_ERROR([Detected platform that's not supported for cross-compilation])
+		;;
+	esac
+
+	if test "x$WINE" = "xnowine" ; then
+		AC_MSG_ERROR([wine is necessary when cross-compiling for windows.])
+	fi
+	CROSS_COMPILING=yes
+fi
+
+
+AM_CONDITIONAL([ENABLE_CROSS],[test x$CROSS_COMPILING = xyes])
 
 #
 #fortran 2003 bindings
@@ -73,8 +104,11 @@ AC_ARG_ENABLE([fortran2003], [AS_HELP_STRING([--disable-fortran2003],[build with
 
 
 
+
 VALID_FORTRAN=
-if test "x$enable_fortran2003" != xno ; then  
+
+
+if test "x$enable_fortran2003" != xno && test "x$DISABLE_BINDINGS" = xno ; then  
 #check for fortran 2003 compiler
 	AC_PROG_FC()
 	if test -z $FC && test "x$enable_fortran2003" = xyes; then
@@ -174,7 +208,7 @@ AC_ARG_ENABLE([idl],[AS_HELP_STRING([--disable-idl],[build without the idl bindi
 VALID_IDL=
 ARCHFLAGS=
 
-if test "x$enable_idl" != xno ; then  
+if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then  
 #search for header and libraries
 #inspired by the gpulib autoconf macros...
 
@@ -321,18 +355,18 @@ AC_ARG_ENABLE([perl],[AS_HELP_STRING([--disable-perl],[build without the perl bi
 
 VALID_PERL=
 
-if test "x$SWIG" = xnoswig && test "x$enable_perl" = xyes ; then
+if test "x$SWIG" = xnoswig && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	AC_MSG_ERROR([--enable-perl was given as an option but swig was not found on the system])
 fi
-if test "x$FIND" = xnofind && test "x$enable_perl" = xyes ; then
+if test "x$FIND" = xnofind && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	AC_MSG_ERROR([--enable-perl was given as an option but find was not found on the system])
 fi
-if test "x$SWIG" = xnoxargs && test "x$enable_perl" = xyes ; then
+if test "x$XARGS" = xnoxargs && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	AC_MSG_ERROR([--enable-perl was given as an option but xargs was not found on the system])
 fi
 
 MMFOUND=
-if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$FIND" != xnofind && test "x$XARGS" != xnoargs ;  then
+if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$FIND" != xnofind && test "x$XARGS" != xnoargs && test "x$DISABLE_BINDINGS" = xno  ;  then
 	#search for perl executable (although I can't imagine a modern system without perl...)
 	if test -z $PERL ; then
 		AC_CHECK_PROGS(PERL,[perl perl5],["noperl"])
@@ -374,10 +408,10 @@ AC_ARG_ENABLE([python],[AS_HELP_STRING([--disable-python],[build without the pyt
 
 VALID_PYTHON=
 
-if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes ; then
+if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
 	AC_MSG_ERROR([--enable-python was given as an option but swig was not found on the system])
-elif test "x$SWIG" = xswig && test "x$enable_python" != xno ; then
+elif test "x$SWIG" = xswig && test "x$enable_python" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	#verify the python installation
 	AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
 	if test "x$PYTHON_FOUND" = xtrue ; then
@@ -395,33 +429,6 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno ; then
 			VALID_PYTHON=yes
 		fi
 
-#		#let's try to use python-config
-#		AC_CHECK_PROGS([PYTHON_CONFIG],[python-config $PYTHON-config],"nopython-config")
-#		PYTHON_LIBS=
-#		PYTHON_INCDIR=
-#		if test "x$PYTHON_CONFIG" != xnopython-config ; then
-#			#we found it!
-#			#try it first though -> if the python installation is incomplete, python-config will exit with a bunch of errors
-#			AC_MSG_CHECKING([whether $PYTHON_CONFIG works properly])
-#			AS_IF([$PYTHON_CONFIG --includes],[
-#				PYTHON_INCDIR=`$PYTHON_CONFIG --includes`
-#				PYTHON_LIBS=`$PYTHON_CONFIG --libs`
-#				VALID_PYTHON=yes
-#			],[
-#			if test "x$enable_python" = xyes ; then
-#				AC_MSG_ERROR([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
-#			else
-#				AC_MSG_WARN([python-config is present but exits with an error. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
-#			fi
-#			VALID_PYTHON=no])
-#		else
-#			if test "x$enable_python" = xyes ; then
-#				AC_MSG_ERROR([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
-#			else
-#				AC_MSG_WARN([python-config is not present. This probably indicates a partial python installation. You may resolve this by installing the development packages.])
-#			fi
-#			VALID_PYTHON=no
-#		fi
 	fi
 fi
 
@@ -456,10 +463,10 @@ AC_ARG_ENABLE([java],[AS_HELP_STRING([--disable-java],[build without the java bi
 
 VALID_JAVA=
 
-if test "x$SWIG" = xnoswig && test "x$enable_java" = xyes ; then
+if test "x$SWIG" = xnoswig && test "x$enable_java" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
 	AC_MSG_ERROR([--enable-java was given as an option but swig was not found on the system])
-elif test "x$SWIG" = xswig && test "x$enable_java" != xno ; then
+elif test "x$SWIG" = xswig && test "x$enable_java" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	#search for java compiler
 	AX_PROG_JAVAC
 	#search for java virtual machine

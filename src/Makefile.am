@@ -63,7 +63,7 @@ endif
 
 #$(EXEEXT) is necessary to allow compilation in cygwin
 xrayglob_inline.c: prdata$(EXEEXT)
-	XRAYLIB_DIR=${top_srcdir} ./prdata$(EXEEXT)
+	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
 
 #I'm not sure how portable this .libs link location is...
