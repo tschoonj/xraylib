@@ -504,11 +504,11 @@ void ArrayInit()
       NE_Photo_Partial_Kissel[Z][shell] = OUTD;
     }	
     for (line=0; line<LINENUM; line++) {
-      LineEnergy_arr[Z][line] = OUTD;
-      RadRate_arr[Z][line] = OUTD;
+      LineEnergy_arr[Z][line] = 0.0;
+      RadRate_arr[Z][line] = 0.0;
     }
     for (trans=0; trans<TRANSNUM; trans++) {
-      CosKron_arr[Z][trans] = OUTD;
+      CosKron_arr[Z][trans] = 0.0;
     }
   }
 }

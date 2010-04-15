@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#define KL1 -KL1_LINE-1
 #define KL2 -KL2_LINE-1
 #define KL3 -KL3_LINE-1
 #define KM2 -KM2_LINE-1
@@ -33,27 +34,29 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
       
 float RadRate(int Z, int line)
 {
-  float rad_rate, rr1, rr2;
+  float rad_rate, rr;
+  int i;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function RadRate");
     return 0;
   }
 
-  if (line>=0 && line<2) {
+  if (line>=KA_LINE && line<LA_LINE) {
     if (line == KA_LINE) {
-      rr1 = RadRate_arr[Z][KL2];
-      rr2 = RadRate_arr[Z][KL3];
+        rr=0.0;
+    	for (i=KL1 ; i <= KL3 ; i++)
+		rr += RadRate_arr[Z][i];
     }
     else if (line == KB_LINE) {
-      rr1 = RadRate_arr[Z][KM2];
-      rr2 = RadRate_arr[Z][KM3];
+    	//we assume that RR(Ka)+RR(Kb) = 1.0
+    	return 1.0 - RadRate(Z,KA_LINE);
     }
-    if (rr1<0. || rr2<0.) {
+    if (rr == 0.0) {
       ErrorExit("Line not available in function RadRate");
-      return 0;
+      return 0.0;
     }
-    return rr1 + rr2;
+    return rr;
   }
 
   if (line == LA_LINE) {

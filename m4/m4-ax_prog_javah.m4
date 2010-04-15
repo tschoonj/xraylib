@@ -49,10 +49,10 @@ changequote([, ])dnl
     	[AC_LANG_PROGRAM([[#include <jni.h>]],[[#include <jni_md.h>]])],
 	AC_MSG_RESULT([ok])
 	CPPFLAGS="$ac_save_CPPFLAGS",
-	AC_MSG_RESULT([could not find jni.h]
+	AC_MSG_RESULT([could not find jni.h])
 	JAVACPPFLAGS=
-	CPPFLAGS="$ac_save_CPPFLAGS",
-	)
+	CPPFLAGS="$ac_save_CPPFLAGS"
+	
     )
 else
     AC_MSG_WARN([Could not locate javah])
