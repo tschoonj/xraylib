@@ -565,7 +565,7 @@ AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/Makefile])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`
@@ -576,6 +576,11 @@ abs_top_srcdir=`pwd -P`
 cd $abs_top_builddir
 AC_SUBST(abs_top_srcdir)
 
+#windows slashes versions
+abs_top_builddir_win=`echo $abs_top_builddir | sed -e 's/\//\\\/g'`
+abs_top_srcdir_win=`echo $abs_top_srcdir | sed -e 's/\//\\\/g'`
+AC_SUBST(abs_top_builddir_win)
+AC_SUBST(abs_top_srcdir_win)
 
 AM_CONDITIONAL([ABS_SRC_BUILD_EQUAL],[test x$abs_top_builddir = x$abs_top_srcdir])
 

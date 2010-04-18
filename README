@@ -15,6 +15,7 @@ Installation
 ============
 
 xraylib follows the standard GNU installation procedure. Please consult the INSTALL file in this distribution for more detailed instructions. 
+An installer for Windows including a 32-bit dll and the xraylib headers is also available from the Download section of the github repository. 
 
 For information about specific platforms and compilers see the "Compilation Notes" section in the INSTALL file.
 
