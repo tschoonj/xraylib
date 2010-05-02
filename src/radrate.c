@@ -59,6 +59,7 @@ float RadRate(int Z, int line)
     return rr;
   }
 
+  //this is a temporary solution -> must be changed in 2.14.0
   if (line == LA_LINE) {
     line = L3M5_LINE;
   }

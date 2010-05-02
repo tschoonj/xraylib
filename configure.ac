@@ -261,13 +261,13 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		    x86_64-*-linux*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.linux.x86_64
 		      IDL_CFLAGS="-fPIC"
-		      IDL_LD_FLAGS="-shared -Bsymbolic"
+		      IDL_LD_FLAGS="-shared -Xlinker -Bsymbolic -Xlinker --warn-once -Xlinker -noinhibit-exec"
 		      ;;
 
 		    *-linux*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.linux.x86
 	              IDL_CFLAGS="-fPIC"
-                      IDL_LD_FLAGS="-shared -Bsymbolic"
+                      IDL_LD_FLAGS="-shared -Xlinker -Bsymbolic -Xlinker --warn-once -Xlinker -noinhibit-exec"
 		      ;;
 
 		    *-sgi*)
@@ -279,7 +279,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 			if test -d $RSIIDL_BINDIR/bin.darwin.x86_64 ; then
 		      		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.x86_64
 		      		IDL_CFLAGS="-fPIC"
-		      		IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+		      		IDL_LD_FLAGS="-Xlinker -flat_namespace -Xlinker -undefined -Xlinker suppress -Xlinker -bundle"
 			else
 				AC_MSG_WARN([You appear to be running an IDL version on Mac OS X Snow Leopard that does not have the required 64-bit IDL libraries. Please upgrade your IDL installation to at least version 7.1])
 			VALID_IDL=no
@@ -291,13 +291,13 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		    i386-*-darwin*)
 	    		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
 			IDL_CFLAGS="-fPIC"
-			IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+		      	IDL_LD_FLAGS="-Xlinker -flat_namespace -Xlinker -undefined -Xlinker suppress -Xlinker -bundle"
 		      ;;
 
 		    ppc*-darwin*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.ppc
 		      IDL_CFLAGS="-fPIC"
-		      IDL_LD_FLAGS="-flat_namespace -undefined suppress -bundle"
+		      IDL_LD_FLAGS="-Xlinker -flat_namespace -Xlinker -undefined -Xlinker suppress -Xlinker -bundle"
 		      ;;
 		   *-solaris-*)
 		      AC_MSG_WARN([Solaris is currently not supported. Disable the bindings with --disable-idl])

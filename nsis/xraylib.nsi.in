@@ -88,22 +88,22 @@ Section "xraylib installer" SecDummy
 	Call unix2dos
 
 	SetOutPath "$INSTDIR\Doc"
-	File @abs_top_srcdir_win@\Doc\xraybanner.txt
+	File @abs_top_srcdir_win@\doc\xraybanner.txt
 	Push "$INSTDIR\Doc\xraybanner.txt"
 	Push "$INSTDIR\Doc\xraybanner.txt.fix"
 	Call unix2dos
 	Rename xraybanner.txt.fix xraybanner.txt
-	File @abs_top_srcdir_win@\Doc\xraydoc.txt
+	File @abs_top_srcdir_win@\doc\xraydoc.txt
 	Push "$INSTDIR\Doc\xraydoc.txt"
 	Push "$INSTDIR\Doc\xraydoc.txt.fix"
 	Call unix2dos
 	Rename xraydoc.txt.fix xraydoc.txt
-	File @abs_top_srcdir_win@\Doc\xrayfunc.txt
+	File @abs_top_srcdir_win@\doc\xrayfunc.txt
 	Push "$INSTDIR\Doc\xrayfunc.txt"
 	Push "$INSTDIR\Doc\xrayfunc.txt.fix"
 	Call unix2dos
 	Rename xrayfunc.txt.fix xrayfunc.txt
-	File @abs_top_srcdir_win@\Doc\xrayhelp.txt
+	File @abs_top_srcdir_win@\doc\xrayhelp.txt
 	Push "$INSTDIR\Doc\xrayhelp.txt"
 	Push "$INSTDIR\Doc\xrayhelp.txt.fix"
 	Call unix2dos

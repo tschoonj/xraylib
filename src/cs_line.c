@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009,2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ float CS_FluorLine(int Z, int line, float E)
       return 0.;                               
   }
 
-  else if (line>=L1N7_LINE && line<=L1M1_LINE) {
+  else if (line>=L1P5_LINE && line<=L1L2_LINE) {
     if (E > EdgeEnergy(Z, L1_SHELL)) {
       JumpL1 = JumpFactor(Z, L1_SHELL);
       if (JumpL1 <= 0.)
@@ -68,7 +68,7 @@ float CS_FluorLine(int Z, int line, float E)
       return 0.;                               
   }
   
-  else if ((line>=L2N7_LINE && line<=L2M1_LINE) || line==LB_LINE) {
+  else if ((line>=L2Q1_LINE && line<=L2L3_LINE) || line==LB_LINE) {
     if( E > EdgeEnergy(Z,K_SHELL) ) {
       JumpK = JumpFactor(Z,K_SHELL) ;
       if( JumpK <= 0. )
@@ -93,7 +93,7 @@ float CS_FluorLine(int Z, int line, float E)
       FluorYield(Z,L2_SHELL) ;
   }
   
-  else if ((line>=L3N7_LINE && line<=L3M1_LINE) || line==LA_LINE) {
+  else if ((line>=L3Q1_LINE && line<=L3M1_LINE) || line==LA_LINE) {
     if( E > EdgeEnergy(Z,K_SHELL) ) {
       JumpK = JumpFactor(Z,K_SHELL) ;
       if( JumpK <= 0. )

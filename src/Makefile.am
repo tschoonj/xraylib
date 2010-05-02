@@ -62,6 +62,7 @@ if ENABLE_PERL
 endif
 
 #$(EXEEXT) is necessary to allow compilation in cygwin
+#wine is necessary when cross-compiling
 xrayglob_inline.c: prdata$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
@@ -69,7 +70,8 @@ xrayglob_inline.c: prdata$(EXEEXT)
 #I'm not sure how portable this .libs link location is...
 #Maybe this could be rewritten using libtool...
 idlxrl:	xraylib_idl.c libxrl.la
-	$(CC) $(ARCHFLAGS) @IDL_LD_FLAGS@ -I@RSIIDL_DIR@/external/include $(AM_CPPFLAGS) -o libxrlidl.so $(CFLAGS)  @IDL_CFLAGS@ ${top_srcdir}/src/xraylib_idl.c -L${top_builddir}/src/.libs -lxrl
+	$(CC) -c $(AM_CPPFLAGS) -I@RSIIDL_DIR@/external/include $(CFLAGS) @IDL_CFLAGS@ ${top_srcdir}/src/xraylib_idl.c
+	gcc @IDL_LD_FLAGS@ -o libxrlidl.so xraylib_idl.o -L${top_builddir}/src/.libs -lxrl
 
 
 perlxrl: libxrl.la xraylib.i
@@ -117,6 +119,7 @@ clean-local:
 	rm -rf perl/blib
 	rm -f perl/Makefile
 	rm -f libxrlidl.so 
+	rm -f xraylib_idl.o 
 	rm -rf libxrlidl.so.dSYM
 if !ABS_SRC_BUILD_EQUAL
 	rm -rf perl
