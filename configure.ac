@@ -38,7 +38,7 @@ AC_CHECK_FUNCS([strndup strdup])
 #at least version 2.0 of libtool is required for creating the fortran bindings
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
-LT_INIT([dlopen disable-fast-install])
+LT_INIT([dlopen disable-fast-install win32-dll])
 #AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
@@ -68,30 +68,40 @@ AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in lib
 WINE=
 DISABLE_BINDINGS=no
 CROSS_COMPILING=
+LDFLAGS_LIBXRL=
+
+#cross_compiling variable is not reliable on modern bash shells... look at the compiler instead
+#check instead of $build and $host differ
 
 
-
-
-if test "x$cross_compiling" = "xyes" ; then
-	case "$build" in
-		*-apple-darwin* | *-linux*)
-		#disable all the bindings!
-		DISABLE_BINDINGS=yes
-		#look for wine
-		AC_CHECK_PROGS([WINE],[wine],["nowine"])
-		#enable wine for examples
-#		AC_SUBST([TESTS_ENVIRONMENT],[ $WINE])
-		;;
+if test "x$host" != "x$build" ; then
+	#cross compilation detected
+	#if $host is mingw, look for wine
+	case "$host" in 
+		*mingw*)
+			#disable bindings
+			DISABLE_BINDINGS=yes
+			#look for wine
+			AC_CHECK_PROGS([WINE],[wine],["nowine"])
+			;;
 		*)
-		  AC_MSG_ERROR([Detected platform that's not supported for cross-compilation])
-		;;
+			AC_MSG_ERROR([Detected platform that's not supported for cross-compilation])
+			;;
 	esac
 
 	if test "x$WINE" = "xnowine" ; then
 		AC_MSG_ERROR([wine is necessary when cross-compiling for windows.])
 	fi
 	CROSS_COMPILING=yes
+	LDFLAGS+="-no-undefined"
+	LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT.def
+else
+	LDFLAGS_LIBXRL="" 
 fi
+
+
+AC_SUBST(LDFLAGS_LIBXRL)
+
 
 
 AM_CONDITIONAL([ENABLE_CROSS],[test x$CROSS_COMPILING = xyes])

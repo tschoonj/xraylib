@@ -1,0 +1,13 @@
+Some info on how we build the Windows package:
+
+First of all: we don't compile it on Windows itself! It may be possible using mingw32 and msys but we haven't tried it (feel free to report us your successes and/or failures in this regard). Instead we use a cross-compiler on linux by running configure with the option: --host=i386-mingw32 or something similar depending on your mingw32 installation. This will also test for the presence of wine (The WINdows Emulator), due to its requirement during the build phase. Assuming make and make check didn't end horribly, you now have build the dll and static archive of xraylib that can be used on the Windows platform. Unfortunately these files can not be linked in on Windows when you use the Microsoft Visual C++ compiler (MSVC) due to the missing .lib file. To produce this file, we used a trick described on http://www.mingw.org/wiki/MSVC_and_MinGW_DLLs
+
+We used the DEF file produced during the compilation phase, copied it to a Windows machine with MSVC installed and run the following command on a Windows shell:
+
+lib /machine:i386 /def:libxrl-{version}.def
+
+This produces the required .LIB file. This file works fine with MSVC but fails horribly when using the Borland compiler... 
+
+
+Now to produce the installer itself we used the NullSoft Installer System. After running ./configure, a script xraylib.nsi will be produced in the nsis subdirectory of the xraylib package. After the crosscompilation, run "makensis xraylib.nsi" in this folder to create the executable. Note that this does not work with the NSIS package available from MacPorts!!! We used Fedora 12 to create the package. 
+

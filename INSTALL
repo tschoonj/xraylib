@@ -38,7 +38,7 @@ Platforms known to compile and run xraylib
 	Linux (32-bit/64-bit)
 	Solaris 10 (32-bit/64-bit)
 	Mac OS X (32-bit/64-bit)
-	Windows (Cygwin, static version only)
+	Windows (native and Cygwin)
 	FreeBSD (64-bit)
 
 Not all bindings have been tested on each of these platforms. The following table summarizes the current status.
@@ -98,32 +98,6 @@ We have noticed that the compilation of the xrayglob_inline.c file (using the Su
 Also, the fortran compiler of the Sun Studio package requires the -M command line option or the MODDIR environment variable to search for .mod files. Since not all fortran compilers support this option, we did not include this in the Makefile of the examples, causing the fortran test to fail. This can however be circumvented by setting the MODDIR variable pointing to the src directory.
 
 The IDL bindings currently do not work on Solaris. The main reason would be that none of the developers currently have access to an IDL software package on this platform. If you do, and can test the bindings, please contact the developers.
-
-Hints for mingw32
-=================
-
-The developers have successfully built xraylib using the mingw32 cross-compiler on Mac OS X using the following configure command:
-
-  $ ./configure --host=i386-mingw32
-
-While executing this command, the configure script will look for the presence of the cross-compiler and wine (the windows emulator), which is necessary to run the prdata executable during the make stage.
-This creates only the static version of the library; to create the dynamically loadable library (dll) as well, use:
-
-  $ ./configure --host=i386-mingw32 LDFLAGS="-no-undefined"
-
-We have written a NSIS script that will allow for the compilation of a Windows installer. To use it go to the nsis directory and run:
-
-  $ makensis xraylib.nsi
-
-
-Note: there appears to be a problem with autoconf, modern bash versions and wine. We have noticed that the configure script doesn't recognize that it should be cross-compiling when using a modern bash shell with wine installed. This is because the following statements work, while the second should exit with an error:
-
-  $ i386-mingw32-gcc -o test.exe test.c
-  $ ./test.exe
-
-The bash shell appears to be calling wine to execute the windows executable. This problem needs to be addressed by the autoconf developers, so don't bother sending us emails about it. :-) We have encountered this problem on Fedora 12.
-
-
 
 
                     ------------------------------

@@ -17,6 +17,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 int main()
 {
+  struct compoundData cdtest;
+  int i;
   XRayInit();
   //if something goes wrong, the test will end with EXIT_FAILURE
   SetHardExit(1);
@@ -31,10 +33,8 @@ int main()
   std::printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
   std::printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
   //parser test for Ca(HCO3)2 (calcium bicarbonate)
-  struct compoundData cdtest;
   if (CompoundParser("Ca(HCO3)2",&cdtest) == 0)
 	return 1;
-  int i;
   std::printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
   for (i = 0 ; i < cdtest.nElements ; i++)
     std::printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
@@ -51,11 +51,11 @@ int main()
 
   FREE_COMPOUND_DATA(cdtest)
 
-  std::printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0) );
+  std::printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0f) );
 
-  std::printf("CS2 Refractive Index at 10.0 keV : %g - %g i\n",Refractive_Index_Re("CS2",10.0,1.261),Refractive_Index_Im("CS2",10.0,1.261));
-  std::printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",Refractive_Index_Re("C16H14O3",1.0,1.2),Refractive_Index_Im("C16H14O3",1.0,1.2));
-  std::printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",Refractive_Index_Re("SiO2",5.0,2.65),Refractive_Index_Im("SiO2",5.0,2.65));
+  std::printf("CS2 Refractive Index at 10.0 keV : %f - %f i\n",Refractive_Index_Re("CS2",10.0f,1.261f),Refractive_Index_Im("CS2",10.0f,1.261f));
+  std::printf("C16H14O3 Refractive Index at 1 keV : %f - %f i\n",Refractive_Index_Re("C16H14O3",1.0f,1.2f),Refractive_Index_Im("C16H14O3",1.0f,1.2f));
+  std::printf("SiO2 Refractive Index at 5 keV : %f - %f i\n",Refractive_Index_Re("SiO2",5.0f,2.65f),Refractive_Index_Im("SiO2",5.0f,2.65f));
 
 
 }

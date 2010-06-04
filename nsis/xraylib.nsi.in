@@ -12,6 +12,7 @@
 ;Written by Tom Schoonjans
 
 !include "MUI2.nsh"
+!include "Library.nsh"
 
 !define PRODUCT_NAME "xraylib"
 !define VERSION @VERSION@
@@ -21,6 +22,8 @@
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define abs_top_srcdir_win @abs_top_srcdir_win@ 
+!define abs_top_builddir_win @abs_top_builddir_win@ 
+!define DLLTOOL "i686-pc-mingw32-dlltool"
 
 ;!define MUI_LANGDLL_REGISTRY_ROOT "HKLM"
 ;!define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_DIR_REGKEY}"
@@ -66,6 +69,7 @@ CRCCheck on
 
 Section "xraylib installer" SecDummy
 	SetOutPath "$INSTDIR"
+	;Readme etc
 	File @abs_top_srcdir_win@\README
 	Push "$INSTDIR\README"
 	Push "$INSTDIR\README.txt"
@@ -87,6 +91,7 @@ Section "xraylib installer" SecDummy
 	Push "$INSTDIR\TODO.txt"
 	Call unix2dos
 
+	;Documentation
 	SetOutPath "$INSTDIR\Doc"
 	File @abs_top_srcdir_win@\doc\xraybanner.txt
 	Push "$INSTDIR\Doc\xraybanner.txt"
@@ -109,13 +114,38 @@ Section "xraylib installer" SecDummy
 	Call unix2dos
 	Rename xrayhelp.txt.fix xrayhelp.txt
 
-	SetOutPath "$SYSDIR"
-	File @abs_top_builddir_win@\src\.libs\libxrl-3.dll
 
+	;copy dll to C:\WINDOWS\system32 or something similar
+	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED @abs_top_builddir_win@\src\.libs\libxrl-@LIB_CURRENT@.dll $SYSDIR\libxrl-@LIB_CURRENT@.dll "$SYSDIR"
+
+	;copy lib file to Lib for development...
+;	!execute '${DLLTOOL} "-U" "--export-all-symbols" "-l" "libxrl.lib" "@abs_top_builddir@/src/.libs/libxrl.a"'
 	SetOutPath "$INSTDIR\Lib"
+	;these files will have to be produced on a windows platform :-(
+	;or maybe there is some slick trick I still have to discover
+	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@.lib
+	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@.exp
 	File @abs_top_builddir_win@\src\.libs\libxrl.a
-	CreateShortCut "libxrl-3.dll.lnk" "$SYSDIR\libxrl-3.dll" "" ""
+	File @abs_top_builddir_win@\src\.libs\libxrl.dll.a
+	File @abs_top_builddir_win@\src\libxrl-@LIB_CURRENT@.def
+		
 
+	;Examples
+	SetOutPath "$INSTDIR\Example"
+	File @abs_top_srcdir_win@\example\xrlexample1.c
+	Push "$INSTDIR\Example\xrlexample1.c"
+	Push "$INSTDIR\Example\xrlexample1.c.fix"
+	Call unix2dos
+	Rename xrlexample1.c.fix xrlexample1.c
+	File @abs_top_srcdir_win@\example\xrlexample6.cpp
+	Push "$INSTDIR\Example\xrlexample6.cpp"
+	Push "$INSTDIR\Example\xrlexample6.cpp.fix"
+	Call unix2dos
+	Rename xrlexample6.cpp.fix xrlexample6.cpp
+
+
+
+	;Headers
 	SetOutPath "$INSTDIR\Include"
 	File @abs_top_srcdir_win@\include\xraylib.h
 	Push "$INSTDIR\Include\xraylib.h"
@@ -154,16 +184,25 @@ Section "Uninstall"
 	Delete "$INSTDIR\Include\xraylib-parser.h"
 	Delete "$INSTDIR\Include\lines.h"
 	Delete "$INSTDIR\Include\shells.h"
-	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
-	Delete "$SYSDIR\libxrl-3.dll"
-	Delete "$INSTDIR\Lib\libxrl.a"
+;	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
+;	Delete "$SYSDIR\libxrl-3.dll"
+	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $SYSDIR\libxrl-@LIB_CURRENT@.dll
+;	Delete "$INSTDIR\Lib\libxrl.a"
 	Delete "$INSTDIR\Doc\xraybanner.txt"
 	Delete "$INSTDIR\Doc\xraydoc.txt"
 	Delete "$INSTDIR\Doc\xrayfunc.txt"
 	Delete "$INSTDIR\Doc\xrayhelp.txt"
+	Delete "$INSTDIR\Example\xrlexample1.c"
+	Delete "$INSTDIR\Example\xrlexample6.cpp"
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.lib
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.exp
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.def
+	Delete "$INSTDIR\Lib\libxrl.dll.a"
+	Delete "$INSTDIR\Lib\libxrl.a"
 	RMDir "$INSTDIR\Include"
 	RMDir "$INSTDIR\Lib"
 	RMDir "$INSTDIR\Doc"
+	RMDir "$INSTDIR\Example"
 	Delete "$INSTDIR\README.txt"
 	Delete "$INSTDIR\AUTHORS.txt"
 	Delete "$INSTDIR\BUGS.txt"

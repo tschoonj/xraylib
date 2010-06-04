@@ -47,7 +47,7 @@ endif
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
-libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ $(LDFLAGS_LIBXRL)
 
 EXTRA_DIST = xraylib_idl.c libxrlidl.dlm perl/Makefile.PL perl/Makefile_perl xraylib.i
 

@@ -8,6 +8,7 @@ Makefile.in
 config.h.in
 configure
 build
+build_mac
 aclocal.m4
 autom4te.cache
 build-aux
