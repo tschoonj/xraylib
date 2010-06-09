@@ -124,10 +124,15 @@ Section "xraylib installer" SecDummy
 	;these files will have to be produced on a windows platform :-(
 	;or maybe there is some slick trick I still have to discover
 	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@.lib
+	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@-bcc.lib
 	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@.exp
 	File @abs_top_builddir_win@\src\.libs\libxrl.a
 	File @abs_top_builddir_win@\src\.libs\libxrl.dll.a
 	File @abs_top_builddir_win@\src\libxrl-@LIB_CURRENT@.def
+	File @abs_top_srcdir_win@\nsis\README
+	Push "$INSTDIR\Lib\README"
+	Push "$INSTDIR\Lib\README.txt"
+	Call unix2dos
 		
 
 	;Examples
@@ -195,10 +200,12 @@ Section "Uninstall"
 	Delete "$INSTDIR\Example\xrlexample1.c"
 	Delete "$INSTDIR\Example\xrlexample6.cpp"
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.lib
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@-bcc.lib
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.exp
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.def
 	Delete "$INSTDIR\Lib\libxrl.dll.a"
 	Delete "$INSTDIR\Lib\libxrl.a"
+	Delete "$INSTDIR\Lib\README.txt"
 	RMDir "$INSTDIR\Include"
 	RMDir "$INSTDIR\Lib"
 	RMDir "$INSTDIR\Doc"

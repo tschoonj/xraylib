@@ -60,13 +60,11 @@ struct compoundData {
  * in a compoundData structure
  */
 
-#ifdef __cplusplus
-	#define FREE_COMPOUND_DATA(cd) std::free(cd.Elements);\
-				std::free(cd.massFractions);
-#else
-	#define FREE_COMPOUND_DATA(cd) free(cd.Elements);\
-				free(cd.massFractions);
-#endif
+void _free_compound_data(struct compoundData *);
+
+#define FREE_COMPOUND_DATA(cd) _free_compound_data(&cd); 
+
+
 /*
  * The CompoundParser function will parse a string and will put the results in
  * a compoundData structure pointed to by cd. If successful, the function

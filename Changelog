@@ -3,8 +3,15 @@ Version 2.13.1 Tom Schoonjans
 -Corrected radrate database: 2.13.0 was using scofield for K and campbell for
 L instead of Krause data
 -"make clean" now works properly
--Added NSIS script to produce a Windows installer
-
+-Changed the way the RadRate of Kbeta lines are being calculated, now
+RadRate(KB_LINE) = 1.0 - RadRate(KA_LINE). Anyway, the way the RadRates are
+being calculated should be reviewed in the version. Siegbahn macros should be
+added for more lines.
+-Added NSIS script to produce a Windows installer: this installs the required
+files for development on Windows, including headers, dll, static libs with
+exported functions and some documentation. The Windows SDK has been verified
+to work with Microsoft Visual C++, Borland 5.5 and Intel C/C++ 11.1
+Also: the Windows dll works with LabView...
 
 Version 2.13.0 Tom Schoonjans
 

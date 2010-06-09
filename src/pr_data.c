@@ -47,7 +47,7 @@ fprintf(f, "};\n\n");
 
 #define PR_DYNMATF(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "float __%s_%d[] =\n", ENAME, j);\
+    fprintf(f, "static float __%s_%d[] =\n", ENAME, j);\
     print_floatvec(NVAR[j], EVAR[j]); \
     fprintf(f, ";\n\n");\
   } \
@@ -63,7 +63,7 @@ fprintf(f, "};\n\n");
 
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "double __%s_%d[] =\n", ENAME, j);\
+    fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
     print_doublevec(NVAR[j], EVAR[j]); \
     fprintf(f, ";\n\n");\
   } \
@@ -80,7 +80,7 @@ fprintf(f, "};\n\n");
 #define PR_DYNMAT_3DD(NVAR2D, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1; i++) { \
     for (j = 0; j < SHELLNUM_K; j++) {\
-      fprintf(f, "double __%s_%i_%i[] = \n", ENAME, i, j);\
+      fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
       print_doublevec(NVAR2D[i][j], EVAR[i][j]);\
       fprintf(f, ";\n\n");\
     }\

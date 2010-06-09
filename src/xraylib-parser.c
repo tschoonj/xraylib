@@ -347,3 +347,10 @@ int CompoundParser(const char compoundString[], struct compoundData *cd) {
 		return 0;
 }
 
+void _free_compound_data(struct compoundData *cd) {
+	//function designed to replace FREE_COMPOUND_DATA macro, due to the problems with the Borland compiler...
+	
+	free(cd->Elements);
+	free(cd->massFractions);
+}
+
