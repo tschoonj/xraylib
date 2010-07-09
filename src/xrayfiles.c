@@ -248,7 +248,6 @@ void XRayInit(void)
 	break;
       } 
     }
-    found_error_line=0;
     if (read_error) {
         if (nerror_lines == 0) {
 	    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
@@ -363,7 +362,6 @@ void XRayInit(void)
 	break;
       } 
     }
-    found_error_line=0;
     if (read_error) {
         if (nerror_lines == 0) {
 	    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);

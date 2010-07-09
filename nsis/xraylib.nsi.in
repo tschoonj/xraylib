@@ -13,6 +13,8 @@
 
 !include "MUI2.nsh"
 !include "Library.nsh"
+!include "EnvVarUpdate.nsh"
+!include "Sections.nsh"
 
 !define PRODUCT_NAME "xraylib"
 !define VERSION @VERSION@
@@ -52,7 +54,7 @@ CRCCheck on
 !define MUI_LICENSEPAGE_CHECKBOX
 !insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
 
-
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TEXT "Thank you for installing xraylib. Remember: the latest version of xraylib can be obtained from the development repository on github"
@@ -67,7 +69,7 @@ CRCCheck on
 !insertmacro MUI_UNPAGE_FINISH
 
 
-Section "xraylib installer" SecDummy
+Section "-xraylib core files" SecDummy
 	SetOutPath "$INSTDIR"
 	;Readme etc
 	File @abs_top_srcdir_win@\README
@@ -290,4 +292,21 @@ Function unix2dos
       Delete $0
    
 FunctionEnd
+
+Function .onInit
+	ReadRegStr $R0 HKLM ${PRODUCT_UNINST_KEY} "UninstallString"
+	StrCmp $R0 "" done
+	MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "${PROGRAM_NAME} is already installed. $\n$\nClick `OK` to remove the previous version or `Cancel` to cancel this upgrade." IDOK uninst
+	Abort
+
+	uninst:
+	ClearErrors
+	Exec $INSTDIR\Uninstall.exe
+
+	done:
+
+FunctionEnd
+
+
+
 !insertmacro MUI_LANGUAGE "English"
