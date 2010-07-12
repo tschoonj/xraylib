@@ -20,7 +20,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "idl_export.h"
 
 
-extern int HardExit, ExitStatus;
 
 
 
@@ -145,7 +144,9 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CSb_FluorLine_Kissel,"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
 	{IDL_CS_Total_Kissel,"CS_TOTAL_KISSEL", 2 , 2 , 0 , 0},
 	{IDL_CSb_Total_Kissel,"CSB_TOTAL_KISSEL", 2 , 2 , 0 , 0},
+#ifndef MSWIN
 	{IDL_CompoundParser,"COMPOUNDPARSER",1, 1, 0, 0},
+#endif
 	{IDL_CS_Total_CP,"CS_TOTAL_CP",2,2,0,0},
 	{IDL_CS_Photo_CP,"CS_PHOTO_CP",2,2,0,0},
 	{IDL_CS_Rayl_CP,"CS_RAYL_CP",2,2,0,0},
@@ -179,17 +180,17 @@ static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 // Error Handling
 void IDL_CDECL IDL_SetHardExit(int argc, IDL_VPTR argv[])
 {
-  HardExit = IDL_LongScalar(argv[0]);
+  SetHardExit(IDL_LongScalar(argv[0]));
 }
 
 void IDL_CDECL IDL_SetExitStatus(int argc, IDL_VPTR argv[])
 {
-  ExitStatus = IDL_LongScalar(argv[0]);
+  SetExitStatus(IDL_LongScalar(argv[0]));
 }
 
 IDL_VPTR IDL_CDECL IDL_GetExitStatus(int argc, IDL_VPTR argv[])
 {
-  return IDL_GettmpInt((IDL_INT) ExitStatus);
+  return IDL_GettmpInt((IDL_INT) GetExitStatus());
 }
 
 void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
@@ -577,7 +578,7 @@ void release(UCHAR *memPtr) {
 }
 
 
-
+#ifndef MSWIN
 IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	struct compoundData cd;	
 	IDL_VPTR rv;
@@ -620,6 +621,7 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 
 	return rv;
 }
+#endif
 
 
 

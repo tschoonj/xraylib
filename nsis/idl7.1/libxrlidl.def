@@ -1,0 +1,4 @@
+LIBRARY			xraylib
+DESCRIPTION 		'xraylib'
+
+EXPORTS			IDL_Load	@1
