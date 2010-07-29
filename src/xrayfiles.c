@@ -478,6 +478,58 @@ void XRayInit(void)
     }
 
   }
+  fclose(fp);
+
+  //read Compton profiles
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name,"comptonprofiles.dat");
+  if ((fp = fopen(file_name,"r")) == NULL) {
+    ErrorExit("File comptonprofiles.dat not found");
+    return;
+  }
+
+  for (Z = 1 ; Z <= ZMAX ; Z++) {
+ 	ex = fscanf(fp, "%i %i",NShells_ComptonProfiles+Z,Npz_ComptonProfiles+Z);
+	if (ex != 2) break;
+	//allocate required amount of memory
+	UOCCUP_ComptonProfiles[Z] = (int *) malloc(NShells_ComptonProfiles[Z]*sizeof(int));
+	UBIND_ComptonProfiles[Z] = (double *) malloc(NShells_ComptonProfiles[Z]*sizeof(double));
+  	pz_ComptonProfiles[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+	Total_ComptonProfiles[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+	Total_ComptonProfiles2[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+ 	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
+		fscanf(fp,"%i", &UOCCUP_ComptonProfiles[Z][iE]);
+	} 
+ 	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
+		fscanf(fp,"%lf", &UBIND_ComptonProfiles[Z][iE]);
+	} 
+ 	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
+		fscanf(fp,"%lf", &pz_ComptonProfiles[Z][iE]);
+	} 
+ 	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
+		fscanf(fp,"%lf", &Total_ComptonProfiles[Z][iE]);
+	} 
+ 	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
+		fscanf(fp,"%lf", &Total_ComptonProfiles2[Z][iE]);
+	} 
+	for (shell = 0 ; shell < NShells_ComptonProfiles[Z] ; shell++) {
+		Partial_ComptonProfiles[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+		for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
+			fscanf(fp, "%lf", &Partial_ComptonProfiles[Z][shell][iE]);
+		}
+	}
+	for (shell = 0 ; shell < NShells_ComptonProfiles[Z] ; shell++) {
+		Partial_ComptonProfiles2[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+		for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
+			fscanf(fp, "%lf", &Partial_ComptonProfiles2[Z][shell][iE]);
+		}
+	}
+  }
+  fclose(fp);
+
+
+
+
 }
 
 void ArrayInit()
@@ -494,6 +546,9 @@ void ArrayInit()
     Nq_Compt[Z] = OUTD;
     AtomicWeight_arr[Z] = OUTD;
     NE_Photo_Total_Kissel[Z] = OUTD;
+    NShells_ComptonProfiles[Z] = OUTD;
+    Npz_ComptonProfiles[Z] = OUTD;
+   
     for (shell=0; shell<SHELLNUM; shell++) {
       EdgeEnergy_arr[Z][shell] = OUTD;
       FluorYield_arr[Z][shell] = OUTD;

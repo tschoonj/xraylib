@@ -77,7 +77,23 @@ fprintf(f, "};\n\n");
   }\
   fprintf(f, "};\n\n");    
 
-#define PR_DYNMAT_3DD(NVAR2D, EVAR, ENAME) \
+#define PR_DYNMATI(NVAR, EVAR, ENAME) \
+  for(j = 0; j < ZMAX+1; j++) { \
+    fprintf(f, "static int __%s_%d[] =\n", ENAME, j);\
+    print_intvec(NVAR[j], EVAR[j]); \
+    fprintf(f, ";\n\n");\
+  } \
+\
+  fprintf(f, "int *%s[] =\n", ENAME);\
+  fprintf(f, "{\n"); \
+  for(j = 0; j < ZMAX+1; j++) { \
+    fprintf(f, "__%s_%d, ", ENAME, j);\
+    if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
+      fprintf(f, "\n");\
+  }\
+  fprintf(f, "};\n\n");    
+
+#define PR_DYNMAT_3DD_K(NVAR2D, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1; i++) { \
     for (j = 0; j < SHELLNUM_K; j++) {\
       fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
@@ -90,6 +106,27 @@ fprintf(f, "};\n\n");
   for (i = 0; i < ZMAX+1; i++) {\
     fprintf(f,"{\n");\
     for (j = 0; j < SHELLNUM_K; j++) {\
+      fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
+      if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
+        fprintf(f, "\n");\
+    }\
+    fprintf(f,"},\n");\
+  }\
+  fprintf(f,"\n};\n");\
+
+#define PR_DYNMAT_3DD_C(NVAR2D, EVAR, ENAME) \
+  for (i = 0; i < ZMAX+1; i++) { \
+    for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
+      fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
+      print_doublevec(NVAR2D[i], EVAR[i][j]);\
+      fprintf(f, ";\n\n");\
+    }\
+  }\
+\
+  fprintf(f, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
+  for (i = 0; i < ZMAX+1; i++) {\
+    fprintf(f,"{\n");\
+    for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
       if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
         fprintf(f, "\n");\
@@ -230,9 +267,20 @@ int main(void)
   fprintf(f, "int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATI(ZMAX+1, SHELLNUM_K, NE_Photo_Partial_Kissel);
 
-  PR_DYNMAT_3DD(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel"); 
-  PR_DYNMAT_3DD(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel"); 
-  PR_DYNMAT_3DD(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2"); 
+  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel"); 
+  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel"); 
+  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2"); 
+
+//added by Tom Schoonjans 28/07/2010
+  PR_NUMVEC1D(NShells_ComptonProfiles, "NShells_ComptonProfiles");
+  PR_NUMVEC1D(Npz_ComptonProfiles, "Npz_ComptonProfiles");
+  PR_DYNMATI(NShells_ComptonProfiles,UOCCUP_ComptonProfiles,"UOCCUP_ComptonProfiles");
+  PR_DYNMATD(NShells_ComptonProfiles,UBIND_ComptonProfiles,"UBIND_ComptonProfiles");
+  PR_DYNMATD(Npz_ComptonProfiles,pz_ComptonProfiles,"pz_ComptonProfiles");
+  PR_DYNMATD(Npz_ComptonProfiles,Total_ComptonProfiles,"Total_ComptonProfiles");
+  PR_DYNMATD(Npz_ComptonProfiles,Total_ComptonProfiles2,"Total_ComptonProfiles2");
+  PR_DYNMAT_3DD_C(Npz_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
+  PR_DYNMAT_3DD_C(Npz_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
 
   fclose(f);

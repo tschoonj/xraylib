@@ -101,6 +101,15 @@ extern double *E_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K];
 extern double *Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K];
 extern double *Photo_Partial_Kissel2[ZMAX+1][SHELLNUM_K];
 
+extern int NShells_ComptonProfiles[ZMAX+1];
+extern int Npz_ComptonProfiles[ZMAX+1];
+extern int *UOCCUP_ComptonProfiles[ZMAX+1];
+extern double *UBIND_ComptonProfiles[ZMAX+1];
+extern double *pz_ComptonProfiles[ZMAX+1];
+extern double *Total_ComptonProfiles[ZMAX+1];
+extern double *Total_ComptonProfiles2[ZMAX+1];
+extern double *Partial_ComptonProfiles[ZMAX+1][SHELLNUM_C];
+extern double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 
 
 

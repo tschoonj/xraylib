@@ -16,7 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define ZMAX 120
 #define MAXFILENAMESIZE 1000
 #define SHELLNUM 28
-#define SHELLNUM_K SHELLNUM+3
+#define SHELLNUM_K 31
+#define SHELLNUM_C 28
 #define LINENUM 383
 #define TRANSNUM 5
 

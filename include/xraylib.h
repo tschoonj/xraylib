@@ -165,7 +165,10 @@ float CSb_Total_Kissel_CP(const char compound[], float E);
 float Refractive_Index_Re(const char compound[], float E, float density);
 float Refractive_Index_Im(const char compound[], float E, float density);
 
-
+//ComptonProfiles
+float ComptonProfile(int Z, float pz);
+//ComptonProfile_Partial needs its own set of shell macros...
+//float ComptonProfile_Partial(int Z, float pz, int shell);
 
 #ifdef __cplusplus
 }
