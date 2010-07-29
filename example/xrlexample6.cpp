@@ -56,7 +56,7 @@ int main()
   std::printf("CS2 Refractive Index at 10.0 keV : %f - %f i\n",Refractive_Index_Re("CS2",10.0f,1.261f),Refractive_Index_Im("CS2",10.0f,1.261f));
   std::printf("C16H14O3 Refractive Index at 1 keV : %f - %f i\n",Refractive_Index_Re("C16H14O3",1.0f,1.2f),Refractive_Index_Im("C16H14O3",1.0f,1.2f));
   std::printf("SiO2 Refractive Index at 5 keV : %f - %f i\n",Refractive_Index_Re("SiO2",5.0f,2.65f),Refractive_Index_Im("SiO2",5.0f,2.65f));
-
+  std::printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
 
 }
 

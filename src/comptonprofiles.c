@@ -41,7 +41,7 @@ float ComptonProfile(int Z, float pz) {
  * ComptonProfile_Partial needs to be revised. The included database relies on atomic notation instead of X-ray notation
  * which has consequences for the shell parameter
  *
-float ComptonProfile_Partial(int Z, float pz, int shell) {
+float ComptonProfile_Partial(int Z, int shell, float pz) {
 	double q;
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {

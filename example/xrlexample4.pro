@@ -39,6 +39,7 @@ PRINT,'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP("Ca(HCO3)2",10.0)
 PRINT,'CS2 Refractive Index at 10.0 keV : ',Refractive_Index_Re("CS2",10.0,1.261),' - ',Refractive_Index_Im("CS2",10.0,1.261),' i'  
 PRINT,'C16H14O3 Refractive Index at 1 keV : ',Refractive_Index_Re("C16H14O3",1.0,1.2),' - ',Refractive_Index_Im("C16H14O3",1.0,1.2),' i'  
 PRINT,'SiO2 Refractive Index at 5.0 keV : ',Refractive_Index_Re("SiO2",5.0,2.65),' - ',Refractive_Index_Im("SiO2",5.0,2.65),' i'  
+PRINT,'Compton profile for Fe at pz = 1.1 : ',ComptonProfile(26,1.1)
 
 
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check

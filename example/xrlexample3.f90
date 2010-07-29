@@ -69,7 +69,8 @@ WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'C16H14O3 Refractive Index at 1 keV : ', &
         Refractive_Index_Re('C16H14O3'//C_NULL_CHAR,1.0,1.2),' - ',Refractive_Index_Im('C16H14O3'//C_NULL_CHAR,1.0,1.2),' i'  
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'SiO2 Refractive Index at 5.0 keV : ', &
         Refractive_Index_Re('SiO2'//C_NULL_CHAR,5.0,2.65),' - ',Refractive_Index_Im('SiO2'//C_NULL_CHAR,5.0,2.65),' i'  
-
+WRITE (6,'(A,F12.6)') 'Compton profile for Fe at pz = 1.1 : ' ,&
+        ComptonProfile(26,1.1) 
 
 
 ENDPROGRAM

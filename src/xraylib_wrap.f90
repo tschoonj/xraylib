@@ -1050,6 +1050,23 @@ INTERFACE
                 REAL (KIND=C_FLOAT) :: Refractive_Index_Im
         ENDFUNCTION Refractive_Index_Im
 
+        PURE FUNCTION ComptonProfile(Z, pz) BIND(C,NAME='ComptonProfile')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: pz
+                REAL (KIND=C_FLOAT) :: ComptonProfile
+        ENDFUNCTION ComptonProfile
+
+!        PURE FUNCTION ComptonProfile_Partial(Z, pz, shell) BIND(C,NAME='ComptonProfile_Partial')
+!                USE, INTRINSIC :: ISO_C_BINDING
+!                IMPLICIT NONE
+!                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
+!                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: pz
+!                REAL (KIND=C_FLOAT) :: ComptonProfile_Partial
+!        ENDFUNCTION ComptonProfile_Partial
+
+
 ENDINTERFACE
 
 CONTAINS
