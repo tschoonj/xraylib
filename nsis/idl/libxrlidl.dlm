@@ -81,10 +81,7 @@ FUNCTION CS_FLUORLINE_KISSEL 3 3
 FUNCTION CSB_FLUORLINE_KISSEL 3 3
 FUNCTION CS_TOTAL_KISSEL 2 2
 FUNCTION CSB_TOTAL_KISSEL 2 2
-#next function is unavailable under Windows, because MSVC has no support for
-#variable length arrays and other 21st century features, and I haven't managed
-#to compile the dll with mingw32 and get it working.
-#FUNCTION COMPOUNDPARSER 1 1
+FUNCTION COMPOUNDPARSER 1 1
 FUNCTION CS_TOTAL_CP 2 2
 FUNCTION CS_PHOTO_CP 2 2
 FUNCTION CS_RAYL_CP 2 2

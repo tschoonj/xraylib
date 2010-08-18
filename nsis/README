@@ -19,8 +19,21 @@ Now to produce the installer itself we used the NullSoft Installer System. After
 
 IDL bindings
 ============
-The xraylib DLM for Windows was built using Microsoft's Visual Studio 2010. Since the C compiler included with VS does not support variable length arrays and other C99? features, the CompoundParser routine is not working in the DLM.
 
+The IDL bindings for Windows were compiled using the MAKE_DLL procedure, callable from within IDL. Before executing the routine itself, we changed the !MAKE_DLL IDL system variable as follows:
+
+!MAKE_DLL.COMPILER_NAME='GCC'
+!MAKE_DLL.CC='gcc.exe %X -fPIC -I"C:\Program Files (x86)\ITT\IDL\IDL80\external\include" -c -D_REENTRANT %C -o %O'
+
+It is important here NOT to change the value of !MAKE_DLL.LD
+
+The MAKE_DLL command itself was:
+
+make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\Program Files (x86)\xraylib\Include"',EXTRA_LFLAGS='"C:\Program Files (x86)\xraylib\Lib\libxrl-3.lib" /LIBPATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib"'
+
+Depending on the versions of IDL, xraylib and Visual Studio that are installed, these commands may need to be altered.
+
+The inevitable disadvantage of this approach is that the user has to download the Redistributable Package of Visual Studio 2010, which can be retrieved from http://www.microsoft.com/downloads/details.aspx?FamilyID=a7b7a05e-6de6-4d3a-a423-37bf0912db84&displaylang=en
 
 
 
