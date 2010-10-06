@@ -16,7 +16,7 @@
 ; This file takes care of the initialization of the IDL interface to xraylib 
 ;
 ; Usage: ; From your IDL session, enter:
-;    @~/.xraylib/idl/xraylib.pro 
+;    @xraylib 
 ;
 ; Then use the xraylib functions, for example:
 ; print,'Testing xraylib: K-edge energy [keV] for Z=26 is: ',edgeenergy(26,0)
@@ -35,6 +35,43 @@ COMMON XRAYLIB,AVOGNUM,$
 	KB_LINE,$
 	LA_LINE,$
 	LB_LINE,$
+	KA1_LINE,$
+	KA2_LINE,$
+	KB1_LINE,$
+	KB2_LINE,$
+	KB3_LINE,$
+	KB4_LINE,$
+	KB5_LINE,$
+	LA1_LINE,$
+	LA2_LINE,$
+	LB1_LINE,$
+	LB2_LINE,$
+	LB3_LINE,$
+	LB4_LINE,$
+	LB5_LINE,$
+	LB6_LINE,$
+	LB7_LINE,$
+	LB9_LINE,$
+	LB10_LINE,$
+	LB15_LINE,$
+	LB17_LINE,$
+	LG1_LINE,$
+	LG2_LINE,$
+	LG3_LINE,$
+	LG4_LINE,$
+	LG5_LINE,$
+	LG6_LINE,$
+	LG8_LINE,$
+	LE_LINE,$
+	LL_LINE,$
+	LS_LINE,$
+	LT_LINE,$
+	LU_LINE,$
+	LV_LINE,$
+	MA1_LINE,$
+	MA2_LINE,$
+	MB_LINE,$
+	MG_LINE,$
 	KL1_LINE,$
 	KL2_LINE,$
 	KL3_LINE,$
@@ -472,6 +509,48 @@ F23_TRANS  = 4
 
 
 .run xraylib_lines
+
+KA1_LINE = KL3_LINE
+KA2_LINE = KL2_LINE
+KB1_LINE = KM3_LINE
+KB2_LINE = KN3_LINE
+KB3_LINE = KM2_LINE
+KB4_LINE = KN5_LINE
+KB5_LINE = KM5_LINE
+
+LA1_LINE = L3M5_LINE
+LA2_LINE = L3M4_LINE
+LB1_LINE = L2M4_LINE
+LB2_LINE = L3N5_LINE
+LB3_LINE = L1M3_LINE
+LB4_LINE = L1M2_LINE
+LB5_LINE = L3O45_LINE
+LB6_LINE = L3N1_LINE
+LB7_LINE = L3O1_LINE
+LB9_LINE = L1M5_LINE
+LB10_LINE = L1M4_LINE
+LB15_LINE = L3N4_LINE
+LB17_LINE = L2M3_LINE
+LG1_LINE = L2N4_LINE
+LG2_LINE = L1N2_LINE
+LG3_LINE = L1N3_LINE
+LG4_LINE = L1O3_LINE
+LG5_LINE = L2N1_LINE
+LG6_LINE = L2O4_LINE
+LG8_LINE = L2O1_LINE
+LE_LINE = L2M1_LINE
+LL_LINE = L3M1_LINE
+LS_LINE = L3M3_LINE
+LT_LINE = L3M2_LINE
+LU_LINE = L3N6_LINE
+LV_LINE = L2N6_LINE
+
+MA1_LINE = M5N7_LINE
+MA2_LINE = M5N6_LINE
+MB_LINE = M4N6_LINE
+MG_LINE = M3N5_LINE
+
+
 .run xraylib_shells
 .compile xraylib_help
 
