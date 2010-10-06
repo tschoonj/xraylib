@@ -65,6 +65,7 @@ float RadRate(int Z, int line)
 	rr=RadRate_arr[Z][line];
 	line = -L3M4_LINE-1;
 	rr+=RadRate_arr[Z][line];
+	return rr;
   }
   //in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
 /*  else if (line == LB_LINE) {
