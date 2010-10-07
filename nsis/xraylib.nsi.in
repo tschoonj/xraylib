@@ -187,7 +187,7 @@ Section "-xraylib core files" SecDummy
 	$(EnvVarUpdate) $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\python2.6"
 
 
-	WriteRegStr HKCU "${PRODUCT_DIR_REGKEY}" "" $INSTDIR
+	WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" $INSTDIR
 	WriteRegStr HKLM ${PRODUCT_UNINST_KEY} "DisplayName" "xraylib ${VERSION}"
 	WriteRegStr HKLM ${PRODUCT_UNINST_KEY} "DisplayVersion" "${VERSION}"
 	WriteRegDWORD HKLM ${PRODUCT_UNINST_KEY} "NoModify" 1
@@ -235,7 +235,7 @@ Section "Uninstall"
 	RMDir "$INSTDIR"
 
 	$(EnvVarUpdate) $0 "PYTHONPATH" "R" "HKLM" "$INSTDIR\python2.6"
-	DeleteRegKey /ifempty HKCU "${PRODUCT_DIR_REGKEY}"
+	DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
 	DeleteRegKey HKLM ${PRODUCT_UNINST_KEY}
 SectionEnd
 Function unix2dos
