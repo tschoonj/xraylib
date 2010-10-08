@@ -1,4 +1,4 @@
-The fully contained executable was built using py2exe, using the setup.py file found in this folder.
+The fully contained executable was built using py2exe, using the setup.py file found in this folder, on a Windows XP 64-bit system.
 
 Running it as:
 	
@@ -6,4 +6,6 @@ Running it as:
 
 produces the dist folder containing xraylib.exe as well as the Documentation and the Microsoft Visual Studio run time dll, which is necessary for the python interpreter.
 
+The python version that was used is 2.7
 
+Next, we built an installation package using NSIS
