@@ -1066,6 +1066,12 @@ INTERFACE
 !                REAL (KIND=C_FLOAT) :: ComptonProfile_Partial
 !        ENDFUNCTION ComptonProfile_Partial
 
+        PURE FUNCTION ElectronConfig(Z,shell) BIND(C,NAME='ElectronConfig')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
+                REAL (KIND=C_FLOAT) :: ElectronConfig 
+        ENDFUNCTION ElectronConfig
 
 ENDINTERFACE
 

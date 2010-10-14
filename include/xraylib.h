@@ -139,6 +139,10 @@ float CSb_FluorLine_Kissel(int Z, int line, float E);
 float CS_Total_Kissel(int Z, float E); 
 float CSb_Total_Kissel(int Z, float E); 
 
+//Electron configuration (according to Kissel)
+float ElectronConfig(int Z, int shell);
+
+
 //Cross Section functions using the compound parser
 float CS_Total_CP(const char compound[], float E);
 float CS_Photo_CP(const char compound[], float E);

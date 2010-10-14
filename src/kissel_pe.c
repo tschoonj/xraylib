@@ -240,3 +240,20 @@ float CSb_Total_Kissel(int Z, float E) {
 
   return CS_Total_Kissel(Z,E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
+
+
+float ElectronConfig(int Z, int shell) {
+
+  if (Z<1 || Z>ZMAX  ) {
+    ErrorExit("Z out of range in function ElectronConfig");
+    return 0;
+  }
+
+  if (shell < 0 || shell >= SHELLNUM_K ) {
+    ErrorExit("shell out of range in function ElectronConfig");
+    return 0;
+  }
+
+  return Electron_Config_Kissel[Z][shell]; 
+
+}
