@@ -2,6 +2,46 @@
 
 PRO comptonprofiles
 
+COMMON xraylib
+
+full_elec_conf = [2,$
+	2,2,4,$
+	2,2,4,4,6,$
+	2,2,4,4,6,6,8,$
+	2,2,4,4,6,6,8,$
+	2,2,4,4,6,$
+	2,2,4,$
+	2$
+	]
+
+
+;read in correct biggs electronic configurations
+biggs_elec_config = []
+
+OPENR,lun,'biggs_electron_configuration.dat',/get_lun
+line=''
+WHILE(NOT EOF(lun)) DO BEGIN
+	READF,lun,line
+	line=STRTRIM(line,1)
+	IF (strmid(line,0,1) NE '#') THEN BEGIN
+		biggs_elec_config = [biggs_elec_config,PTR_NEW(DOUBLE(STRSPLIT(line,/EXTRACT)))]
+	ENDIF
+ENDWHILE
+FREE_LUN,lun
+
+FOR i=0,N_ELEMENTS(biggs_elec_config)-1 DO BEGIN
+	IF (TOTAL(*(biggs_elec_config[i])) NE i+1) THEN BEGIN
+		PRINT,'Error in biggs_electron_configuration.dat for element: ',i+1
+		STOP
+	ENDIF
+ENDFOR
+
+
+
+
+
+
+
 data_template={element:0, N:0, UOCCUP: PTR_NEW(), UBIND: PTR_NEW(),pz: PTR_NEW(), total:ptr_new(), partial:ptr_new(),total_secderiv: PTR_NEW(),partial_secderiv: PTR_NEW() }
 nstructs=0L
 line=''
@@ -28,6 +68,51 @@ WHILE(NOT EOF(lun)) DO BEGIN
 						FOR i=0,my_data[nstructs].N-3 DO BEGIN
 							(*(my_data[nstructs].partial_secderiv))[i,*] = DERIV(*(my_data[nstructs].pz),DERIV(*(my_data[nstructs].pz),(*(my_data[nstructs].partial))[i,*]))
 						ENDFOR
+						;adapt partial comptonprofiles
+						print,'n elec_config:',N_ELEMENTS(*(biggs_elec_config[nstructs]))
+						print,'elec config:',*(biggs_elec_config[nstructs])
+						print,'n uoccup:',N_ELEMENTS(*(my_data[nstructs].UOCCUP))
+						print,'uoccup:',*(my_data[nstructs].UOCCUP)
+						IF (N_ELEMENTS(*(biggs_elec_config[nstructs])) NE N_ELEMENTS(*(my_data[nstructs].UOCCUP))) THEN BEGIN
+							j=0
+							partial_new=DBLARR(N_ELEMENTS(*(biggs_elec_config[nstructs])),N_ELEMENTS(*(my_data[nstructs].pz)))
+							partial_secderiv_new=DBLARR(N_ELEMENTS(*(biggs_elec_config[nstructs])),N_ELEMENTS(*(my_data[nstructs].pz)))
+							for i=0,N_ELEMENTS(*(my_data[nstructs].UOCCUP))-1 DO BEGIN
+								print,'i:',i
+								print,'j:',j
+								print,'elec config j:',(*(biggs_elec_config[nstructs]))[j]
+								print,'uoccup',(*(my_data[nstructs].UOCCUP))[i]
+								my_zeroes = DBLARR(1,N_ELEMENTS(*(my_data[nstructs].pz)))
+								WHILE ((*(biggs_elec_config[nstructs]))[j] EQ 0.0) DO BEGIN
+									partial_new[j,*] = my_zeroes
+									j = j+1
+								ENDWHILE
+								IF ((*(biggs_elec_config[nstructs]))[j] LT (*(my_data[nstructs].UOCCUP))[i]) THEN BEGIN
+									partial_new[j,*] = (*(my_data[nstructs].partial))[i,*]	
+									partial_new[j+1,*] = (*(my_data[nstructs].partial))[i,*]	
+									partial_secderiv_new[j,*] = (*(my_data[nstructs].partial_secderiv))[i,*]	
+									partial_secderiv_new[j+1,*] = (*(my_data[nstructs].partial_secderiv))[i,*]	
+									j = j+2
+								ENDIF ELSE BEGIN
+									partial_new[j,*] = (*(my_data[nstructs].partial))[i,*]	
+									partial_secderiv_new[j,*] = (*(my_data[nstructs].partial_secderiv))[i,*]	
+									j = j+1
+									
+								ENDELSE
+
+							ENDFOR
+							ptr_free,my_data[nstructs].partial
+							ptr_free,my_data[nstructs].partial_secderiv
+							ptr_free,my_data[nstructs].UOCCUP
+							my_data[nstructs].partial = PTR_NEW(TEMPORARY(partial_new))
+							my_data[nstructs].partial_secderiv = PTR_NEW(TEMPORARY(partial_secderiv_new))
+							my_data[nstructs].N=N_ELEMENTS(*(biggs_elec_config[nstructs]))+2
+							my_data[nstructs].uoccup = biggs_elec_config[nstructs] 
+
+
+						ENDIF
+
+
 						nstructs++
 						data_reader=0
 
@@ -39,6 +124,7 @@ WHILE(NOT EOF(lun)) DO BEGIN
 					ENDELSE
 					splitted=STRSPLIT(line,/EXTRACT)
 					my_data[nstructs].element=FIX(splitted[1])
+					print,'Element: ',my_data[nstructs].element
 				END
 				'#N ':BEGIN
 					splitted=STRSPLIT(line,/EXTRACT)
@@ -47,6 +133,19 @@ WHILE(NOT EOF(lun)) DO BEGIN
 				'#UO':BEGIN
 					splitted=STRSPLIT(line,/EXTRACT)
 					my_data[nstructs].UOCCUP=PTR_NEW(FIX(splitted[1:my_data[nstructs].N-2]))
+					;analyze electronic configuration
+					;construct kissel array
+					;elec_config=[]
+					;for i=K_SHELL,Q3_SHELL do begin
+					;	temp_value= ElectronConfig(my_data[nstructs].element,i)
+					;	elec_config = [elec_config, temp_value]
+					;endfor
+					;nonzero = WHERE(elec_config GT 0.0)
+					;elec_config = elec_config[0:nonzero[-1]]
+					;IF (N_ELEMENTS(elec_config) EQ N_ELEMENTS(*(my_data[nstructs].UOCCUP))) THEN BEGIN
+					;	PRINT,'Electronic configuration OK for '+STRING(my_data[nstructs].element)
+					;ENDIF
+
 				END
 				'#UB':BEGIN
 					splitted=STRSPLIT(line,/EXTRACT)
@@ -95,6 +194,39 @@ my_data[nstructs].partial_secderiv = PTR_NEW(DBLARR(my_data[nstructs].N-2,N_ELEM
 FOR i=0,my_data[nstructs].N-3 DO BEGIN
 	(*(my_data[nstructs].partial_secderiv))[i,*] = DERIV(*(my_data[nstructs].pz),DERIV(*(my_data[nstructs].pz),(*(my_data[nstructs].partial))[i,*]))
 ENDFOR
+IF (N_ELEMENTS(*(biggs_elec_config[nstructs])) NE N_ELEMENTS(*(my_data[nstructs].UOCCUP))) THEN BEGIN
+	j=0
+	partial_new=DBLARR(N_ELEMENTS(*(biggs_elec_config[nstructs])),N_ELEMENTS(*(my_data[nstructs].pz)))
+	partial_secderiv_new=DBLARR(N_ELEMENTS(*(biggs_elec_config[nstructs])),N_ELEMENTS(*(my_data[nstructs].pz)))
+	for i=0,N_ELEMENTS(*(my_data[nstructs].UOCCUP))-1 DO BEGIN
+		my_zeroes = DBLARR(1,N_ELEMENTS(*(my_data[nstructs].pz)))
+		WHILE ((*(biggs_elec_config[nstructs]))[j] EQ 0.0) DO BEGIN
+			partial_new[j,*] = my_zeroes
+			j = j+1
+		ENDWHILE
+		IF ((*(biggs_elec_config[nstructs]))[j] LT (*(my_data[nstructs].UOCCUP))[i]) THEN BEGIN
+			partial_new[j,*] = (*(my_data[nstructs].partial))[i,*]	
+			partial_new[j+1,*] = (*(my_data[nstructs].partial))[i,*]	
+			partial_secderiv_new[j,*] = (*(my_data[nstructs].partial_secderiv))[i,*]	
+			partial_secderiv_new[j+1,*] = (*(my_data[nstructs].partial_secderiv))[i,*]	
+			j = j+2
+		ENDIF ELSE BEGIN
+			partial_new[j,*] = (*(my_data[nstructs].partial))[i,*]	
+			partial_secderiv_new[j,*] = (*(my_data[nstructs].partial_secderiv))[i,*]	
+			j = j+1
+								
+		ENDELSE
+
+	ENDFOR
+	ptr_free,my_data[nstructs].partial
+	ptr_free,my_data[nstructs].partial_secderiv
+	my_data[nstructs].partial = PTR_NEW(TEMPORARY(partial_new))
+	my_data[nstructs].partial_secderiv = PTR_NEW(TEMPORARY(partial_secderiv_new))
+	my_data[nstructs].N=N_ELEMENTS(elec_config)+2
+
+
+
+ENDIF
 nstructs++
 
 FREE_LUN,lun
@@ -108,8 +240,7 @@ OPENW,lun,'../comptonprofiles.dat',/GET_LUN
 
 FOR i=0,nstructs-1 DO BEGIN
 	PRINTF,lun,my_data[i].N-2,N_ELEMENTS(*(my_data[i].pz))
-	PRINTF,lun,*(my_data[i].UOCCUP)
-	PRINTF,lun,*(my_data[i].UBIND)
+	PRINTF,lun,FIX(*(my_data[i].UOCCUP))
 	PRINTF,lun,*(my_data[i].PZ)
 	PRINTF,lun,*(my_data[i].TOTAL)
 	PRINTF,lun,*(my_data[i].TOTAL_SECDERIV)

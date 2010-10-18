@@ -500,9 +500,9 @@ void XRayInit(void)
  	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%i", &UOCCUP_ComptonProfiles[Z][iE]);
 	} 
- 	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
+/* 	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &UBIND_ComptonProfiles[Z][iE]);
-	} 
+	} */
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &pz_ComptonProfiles[Z][iE]);
 	} 

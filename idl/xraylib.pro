@@ -450,7 +450,10 @@ COMMON XRAYLIB,AVOGNUM,$
 	P2_SHELL,$
 	P3_SHELL,$
 	P4_SHELL,$
-	P5_SHELL
+	P5_SHELL,$
+	Q1_SHELL,$
+	Q2_SHELL,$
+	Q3_SHELL
 
 
 AVOGNUM = 0.602252        ; Avogadro number (mol-1 * barn-1 * cm2) 
