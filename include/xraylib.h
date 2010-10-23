@@ -171,8 +171,7 @@ float Refractive_Index_Im(const char compound[], float E, float density);
 
 //ComptonProfiles
 float ComptonProfile(int Z, float pz);
-//ComptonProfile_Partial needs its own set of shell macros...
-//float ComptonProfile_Partial(int Z, int shell, float pz);
+float ComptonProfile_Partial(int Z, int shell, float pz);
 
 #ifdef __cplusplus
 }

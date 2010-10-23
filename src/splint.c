@@ -11,8 +11,6 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
 
 void splint(float xa[], float ya[], float y2a[], int n, float x, float *y)
 {
@@ -55,6 +53,7 @@ void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y)
 	double h, b, a;
  
 
+
 	if (x > xa[n]) {
 	  *y = ya[n];
 	  return;
@@ -83,6 +82,7 @@ void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y)
 	b = (x - xa[klo]) / h;
 	*y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
 	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
+
 }
 
 

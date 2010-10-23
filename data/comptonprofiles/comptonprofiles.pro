@@ -222,7 +222,8 @@ IF (N_ELEMENTS(*(biggs_elec_config[nstructs])) NE N_ELEMENTS(*(my_data[nstructs]
 	ptr_free,my_data[nstructs].partial_secderiv
 	my_data[nstructs].partial = PTR_NEW(TEMPORARY(partial_new))
 	my_data[nstructs].partial_secderiv = PTR_NEW(TEMPORARY(partial_secderiv_new))
-	my_data[nstructs].N=N_ELEMENTS(elec_config)+2
+	my_data[nstructs].uoccup = biggs_elec_config[nstructs] 
+	my_data[nstructs].N=N_ELEMENTS(*(biggs_elec_config[nstructs]))+2
 
 
 
@@ -245,14 +246,16 @@ FOR i=0,nstructs-1 DO BEGIN
 	PRINTF,lun,*(my_data[i].TOTAL)
 	PRINTF,lun,*(my_data[i].TOTAL_SECDERIV)
 	FOR j=0,my_data[i].N-3 DO BEGIN
-		FOR k=0,N_ELEMENTS(*(my_data[i].pz))-1 DO BEGIN
-			PRINTF,lun,(*(my_data[i].PARTIAL))[j,k]
-		ENDFOR
+		IF ((*(my_data[i].UOCCUP))[j] LE 0.0) THEN CONTINUE
+		;FOR k=0,N_ELEMENTS(*(my_data[i].pz))-1 DO BEGIN
+			PRINTF,lun,(*(my_data[i].PARTIAL))[j,*]
+		;ENDFOR
 	ENDFOR
 	FOR j=0,my_data[i].N-3 DO BEGIN
-		FOR k=0,N_ELEMENTS(*(my_data[i].pz))-1 DO BEGIN
-			PRINTF,lun,(*(my_data[i].PARTIAL_SECDERIV))[j,k]
-		ENDFOR
+		IF ((*(my_data[i].UOCCUP))[j] LE 0.0) THEN CONTINUE
+		;FOR k=0,N_ELEMENTS(*(my_data[i].pz))-1 DO BEGIN
+			PRINTF,lun,(*(my_data[i].PARTIAL_SECDERIV))[j,*]
+		;ENDFOR
 	ENDFOR
 ENDFOR
 

@@ -489,40 +489,51 @@ void XRayInit(void)
   }
 
   for (Z = 1 ; Z <= ZMAX ; Z++) {
+  //for (Z = 1 ; Z <= 1 ; Z++) {
  	ex = fscanf(fp, "%i %i",NShells_ComptonProfiles+Z,Npz_ComptonProfiles+Z);
 	if (ex != 2) break;
 	//allocate required amount of memory
-	UOCCUP_ComptonProfiles[Z] = (int *) malloc(NShells_ComptonProfiles[Z]*sizeof(int));
-	UBIND_ComptonProfiles[Z] = (double *) malloc(NShells_ComptonProfiles[Z]*sizeof(double));
+	UOCCUP_ComptonProfiles[Z] = (double *) malloc(NShells_ComptonProfiles[Z]*sizeof(double));
   	pz_ComptonProfiles[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
 	Total_ComptonProfiles[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
 	Total_ComptonProfiles2[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
  	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
-		fscanf(fp,"%i", &UOCCUP_ComptonProfiles[Z][iE]);
+		fscanf(fp,"%lf", &UOCCUP_ComptonProfiles[Z][iE]);
+//		fprintf(stdout,"%lf\n", UOCCUP_ComptonProfiles[Z][iE]);
 	} 
-/* 	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
-		fscanf(fp,"%lf", &UBIND_ComptonProfiles[Z][iE]);
-	} */
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &pz_ComptonProfiles[Z][iE]);
+//		fprintf(stdout,"%lf\n", pz_ComptonProfiles[Z][iE]);
 	} 
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &Total_ComptonProfiles[Z][iE]);
+//		fprintf(stdout,"%lf\n", Total_ComptonProfiles[Z][iE]);
 	} 
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &Total_ComptonProfiles2[Z][iE]);
+//		fprintf(stdout,"%lf\n", Total_ComptonProfiles2[Z][iE]);
 	} 
 	for (shell = 0 ; shell < NShells_ComptonProfiles[Z] ; shell++) {
-		Partial_ComptonProfiles[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
-		for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
-			fscanf(fp, "%lf", &Partial_ComptonProfiles[Z][shell][iE]);
+		if (UOCCUP_ComptonProfiles[Z][shell] > 0.0) {
+			Partial_ComptonProfiles[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+			for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
+				fscanf(fp, "%lf", &Partial_ComptonProfiles[Z][shell][iE]);
+//				fprintf(stdout, "%lf\n", Partial_ComptonProfiles[Z][shell][iE]);
+			}
 		}
+		else
+			Partial_ComptonProfiles[Z][shell] = NULL; 
 	}
 	for (shell = 0 ; shell < NShells_ComptonProfiles[Z] ; shell++) {
-		Partial_ComptonProfiles2[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
-		for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
-			fscanf(fp, "%lf", &Partial_ComptonProfiles2[Z][shell][iE]);
+		if (UOCCUP_ComptonProfiles[Z][shell] > 0.0) {
+			Partial_ComptonProfiles2[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
+			for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
+				fscanf(fp, "%lf", &Partial_ComptonProfiles2[Z][shell][iE]);
+//				fprintf(stdout, "%lf\n", Partial_ComptonProfiles2[Z][shell][iE]);
+			}
 		}
+		else
+			Partial_ComptonProfiles2[Z][shell] = NULL; 
 	}
   }
   fclose(fp);

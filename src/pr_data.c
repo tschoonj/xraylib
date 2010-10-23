@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, Teemu Ikonen
+Copyright (c) 2009-2010, Teemu Ikonen and Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -8,7 +8,7 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
     * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Teemu Ikonen and Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
@@ -114,17 +114,21 @@ fprintf(f, "};\n\n");
   }\
   fprintf(f,"\n};\n");\
 
-#define PR_DYNMAT_3DD_C(NVAR2D, EVAR, ENAME) \
-  for (i = 0; i < ZMAX+1; i++) { \
+#define PR_DYNMAT_3DD_C(NVAR2D, NVAR2D2, NVAR2D3, EVAR, ENAME) \
+  for (i = 0; i < 102; i++) { \
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
-      fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
-      print_doublevec(NVAR2D[i], EVAR[i][j]);\
-      fprintf(f, ";\n\n");\
+      if (UOCCUP_ComptonProfiles[i][j] > 0.0) {\
+      	fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
+      	print_doublevec(NVAR2D[i], EVAR[i][j]);\
+      	fprintf(f, ";\n\n");\
+      }\
+      else {\
+      	fprintf(f, "static double __%s_%i_%i[] = {};\n", ENAME, i, j);\
+      }\
     }\
   }\
-\
   fprintf(f, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
-  for (i = 0; i < ZMAX+1; i++) {\
+  for (i = 0; i < 102; i++) {\
     fprintf(f,"{\n");\
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
@@ -274,13 +278,12 @@ int main(void)
 //added by Tom Schoonjans 28/07/2010
   PR_NUMVEC1D(NShells_ComptonProfiles, "NShells_ComptonProfiles");
   PR_NUMVEC1D(Npz_ComptonProfiles, "Npz_ComptonProfiles");
-  PR_DYNMATI(NShells_ComptonProfiles,UOCCUP_ComptonProfiles,"UOCCUP_ComptonProfiles");
-  PR_DYNMATD(NShells_ComptonProfiles,UBIND_ComptonProfiles,"UBIND_ComptonProfiles");
+  PR_DYNMATD(NShells_ComptonProfiles,UOCCUP_ComptonProfiles,"UOCCUP_ComptonProfiles");
   PR_DYNMATD(Npz_ComptonProfiles,pz_ComptonProfiles,"pz_ComptonProfiles");
   PR_DYNMATD(Npz_ComptonProfiles,Total_ComptonProfiles,"Total_ComptonProfiles");
   PR_DYNMATD(Npz_ComptonProfiles,Total_ComptonProfiles2,"Total_ComptonProfiles2");
-  PR_DYNMAT_3DD_C(Npz_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
-  PR_DYNMAT_3DD_C(Npz_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
+  PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
+  PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
 
   fclose(f);

@@ -1058,13 +1058,13 @@ INTERFACE
                 REAL (KIND=C_FLOAT) :: ComptonProfile
         ENDFUNCTION ComptonProfile
 
-!        PURE FUNCTION ComptonProfile_Partial(Z, pz, shell) BIND(C,NAME='ComptonProfile_Partial')
-!                USE, INTRINSIC :: ISO_C_BINDING
-!                IMPLICIT NONE
-!                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
-!                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: pz
-!                REAL (KIND=C_FLOAT) :: ComptonProfile_Partial
-!        ENDFUNCTION ComptonProfile_Partial
+        PURE FUNCTION ComptonProfile_Partial(Z, shell, pz) BIND(C,NAME='ComptonProfile_Partial')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: pz
+                REAL (KIND=C_FLOAT) :: ComptonProfile_Partial
+        ENDFUNCTION ComptonProfile_Partial
 
         PURE FUNCTION ElectronConfig(Z,shell) BIND(C,NAME='ElectronConfig')
                 USE, INTRINSIC :: ISO_C_BINDING

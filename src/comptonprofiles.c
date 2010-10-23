@@ -12,7 +12,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 
-#include <math.h>
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
@@ -38,24 +37,24 @@ float ComptonProfile(int Z, float pz) {
 }
 
 /*
- * ComptonProfile_Partial needs to be revised. The included database relies on atomic notation instead of X-ray notation
- * which has consequences for the shell parameter
- *
+ * 
+ * 
+ */
 float ComptonProfile_Partial(int Z, int shell, float pz) {
 	double q;
+
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
 		ErrorExit("Z out of range in function ComptonProfile_Partial");
 		return 0;
 	}  
-	if (shell >= NShells_ComptonProfiles[Z]) {
-		ErrorExit("Shell out of range in function ComptonProfile_Partial");
+	if (shell >= NShells_ComptonProfiles[Z] || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
+		ErrorExit("Shell unavailable in function ComptonProfile_Partial");
 		return 0;
 	}
 
-	splintd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1, Partial_ComptonProfiles2[Z]-1,Npz_ComptonProfiles[Z],pz,&q);
+	splintd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1, Partial_ComptonProfiles2[Z][shell]-1,Npz_ComptonProfiles[Z],(double) pz,&q);
 
 	return (float) q;
 }
-*/
 

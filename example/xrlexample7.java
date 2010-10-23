@@ -33,6 +33,7 @@ public class xrlexample7 {
 		System.out.println("C16H14O3 Refractive Index at 1 keV : "+xraylib.Refractive_Index_Re("C16H14O3",(float) 1.0,(float) 1.2)+" - "+xraylib.Refractive_Index_Im("C16H14O3",(float) 1.0,(float) 1.2)+" i");
 		System.out.println("SiO2 Refractive Index at 5.0 keV : "+xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");  
 		System.out.println("Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile(26,(float) 1.1));
+		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.exit(0);
 	}
 }

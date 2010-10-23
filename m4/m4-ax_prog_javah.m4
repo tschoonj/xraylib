@@ -43,7 +43,7 @@ changequote(, )dnl
     ac_dir=`echo $ac_cv_path_JAVAH | sed 's,\(.*\)/[^/]*/[^/]*$,\1/,'`
     ac_machdep=`echo $host_os | sed 's,[-0-9].*,,' | sed 's,cygwin,win32,'`
 changequote([, ])dnl
-    JAVACPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir/include -I$ac_dir/Headers -I$ac_dir/include/$ac_machdep"
+    JAVACPPFLAGS="$ac_save_CPPFLAGS -I$ac_dir/include -I$ac_dir/Headers -I$ac_dir/include/$ac_machdep -I$ac_dir/../CurrentJDK/Headers -I/Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers -I/Developer/SDKs/MacOSX10.5.sdk/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
     CPPFLAGS=$JAVACPPFLAGS
     AC_PREPROC_IFELSE(
     	[AC_LANG_PROGRAM([[#include <jni.h>]],[[#include <jni_md.h>]])],

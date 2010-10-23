@@ -58,6 +58,7 @@ int main()
   printf("SiO2 Refractive Index at 5 keV : %f - %f i\n",Refractive_Index_Re("SiO2", 5.0f, 2.65f),Refractive_Index_Im("SiO2",5.0f, 2.65f));
 
   printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
+  printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
 
 
 
