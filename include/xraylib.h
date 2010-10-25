@@ -139,6 +139,10 @@ float CSb_FluorLine_Kissel(int Z, int line, float E);
 float CS_Total_Kissel(int Z, float E); 
 float CSb_Total_Kissel(int Z, float E); 
 
+//Electron configuration (according to Kissel)
+float ElectronConfig(int Z, int shell);
+
+
 //Cross Section functions using the compound parser
 float CS_Total_CP(const char compound[], float E);
 float CS_Photo_CP(const char compound[], float E);
@@ -165,7 +169,9 @@ float CSb_Total_Kissel_CP(const char compound[], float E);
 float Refractive_Index_Re(const char compound[], float E, float density);
 float Refractive_Index_Im(const char compound[], float E, float density);
 
-
+//ComptonProfiles
+float ComptonProfile(int Z, float pz);
+float ComptonProfile_Partial(int Z, int shell, float pz);
 
 #ifdef __cplusplus
 }

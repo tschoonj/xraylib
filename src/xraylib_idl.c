@@ -95,6 +95,9 @@ extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Re(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Im(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_ComptonProfile(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_ComptonProfile_Partial(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
 
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
@@ -169,6 +172,9 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CSb_Total_Kissel_CP,"CSB_TOTAL_KISSEL_CP",2,2,0,0},
 	{IDL_Refractive_Index_Re,"REFRACTIVE_INDEX_RE",3,3,0,0},
 	{IDL_Refractive_Index_Im,"REFRACTIVE_INDEX_IM",3,3,0,0},
+	{IDL_ComptonProfile,"COMPTONPROFILE",2,2,0,0},
+	{IDL_ComptonProfile_Partial,"COMPTONPROFILE_PARTIAL",3,3,0,0},
+	{IDL_ElectronConfig, "ELECTRONCONFIG", 2, 2, 0, 0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -570,7 +576,9 @@ XRL_2SF(CS_Total_Kissel_CP)
 XRL_2SF(CSb_Total_Kissel_CP)
 XRL_3SFF(Refractive_Index_Re)
 XRL_3SFF(Refractive_Index_Im)
-
+XRL_2IF(ComptonProfile)
+XRL_3IIF(ComptonProfile_Partial)
+XRL_2II(ElectronConfig)
 
 
 void release(UCHAR *memPtr) {
