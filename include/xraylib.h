@@ -41,10 +41,54 @@ extern "C" {
 #include "lines.h"
 #include "xraylib-parser.h"
 
+//Siegbahn notation
+//according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
+//Linegroups -> usage is discouraged
 #define KA_LINE 0
 #define KB_LINE 1
 #define LA_LINE 2
 #define LB_LINE 3
+
+//single lines
+#define KA1_LINE KL3_LINE
+#define KA2_LINE KL2_LINE
+#define KB1_LINE KM3_LINE
+#define KB2_LINE KN3_LINE
+#define KB3_LINE KM2_LINE
+#define KB4_LINE KN5_LINE
+#define KB5_LINE KM5_LINE
+
+#define LA1_LINE L3M5_LINE
+#define LA2_LINE L3M4_LINE
+#define LB1_LINE L2M4_LINE
+#define LB2_LINE L3N5_LINE
+#define LB3_LINE L1M3_LINE
+#define LB4_LINE L1M2_LINE
+#define LB5_LINE L3O45_LINE
+#define LB6_LINE L3N1_LINE
+#define LB7_LINE L3O1_LINE
+#define LB9_LINE L1M5_LINE
+#define LB10_LINE L1M4_LINE
+#define LB15_LINE L3N4_LINE
+#define LB17_LINE L2M3_LINE
+#define LG1_LINE L2N4_LINE
+#define LG2_LINE L1N2_LINE
+#define LG3_LINE L1N3_LINE
+#define LG4_LINE L1O3_LINE
+#define LG5_LINE L2N1_LINE
+#define LG6_LINE L2O4_LINE
+#define LG8_LINE L2O1_LINE
+#define LE_LINE L2M1_LINE
+#define LL_LINE L3M1_LINE
+#define LS_LINE L3M3_LINE
+#define LT_LINE L3M2_LINE
+#define LU_LINE L3N6_LINE
+#define LV_LINE L2N6_LINE
+
+#define MA1_LINE M5N7_LINE
+#define MA2_LINE M5N6_LINE
+#define MB_LINE M4N6_LINE
+#define MG_LINE M3N5_LINE
 
 #define F1_TRANS   0    
 #define F12_TRANS  1     

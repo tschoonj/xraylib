@@ -162,13 +162,13 @@ float CS_FluorLine_Kissel(int Z, int line, float E) {
     //L1 lines
     return CS_Photo_Partial(Z, L1_SHELL, E)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
   }
-  else if ((line>=L2N7_LINE && line<=L2M1_LINE) || line==LB_LINE) {
+  else if (line>=L2N7_LINE && line<=L2M1_LINE) {
     //L2 lines
     return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
 		(CS_Photo_Partial(Z, L2_SHELL, E)+
 		(CS_Photo_Partial(Z, L1_SHELL, E)*CosKronTransProb(Z,F12_TRANS)));
   }
-  else if ((line>=L3N7_LINE && line<=L3M1_LINE) || line==LA_LINE) {
+  else if (line>=L3N7_LINE && line<=L3M1_LINE) {
     //L3 lines
     return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*
 		(CS_Photo_Partial(Z, L3_SHELL, E)+
@@ -176,6 +176,27 @@ float CS_FluorLine_Kissel(int Z, int line, float E) {
 		(CS_Photo_Partial(Z, L1_SHELL, E)*(CosKronTransProb(Z,F13_TRANS) + CosKronTransProb(Z,FP13_TRANS) + CosKronTransProb(Z,F12_TRANS) * CosKronTransProb(Z,F23_TRANS)))
 		);
 
+  }
+  else if (line == LA_LINE) {
+    return (CS_FluorLine_Kissel(Z,L3M4_LINE,E)+CS_FluorLine_Kissel(Z,L3M5_LINE,E)); 
+  }
+  else if (line == LB_LINE) {
+    return (CS_FluorLine_Kissel(Z,L2M4_LINE,E)+
+    	CS_FluorLine_Kissel(Z,L2M3_LINE,E)+
+        CS_FluorLine_Kissel(Z,L3N5_LINE,E)+
+        CS_FluorLine_Kissel(Z,L3O4_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3O5_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3O45_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3N1_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3O1_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3N6_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3N7_LINE,E)+
+	CS_FluorLine_Kissel(Z,L3N4_LINE,E)+
+	CS_FluorLine_Kissel(Z,L1M3_LINE,E)+
+	CS_FluorLine_Kissel(Z,L1M2_LINE,E)+
+	CS_FluorLine_Kissel(Z,L1M5_LINE,E)+
+	CS_FluorLine_Kissel(Z,L1M4_LINE,E)
+    );
   }
   else {
     ErrorExit("Line not allowed in function CS_FluorLine_Kissel");

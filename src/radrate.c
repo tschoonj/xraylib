@@ -52,7 +52,7 @@ float RadRate(int Z, int line)
     	//we assume that RR(Ka)+RR(Kb) = 1.0
     	return 1.0 - RadRate(Z,KA_LINE);
     }
-    if (rr == 0.0) {
+    if (rr == 0.0 || rr == 1.0) {
       ErrorExit("Line not available in function RadRate");
       return 0.0;
     }
@@ -61,11 +61,16 @@ float RadRate(int Z, int line)
 
   //this is a temporary solution -> must be changed in 2.14.0
   if (line == LA_LINE) {
-    line = L3M5_LINE;
+	line = -L3M5_LINE-1;
+	rr=RadRate_arr[Z][line];
+	line = -L3M4_LINE-1;
+	rr+=RadRate_arr[Z][line];
+	return rr;
   }
-  else if (line == LB_LINE) {
+  //in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
+/*  else if (line == LB_LINE) {
     line = L2M4_LINE;
-  }
+  }*/
 
   line = -line - 1;
   if (line<0 || line>=LINENUM) {

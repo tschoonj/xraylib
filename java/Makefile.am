@@ -24,7 +24,7 @@ EXTRA_DIST =
 #$(MAKE) javaxrl
 
 xraylib.java: ${top_builddir}/src/xraylib.i
-	$(SWIG) -java -o xraylib_wrap.c ${top_builddir}/src/xraylib.i
+	$(SWIG) -includeall -java -o xraylib_wrap.c ${top_builddir}/src/xraylib.i
 	$(CC) -c $(CCSHARED) $(CFLAGS) $(JAVACFLAGS) xraylib_wrap.c $(JAVAINC)
 	$(JAVALDSHARED) $(CFLAGS) xraylib_wrap.o $(JAVADYNAMICLINKING) -L@abs_top_builddir@/src/.libs -lxrl -o $(JAVALIBRARYPREFIX)xraylib$(JAVASO)
 
