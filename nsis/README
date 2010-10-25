@@ -12,8 +12,20 @@ However: we produced a Borland compatible .LIB file using the implib.exe command
 implib.exe -a -c libxrl-{version}-bcc.lib libxrl-{version}.dll
 
 
-
 Now to produce the installer itself we used the NullSoft Installer System. After running ./configure, a script xraylib.nsi will be produced in the nsis subdirectory of the xraylib package. After the crosscompilation, run "makensis xraylib.nsi" in this folder to create the executable. Note that this does not work with the NSIS package available from MacPorts!!! We used Fedora 11 to create the package. 
+
+
+----
+
+The Python bindings
+===================
+
+These were compiled using the mingw32 compiler for windows using a modified version of the xrlsetup.py file found in the python folder.
+The command we used:
+
+python xrlsetup.py build_ext --inplace --compiler=mingw32
+
+The produced _xraylib.pyd file is of course dependent on the python version it was compiled against...
 
 
 

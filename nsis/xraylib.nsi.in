@@ -13,6 +13,8 @@
 
 !include "MUI2.nsh"
 !include "Library.nsh"
+!include "EnvVarUpdate.nsh"
+!include "Sections.nsh"
 
 !define PRODUCT_NAME "xraylib"
 !define VERSION @VERSION@
@@ -52,7 +54,7 @@ CRCCheck on
 !define MUI_LICENSEPAGE_CHECKBOX
 !insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
 
-
+!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TEXT "Thank you for installing xraylib. Remember: the latest version of xraylib can be obtained from the development repository on github"
@@ -67,7 +69,7 @@ CRCCheck on
 !insertmacro MUI_UNPAGE_FINISH
 
 
-Section "xraylib installer" SecDummy
+Section "-xraylib core files" SecDummy
 	SetOutPath "$INSTDIR"
 	;Readme etc
 	File @abs_top_srcdir_win@\README
@@ -147,6 +149,11 @@ Section "xraylib installer" SecDummy
 	Push "$INSTDIR\Example\xrlexample6.cpp.fix"
 	Call unix2dos
 	Rename xrlexample6.cpp.fix xrlexample6.cpp
+	File @abs_top_srcdir_win@\example\xrlexample5.py
+	Push "$INSTDIR\Example\xrlexample5.py"
+	Push "$INSTDIR\Example\xrlexample5.py.fix"
+	Call unix2dos
+	Rename xrlexample5.py.fix xrlexample5.py
 
 
 
@@ -173,8 +180,14 @@ Section "xraylib installer" SecDummy
 	Call unix2dos
 	Rename shells.h.fix shells.h
 
+	;python bindings
+	SetOutPath "$INSTDIR\Python2.6"
+	File @abs_top_srcdir_win@\nsis\python2.6\_xraylib.pyd
+	;set environment variables
+	$(EnvVarUpdate) $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\python2.6"
 
-	WriteRegStr HKCU "${PRODUCT_DIR_REGKEY}" "" $INSTDIR
+
+	WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" $INSTDIR
 	WriteRegStr HKLM ${PRODUCT_UNINST_KEY} "DisplayName" "xraylib ${VERSION}"
 	WriteRegStr HKLM ${PRODUCT_UNINST_KEY} "DisplayVersion" "${VERSION}"
 	WriteRegDWORD HKLM ${PRODUCT_UNINST_KEY} "NoModify" 1
@@ -199,6 +212,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\Doc\xrayhelp.txt"
 	Delete "$INSTDIR\Example\xrlexample1.c"
 	Delete "$INSTDIR\Example\xrlexample6.cpp"
+	Delete "$INSTDIR\Example\xrlexample5.py"
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.lib
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@-bcc.lib
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.exp
@@ -206,10 +220,12 @@ Section "Uninstall"
 	Delete "$INSTDIR\Lib\libxrl.dll.a"
 	Delete "$INSTDIR\Lib\libxrl.a"
 	Delete "$INSTDIR\Lib\README.txt"
+	Delete "$INSTDIR\Python2.6\_xraylib.pyd"
 	RMDir "$INSTDIR\Include"
 	RMDir "$INSTDIR\Lib"
 	RMDir "$INSTDIR\Doc"
 	RMDir "$INSTDIR\Example"
+	RMDir "$INSTDIR\Python2.6"
 	Delete "$INSTDIR\README.txt"
 	Delete "$INSTDIR\AUTHORS.txt"
 	Delete "$INSTDIR\BUGS.txt"
@@ -218,7 +234,8 @@ Section "Uninstall"
 	Delete "$INSTDIR\Uninstall.exe"
 	RMDir "$INSTDIR"
 
-	DeleteRegKey /ifempty HKCU "${PRODUCT_DIR_REGKEY}"
+	$(EnvVarUpdate) $0 "PYTHONPATH" "R" "HKLM" "$INSTDIR\python2.6"
+	DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
 	DeleteRegKey HKLM ${PRODUCT_UNINST_KEY}
 SectionEnd
 Function unix2dos
@@ -275,4 +292,21 @@ Function unix2dos
       Delete $0
    
 FunctionEnd
+
+Function .onInit
+	ReadRegStr $R0 HKLM ${PRODUCT_UNINST_KEY} "UninstallString"
+	StrCmp $R0 "" done
+	MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "${PROGRAM_NAME} is already installed. $\n$\nClick `OK` to remove the previous version or `Cancel` to cancel this upgrade." IDOK uninst
+	Abort
+
+	uninst:
+	ClearErrors
+	Exec $INSTDIR\Uninstall.exe
+
+	done:
+
+FunctionEnd
+
+
+
 !insertmacro MUI_LANGUAGE "English"
