@@ -12,7 +12,7 @@
 
 
 
-AC_INIT([xraylib],[2.13.1],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.14.0],[Tom.Schoonjans@UGent.be])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -20,12 +20,14 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CANONICAL_HOST
 
 
-LIB_CURRENT=3
+LIB_CURRENT=4
 LIB_REVISION=0
-LIB_AGE=0
+LIB_AGE=1
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
+LIB_CURRENT_MINUS_AGE=`expr $LIB_CURRENT - $LIB_AGE`
+AC_SUBST(LIB_CURRENT_MINUS_AGE)
 AC_CONFIG_MACRO_DIR([m4])
 
 
@@ -94,7 +96,7 @@ if test "x$host" != "x$build" ; then
 	fi
 	CROSS_COMPILING=yes
 	LDFLAGS+="-no-undefined"
-	LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT.def
+	LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
 else
 	LDFLAGS_LIBXRL="" 
 fi
@@ -226,7 +228,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 	if test -z "$RSIIDL_BINDIR" ; then
 		#no location was presented as an option -> search the usual suspects...
-		IDL_PATH=/usr/local/itt/idl/bin:/usr/local/rsi/idl/bin:/usr/local/pkg/graphics/rsi/idl/bin:/Applications/rsi/idl/bin:/Applications/itt/idl/bin:/usr/local/idl/bin
+		IDL_PATH=/usr/local/itt/idl/bin:/usr/local/rsi/idl/bin:/usr/local/pkg/graphics/rsi/idl/bin:/Applications/rsi/idl/bin:/Applications/itt/idl/bin:/usr/local/idl/bin:/Applications/itt/idl/idl/bin:/usr/local/itt/idl/idl/bin
 		AC_PATH_PROGS([RSIIDL_BIN], [idl],[],[$IDL_PATH])
 		if test -z "$RSIIDL_BIN" && test "x$enable_idl" = xyes ; then
 			#binaries not found while they were required through the enable-idl option

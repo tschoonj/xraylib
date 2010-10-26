@@ -41,11 +41,10 @@ It is important here NOT to change the value of !MAKE_DLL.LD
 
 The MAKE_DLL command itself was:
 
-make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\Program Files (x86)\xraylib\Include"',EXTRA_LFLAGS='"C:\Program Files (x86)\xraylib\Lib\libxrl-3.lib" /LIBPATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib"'
+make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\Program Files (x86)\xraylib\Include"',EXTRA_LFLAGS='"C:\Program Files (x86)\xraylib\Lib\libxrl-3.lib" /LIBPATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib"',OUTPUT='.'
 
 Depending on the versions of IDL, xraylib and Visual Studio that are installed, these commands may need to be altered.
 
-The inevitable disadvantage of this approach is that the user has to download the Redistributable Package of Visual Studio 2010, which can be retrieved from http://www.microsoft.com/downloads/details.aspx?FamilyID=a7b7a05e-6de6-4d3a-a423-37bf0912db84&displaylang=en
 
 
 

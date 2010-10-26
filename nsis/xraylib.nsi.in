@@ -54,7 +54,6 @@ CRCCheck on
 !define MUI_LICENSEPAGE_CHECKBOX
 !insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
 
-!insertmacro MUI_PAGE_COMPONENTS
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TEXT "Thank you for installing xraylib. Remember: the latest version of xraylib can be obtained from the development repository on github"
@@ -118,19 +117,19 @@ Section "-xraylib core files" SecDummy
 
 
 	;copy dll to C:\WINDOWS\system32 or something similar
-	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED @abs_top_builddir_win@\src\.libs\libxrl-@LIB_CURRENT@.dll $SYSDIR\libxrl-@LIB_CURRENT@.dll "$SYSDIR"
+	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED @abs_top_builddir_win@\src\.libs\libxrl-@LIB_CURRENT_MINUS_AGE@.dll $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll "$SYSDIR"
 
 	;copy lib file to Lib for development...
 ;	!execute '${DLLTOOL} "-U" "--export-all-symbols" "-l" "libxrl.lib" "@abs_top_builddir@/src/.libs/libxrl.a"'
 	SetOutPath "$INSTDIR\Lib"
 	;these files will have to be produced on a windows platform :-(
 	;or maybe there is some slick trick I still have to discover
-	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@.lib
-	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@-bcc.lib
-	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT@.exp
+	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
+	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
+	File @abs_top_srcdir_win@\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
 	File @abs_top_builddir_win@\src\.libs\libxrl.a
 	File @abs_top_builddir_win@\src\.libs\libxrl.dll.a
-	File @abs_top_builddir_win@\src\libxrl-@LIB_CURRENT@.def
+	File @abs_top_builddir_win@\src\libxrl-@LIB_CURRENT_MINUS_AGE@.def
 	File @abs_top_srcdir_win@\nsis\README
 	Push "$INSTDIR\Lib\README"
 	Push "$INSTDIR\Lib\README.txt"
@@ -149,11 +148,11 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\Example\xrlexample6.cpp.fix"
 	Call unix2dos
 	Rename xrlexample6.cpp.fix xrlexample6.cpp
-	File @abs_top_srcdir_win@\example\xrlexample5.py
-	Push "$INSTDIR\Example\xrlexample5.py"
-	Push "$INSTDIR\Example\xrlexample5.py.fix"
-	Call unix2dos
-	Rename xrlexample5.py.fix xrlexample5.py
+;	File @abs_top_srcdir_win@\example\xrlexample5.py
+;	Push "$INSTDIR\Example\xrlexample5.py"
+;	Push "$INSTDIR\Example\xrlexample5.py.fix"
+;	Call unix2dos
+;	Rename xrlexample5.py.fix xrlexample5.py
 
 
 
@@ -181,10 +180,10 @@ Section "-xraylib core files" SecDummy
 	Rename shells.h.fix shells.h
 
 	;python bindings
-	SetOutPath "$INSTDIR\Python2.6"
-	File @abs_top_srcdir_win@\nsis\python2.6\_xraylib.pyd
-	;set environment variables
-	$(EnvVarUpdate) $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\python2.6"
+;	SetOutPath "$INSTDIR\Python2.6"
+;	File @abs_top_srcdir_win@\nsis\python2.6\_xraylib.pyd
+;	;set environment variables
+;	$(EnvVarUpdate) $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\python2.6"
 
 
 	WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" $INSTDIR
@@ -204,7 +203,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\Include\shells.h"
 ;	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
 ;	Delete "$SYSDIR\libxrl-3.dll"
-	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $SYSDIR\libxrl-@LIB_CURRENT@.dll
+	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll
 ;	Delete "$INSTDIR\Lib\libxrl.a"
 	Delete "$INSTDIR\Doc\xraybanner.txt"
 	Delete "$INSTDIR\Doc\xraydoc.txt"
@@ -212,20 +211,20 @@ Section "Uninstall"
 	Delete "$INSTDIR\Doc\xrayhelp.txt"
 	Delete "$INSTDIR\Example\xrlexample1.c"
 	Delete "$INSTDIR\Example\xrlexample6.cpp"
-	Delete "$INSTDIR\Example\xrlexample5.py"
-	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.lib
-	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@-bcc.lib
-	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.exp
-	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT@.def
+;	Delete "$INSTDIR\Example\xrlexample5.py"
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
+	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.def
 	Delete "$INSTDIR\Lib\libxrl.dll.a"
 	Delete "$INSTDIR\Lib\libxrl.a"
 	Delete "$INSTDIR\Lib\README.txt"
-	Delete "$INSTDIR\Python2.6\_xraylib.pyd"
+;	Delete "$INSTDIR\Python2.6\_xraylib.pyd"
 	RMDir "$INSTDIR\Include"
 	RMDir "$INSTDIR\Lib"
 	RMDir "$INSTDIR\Doc"
 	RMDir "$INSTDIR\Example"
-	RMDir "$INSTDIR\Python2.6"
+;	RMDir "$INSTDIR\Python2.6"
 	Delete "$INSTDIR\README.txt"
 	Delete "$INSTDIR\AUTHORS.txt"
 	Delete "$INSTDIR\BUGS.txt"
@@ -234,9 +233,9 @@ Section "Uninstall"
 	Delete "$INSTDIR\Uninstall.exe"
 	RMDir "$INSTDIR"
 
-	$(EnvVarUpdate) $0 "PYTHONPATH" "R" "HKLM" "$INSTDIR\python2.6"
-	DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
-	DeleteRegKey HKLM ${PRODUCT_UNINST_KEY}
+;	$(EnvVarUpdate) $0 "PYTHONPATH" "R" "HKLM" "$INSTDIR\python2.6"
+;	DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
+;	DeleteRegKey HKLM ${PRODUCT_UNINST_KEY}
 SectionEnd
 Function unix2dos
     ; strips all CRs

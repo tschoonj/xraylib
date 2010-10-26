@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+#Copyright (c) 2009, 2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without

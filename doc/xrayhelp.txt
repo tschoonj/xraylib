@@ -846,3 +846,26 @@ Refractive_Index_Im
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> float Refractive_Index_Im(const char compound[], float E, float density);
+
+ComptonProfile
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Compton scattering profile                        //
+//                                                                  //
+//          Z : atomic number                                       //
+//          pz : momentum                                           //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float ComptonProfile(int Z, float pz);
+
+ComptonProfile_Partial
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//              subshell Compton scattering profile                 //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell : shell macro                                     // 
+//          pz : momentum                                           //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float ComptonProfile_Partial(int Z, int shell, float pz);

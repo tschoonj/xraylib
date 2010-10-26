@@ -144,3 +144,12 @@ Refractive indices
 ==================
 
 The real (1-delta) and imaginary (beta) part of the refractive indices are calculated according to the formulas that can be found for example in the PhD thesises of Peter Cloetens, Carsten Raven and Timm Weitkamp 
+
+Compton profiles
+================
+
+Calculated by Biggs et al: Hartree-Fock Compton profiles for the elements
+Atomic Data and Nuclear Data Tables 16, 201-309 (1975)
+
+Taken from the LSCAT extension to the EGS4 program from Namito et al
+

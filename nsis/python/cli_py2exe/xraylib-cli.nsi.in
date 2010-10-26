@@ -54,9 +54,6 @@ CRCCheck on
 !define MUI_LICENSEPAGE_CHECKBOX
 !insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
 
-!insertmacro MUI_PAGE_COMPONENTS
-!insertmacro MUI_PAGE_DIRECTORY
-!insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TEXT "Thank you for installing xraylib. Remember: the latest version of xraylib can be obtained from the development repository on github"
 !define MUI_FINISHPAGE_LINK "xraylib development link"
 !define MUI_FINISHPAGE_LINK_LOCATION "http://github.com/tschoonj/xraylib"

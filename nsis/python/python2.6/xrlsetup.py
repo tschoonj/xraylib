@@ -14,7 +14,7 @@
 
 
 #
-#setup file for creating the python bindings to xraylib on the windows platform
+#setup file for creating the python bindings to xraylib
 #
 
 from distutils.core import setup, Extension
@@ -22,4 +22,4 @@ from distutils.core import setup, Extension
 
 xraylib_module = Extension('_xraylib', sources=['xraylib_wrap.c'],libraries = ['xrl','python26'], include_dirs = ['C:\\Python26\\include','C:\\Program Files (x86)\\xraylib\\Include'], library_dirs=['C:\\Program Files (x86)\\xraylib\\Lib','C:\\Python26\\libs'])
 
-setup (name = 'xraylib' ,version = '2.13.1' , author = "Tom Schoonjans", description = """python bindings of xraylib""", ext_modules = [xraylib_module], py_modules = ["xraylib"])
+setup (name = 'xraylib' ,version = '2.14.0' , author = "Tom Schoonjans", description = """python bindings of xraylib""", ext_modules = [xraylib_module], py_modules = ["xraylib"])

@@ -1,3 +1,18 @@
+Version 2.14.0
+
+-Added Biggs Compton profiles (both total and partial)
+-Fixed Siegbahn macros for LineEnergy, CS_FluorLine and RadRate
+-Added Siegbahn macros for single lines
+-Added IDL and Python bindings for Windows
+-Created xraylib.exe for Windows
+-Added support for .NET on Windows
+-Several bugfixes and minor improvements
+
+API additions: ComptonProfile, ComptonProfile_Partial and ElectronConfig
+
+More info can be found in the commit messages
+
+
 Version 2.13.1 Tom Schoonjans
 
 -Corrected radrate database: 2.13.0 was using scofield for K and campbell for

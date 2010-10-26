@@ -1,5 +1,5 @@
 Write bindings for Matlab and Octave
 Add database for structure effects
 Improve support on Windows platforms
-Review the way Siegbahn notations are handled for LineEnergy, RadRate and CS_FluorLine!!!
+Resonant Raman effect
 ...

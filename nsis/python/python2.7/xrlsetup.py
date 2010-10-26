@@ -1,5 +1,5 @@
 
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2010, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -22,4 +22,4 @@ from distutils.core import setup, Extension
 
 xraylib_module = Extension('_xraylib', sources=['xraylib_wrap.c'],libraries = ['xrl','python27'], include_dirs = ['C:\\Python27\\include','C:\\Program Files (x86)\\xraylib\\Include'], library_dirs=['C:\\Program Files (x86)\\xraylib\\Lib','C:\\Python27\\libs'])
 
-setup (name = 'xraylib' ,version = '2.13.1' , author = "Tom Schoonjans", description = """python bindings of xraylib""", ext_modules = [xraylib_module], py_modules = ["xraylib"])
+setup (name = 'xraylib' ,version = '2.14.0' , author = "Tom Schoonjans", description = """python bindings of xraylib""", ext_modules = [xraylib_module], py_modules = ["xraylib"])

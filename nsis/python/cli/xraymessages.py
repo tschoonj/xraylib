@@ -1,5 +1,5 @@
 
-#Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+#Copyright (c) 2009, 2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -14,7 +14,7 @@ from _winreg import *
 
 
 def display_banner():
-    key = OpenKey(HKEY_CURRENT_USER,r'Software\xraylib',0,KEY_READ)
+    key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib',0,KEY_READ)
     res = QueryValueEx(key,"")
 
     print
@@ -39,7 +39,7 @@ def display_usage():
     display_options()
 
 def display_help():
-    key = OpenKey(HKEY_CURRENT_USER,r'Software\xraylib',0,KEY_READ)
+    key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib',0,KEY_READ)
     res = QueryValueEx(key,"")
     print
     print "Available X-ray library functions"
@@ -52,7 +52,7 @@ def display_help():
     display_usage()
 
 def display_doc():
-    key = OpenKey(HKEY_CURRENT_USER,r'Software\xraylib',0,KEY_READ)
+    key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib',0,KEY_READ)
     res = QueryValueEx(key,"")
     print
     print "X-ray data documentation"

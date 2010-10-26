@@ -1,5 +1,5 @@
 
-#Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+#Copyright (c) 2009, 2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -15,7 +15,7 @@ import string
 from _winreg import *
 
 def display_func(func_name):
-    key = OpenKey(HKEY_CURRENT_USER,r'Software\xraylib',0,KEY_READ)
+    key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib',0,KEY_READ)
     res = QueryValueEx(key,"")
     fp = open(res[0]+'\\Doc\\xrayhelp.txt', 'r')
     file_lines = fp.readlines()

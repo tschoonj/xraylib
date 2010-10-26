@@ -16,6 +16,14 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayglob.h"
 #include "xraylib.h"
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Compton scattering profile                        //
+//                                                                  //
+//          Z : atomic number                                       //
+//          pz : momentum                                           //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 
 
 float ComptonProfile(int Z, float pz) {
@@ -36,10 +44,18 @@ float ComptonProfile(int Z, float pz) {
 	return (float) q;
 }
 
-/*
- * 
- * 
- */
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//              subshell Compton scattering profile                 //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell : shell macro                                     //
+//          pz : momentum                                           //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
+
+
 float ComptonProfile_Partial(int Z, int shell, float pz) {
 	double q;
 
