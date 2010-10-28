@@ -6,7 +6,7 @@ setup(
 	version=@VERSION@,
 	author="Tom Schoonjans",
 	console=['xraylib.py'],
-	data_files=[('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xraybanner.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xraydoc.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xrayfunc.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xrayhelp.txt']),("Microsoft.VC90.CRT",['msvcr90.dll','Microsoft.VC90.CRT.manifest'])   ],
+	data_files=[('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xraybanner.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xraydoc.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xrayfunc.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xrayhelp.txt'])],
 	options={
 		"py2exe":{
 			"unbuffered": True,

@@ -11,11 +11,6 @@
 
 ;Written by Tom Schoonjans
 
-!include "MUI2.nsh"
-!include "Library.nsh"
-!include "EnvVarUpdate.nsh"
-!include "Sections.nsh"
-
 !define PRODUCT_NAME "xraylib-cli"
 !define VERSION @VERSION@
 !define PRODUCT_VERSION @VERSION@
@@ -27,12 +22,18 @@
 !define abs_top_builddir_win @abs_top_builddir_win@ 
 !define DLLTOOL "i686-pc-mingw32-dlltool"
 
+!addincludedir "${abs_top_srcdir_win}\nsis"
+!include "MUI2.nsh"
+!include "EnvVarUpdate.nsh"
+!include "Sections.nsh"
+
 ;!define MUI_LANGDLL_REGISTRY_ROOT "HKLM"
 ;!define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_DIR_REGKEY}"
 ;!define MUI_LANGDLL_REGISTRY_VALUENAME "Language"
 
 Name "xraylib-cli"
 OutFile xraylib-${VERSION}-win32-cli.exe
+RequestExecutionLevel none
 
 InstallDir "$PROGRAMFILES\xraylib-cli"
 
@@ -54,6 +55,8 @@ CRCCheck on
 !define MUI_LICENSEPAGE_CHECKBOX
 !insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
 
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
 !define MUI_FINISHPAGE_TEXT "Thank you for installing xraylib. Remember: the latest version of xraylib can be obtained from the development repository on github"
 !define MUI_FINISHPAGE_LINK "xraylib development link"
 !define MUI_FINISHPAGE_LINK_LOCATION "http://github.com/tschoonj/xraylib"
@@ -114,14 +117,15 @@ Section "-xraylib core files" SecDummy
 	Rename xrayhelp.txt.fix xrayhelp.txt
 
 
-	;copy dll to C:\WINDOWS\system32 or something similar
-	;!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED @abs_top_srcdir_win@\nsis\python\cli_py2exe\Microsoft.VC90.CRT\msvcr90.dll $INSTDIR\Microsoft.VC90.CRT "$INSTDIR\Microsoft.VC90.CRT"
 
 	
 	SetOutPath "$INSTDIR\Bin"
-	File @abs_top_srcdir_win@\nsis\python\cli_py2exe\msvcr90.dll
-	File @abs_top_srcdir_win@\nsis\python\cli_py2exe\Microsoft.VC90.CRT.manifest
 	File @abs_top_srcdir_win@\nsis\python\cli_py2exe\dist\xraylib.exe
+	SetOutPath "$INSTDIR\temp"
+	File "${abs_top_srcdir_win}\nsis\msvcrt\vcredist_x86_90.exe"
+	ExecWait "$INSTDIR\temp\vcredist_x86_90.exe /q"
+	SetOutPath "$INSTDIR"
+	RMDir /r "$INSTDIR\temp"
 
 	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
 
@@ -137,10 +141,6 @@ Section "-xraylib core files" SecDummy
 SectionEnd
 
 Section "Uninstall"
-	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED "$INSTDIR\Microsoft.VC90.CRT\msvcr90.dll"
-	Delete "$INSTDIR\Bin\Microsoft.VC90.CRT.manifest"
-	Delete "$INSTDIR\Bin\msvcr90.dll"
-	RMDir "$INSTDIR\Microsoft.VC90.CRT"
 	Delete "$INSTDIR\Doc\xraybanner.txt"
 	Delete "$INSTDIR\Doc\xraydoc.txt"
 	Delete "$INSTDIR\Doc\xrayfunc.txt"

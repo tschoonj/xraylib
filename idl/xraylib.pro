@@ -23,9 +23,6 @@
 ;
 ;
 
-XRAYLIB_DIR=getenv('XRAYLIB_DIR')
-!path=!path+':'+XRAYLIB_DIR+'/idl'
-;!dlm_path=!dlm_path+':'+XRAYLIB_DIR+'/idl'
 
 COMMON XRAYLIB,AVOGNUM,$
 	KEV2ANGST,$
