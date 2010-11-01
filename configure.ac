@@ -72,7 +72,7 @@ DISABLE_BINDINGS=no
 CROSS_COMPILING=
 LDFLAGS_LIBXRL=
 
-#cross_compiling variable is not reliable on modern bash shells... look at the compiler instead
+#cross_compiling variable is not reliable on modern bash shells due to wine integration... look at the compiler instead
 #check instead of $build and $host differ
 
 
@@ -87,7 +87,7 @@ if test "x$host" != "x$build" ; then
 			AC_CHECK_PROGS([WINE],[wine],["nowine"])
 			;;
 		*)
-			AC_MSG_ERROR([Detected platform that's not supported for cross-compilation])
+			AC_MSG_ERROR([A platform was detected that is not supported for cross-compilation])
 			;;
 	esac
 
@@ -98,7 +98,13 @@ if test "x$host" != "x$build" ; then
 	LDFLAGS+="-no-undefined"
 	LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
 else
-	LDFLAGS_LIBXRL="" 
+	case "$host" in
+		*mingw*)
+			#build dll
+			LDFLAGS+="-no-undefined"
+			LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+			;;
+	esac
 fi
 
 

@@ -63,7 +63,7 @@ endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs
 
 
 #test the idl bindings using this script

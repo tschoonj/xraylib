@@ -117,14 +117,18 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\Doc\xrayhelp.txt.fix"
 	Call unix2dos
 	Rename xrayhelp.txt.fix xrayhelp.txt
+	File ${abs_top_srcdir_win}\nsis\dotNet\Xraylib.NET.chm
+
+
 
 	DetailPrint "Installing libraries..."
 	;copy dll to C:\WINDOWS\system32 or something similar
+	SetOutPath "$INSTDIR\Lib"
 	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_builddir_win}\src\.libs\libxrl-@LIB_CURRENT_MINUS_AGE@.dll $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll "$SYSDIR"
+	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.dll $INSTDIR\Lib\XrayLib.NET.dll "$INSTDIR"
 
 	;copy lib file to Lib for development...
 ;	!execute '${DLLTOOL} "-U" "--export-all-symbols" "-l" "libxrl.lib" "@abs_top_builddir@/src/.libs/libxrl.a"'
-	SetOutPath "$INSTDIR\Lib"
 	;these files will have to be produced on a windows platform :-(
 	;or maybe there is some slick trick I still have to discover
 	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
@@ -162,6 +166,11 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\Example\xrlexample5.py.fix"
 	Call unix2dos
 	Rename xrlexample5.py.fix xrlexample5.py
+	File ${abs_top_srcdir_win}\example\xrlexample8.cs
+	Push "$INSTDIR\Example\xrlexample8.cs"
+	Push "$INSTDIR\Example\xrlexample8.cs.fix"
+	Call unix2dos
+	Rename xrlexample8.cs.fix xrlexample8.cs
 
 
 
@@ -262,9 +271,8 @@ Section "-xraylib core files" SecDummy
 
 	;install the redistributable Visual C++ libraries
 	SetOutPath "$INSTDIR\temp"
-	File "${abs_top_srcdir_win}\nsis\msvcrt\*.exe"
-;	ExecWait '"$INSTDIR\temp\vcredist_x86_100.exe" /q:a /c:"VCREDI~1.EXE /q:a /c:""msiexec /i vcredist.msi /q"" "'
-;	ExecWait '"$INSTDIR\temp\vcredist_x86_90.exe" /q:a /c:"VCREDI~2.EXE /q:a /c:""msiexec /i vcredist.msi /q"" "'
+	File "${abs_top_srcdir_win}\nsis\msvcrt\vcredist_x86_100.exe"
+	File "${abs_top_srcdir_win}\nsis\msvcrt\vcredist_x86_90.exe"
 	ExecWait "$INSTDIR\temp\vcredist_x86_100.exe /q"
 	ExecWait "$INSTDIR\temp\vcredist_x86_90.exe /q"
 	SetOutPath "$INSTDIR"
@@ -291,14 +299,18 @@ Section "Uninstall"
 ;	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
 ;	Delete "$SYSDIR\libxrl-3.dll"
 	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll
+	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $INSTDIR\Lib\XrayLib.NET.dll
 	Delete "$INSTDIR\Doc\xraybanner.txt"
 	Delete "$INSTDIR\Doc\xraydoc.txt"
 	Delete "$INSTDIR\Doc\xrayfunc.txt"
 	Delete "$INSTDIR\Doc\xrayhelp.txt"
+	Delete "$INSTDIR\Doc\Xraylib.NET.chm"
 	Delete "$INSTDIR\Example\xrlexample1.c"
 	Delete "$INSTDIR\Example\xrlexample6.cpp"
 	Delete "$INSTDIR\Example\xrlexample5.py"
+	Delete "$INSTDIR\Example\xrlexample5.pyc"
 	Delete "$INSTDIR\Example\xrlexample4.pro"
+	Delete "$INSTDIR\Example\xrlexample8.cs"
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
@@ -311,7 +323,10 @@ Section "Uninstall"
 	Delete "$INSTDIR\Python3.1\_xraylib.pyd"
 	Delete "$INSTDIR\Python\xraymessages.py"
 	Delete "$INSTDIR\Python\xrayhelp.py"
+	Delete "$INSTDIR\Python\xraymessages.pyc"
+	Delete "$INSTDIR\Python\xrayhelp.pyc"
 	Delete "$INSTDIR\Bin\xraylib.py"
+	Delete "$INSTDIR\Bin\xraylib.pyc"
 	Delete "$INSTDIR\dlm\libxrlidl.dll"
 	Delete "$INSTDIR\dlm\libxrlidl.dlm"
 	Delete "$INSTDIR\pro\xraylib.pro"

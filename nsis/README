@@ -17,8 +17,8 @@ Now to produce the installer itself we used the NullSoft Installer System. After
 
 ----
 
-The Python bindings
-===================
+Python bindings
+===============
 
 These were compiled using the mingw32 compiler for windows using a modified version of the xrlsetup.py file found in the python folder.
 The command we used:
@@ -26,7 +26,10 @@ The command we used:
 python xrlsetup.py build_ext --inplace --compiler=mingw32
 
 The produced _xraylib.pyd file is of course dependent on the python version it was compiled against...
+The package includes bindings for Python version 2.6, 2.7 and 3.1.
 
+
+----
 
 
 IDL bindings
@@ -46,5 +49,38 @@ make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\
 Depending on the versions of IDL, xraylib and Visual Studio that are installed, these commands may need to be altered.
 
 
+----
 
 
+.NET bindings
+=============
+
+The .NET Framework can be installed on computers running Microsoft Windows operating systems. It supports multiple programming languages, including C#, VB.NET, C++/CLI, Pascal, Fortran and includes a large class library for that solves many common programming problems. Microsoft offers free versions of its Express Edition compilers from  http://www.microsoft.com/express/ 
+
+These were compiled using Visual Studio 2008 Standard and was built against .NET Framework Version 2. The binding consists of a single, mixed-mode assembly XrayLib.NET.dll written in C++/CLI. The assembly provides the interop between a managed XrayLib class and the native functions and types exposed by libxrl-3.dll. This combines the language interoperability of .NET with the performance of the native underlying functions. 
+
+A pre-built Release version of the assembly and an example program can be found in the bin folder together with a HTML Help v1 file.
+
+To use XrayLib.NET.dll in Visual Studio:
+
+1)     Right-click on your project in the Solution Explorer
+
+2)     Click the References... menu item
+
+3)     Click the Add New Reference... button in the dialog box
+
+4)     Click the Browse tab of the Add Reference dialog box
+
+5)     Navigate to the xraylib Lib folder and select the XrayLib.NET.dll file
+
+6)     Click the OK buttons to add the assembly reference and close the dialog boxes
+
+7)     Assuming you are using C#, add the following line to the top of your source code file
+
+using Science;
+
+8)     To create a instance of the XrayLib class that provides access to the XrayLib functionality, use the make the following call
+
+XrayLib xl = XrayLib.Instance;
+
+The class uses the static property Instance to implement a singleton pattern so that only a single instance of the XrayLib class is created and can be used throughout your program.  
