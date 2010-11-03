@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, Tom Schoonjans
+Copyright (c) 2009, 2010, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -17,11 +17,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayglob.h"
 #include "xraylib.h"
 
-//Added by Tom Schoonjans
-
-
-
-
 
 ///////////////////////////////////////////////////////////
 //                                                       //
@@ -34,6 +29,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 ///////////////////////////////////////////////////////////
 float CSb_Photo_Total(int Z, float E) {
   double ln_E, ln_sigma, sigma;
+  int shell;
+  double rv = 0.0;
 
   if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel[Z]<0) {
     ErrorExit("Z out of range in function CSb_Photo_Total");
@@ -42,12 +39,19 @@ float CSb_Photo_Total(int Z, float E) {
   if (E <= 0.) {
     ErrorExit("Energy <=0 in function CSb_Photo_Total");
   }
-  ln_E = log((double) E);
+/*  ln_E = log((double) E);
   splintd(E_Photo_Total_Kissel[Z]-1, Photo_Total_Kissel[Z]-1, Photo_Total_Kissel2[Z]-1,NE_Photo_Total_Kissel[Z], ln_E, &ln_sigma);
 
   sigma = exp(ln_sigma);
 
   return (float) sigma; 
+*/
+  for (shell = K_SHELL ; shell <= Q3_SHELL ; shell++) {
+    if (Electron_Config_Kissel[Z][shell] > 1.0E-06 && E > EdgeEnergy_arr[Z][shell] ) {
+  	rv += CSb_Photo_Partial(Z,shell,E)*Electron_Config_Kissel[Z][shell];
+    }
+  }
+  return rv;
 }
 
 ///////////////////////////////////////////////////////////
@@ -96,7 +100,7 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
     return 0.0;
   } 
   
-  if (EdgeEnergy_Kissel[Z][shell] > E) {
+  if (EdgeEnergy_arr[Z][shell] > E) {
     ErrorExit("selected energy cannot excite the orbital: energy must be greater than the absorption edge energy");
     return 0.0;
   } 
