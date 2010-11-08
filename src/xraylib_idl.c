@@ -26,7 +26,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 extern void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[]);
 extern void IDL_CDECL IDL_SetHardExit(int argc, IDL_VPTR argv[]);
 extern void IDL_CDECL IDL_SetExitStatus(int argc, IDL_VPTR argv[]);
+extern void IDL_CDECL IDL_SetErrorMessages(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_GetExitStatus(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_GetErrorMessages(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicWeight(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Photo(int argc, IDL_VPTR argv[]);
@@ -103,6 +105,7 @@ extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_GetExitStatus,"GETEXITSTATUS", 0 , 0 , 0 , 0},
+	{IDL_GetExitStatus,"GETERRORMESSAGES", 0 , 0 , 0 , 0},
 	{IDL_AtomicWeight,"ATOMICWEIGHT", 1 , 1 , 0 , 0},
 	{IDL_CS_Total,"CS_TOTAL", 2 , 2 , 0 , 0},
 	{IDL_CS_Photo,"CS_PHOTO", 2 , 2 , 0 , 0},
@@ -180,6 +183,7 @@ static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
 	{(IDL_SYSRTN_GENERIC) IDL_SetHardExit,"SETHARDEXIT", 1 , 1 , 0 , 0},
 	{(IDL_SYSRTN_GENERIC) IDL_SetExitStatus,"SETEXITSTATUS", 1 , 1 , 0 , 0},
+	{(IDL_SYSRTN_GENERIC) IDL_SetErrorMessages,"SETERRORMESSAGES", 1 , 1 , 0 , 0},
 };
 
 
@@ -198,6 +202,18 @@ IDL_VPTR IDL_CDECL IDL_GetExitStatus(int argc, IDL_VPTR argv[])
 {
   return IDL_GettmpInt((IDL_INT) GetExitStatus());
 }
+
+void IDL_CDECL IDL_SetErrorMessages(int argc, IDL_VPTR argv[])
+{
+  SetErrorMessages(IDL_LongScalar(argv[0]));
+}
+
+IDL_VPTR IDL_CDECL IDL_GetErrorMessages(int argc, IDL_VPTR argv[])
+{
+  return IDL_GettmpInt((IDL_INT) GetErrorMessages());
+}
+
+
 
 void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 {
@@ -584,7 +600,6 @@ XRL_2II(ElectronConfig)
 void release(UCHAR *memPtr) {
 	free(memPtr);
 }
-
 
 #ifndef MSWIN
 IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {

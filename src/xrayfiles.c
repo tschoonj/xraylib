@@ -54,8 +54,8 @@ void XRayInit(void)
   float E, prob;
   char buffer[1024];
 
-  HardExit = 1;
-  ExitStatus = 0;
+  SetHardExit(1);
+  SetExitStatus(0);
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
     if ((path = getenv("HOME")) == NULL) {
@@ -228,7 +228,7 @@ void XRayInit(void)
     ErrorExit("File fluor_lines.dat not found");
     return;
   }
-  HardExit=0;
+  SetHardExit(0);
   char **error_lines=NULL;
   int nerror_lines=0;
   int i;
@@ -273,7 +273,7 @@ void XRayInit(void)
     }
   }
   fclose(fp);
-  HardExit=1;
+  SetHardExit(1);
   if (nerror_lines > 0) {
     sprintf(buffer,"Exiting due to too many errors\n");
     ErrorExit(buffer);
@@ -347,7 +347,7 @@ void XRayInit(void)
     ErrorExit("File radrate.dat not found");
     return;
   }
-  HardExit=0;
+  SetHardExit(0);
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -387,7 +387,7 @@ void XRayInit(void)
     }
   }
   fclose(fp);
-  HardExit=1;
+  SetHardExit(1);
   if (nerror_lines > 0) {
     sprintf(buffer,"Exiting due to too many errors\n");
     ErrorExit(buffer);

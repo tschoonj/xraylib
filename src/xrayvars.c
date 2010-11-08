@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009, 2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -21,8 +21,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 /////            Variables                                       /////
 //////////////////////////////////////////////////////////////////////
 
-int HardExit = 0;
-int ExitStatus = 0;
+static int HardExit = 0;
+static int ExitStatus = 0;
+static int ErrorMessages = 1;
 char XRayLibDir[MAXFILENAMESIZE];
 
 char ShellName[][5] = {
@@ -83,7 +84,9 @@ char TransName[][5] = {"F1","F12","F13","FP13","F23"};
 
 void ErrorExit(char *error_message)
 {
-  printf("%s\n", error_message);
+  if (ErrorMessages) {
+  	printf("%s\n", error_message);
+  }
   ExitStatus = 1;
   if (HardExit != 0) exit(EXIT_FAILURE);
 }
@@ -102,3 +105,15 @@ int GetExitStatus()
 {
   return ExitStatus;
 }
+
+void SetErrorMessages(int status)
+{
+  ErrorMessages = status;
+}
+
+int GetErrorMessages(void)
+{
+  return ErrorMessages;
+}
+
+

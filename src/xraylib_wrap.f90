@@ -13,15 +13,6 @@
 
 
 !Fortran 2003 bindings for xraylib
-!By Tom Schoonjans (Tom.Schoonjans@UGent.be)
-
-!Warning: can ony be compiled with Intel Fortran 10 or later, GFortran 4.3.0 or later and G95
-
-
-
-
-      
-
 
 MODULE xraylib
 
@@ -518,30 +509,44 @@ INTEGER (KIND=C_INT),PARAMETER ::  MG_LINE = M3N5_LINE
 INTERFACE
 !All procedures are pure
 
-	!Initialization
-	SUBROUTINE XRayInit() BIND(C,NAME='XRayInit')
-	ENDSUBROUTINE XRayInit
+        !Initialization
+        SUBROUTINE XRayInit() BIND(C,NAME='XRayInit')
+        ENDSUBROUTINE XRayInit
 
-	!Error handling
-	PURE SUBROUTINE SetHardExit(hard_exit) BIND(C,NAME='SetHardExit')
+        !Error handling
+        SUBROUTINE SetHardExit(hard_exit) BIND(C,NAME='SetHardExit')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		INTEGER (KIND=C_INT),INTENT(IN),VALUE :: hard_exit
-	ENDSUBROUTINE SetHardExit
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: hard_exit
+        ENDSUBROUTINE SetHardExit
 
-	PURE SUBROUTINE SetExitStatus(exit_status) BIND(C,NAME='SetExitStatus')
+        SUBROUTINE SetExitStatus(exit_status) BIND(C,NAME='SetExitStatus')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		INTEGER (KIND=C_INT),INTENT(IN),VALUE :: exit_status
-	ENDSUBROUTINE SetExitStatus
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: exit_status
+        ENDSUBROUTINE SetExitStatus
 
-	PURE FUNCTION GetExitStatus() BIND(C,NAME='GetExitStatus')
+        FUNCTION GetExitStatus() BIND(C,NAME='GetExitStatus')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		INTEGER (KIND=C_INT) :: GetExitStatus
-	ENDFUNCTION
+                INTEGER (KIND=C_INT) :: GetExitStatus
+        ENDFUNCTION
 
-	!Atomic Weights
+        SUBROUTINE SetErrorMessages(status) BIND(C,NAME='SetErrorMessages')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: status
+        ENDSUBROUTINE SetErrorMessages
+
+        FUNCTION GetErrorMessages() BIND(C,NAME='GetErrorMessages')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT) :: GetErrorMessages
+        ENDFUNCTION
+
+
+
+        !Atomic Weights
         PURE FUNCTION AtomicWeight(Z) BIND(C,NAME='AtomicWeight')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -549,7 +554,7 @@ INTERFACE
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z
         END FUNCTION AtomicWeight
 
-	!Cross sections (cm2/g)
+        !Cross sections (cm2/g)
         PURE FUNCTION CS_Total(Z,E) BIND(C,NAME='CS_Total')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
