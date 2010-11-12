@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 int main()
 {
-  struct compoundData cdtest;
+  struct compoundData cdtest, cdtest1, cdtest2, *cdtest3;
   int i;
   XRayInit();
   //if something goes wrong, the test will end with EXIT_FAILURE
@@ -60,6 +60,18 @@ int main()
   printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
 
+  if (CompoundParser("SiO2",&cdtest1) == 0)
+	return 1;
+
+  if (CompoundParser("Ca(HCO3)2",&cdtest2) == 0)
+	return 1;
+
+  cdtest3 = add_compound_data(cdtest1, 0.4, cdtest2, 0.6);
+  for (i = 0 ; i < cdtest3->nElements ; i++)
+    printf("Element %i: %lf %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
+
+  FREE_COMPOUND_DATA(*cdtest3)
+  free(cdtest3);
 
 
   return 0;

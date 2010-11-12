@@ -75,4 +75,15 @@ void _free_compound_data(struct compoundData *);
 int CompoundParser(const char compoundString[], struct compoundData *cd);
 
 
+/*
+ * The add_compound_data function will make calculate the composition
+ * corresponding with the sum of the compositions of A and B, taking into
+ * their weights, with weightA + weightB typically less than 1.0
+ * Returns NULL pointer on error
+ */
+
+
+struct compoundData * add_compound_data(struct compoundData A, double weightA, struct compoundData B, double weightB);
+
+
 #endif
