@@ -96,6 +96,22 @@ extern "C" {
 #define FP13_TRANS 3     
 #define F23_TRANS  4    
 
+#define FL12_TRANS 1
+#define FL13_TRANS 2
+#define FLP13_TRANS 3
+#define FL23_TRANS 4
+#define FM12_TRANS 5
+#define FM13_TRANS 6
+#define FM14_TRANS 7
+#define FM15_TRANS 8
+#define FM23_TRANS 9
+#define FM24_TRANS 10
+#define FM25_TRANS 11
+#define FM34_TRANS 12
+#define FM35_TRANS 13
+#define FM45_TRANS 14
+
+
 // Initialization
 void XRayInit(void);
 

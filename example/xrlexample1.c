@@ -59,7 +59,7 @@ int main()
 
   printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
-
+  printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",CosKronTransProb(79,FM15_TRANS));
 
 
   return 0;
