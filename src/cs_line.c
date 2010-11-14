@@ -30,13 +30,19 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 // for K and L X Rays of the Elements", ORNL 53                     //
 //////////////////////////////////////////////////////////////////////
       
-float Jump_from_L1(int Z,float E)
+static float Jump_from_L1(int Z,float E)
 {
-  float Factor=1.0,JumpL1;
+  float Factor=1.0,JumpL1,TaoL1,JumpK;
+	if( E > EdgeEnergy(Z,K_SHELL) ) {
+	  JumpK = JumpFactor(Z,K_SHELL) ;
+	  if( JumpK <= 0. )
+		return 0. ;
+	  Factor /= JumpK ;
+	}
 	if (E > EdgeEnergy(Z, L1_SHELL)) {
 	  JumpL1 = JumpFactor(Z, L1_SHELL);
 	  if (JumpL1 <= 0.0) return 0.0;
-	  Factor = ((JumpL1-1)/JumpL1) * FluorYield(Z, L1_SHELL);
+	  Factor *= ((JumpL1-1)/JumpL1) * FluorYield(Z, L1_SHELL);
 	}
 	else
 	  return 0.;
@@ -44,30 +50,32 @@ float Jump_from_L1(int Z,float E)
 
 }
 
-float Jump_from_L2(int Z,float E)
+static float Jump_from_L2(int Z,float E)
 {
   float Factor=1.0,Jump,JumpL1,JumpL2,JumpK;
   float TaoL1=0.0,TaoL2=0.0;
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
 	  JumpK = JumpFactor(Z,K_SHELL) ;
 	  if( JumpK <= 0. )
-	return 0. ;
+		return 0. ;
 	  Factor /= JumpK ;
 	}
 	JumpL1 = JumpFactor(Z,L1_SHELL) ;
 	JumpL2 = JumpFactor(Z,L2_SHELL) ;
 	if(E>EdgeEnergy (Z,L1_SHELL)) {
 	  if( JumpL1 <= 0.|| JumpL2 <= 0. )
-	return 0. ;
+		return 0. ;
 	  TaoL1 = (JumpL1-1) / JumpL1 ;
 	  TaoL2 = (JumpL2-1) / (JumpL2*JumpL1) ;
 	}
 	else if( E > EdgeEnergy(Z,L2_SHELL) ) {
 	  if( JumpL2 <= 0. )
-	return 0. ;
+		return 0. ;
 	  TaoL1 = 0. ;
 	  TaoL2 = (JumpL2-1)/(JumpL2) ;
 	}
+	else
+	  Factor = 0;
 	Factor *= (TaoL2 + TaoL1*CosKronTransProb(Z,F12_TRANS)) * FluorYield(Z,L2_SHELL) ;
 
 	return Factor;
@@ -75,7 +83,7 @@ float Jump_from_L2(int Z,float E)
 }
 
 
-float Jump_from_L3(int Z,float E )
+static float Jump_from_L3(int Z,float E )
 {
   float Factor=1.0,Jump,JumpL1,JumpL2,JumpL3,JumpK;
   float TaoL1=0.0,TaoL2=0.0,TaoL3=0.0;
