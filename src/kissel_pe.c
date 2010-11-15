@@ -198,6 +198,57 @@ float CS_FluorLine_Kissel(int Z, int line, float E) {
 	CS_FluorLine_Kissel(Z,L1M4_LINE,E)
     );
   }
+#define FM12 CosKronTransProb(Z,FM12_TRANS)
+#define FM23 CosKronTransProb(Z,FM23_TRANS)
+#define FM34 CosKronTransProb(Z,FM34_TRANS)
+#define FM45 CosKronTransProb(Z,FM45_TRANS)
+#define FM13 CosKronTransProb(Z,FM13_TRANS)
+#define FM24 CosKronTransProb(Z,FM24_TRANS)
+#define FM14 CosKronTransProb(Z,FM14_TRANS)
+#define FM35 CosKronTransProb(Z,FM35_TRANS)
+#define FM25 CosKronTransProb(Z,FM25_TRANS)
+#define FM15 CosKronTransProb(Z,FM15_TRANS)
+  else if (line>=M1P5_LINE && line<=M1N1_LINE) {
+    //M1 lines
+    return CS_Photo_Partial(Z, M1_SHELL, E)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
+  }
+  else if (line>=M2P5_LINE && line<=M2N1_LINE) {
+    //M2 lines
+    return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
+		(CS_Photo_Partial(Z, M2_SHELL, E)+
+		(CS_Photo_Partial(Z, M1_SHELL, E)*FM12));
+  }
+  else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
+    //M3 lines
+    return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
+		(CS_Photo_Partial(Z, M3_SHELL, E)+
+		(CS_Photo_Partial(Z, M2_SHELL, E)*FM23)+
+		(CS_Photo_Partial(Z, M1_SHELL, E)*(FM13 + FM12 * FM23))
+		);
+
+  }
+  else if (line>=M4P5_LINE && line<=M4N1_LINE) {
+    //M4 lines
+    return (FluorYield(Z, M4_SHELL)*RadRate(Z,line))*
+		(CS_Photo_Partial(Z, M4_SHELL, E)+
+		(CS_Photo_Partial(Z, M3_SHELL, E)*FM34)+
+		(CS_Photo_Partial(Z, M2_SHELL, E)*(FM24 + FM34*FM23))+
+		(CS_Photo_Partial(Z, M1_SHELL, E)*(FM12*FM23*FM34 + FM13*FM34 + FM12*FM24 + FM14)    )
+		);
+
+  }
+  else if (line>=M5P5_LINE && line<=M5N1_LINE) {
+ 
+    //M5 lines
+    return (FluorYield(Z, M5_SHELL)*RadRate(Z,line))*
+		(CS_Photo_Partial(Z, M5_SHELL, E)+
+		(CS_Photo_Partial(Z, M4_SHELL, E)*FM45)+
+		(CS_Photo_Partial(Z, M3_SHELL, E)*(FM35 + FM34 * FM45))+
+		(CS_Photo_Partial(Z, M2_SHELL, E)*(FM23 * FM34 * FM45 + FM24 * FM45 + FM23 * FM35 + FM25)    )+
+		(CS_Photo_Partial(Z, M1_SHELL, E)*(FM12*FM23*FM34*FM45 + FM13*FM34*FM45 + FM12*FM24*FM45 + FM14*FM45 + FM12*FM23*FM35 + FM13*FM35 + FM12*FM25 + FM15)
+		));
+
+  }
   else {
     ErrorExit("Line not allowed in function CS_FluorLine_Kissel");
     return 0.0;
