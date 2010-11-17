@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 #include "xraylib.h"
 #include "xraylib-aux.h"
+#include "xrayvars.h"
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -62,7 +63,9 @@ static int compareMendeljevElements(const void *i1, const void *i2) {
 	return strcmp(ca1->name,ca2->name);
 }
 
-int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct MendeljevElement *MendeljevArrayLocal) {
+static int compareInt(const void *A, const void *B); 
+
+static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct MendeljevElement *MendeljevArrayLocal) {
 
 	int nbrackets=0;
 	int nuppers=0;
@@ -353,4 +356,75 @@ void _free_compound_data(struct compoundData *cd) {
 	free(cd->Elements);
 	free(cd->massFractions);
 }
+
+
+struct compoundData * add_compound_data(struct compoundData A, double weightA, struct compoundData B, double weightB) {
+	struct compoundData *rv, *longest, *shortest;
+	int i,j,found=0;
+	double *longestW, *shortestW;
+
+
+	rv = (struct compoundData *) malloc(sizeof(struct compoundData)) ;
+	
+	if (A.nElements >= B.nElements) {
+		longest = &A;
+		shortest = &B;
+		longestW = &weightA;
+		shortestW = &weightB;
+	}
+	else {
+		longest = &B;
+		shortest = &A;
+		longestW = &weightB;
+		shortestW = &weightA;
+	}
+
+	rv->Elements = (int *) malloc(sizeof(int)*longest->nElements);
+	memcpy(rv->Elements,longest->Elements, sizeof(int)*longest->nElements);
+	rv->nElements = longest->nElements;
+
+	//determine the unique Elements from A and B
+	for (i = 0 ; i < shortest->nElements ; i++) {
+		found = 0;
+		for (j = 0 ; j < longest->nElements ; j++) {
+			if (shortest->Elements[i] == longest->Elements[j]) { 
+				found = 1;
+				break;
+			}
+		}
+		if (!found) {
+			//add to array
+			rv->Elements = (int *) realloc(rv->Elements, sizeof(int) * ++(rv->nElements));
+			rv->Elements[rv->nElements-1] = shortest->Elements[i];
+		}
+	}
+
+	//sort array
+	qsort(rv->Elements, rv->nElements, sizeof(int),compareInt );
+	
+	//use of this is questionable...
+	rv->nAtomsAll = longest->nAtomsAll + shortest->nAtomsAll;
+	
+	rv->massFractions = (double *) calloc(rv->nElements,sizeof(double) );
+
+	for (i = 0 ; i < rv->nElements ; i++) {
+		for (j = 0 ; j < longest->nElements ; j++) {
+			if (rv->Elements[i] == longest->Elements[j])
+				rv->massFractions[i] += longest->massFractions[j]**longestW;
+		}
+		for (j = 0 ; j < shortest->nElements ; j++) {
+			if (rv->Elements[i] == shortest->Elements[j])
+				rv->massFractions[i] += shortest->massFractions[j]**shortestW;
+		}
+	}
+
+	return rv;
+}
+
+static int compareInt(const void *A, const void *B) {
+
+	return (int)*((int*)A) - (int)*((int*)B);
+}
+
+
 
