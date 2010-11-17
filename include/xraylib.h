@@ -119,7 +119,10 @@ void XRayInit(void);
 void SetHardExit(int hard_exit);
 void SetExitStatus(int exit_status);
 int GetExitStatus(void);
-	
+void SetErrorMessages(int status);
+int GetErrorMessages(void);
+
+
 // Atomic weights
 float AtomicWeight(int Z);
                                   
