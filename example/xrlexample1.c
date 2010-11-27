@@ -19,6 +19,7 @@ int main()
 {
   struct compoundData cdtest, cdtest1, cdtest2, *cdtest3;
   int i;
+  char *symbol;
   XRayInit();
   //if something goes wrong, the test will end with EXIT_FAILURE
   SetHardExit(1);
@@ -75,8 +76,11 @@ int main()
     printf("Element %i: %lf %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
 
   FREE_COMPOUND_DATA(*cdtest3)
-  free(cdtest3);
+  xrlFree(cdtest3);
 
+  symbol = AtomicNumberToSymbol(26);
+  printf("Symbol of element 26 is: %s\n",symbol);
+  xrlFree(symbol);
 
   return 0;
 }

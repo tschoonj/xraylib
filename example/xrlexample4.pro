@@ -42,6 +42,7 @@ PRINT,'SiO2 Refractive Index at 5.0 keV : ',Refractive_Index_Re("SiO2",5.0,2.65)
 PRINT,'Compton profile for Fe at pz = 1.1 : ',ComptonProfile(26,1.1)
 PRINT,'M5 Partial Compton profile for Fe at pz = 1.1 : ',ComptonProfile_Partial(26,M5_SHELL,1.1)
 
+PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check
 IF !ERROR_STATE.CODE eq 0 THEN EXIT,STATUS=0 ELSE EXIT,STATUS=1

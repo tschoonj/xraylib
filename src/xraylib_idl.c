@@ -100,6 +100,7 @@ extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Im(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]); 
 
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
@@ -176,6 +177,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_ComptonProfile,"COMPTONPROFILE",2,2,0,0},
 	{IDL_ComptonProfile_Partial,"COMPTONPROFILE_PARTIAL",3,3,0,0},
 	{IDL_ElectronConfig, "ELECTRONCONFIG", 2, 2, 0, 0},
+	{IDL_AtomicNumberToSymbol,"ATOMICNUMBERTOSYMBOL", 1, 1, 0, 0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -643,7 +645,23 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	return rv;
 }
 
+IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]) {
+	int Z;
+	char *symbol;
+	
+	IDL_ENSURE_SCALAR(argv[0]);
+	IDL_EXCLUDE_STRING(argv[0]);
+	Z = IDL_LongScalar(argv[0]);
 
+	symbol = AtomicNumberToSymbol(Z);
+
+	if (symbol == NULL) {
+		return IDL_StrToSTRING("");
+	}
+	
+	return IDL_StrToSTRING(symbol);
+
+}
 
 
 

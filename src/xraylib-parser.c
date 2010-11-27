@@ -24,7 +24,7 @@ struct MendeljevElement {
 	char *name;
 };
 
-struct MendeljevElement MendeljevArray[] = {
+static struct MendeljevElement MendeljevArray[] = {
 	{1,"H"},{2,"He"},{3,"Li"},{4,"Be"},{5,"B"},{6,"C"},{7,"N"},{8,"O"},{9,"F"},{10,"Ne"},
 	{11,"Na"},{12,"Mg"},{13,"Al"},{14,"Si"},{15,"P"},{16,"S"},{17,"Cl"},{18,"Ar"},{19,"K"},{20,"Ca"},
 	{21,"Sc"},{22,"Ti"},{23,"V"},{24,"Cr"},{25,"Mn"},{26,"Fe"},{27,"Co"},{28,"Ni"},{29,"Cu"},{30,"Zn"},
@@ -427,4 +427,17 @@ static int compareInt(const void *A, const void *B) {
 }
 
 
+char *AtomicNumberToSymbol(int Z) {
+	if (Z < 1 || Z > 107 ) {
+		ErrorExit("AtomicNumberToSymbol: Z out of range");
+		return NULL;
+	}
+
+	return strdup(MendeljevArray[Z-1].name );
+}
+
+void xrlFree(void *Ptr) {
+	//just a wrapper around free really... because we don't trust msvcrtXX.dll
+	free(Ptr);
+}
 
