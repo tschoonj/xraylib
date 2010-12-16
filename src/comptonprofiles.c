@@ -39,7 +39,7 @@ float ComptonProfile(int Z, float pz) {
 		return 0;
 	}
 
-	splintd(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,Npz_ComptonProfiles[Z],pz,&q);
+	lininterpd(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Npz_ComptonProfiles[Z],pz,&q);
 
 	return (float) q;
 }
@@ -69,7 +69,7 @@ float ComptonProfile_Partial(int Z, int shell, float pz) {
 		return 0;
 	}
 
-	splintd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1, Partial_ComptonProfiles2[Z][shell]-1,Npz_ComptonProfiles[Z],(double) pz,&q);
+	lininterpd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1, Npz_ComptonProfiles[Z],(double) pz,&q);
 
 	return (float) q;
 }
