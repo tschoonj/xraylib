@@ -13,3 +13,5 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 void splint(float xa[], float ya[], float y2a[], int n, float x, float *y);
 void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y);
+void lininterp(float xa[], float ya[], int n, float x, float *y);
+void lininterpd(double xa[], double ya[], int n, double x, double *y);

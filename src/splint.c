@@ -12,6 +12,59 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 
+void lininterp(float xa[], float ya[], int n, float x, float *y) {
+	int findpos = -1;
+	int i;
+
+	if (x > xa[n]) {
+		*y = ya[n];
+		return;
+	}
+
+	if (x < xa[1]) {
+	  *y = ya[1];
+	  return;
+	}
+
+	for (i = 1 ; i <= n ; i++) {
+		if (x < xa[i]) {
+			findpos = i-1;
+			break;
+		}
+	}
+
+	*y = ya[findpos] + (ya[findpos+1]-ya[findpos])*(x-xa[findpos])/(xa[findpos+1]-xa[findpos]);
+
+	return;
+}
+
+void lininterpd(double xa[], double ya[], int n, double x, double *y) {
+	int findpos = -1;
+	int i;
+
+	if (x > xa[n]) {
+		*y = ya[n];
+		return;
+	}
+
+	if (x < xa[1]) {
+	  *y = ya[1];
+	  return;
+	}
+
+	for (i = 1 ; i <= n ; i++) {
+		if (x < xa[i]) {
+			findpos = i-1;
+			break;
+		}
+	}
+
+	*y = ya[findpos] + (ya[findpos+1]-ya[findpos])*(x-xa[findpos])/(xa[findpos+1]-xa[findpos]);
+
+	return;
+}
+
+
 void splint(float xa[], float ya[], float y2a[], int n, float x, float *y)
 {
 	int klo, khi, k;
