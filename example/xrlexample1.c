@@ -60,6 +60,7 @@ int main()
   printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
 
+  printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
 
 
   return 0;

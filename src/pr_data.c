@@ -205,6 +205,9 @@ int main(void)
   fprintf(f, "float EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
 
+  fprintf(f, "float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
+  PR_MATF(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
+
   fprintf(f, "float LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
   PR_MATF(ZMAX+1, LINENUM, LineEnergy_arr);
 

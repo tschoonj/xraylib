@@ -48,6 +48,7 @@ float FluorYield_arr[ZMAX+1][SHELLNUM];
 float JumpFactor_arr[ZMAX+1][SHELLNUM];
 float CosKron_arr[ZMAX+1][TRANSNUM];
 float RadRate_arr[ZMAX+1][LINENUM];
+float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
 
 int NE_Photo[ZMAX+1];
 float *E_Photo_arr[ZMAX+1];

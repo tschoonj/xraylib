@@ -52,6 +52,7 @@ extern float FluorYield_arr[ZMAX+1][SHELLNUM];
 extern float JumpFactor_arr[ZMAX+1][SHELLNUM];
 extern float CosKron_arr[ZMAX+1][TRANSNUM];
 extern float RadRate_arr[ZMAX+1][LINENUM];
+extern float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
 
 extern int NE_Photo[ZMAX+1];
 extern float *E_Photo_arr[ZMAX+1];
