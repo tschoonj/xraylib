@@ -66,6 +66,8 @@ int main()
   printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MB_LINE,10.0f));
   printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MG_LINE,10.0f));
 
+  printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
+
   if (CompoundParser("SiO2",&cdtest1) == 0)
 	return 1;
 

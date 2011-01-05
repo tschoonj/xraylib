@@ -236,6 +236,10 @@ float Refractive_Index_Im(const char compound[], float E, float density);
 float ComptonProfile(int Z, float pz);
 float ComptonProfile_Partial(int Z, int shell, float pz);
 
+//Atomic level widths
+float AtomicLevelWidth(int Z, int shell);
+
+
 #ifdef __cplusplus
 }
 #endif
