@@ -164,17 +164,17 @@ float CS_FluorLine_Kissel(int Z, int line, float E) {
     //K lines
     return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
   }
-  else if (line>=L1N7_LINE && line<=L1M1_LINE) {
+  else if (line>=L1P5_LINE && line<=L1M1_LINE) {
     //L1 lines
     return CS_Photo_Partial(Z, L1_SHELL, E)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
   }
-  else if (line>=L2N7_LINE && line<=L2M1_LINE) {
+  else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
     //L2 lines
     return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
 		(CS_Photo_Partial(Z, L2_SHELL, E)+
 		(CS_Photo_Partial(Z, L1_SHELL, E)*CosKronTransProb(Z,F12_TRANS)));
   }
-  else if (line>=L3N7_LINE && line<=L3M1_LINE) {
+  else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
     //L3 lines
     return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*
 		(CS_Photo_Partial(Z, L3_SHELL, E)+
