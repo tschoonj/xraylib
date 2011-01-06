@@ -41,6 +41,8 @@ PRINT,'C16H14O3 Refractive Index at 1 keV : ',Refractive_Index_Re("C16H14O3",1.0
 PRINT,'SiO2 Refractive Index at 5.0 keV : ',Refractive_Index_Re("SiO2",5.0,2.65),' - ',Refractive_Index_Im("SiO2",5.0,2.65),' i'  
 PRINT,'Compton profile for Fe at pz = 1.1 : ',ComptonProfile(26,1.1)
 PRINT,'M5 Partial Compton profile for Fe at pz = 1.1 : ',ComptonProfile_Partial(26,M5_SHELL,1.1)
+PRINT,'K atomic level width for Fe: ',$
+        AtomicLevelWidth(26,K_SHELL)
 
 
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check
