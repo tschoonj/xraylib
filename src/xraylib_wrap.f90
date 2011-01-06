@@ -1130,6 +1130,12 @@ INTERFACE
                 REAL (KIND=C_FLOAT) :: ElectronConfig 
         ENDFUNCTION ElectronConfig
 
+        PURE FUNCTION AtomicLevelWidth(Z,shell) BIND(C,NAME='AtomicLevelWidth')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
+                REAL (KIND=C_FLOAT) :: AtomicLevelWidth
+        ENDFUNCTION AtomicLevelWidth
 ENDINTERFACE
 
 CONTAINS

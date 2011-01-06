@@ -31,4 +31,5 @@ if __name__ == '__main__' :
 	print "SiO2 Refractive Index at 5 keV : %g - %g i" % (Refractive_Index_Re("SiO2",5.0,2.65),Refractive_Index_Im("SiO2",5.0,2.65))
 	print "Compton profile for Fe at pz = 1.1 : %g" % ComptonProfile(26,1.1)
 	print "M5 Compton profile for Fe at pz = 1.1 : %g" % ComptonProfile_Partial(26,M5_SHELL,1.1)
+	print "K atomic level width for Fe: %g" % AtomicLevelWidth(26,K_SHELL)
 	sys.exit(0)

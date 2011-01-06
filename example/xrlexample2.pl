@@ -37,6 +37,6 @@ printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",xraylib::Refractive_In
 printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",xraylib::Refractive_Index_Re("SiO2",5.0,2.65),xraylib::Refractive_Index_Im("SiO2",5.0,2.65));
 printf("Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile(26,1.1));
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile_Partial(26,$xraylib::M5_SHELL,1.1));
-
+printf("K atomic level width for Fe: %g\n", xraylib::AtomicLevelWidth(26,$xraylib::K_SHELL));
 
 exit 0;
