@@ -52,10 +52,7 @@ RETURN,total_pe
 
 END
 
-FUNCTION read_partial_ss,lun,type,element
-
-COMMON xraylib
-
+FUNCTION read_partial_ss,lun,type
 
 line=''
 nlines=0L
@@ -79,33 +76,16 @@ REPEAT BEGIN
  
  values=STRSPLIT(STRTRIM(line,1),/EXTRACT)
  IF (nlines EQ 0) THEN BEGIN
-	temp_energies=[DOUBLE(values[0]) ]
+	temp_energies=[ALOG(DOUBLE(values[0])) ]
  	temp_cs=[ALOG(DOUBLE(values[1]))]
  ENDIF ELSE BEGIN
-	temp_energies=[temp_energies,DOUBLE(values[0])]	
+	temp_energies=[temp_energies,ALOG(DOUBLE(values[0]))]	
 	temp_cs=[temp_cs,ALOG(DOUBLE(values[1]))]
  ENDELSE
  nlines += 1
 ENDREP UNTIL 0
 
 temp_cs=temp_cs > 0.0
-
-CASE type OF
-	'K': ediff= temp_energies[0]-EdgeEnergy(element,K_SHELL)
-	'L1': ediff= temp_energies[0]-EdgeEnergy(element,L1_SHELL)
-	'L2': ediff= temp_energies[0]-EdgeEnergy(element,L2_SHELL)
-	'L3': ediff= temp_energies[0]-EdgeEnergy(element,L3_SHELL)
-	'M1': ediff= temp_energies[0]-EdgeEnergy(element,M1_SHELL)
-	'M2': ediff= temp_energies[0]-EdgeEnergy(element,M2_SHELL)
-	'M3': ediff= temp_energies[0]-EdgeEnergy(element,M3_SHELL)
-	'M4': ediff= temp_energies[0]-EdgeEnergy(element,M4_SHELL)
-	'M5': ediff= temp_energies[0]-EdgeEnergy(element,M5_SHELL)
-	ELSE: ediff = 0.0
-ENDCASE
-
-temp_energies -= ediff
-temp_energies=ALOG(temp_energies)
-
 
 ;calculate the second derivatives
 temp_cs2=DERIV(temp_energies,DERIV(temp_energies,temp_cs))
@@ -124,7 +104,7 @@ END
 
 
 
-FUNCTION read_partial,lun,config,element
+FUNCTION read_partial,lun,config
 
 partial_pe={   $ 
 	K : PTRARR(3),$ 
@@ -135,66 +115,66 @@ partial_pe={   $
 	P1: PTRARR(3), P2: PTRARR(3) ,P3: PTRARR(3) ,P4: PTRARR(3), P5: PTRARR(3),$
 	Q1: PTRARR(3), Q2: PTRARR(3), Q3: PTRARR(3)}
 
-	IF (config.K NE 0.0) THEN partial_pe.K=read_partial_ss(lun,'K',element)
-	IF (config.L1 NE 0.0) THEN partial_pe.L1=read_partial_ss(lun,'L1',element) $
+	IF (config.K NE 0.0) THEN partial_pe.K=read_partial_ss(lun,'K')
+	IF (config.L1 NE 0.0) THEN partial_pe.L1=read_partial_ss(lun,'L1') $
 		ELSE partial_pe.L1[0]=PTR_NEW(-1)
-	IF (config.L2 NE 0.0) THEN partial_pe.L2=read_partial_ss(lun,'L2',element) $
+	IF (config.L2 NE 0.0) THEN partial_pe.L2=read_partial_ss(lun,'L2') $
 		ELSE partial_pe.L2[0]=PTR_NEW(-1)
-	IF (config.L3 NE 0.0) THEN partial_pe.L3=read_partial_ss(lun,'L3',element) $
+	IF (config.L3 NE 0.0) THEN partial_pe.L3=read_partial_ss(lun,'L3') $
 		ELSE partial_pe.L3[0]=PTR_NEW(-1)
-	IF (config.M1 NE 0.0) THEN partial_pe.M1=read_partial_ss(lun,'M1',element) $
+	IF (config.M1 NE 0.0) THEN partial_pe.M1=read_partial_ss(lun,'M1') $
 		ELSE partial_pe.M1[0]=PTR_NEW(-1)
-	IF (config.M2 NE 0.0) THEN partial_pe.M2=read_partial_ss(lun,'M2',element) $
+	IF (config.M2 NE 0.0) THEN partial_pe.M2=read_partial_ss(lun,'M2') $
 		ELSE partial_pe.M2[0]=PTR_NEW(-1)
-	IF (config.M3 NE 0.0) THEN partial_pe.M3=read_partial_ss(lun,'M3',element) $
+	IF (config.M3 NE 0.0) THEN partial_pe.M3=read_partial_ss(lun,'M3') $
 		ELSE partial_pe.M3[0]=PTR_NEW(-1)
-	IF (config.M4 NE 0.0) THEN partial_pe.M4=read_partial_ss(lun,'M4',element) $
+	IF (config.M4 NE 0.0) THEN partial_pe.M4=read_partial_ss(lun,'M4') $
 		ELSE partial_pe.M4[0]=PTR_NEW(-1)
-	IF (config.M5 NE 0.0) THEN partial_pe.M5=read_partial_ss(lun,'M5',element) $
+	IF (config.M5 NE 0.0) THEN partial_pe.M5=read_partial_ss(lun,'M5') $
 		ELSE partial_pe.M5[0]=PTR_NEW(-1)
-	IF (config.N1 NE 0.0) THEN partial_pe.N1=read_partial_ss(lun,'N1',element) $
+	IF (config.N1 NE 0.0) THEN partial_pe.N1=read_partial_ss(lun,'N1') $
 		ELSE partial_pe.N1[0]=PTR_NEW(-1)
-	IF (config.N2 NE 0.0) THEN partial_pe.N2=read_partial_ss(lun,'N2',element) $
+	IF (config.N2 NE 0.0) THEN partial_pe.N2=read_partial_ss(lun,'N2') $
 		ELSE partial_pe.N2[0]=PTR_NEW(-1)
-	IF (config.N3 NE 0.0) THEN partial_pe.N3=read_partial_ss(lun,'N3',element) $
+	IF (config.N3 NE 0.0) THEN partial_pe.N3=read_partial_ss(lun,'N3') $
 		ELSE partial_pe.N3[0]=PTR_NEW(-1)
-	IF (config.N4 NE 0.0) THEN partial_pe.N4=read_partial_ss(lun,'N4',element) $
+	IF (config.N4 NE 0.0) THEN partial_pe.N4=read_partial_ss(lun,'N4') $
 		ELSE partial_pe.N4[0]=PTR_NEW(-1)
-	IF (config.N5 NE 0.0) THEN partial_pe.N5=read_partial_ss(lun,'N5',element) $
+	IF (config.N5 NE 0.0) THEN partial_pe.N5=read_partial_ss(lun,'N5') $
 		ELSE partial_pe.N5[0]=PTR_NEW(-1)
-	IF (config.N6 NE 0.0) THEN partial_pe.N6=read_partial_ss(lun,'N6',element) $
+	IF (config.N6 NE 0.0) THEN partial_pe.N6=read_partial_ss(lun,'N6') $
 		ELSE partial_pe.N6[0]=PTR_NEW(-1)
-	IF (config.N7 NE 0.0) THEN partial_pe.N7=read_partial_ss(lun,'N7',element) $
+	IF (config.N7 NE 0.0) THEN partial_pe.N7=read_partial_ss(lun,'N7') $
 		ELSE partial_pe.N7[0]=PTR_NEW(-1)
-	IF (config.O1 NE 0.0) THEN partial_pe.O1=read_partial_ss(lun,'O1',element) $
+	IF (config.O1 NE 0.0) THEN partial_pe.O1=read_partial_ss(lun,'O1') $
 		ELSE partial_pe.O1[0]=PTR_NEW(-1)
-	IF (config.O2 NE 0.0) THEN partial_pe.O2=read_partial_ss(lun,'O2',element) $
+	IF (config.O2 NE 0.0) THEN partial_pe.O2=read_partial_ss(lun,'O2') $
 		ELSE partial_pe.O2[0]=PTR_NEW(-1)
-	IF (config.O3 NE 0.0) THEN partial_pe.O3=read_partial_ss(lun,'O3',element) $
+	IF (config.O3 NE 0.0) THEN partial_pe.O3=read_partial_ss(lun,'O3') $
 		ELSE partial_pe.O3[0]=PTR_NEW(-1)
-	IF (config.O4 NE 0.0) THEN partial_pe.O4=read_partial_ss(lun,'O4',element) $
+	IF (config.O4 NE 0.0) THEN partial_pe.O4=read_partial_ss(lun,'O4') $
 		ELSE partial_pe.O4[0]=PTR_NEW(-1)
-	IF (config.O5 NE 0.0) THEN partial_pe.O5=read_partial_ss(lun,'O5',element) $
+	IF (config.O5 NE 0.0) THEN partial_pe.O5=read_partial_ss(lun,'O5') $
 		ELSE partial_pe.O5[0]=PTR_NEW(-1)
-	IF (config.O6 NE 0.0) THEN partial_pe.O6=read_partial_ss(lun,'O6',element) $
+	IF (config.O6 NE 0.0) THEN partial_pe.O6=read_partial_ss(lun,'O6') $
 		ELSE partial_pe.O6[0]=PTR_NEW(-1)
-	IF (config.O7 NE 0.0) THEN partial_pe.O7=read_partial_ss(lun,'O7',element) $
+	IF (config.O7 NE 0.0) THEN partial_pe.O7=read_partial_ss(lun,'O7') $
 		ELSE partial_pe.O7[0]=PTR_NEW(-1)
-	IF (config.P1 NE 0.0) THEN partial_pe.P1=read_partial_ss(lun,'P1',element) $
+	IF (config.P1 NE 0.0) THEN partial_pe.P1=read_partial_ss(lun,'P1') $
 		ELSE partial_pe.P1[0]=PTR_NEW(-1)
-	IF (config.P2 NE 0.0) THEN partial_pe.P2=read_partial_ss(lun,'P2',element) $
+	IF (config.P2 NE 0.0) THEN partial_pe.P2=read_partial_ss(lun,'P2') $
 		ELSE partial_pe.P2[0]=PTR_NEW(-1)
-	IF (config.P3 NE 0.0) THEN partial_pe.P3=read_partial_ss(lun,'P3',element) $
+	IF (config.P3 NE 0.0) THEN partial_pe.P3=read_partial_ss(lun,'P3') $
 		ELSE partial_pe.P3[0]=PTR_NEW(-1)
-	IF (config.P4 NE 0.0) THEN partial_pe.P4=read_partial_ss(lun,'P4',element) $
+	IF (config.P4 NE 0.0) THEN partial_pe.P4=read_partial_ss(lun,'P4') $
 		ELSE partial_pe.P4[0]=PTR_NEW(-1)
-	IF (config.P5 NE 0.0) THEN partial_pe.P5=read_partial_ss(lun,'P5',element) $
+	IF (config.P5 NE 0.0) THEN partial_pe.P5=read_partial_ss(lun,'P5') $
 		ELSE partial_pe.P5[0]=PTR_NEW(-1)
-	IF (config.Q1 NE 0.0) THEN partial_pe.Q1=read_partial_ss(lun,'Q1',element) $
+	IF (config.Q1 NE 0.0) THEN partial_pe.Q1=read_partial_ss(lun,'Q1') $
 		ELSE partial_pe.Q1[0]=PTR_NEW(-1)
-	IF (config.Q2 NE 0.0) THEN partial_pe.Q2=read_partial_ss(lun,'Q2',element) $
+	IF (config.Q2 NE 0.0) THEN partial_pe.Q2=read_partial_ss(lun,'Q2') $
 		ELSE partial_pe.Q2[0]=PTR_NEW(-1)
-	IF (config.Q3 NE 0.0) THEN partial_pe.Q3=read_partial_ss(lun,'Q3',element) $
+	IF (config.Q3 NE 0.0) THEN partial_pe.Q3=read_partial_ss(lun,'Q3') $
 		ELSE partial_pe.Q3[0]=PTR_NEW(-1)
 
 
@@ -435,7 +415,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 	;read the electronic configuration
 	config=ss_config(lunr,binding_energies)
 	;read the partial cross sections
-	partial_pe=read_partial(lunr,config,i+1)
+	partial_pe=read_partial(lunr,config)
 	
 	CLOSE,lunr
 	FREE_LUN,lunr
