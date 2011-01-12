@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -105,3 +104,4 @@ FUNCTION CSB_TOTAL_KISSEL_CP 2 2
 FUNCTION COMPTONPROFILE 2 2
 FUNCTION COMPTONPROFILE_PARTIAL 3 3
 FUNCTION ELECTRONCONFIG 2 2
+FUNCTION AUGERRATE 2 2

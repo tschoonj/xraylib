@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009, 2010, 2011  Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -76,6 +76,44 @@ char LineName[][6] = {
 
 
 char TransName[][5] = {"F1","F12","F13","FP13","F23"};
+
+
+char AugerName[][9] = {
+"K-L1L1", "K-L1L2", "K-L1L3", "K-L1M1", "K-L1M2", "K-L1M3", "K-L1M4", "K-L1M5", "K-L2L1", "K-L2L2",
+"K-L2L3", "K-L2M1", "K-L2M2", "K-L2M3", "K-L2M4", "K-L2M5", "K-L3L1", "K-L3L2", "K-L3L3", "K-L3M1",
+"K-L3M2", "K-L3M3", "K-L3M4", "K-L3M5", "K-M1L1", "K-M1L2", "K-M1L3", "K-M1M1", "K-M1M2", "K-M1M3",
+"K-M1M4", "K-M1M5", "K-M2L1", "K-M2L2", "K-M2L3", "K-M2M1", "K-M2M2", "K-M2M3", "K-M2M4", "K-M2M5",
+"K-M3L1", "K-M3L2", "K-M3L3", "K-M3M1", "K-M3M2", "K-M3M3", "K-M3M4", "K-M3M5", "K-M4L1", "K-M4L2",
+"K-M4L3", "K-M4M1", "K-M4M2", "K-M4M3", "K-M4M4", "K-M4M5", "K-M5L1", "K-M5L2", "K-M5L3", "K-M5M1",
+"K-M5M2", "K-M5M3", "K-M5M4", "K-M5M5", "L1-L2L2", "L1-L2L3", "L1-L2M1", "L1-L2M2", "L1-L2M3", "L1-L2M4",
+"L1-L2M5", "L1-L3L2", "L1-L3L3", "L1-L3M1", "L1-L3M2", "L1-L3M3", "L1-L3M4", "L1-L3M5", "L1-M1L2",
+"L1-M1L3", "L1-M1M1", "L1-M1M2", "L1-M1M3", "L1-M1M4", "L1-M1M5", "L1-M2L2", "L1-M2L3", "L1-M2M1",
+"L1-M2M2", "L1-M2M3", "L1-M2M4", "L1-M2M5", "L1-M3L2", "L1-M3L3", "L1-M3M1", "L1-M3M2", "L1-M3M3",
+"L1-M3M4", "L1-M3M5", "L1-M4L2", "L1-M4L3", "L1-M4M1", "L1-M4M2", "L1-M4M3", "L1-M4M4", "L1-M4M5",
+"L1-M5L2", "L1-M5L3", "L1-M5M1", "L1-M5M2", "L1-M5M3", "L1-M5M4", "L1-M5M5", "L2-L3L3", "L2-L3M1",
+"L2-L3M2", "L2-L3M3", "L2-L3M4", "L2-L3M5", "L2-M1L3", "L2-M1M1", "L2-M1M2", "L2-M1M3", "L2-M1M4",
+"L2-M1M5", "L2-M2L3", "L2-M2M1", "L2-M2M2", "L2-M2M3", "L2-M2M4", "L2-M2M5", "L2-M3L3", "L2-M3M1",
+"L2-M3M2", "L2-M3M3", "L2-M3M4", "L2-M3M5", "L2-M4L3", "L2-M4M1", "L2-M4M2", "L2-M4M3", "L2-M4M4",
+"L2-M4M5", "L2-M5L3", "L2-M5M1", "L2-M5M2", "L2-M5M3", "L2-M5M4", "L2-M5M5", "L3-M1M1", "L3-M1M2",
+"L3-M1M3", "L3-M1M4", "L3-M1M5", "L3-M2M1", "L3-M2M2", "L3-M2M3", "L3-M2M4", "L3-M2M5", "L3-M3M1",
+"L3-M3M2", "L3-M3M3", "L3-M3M4", "L3-M3M5", "L3-M4M1", "L3-M4M2", "L3-M4M3", "L3-M4M4", "L3-M4M5",
+"L3-M5M1", "L3-M5M2", "L3-M5M3", "L3-M5M4", "L3-M5M5", "M1-M2M2", "M1-M2M3", "M1-M2M4", "M1-M2M5",
+"M1-M3M2", "M1-M3M3", "M1-M3M4", "M1-M3M5", "M1-M4M2", "M1-M4M3", "M1-M4M4", "M1-M4M5", "M1-M5M2",
+"M1-M5M3", "M1-M5M4", "M1-M5M5", "M2-M3M3", "M2-M3M4", "M2-M3M5", "M2-M4M3", "M2-M4M4", "M2-M4M5",
+"M2-M5M3", "M2-M5M4", "M2-M5M5", "M3-M4M4", "M3-M4M5", "M3-M5M4", "M3-M5M5", "M4-M5M5"};
+
+char AugerNameTotal[][9] = {
+"K-TOTAL",
+"L1-TOTAL",
+"L2-TOTAL",
+"L3-TOTAL",
+"M1-TOTAL",
+"M2-TOTAL",
+"M3-TOTAL",
+"M4-TOTAL",
+"M5-TOTAL",
+};
+
 
 //////////////////////////////////////////////////////////////////////
 /////            Functions                                       /////

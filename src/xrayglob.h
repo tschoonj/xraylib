@@ -110,6 +110,8 @@ extern double *Total_ComptonProfiles2[ZMAX+1];
 extern double *Partial_ComptonProfiles[ZMAX+1][SHELLNUM_C];
 extern double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 
+extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
+extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 
 
 #endif
