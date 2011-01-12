@@ -40,6 +40,7 @@ extern "C" {
 #include "shells.h"
 #include "lines.h"
 #include "xraylib-parser.h"
+#include "xraylib-auger.h"
 
 //Siegbahn notation
 //according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
@@ -238,6 +239,10 @@ float ComptonProfile_Partial(int Z, int shell, float pz);
 
 //Atomic level widths
 float AtomicLevelWidth(int Z, int shell);
+
+
+//Auger non-radiative rates
+float AugerRate(int Z, int auger_trans);
 
 
 #ifdef __cplusplus

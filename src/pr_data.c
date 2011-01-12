@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2010, Teemu Ikonen and Tom Schoonjans
+Copyright (c) 2009, 2010, 2011, Teemu Ikonen and Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -288,6 +288,10 @@ int main(void)
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
+  fprintf(f, "double Auger_Transition_Total[ZMAX+1][SHELLNUM_A] = {\n");
+  PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Transition_Total);
+  fprintf(f, "double Auger_Transition_Individual[ZMAX+1][AUGERNUM] = {\n");
+  PR_MATD(ZMAX+1, AUGERNUM, Auger_Transition_Individual);
 
   fclose(f);
 

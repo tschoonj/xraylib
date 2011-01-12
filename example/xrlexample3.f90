@@ -75,5 +75,9 @@ WRITE (6,'(A,F12.6)') 'M5 Compton profile for Fe at pz = 1.1 : ' ,&
         ComptonProfile_Partial(26,M5_SHELL,1.1) 
 WRITE (6,'(A,F12.6)') 'K atomic level width for Fe: ',&
         AtomicLevelWidth(26,K_SHELL)
+WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
+        AugerRate(86,L2_M5M5_AUGER)
+
+
 
 ENDPROGRAM

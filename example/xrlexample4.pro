@@ -45,6 +45,8 @@ PRINT,'K atomic level width for Fe: ',$
         AtomicLevelWidth(26,K_SHELL)
 
 PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
+PRINT,'Bi L2-M5M5 Auger non-radiative rate: ', AugerRate(86,L2_M5M5_AUGER)
+
 
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check
 IF !ERROR_STATE.CODE eq 0 THEN EXIT,STATUS=0 ELSE EXIT,STATUS=1

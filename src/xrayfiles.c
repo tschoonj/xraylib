@@ -48,10 +48,10 @@ void XRayInit(void)
   int ex;
   FILE *fp;
   char file_name[MAXFILENAMESIZE];
-  char shell_name[5], line_name[5], trans_name[5];
+  char shell_name[5], line_name[5], trans_name[5], auger_name[10];
   char *path;
   int Z, iE;
-  int shell, line, trans;
+  int shell, line, trans, auger;
   float E, prob;
   char buffer[1024];
 
@@ -452,6 +452,70 @@ void XRayInit(void)
     ErrorExit(buffer);
   }
 
+  //auger non-radiative transitions
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name, "auger_rates.dat");
+  if ((fp = fopen(file_name,"r")) == NULL) {
+    ErrorExit("File auger_rates.dat not found");
+    return;
+  }
+  SetHardExit(0);
+  while ( !feof(fp) ) {
+    ex = fscanf(fp,"%d", &Z);
+    if (ex != 1) break;
+    fscanf(fp,"%s", auger_name);
+    fscanf(fp,"%f", &prob);
+    read_error=1;
+    for (shell=0; shell < SHELLNUM_A; shell++) {
+      if (strcmp(auger_name, AugerNameTotal[shell]) == 0) {
+	Auger_Transition_Total[Z][shell] = prob;
+	// printf("%d\t%s\t%e\n", Z, LineName[line], prob);
+	read_error=0;
+	break;
+      } 
+    }
+    for (auger=0; auger < AUGERNUM; auger++) {
+      if (strcmp(auger_name, AugerName[auger]) == 0) {
+	Auger_Transition_Individual[Z][auger] = prob;
+	// printf("%d\t%s\t%e\n", Z, LineName[line], prob);
+	read_error=0;
+	break;
+      } 
+    }
+    if (read_error) {
+        if (nerror_lines == 0) {
+	    	sprintf(buffer,"%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
+		ErrorExit(buffer);
+		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
+		error_lines[0] = strdup(auger_name);
+	}
+	else {
+		found_error_line = 0;
+		for (i = 0 ; i < nerror_lines ; i++) {
+			if (strcmp(auger_name,error_lines[i]) == 0) {
+				found_error_line = 1;
+				break;
+			}
+		}
+		if (!found_error_line) {
+	    		sprintf(buffer,"%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
+			ErrorExit(buffer);
+			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
+			error_lines[nerror_lines-1] = strdup(auger_name);
+		}
+	}
+    }
+  }
+
+  fclose(fp);
+  SetHardExit(1);
+  if (nerror_lines > 0) {
+    sprintf(buffer,"Exiting due to too many errors\n");
+    ErrorExit(buffer);
+  }
+
+  //anomalous scattering factors
+
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fi.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
@@ -602,7 +666,7 @@ void XRayInit(void)
 
 void ArrayInit()
 {
-  int Z, shell, line, trans;
+  int Z, shell, line, trans, auger;
 
   for (Z=0; Z<=ZMAX; Z++) {
     NE_Photo[Z] = OUTD;
@@ -634,6 +698,10 @@ void ArrayInit()
     for (trans=0; trans<TRANSNUM; trans++) {
       CosKron_arr[Z][trans] = 0.0;
     }
+    for (shell = 0 ; shell < SHELLNUM_A ; shell++)
+    	Auger_Transition_Total[Z][shell] = 0.0;
+    for (auger = 0 ; auger < AUGERNUM ; auger++)
+    	Auger_Transition_Individual[Z][auger] = 0.0;
   }
 }
 

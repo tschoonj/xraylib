@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -109,3 +108,4 @@ FUNCTION COMPTONPROFILE_PARTIAL 3 3
 FUNCTION ELECTRONCONFIG 2 2
 FUNCTION ATOMICNUMBERTOSYMBOL 1 1
 FUNCTION ATOMICLEVELWIDTH 2 2
+FUNCTION AUGERRATE 2 2

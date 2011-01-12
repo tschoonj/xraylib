@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, Tom Schoonjans
+Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -102,6 +102,7 @@ extern IDL_VPTR IDL_CDECL IDL_ComptonProfile_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]); 
 extern IDL_VPTR IDL_CDECL IDL_AtomicLevelWidth(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_AugerRate(int argc, IDL_VPTR argv[]);
 
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
@@ -180,6 +181,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_ElectronConfig, "ELECTRONCONFIG", 2, 2, 0, 0},
 	{IDL_AtomicNumberToSymbol,"ATOMICNUMBERTOSYMBOL", 1, 1, 0, 0},
 	{IDL_AtomicLevelWidth, "ATOMICLEVELWIDTH", 2, 2, 0, 0},
+	{IDL_AugerRate, "AUGERRATE", 2, 2, 0, 0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -598,6 +600,7 @@ XRL_2IF(ComptonProfile)
 XRL_3IIF(ComptonProfile_Partial)
 XRL_2II(ElectronConfig)
 XRL_2II(AtomicLevelWidth)
+XRL_2II(AugerRate)
 
 
 void release(UCHAR *memPtr) {
