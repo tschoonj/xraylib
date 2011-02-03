@@ -198,6 +198,16 @@ float CSb_Photo_Partial(int Z, int shell, float E);
 // XRF cross sections using Kissel partial photoelectric cross sections
 float CS_FluorLine_Kissel(int Z, int line, float E); 
 float CSb_FluorLine_Kissel(int Z, int line, float E); 
+float CS_FluorLine_Kissel_Cascade(int Z, int line, float E); 
+float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E); 
+float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E); 
+float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E); 
+float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E); 
+float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E); 
+float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E);
+float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E); 
+
+
 
 // Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections
 float CS_Total_Kissel(int Z, float E); 

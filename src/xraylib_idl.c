@@ -69,8 +69,6 @@ extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Total(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Total(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Partial(int argc, IDL_VPTR argv[]);
-extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
-extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total_CP(int argc, IDL_VPTR argv[]);
@@ -103,6 +101,16 @@ extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]); 
 extern IDL_VPTR IDL_CDECL IDL_AtomicLevelWidth(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AugerRate(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_Nonradiative_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_Nonradiative_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_Radiative_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_Radiative_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_no_Cascade(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_no_Cascade(int argc, IDL_VPTR argv[]);
 
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
@@ -149,8 +157,6 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CS_Photo_Total,"CS_PHOTO_TOTAL", 2 , 2 , 0 , 0},
 	{IDL_CSb_Photo_Partial,"CSB_PHOTO_PARTIAL", 3 , 3 , 0 , 0},
 	{IDL_CS_Photo_Partial,"CS_PHOTO_PARTIAL", 3 , 3 , 0 , 0},
-	{IDL_CS_FluorLine_Kissel,"CS_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine_Kissel,"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
 	{IDL_CS_Total_Kissel,"CS_TOTAL_KISSEL", 2 , 2 , 0 , 0},
 	{IDL_CSb_Total_Kissel,"CSB_TOTAL_KISSEL", 2 , 2 , 0 , 0},
 	{IDL_CompoundParser,"COMPOUNDPARSER",1, 1, 0, 0},
@@ -182,6 +188,16 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_AtomicNumberToSymbol,"ATOMICNUMBERTOSYMBOL", 1, 1, 0, 0},
 	{IDL_AtomicLevelWidth, "ATOMICLEVELWIDTH", 2, 2, 0, 0},
 	{IDL_AugerRate, "AUGERRATE", 2, 2, 0, 0},
+	{IDL_CS_FluorLine_Kissel,"CS_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
+	{IDL_CSb_FluorLine_Kissel,"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
+	{IDL_CS_FluorLine_Kissel_Cascade,"CS_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CSb_FluorLine_Kissel_Cascade,"CSB_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CS_FluorLine_Kissel_no_Cascade,"CS_FLUORLINE_KISSEL_NO_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CSb_FluorLine_Kissel_no_Cascade,"CSB_FLUORLINE_KISSEL_NO_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CS_FluorLine_Kissel_Nonradiative_Cascade,"CS_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CSb_FluorLine_Kissel_Nonradiative_Cascade,"CSB_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CS_FluorLine_Kissel_Radiative_Cascade,"CS_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_CSb_FluorLine_Kissel_Radiative_Cascade,"CSB_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -567,8 +583,6 @@ XRL_3IIF(CS_FluorLine)
 XRL_3IIF(CSb_FluorLine)
 XRL_3IIF(CS_Photo_Partial)
 XRL_3IIF(CSb_Photo_Partial)
-XRL_3IIF(CS_FluorLine_Kissel)
-XRL_3IIF(CSb_FluorLine_Kissel)
 XRL_4IFFF(DCSP_Rayl)
 XRL_4IFFF(DCSP_Compt)
 XRL_4IFFF(DCSPb_Rayl)
@@ -601,6 +615,16 @@ XRL_3IIF(ComptonProfile_Partial)
 XRL_2II(ElectronConfig)
 XRL_2II(AtomicLevelWidth)
 XRL_2II(AugerRate)
+XRL_3IIF(CS_FluorLine_Kissel)
+XRL_3IIF(CSb_FluorLine_Kissel)
+XRL_3IIF(CS_FluorLine_Kissel_Cascade)
+XRL_3IIF(CSb_FluorLine_Kissel_Cascade)
+XRL_3IIF(CS_FluorLine_Kissel_no_Cascade)
+XRL_3IIF(CSb_FluorLine_Kissel_no_Cascade)
+XRL_3IIF(CS_FluorLine_Kissel_Nonradiative_Cascade)
+XRL_3IIF(CSb_FluorLine_Kissel_Nonradiative_Cascade)
+XRL_3IIF(CS_FluorLine_Kissel_Radiative_Cascade)
+XRL_3IIF(CSb_FluorLine_Kissel_Radiative_Cascade)
 
 
 void release(UCHAR *memPtr) {
