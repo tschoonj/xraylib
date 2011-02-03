@@ -37,7 +37,7 @@ scattering.c atomicweight.c edges.c fluor_lines.c fluor_yield.c jump.c \
 coskron.c radrate.c cs_line.c polarized.c splint.c cs_barns.c fi.c fii.c \
 kissel_pe.c xrayfiles_inline.c splint.h xrayglob.h xrayvars.h\
 xraylib-aux.c xraylib-aux.h xraylib-parser.c cs_cp.c refractive_indices.c comptonprofiles.c \
-atomiclevelwidth.c auger_trans.c
+atomiclevelwidth.c auger_trans.c xrf_cross_sections_aux.h xrf_cross_sections_aux.c
 libxrl_la_CFLAGS = $(ARCHFLAGS)
 if ENABLE_FORTRAN
  libxrlf03_la_SOURCES = xraylib_wrap.f90
