@@ -94,6 +94,14 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
 char * AtomicNumberToSymbol(int Z);
 
 /*
+ * The SymbolToAtomicNumber function returns the atomic number that corresponds with element symbol
+ * If the element does not exist, 0 is returned
+ */
+
+int SymbolToAtomicNumber(char *symbol);
+
+
+/*
  *  xrlFree frees memory that was dynamically allocated by xraylib. For now it should only be used
  *  in combination with AtomicNumberToSymbol and add_compound_data
  */

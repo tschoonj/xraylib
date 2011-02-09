@@ -78,5 +78,7 @@ int main()
   printf("Symbol of element 26 is: %s\n",symbol);
   xrlFree(symbol);
 
+  printf("Number of element Fe is: %i\n",SymbolToAtomicNumber("Fe"));
+
   return 0;
 }

@@ -1,4 +1,4 @@
-/*Copyright (c) 2010, Tom Schoonjans
+/*Copyright (c) 2010, 2011, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -435,6 +435,19 @@ char *AtomicNumberToSymbol(int Z) {
 
 	return strdup(MendeljevArray[Z-1].name );
 }
+
+int SymbolToAtomicNumber(char *symbol) {
+	int i;
+
+	for (i=0 ; i <= 107 ; i++) {
+		if (strcmp(symbol,MendeljevArray[i].name) == 0) 
+			return MendeljevArray[i].number;
+	}
+
+	return 0;
+}
+
+
 
 void xrlFree(void *Ptr) {
 	//just a wrapper around free really... because we don't trust msvcrtXX.dll
