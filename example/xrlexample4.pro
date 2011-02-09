@@ -45,6 +45,7 @@ PRINT,'K atomic level width for Fe: ',$
         AtomicLevelWidth(26,K_SHELL)
 
 PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
+PRINT,'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 PRINT,'Bi L2-M5M5 Auger non-radiative rate: ', AugerRate(86,L2_M5M5_AUGER)
 
 

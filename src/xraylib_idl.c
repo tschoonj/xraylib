@@ -101,6 +101,7 @@ extern IDL_VPTR IDL_CDECL IDL_ComptonProfile(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]); 
+extern IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]); 
 extern IDL_VPTR IDL_CDECL IDL_AtomicLevelWidth(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AugerRate(int argc, IDL_VPTR argv[]);
 
@@ -180,6 +181,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_ComptonProfile_Partial,"COMPTONPROFILE_PARTIAL",3,3,0,0},
 	{IDL_ElectronConfig, "ELECTRONCONFIG", 2, 2, 0, 0},
 	{IDL_AtomicNumberToSymbol,"ATOMICNUMBERTOSYMBOL", 1, 1, 0, 0},
+	{IDL_SymbolToAtomicNumber,"SYMBOLTOATOMICNUMBER", 1, 1, 0, 0},
 	{IDL_AtomicLevelWidth, "ATOMICLEVELWIDTH", 2, 2, 0, 0},
 	{IDL_AugerRate, "AUGERRATE", 2, 2, 0, 0},
 };
@@ -667,6 +669,17 @@ IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]) {
 	
 	return IDL_StrToSTRING(symbol);
 
+}
+
+IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]) {
+	IDL_VPTR out_var;
+
+	IDL_ENSURE_SCALAR(argv[0]);
+	IDL_ENSURE_STRING(argv[0]);
+
+	out_var = IDL_GettmpLong((IDL_LONG) SymbolToAtomicNumber(IDL_VarGetString(argv[0])));
+
+	return out_var;
 }
 
 
