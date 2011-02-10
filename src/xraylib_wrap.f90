@@ -1096,25 +1096,6 @@ INTERFACE
 		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
 	ENDFUNCTION CSb_Photo_Partial
 
-	!XRF cross sections using Kissel partial photoelectric cross sections
-	PURE FUNCTION CS_FluorLine_Kissel (Z,line, E) &
-		BIND(C, NAME='CS_FluorLine_Kissel')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-	ENDFUNCTION CS_FluorLine_Kissel
-
-	PURE FUNCTION CSb_FluorLine_Kissel (Z,line, E) & 
-		BIND(C, NAME='CSb_FluorLine_Kissel')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-	ENDFUNCTION CSb_FluorLine_Kissel
-
 	PURE FUNCTION CS_Total_Kissel (Z, E) BIND(C, NAME='CS_Total_Kissel')
 		USE, INTRINSIC :: ISO_C_BINDING
 		IMPLICIT NONE
@@ -1351,6 +1332,97 @@ INTERFACE
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, auger_trans
                 REAL (KIND=C_FLOAT) :: AugerRate
         ENDFUNCTION
+
+        !XRF cross sections using Kissel partial photoelectric cross sections
+        PURE FUNCTION CS_FluorLine_Kissel (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel
+
+        PURE FUNCTION CSb_FluorLine_Kissel (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel
+
+        PURE FUNCTION CS_FluorLine_Kissel_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_Cascade
+
+        PURE FUNCTION CS_FluorLine_Kissel_Nonradiative_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_Nonradiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_Nonradiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_Nonradiative_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_Nonradiative_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_Nonradiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_Nonradiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_Nonradiative_Cascade
+
+        PURE FUNCTION CS_FluorLine_Kissel_Radiative_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_Radiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_Radiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_Radiative_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_Radiative_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_Radiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_Radiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_Radiative_Cascade
+
+        PURE FUNCTION CS_FluorLine_Kissel_no_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_no_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_no_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_no_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_no_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_no_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_no_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_no_Cascade
 ENDINTERFACE
 
 CONTAINS
