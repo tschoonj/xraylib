@@ -13,9 +13,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include <stdio.h>
 #define KL1 -KL1_LINE-1
 #define KL2 -KL2_LINE-1
 #define KL3 -KL3_LINE-1
+#define KM1 -KM1_LINE-1
 #define KM2 -KM2_LINE-1
 #define KM3 -KM3_LINE-1
 #define KP5 -KP5_LINE-1
@@ -39,6 +41,7 @@ float LineEnergy(int Z, int line)
   float lE[50],rr[50];
   float tmp=0.0,tmp1=0.0,tmp2=0.0;
   int i;
+  int temp_line;
   
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function LineEnergy");
@@ -60,7 +63,7 @@ float LineEnergy(int Z, int line)
 	}
     }
     else if (line == KB_LINE) {
-    	for (i = KL3; i < KP5; i++) {
+    	for (i = KM1; i < KP5; i++) {
 	 lE[i] = LineEnergy_arr[Z][i];
 	 rr[i] = RadRate_arr[Z][i];
 	 tmp1+=rr[i];
@@ -75,51 +78,52 @@ float LineEnergy(int Z, int line)
   }
   
   if (line == LA_LINE) {
-	line = -L3M5_LINE-1;
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L3M5_LINE;
+	fprintf(stdout,"LineEnergy L3M5: %f\n",LineEnergy(Z,temp_line));
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2=tmp1;
-	tmp=LineEnergy_arr[Z][line]*tmp1;
-	line = -L3M4_LINE-1;
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	tmp=LineEnergy(Z,temp_line)*tmp1;
+	temp_line = L3M4_LINE;
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1 ;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
   	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
   }
   else if (line == LB_LINE) {
-	line = -L2M4_LINE-1;     //b1
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L2M4_LINE;     //b1
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L2_SHELL)+0.1);
 	tmp2=tmp1;
-	tmp=LineEnergy_arr[Z][line]*tmp1;
+	tmp=LineEnergy(Z,temp_line)*tmp1;
 
-	line = -L3N5_LINE-1;     //b2
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L3N5_LINE;     //b2
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	line = -L1M3_LINE-1;   // b3
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L1M3_LINE;   // b3
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L1_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	line = -L1M2_LINE-1;   // b4
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L1M2_LINE;   // b4
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L1_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	line = -L3O3_LINE-1;   // b5
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L3O3_LINE;   // b5
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	line = -L3O4_LINE-1;   // b5
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L3O4_LINE;   // b5
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	line = -L3N1_LINE-1;     // b6
-	tmp1=CS_FluorLine(Z, line,LineEnergy_arr[Z][line]);
+	temp_line = L3N1_LINE;     // b6
+	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
-	tmp+=LineEnergy_arr[Z][line]*tmp1;
+	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
   	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
   }
   
