@@ -13,7 +13,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
-#include <stdio.h>
 #define KL1 -KL1_LINE-1
 #define KL2 -KL2_LINE-1
 #define KL3 -KL3_LINE-1
@@ -79,7 +78,6 @@ float LineEnergy(int Z, int line)
   
   if (line == LA_LINE) {
 	temp_line = L3M5_LINE;
-	fprintf(stdout,"LineEnergy L3M5: %f\n",LineEnergy(Z,temp_line));
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2=tmp1;
 	tmp=LineEnergy(Z,temp_line)*tmp1;
