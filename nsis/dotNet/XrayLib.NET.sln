@@ -35,6 +35,7 @@ Global
 		{771B6567-0D55-46E6-BC5B-A4EF540E7FF2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{771B6567-0D55-46E6-BC5B-A4EF540E7FF2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{771B6567-0D55-46E6-BC5B-A4EF540E7FF2}.Release|Win32.ActiveCfg = Release|Any CPU
+		{771B6567-0D55-46E6-BC5B-A4EF540E7FF2}.Release|Win32.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,4 @@
-#Copyright (c) 2009, 2010 Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011 Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
 
 
 
-AC_INIT([xraylib],[2.14.0],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.14.1],[Tom.Schoonjans@UGent.be])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -21,7 +21,7 @@ AC_CANONICAL_HOST
 
 
 LIB_CURRENT=4
-LIB_REVISION=0
+LIB_REVISION=1
 LIB_AGE=1
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)

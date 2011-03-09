@@ -44,7 +44,7 @@ It is important here NOT to change the value of !MAKE_DLL.LD
 
 The MAKE_DLL command itself was:
 
-make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\Program Files (x86)\xraylib\Include"',EXTRA_LFLAGS='"C:\Program Files (x86)\xraylib\Lib\libxrl-3.lib" /LIBPATH="C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib"',OUTPUT='.'
+make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\Program Files (x86)\xraylib\Include"',EXTRA_LFLAGS='"C:\Program Files (x86)\xraylib\Lib\libxrl-3.lib" /LIBPATH:"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib"',OUTPUT='.'
 
 Depending on the versions of IDL, xraylib and Visual Studio that are installed, these commands may need to be altered.
 

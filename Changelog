@@ -1,4 +1,15 @@
-Version 2.14.0
+Version 2.14.1 Tom Schoonjans
+
+Bugfixes.
+See the following links for more information:
+http://github.com/tschoonj/xraylib/issues/closed/#issue/2
+http://github.com/tschoonj/xraylib/issues/closed/#issue/3
+http://github.com/tschoonj/xraylib/issues/closed/#issue/4
+http://github.com/tschoonj/xraylib/issues/closed/#issue/5
+http://github.com/tschoonj/xraylib/issues/closed/#issue/6
+
+
+Version 2.14.0 Tom Schoonjans
 
 -Added Biggs Compton profiles (both total and partial)
 -Fixed Siegbahn macros for LineEnergy, CS_FluorLine and RadRate
