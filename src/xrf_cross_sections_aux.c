@@ -923,7 +923,7 @@ float PM3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 		AugerRate(Z,L3_M2M3_AUGER)+
 		AugerRate(Z,L3_M3M1_AUGER)+
 		AugerRate(Z,L3_M3M2_AUGER)+
-		AugerRate(Z,L3_M3M3_AUGER)+
+		2.0*AugerRate(Z,L3_M3M3_AUGER)+
 		AugerRate(Z,L3_M3M4_AUGER)+
 		AugerRate(Z,L3_M3M5_AUGER)+
 		AugerRate(Z,L3_M4M3_AUGER)+
@@ -1358,7 +1358,7 @@ float PM5_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		+CosKronTransProb(Z,FM35_TRANS)*PM3;
 	if (PM4 > 0.0)	
 		rv += (1.0-FluorYield(Z,M4_SHELL)-CosKronTransProb(Z,FM45_TRANS))*PM4*(
-		AugerRate(Z,M4_M5M5_AUGER)
+		2.0*AugerRate(Z,M4_M5M5_AUGER)
 		)
 		+CosKronTransProb(Z,FM45_TRANS)*PM4;
 
@@ -1469,7 +1469,7 @@ float PM5_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 
 	if (PM4 > 0.0)
 		rv += (1.0-FluorYield(Z,M4_SHELL)-CosKronTransProb(Z,FM45_TRANS))*PM4*(
-		AugerRate(Z,M4_M5M5_AUGER)
+		2.0*AugerRate(Z,M4_M5M5_AUGER)
 		)
 		+CosKronTransProb(Z,FM45_TRANS)*PM4;
 
