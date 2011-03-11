@@ -18,7 +18,7 @@ use xraylib;
 
 
 xraylib::XRayInit();
-xraylib::SetHardExit(1);
+#xraylib::SetHardExit(1);
 
 
 

@@ -13,7 +13,7 @@ namespace Test
 
             XrayLib xl = XrayLib.Instance;
             // If something goes wrong, the test will end with EXIT_FAILURE
-            xl.SetHardExit(1);
+//            xl.SetHardExit(1);
             
             Console.Title = String.Format("XrayLib.NET v{0}.{1}", 
                 XrayLib.VERSION_MAJOR, XrayLib.VERSION_MINOR);

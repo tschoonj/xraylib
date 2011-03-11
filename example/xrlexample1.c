@@ -21,7 +21,7 @@ int main()
   int i;
   XRayInit();
   //if something goes wrong, the test will end with EXIT_FAILURE
-  SetHardExit(1);
+  //SetHardExit(1);
 
   printf("Example of C program using xraylib\n");
   printf("Ca K-alpha Fluorescence Line Energy: %f\n",

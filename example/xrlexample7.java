@@ -19,7 +19,7 @@ public class xrlexample7 {
 
 	public static void main(String argv[]) {
 		xraylib.XRayInit();
-		xraylib.SetHardExit(1);
+//		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
 		System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));
