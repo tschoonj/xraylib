@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "math.h"
 
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -27,7 +28,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 
 float ComptonProfile(int Z, float pz) {
-	double q;
+	double q, ln_q;
+	double ln_pz;
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
 		ErrorExit("Z out of range in function ComptonProfile");
@@ -38,8 +40,12 @@ float ComptonProfile(int Z, float pz) {
 		ErrorExit("pz < 0 in function ComptonProfile");
 		return 0;
 	}
+	
+	ln_pz = log((double) pz + 1.0);
 
-	lininterpd(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Npz_ComptonProfiles[Z],pz,&q);
+	splintd(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,  Npz_ComptonProfiles[Z],ln_pz,&ln_q);
+
+	q = exp(ln_q); 
 
 	return (float) q;
 }
@@ -57,7 +63,8 @@ float ComptonProfile(int Z, float pz) {
 
 
 float ComptonProfile_Partial(int Z, int shell, float pz) {
-	double q;
+	double q, ln_q;
+	double ln_pz;
 
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
@@ -69,7 +76,11 @@ float ComptonProfile_Partial(int Z, int shell, float pz) {
 		return 0;
 	}
 
-	lininterpd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1, Npz_ComptonProfiles[Z],(double) pz,&q);
+	ln_pz = log((double) pz + 1.0);
+
+	splintd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z],ln_pz,&ln_q);
+
+	q = exp(ln_q); 
 
 	return (float) q;
 }
