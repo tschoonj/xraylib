@@ -25,7 +25,7 @@ CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
 INTEGER :: i
 
 CALL XRayInit()
-CALL SetHardExit(1)
+!CALL SetHardExit(1)
 
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
 WRITE (6,'(A,F12.6)') 'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE);

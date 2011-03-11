@@ -42,7 +42,7 @@ void lininterpd(double xa[], double ya[], int n, double x, double *y) {
 	int findpos = -1;
 	int i;
 
-	if (x > xa[n]) {
+	if (x >= xa[n]) {
 		*y = ya[n];
 		return;
 	}
@@ -70,12 +70,12 @@ void splint(float xa[], float ya[], float y2a[], int n, float x, float *y)
 	int klo, khi, k;
 	float h, b, a;
 
-	if (x > xa[n]) {
+	if (x >= xa[n]) {
 	  *y = ya[n];
 	  return;
 	}
 
-	if (x < xa[1]) {
+	if (x <= xa[1]) {
 	  *y = ya[1];
 	  return;
 	}
@@ -107,12 +107,12 @@ void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y)
  
 
 
-	if (x > xa[n]) {
+	if (x >= xa[n]) {
 	  *y = ya[n];
 	  return;
 	}
 
-	if (x < xa[1]) {
+	if (x <= xa[1]) {
 	  *y = ya[1];
 	  return;
 	}
