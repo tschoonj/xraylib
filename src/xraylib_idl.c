@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xraylib.h"
 #include <string.h>
 #include <stdlib.h>
+#include "xrf_cross_sections_aux.h" 
 
 #include "idl_export.h"
 
@@ -113,6 +114,49 @@ extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_Radiative_Cascade(int argc, I
 extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_no_Cascade(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_no_Cascade(int argc, IDL_VPTR argv[]);
 
+//xrf_cross_sections_aux.h functions
+extern IDL_VPTR IDL_CDECL IDL_PL1_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL1_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL1_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL1_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PL2_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL2_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL2_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL2_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PL3_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL3_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL3_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PL3_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PM1_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM1_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM1_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM1_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PM2_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM2_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM2_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM2_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PM3_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM3_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM3_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM3_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PM4_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM4_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM4_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM4_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+extern IDL_VPTR IDL_CDECL IDL_PM5_pure_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM5_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM5_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_PM5_full_cascade_kissel(int argc, IDL_VPTR argv[]);
+
+
+
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
@@ -200,6 +244,46 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{IDL_CSb_FluorLine_Kissel_Nonradiative_Cascade,"CSB_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
 	{IDL_CS_FluorLine_Kissel_Radiative_Cascade,"CS_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
 	{IDL_CSb_FluorLine_Kissel_Radiative_Cascade,"CSB_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{IDL_PL1_pure_kissel, "PL1_PURE_KISSEL", 2, 2,  0 , 0},
+	{IDL_PL1_rad_cascade_kissel, "PL1_RAD_CASCADE_KISSEL", 3, 3, 0 , 0},
+	{IDL_PL1_auger_cascade_kissel, "PL1_AUGER_CASCADE_KISSEL", 3, 3, 0 , 0},
+	{IDL_PL1_full_cascade_kissel, "PL1_FULL_CASCADE_KISSEL", 3, 3, 0 , 0},
+
+	{IDL_PL2_pure_kissel, "PL2_PURE_KISSEL", 3, 3, 0 , 0},
+	{IDL_PL2_rad_cascade_kissel, "PL2_RAD_CASCADE_KISSEL", 4, 4, 0 , 0},
+	{IDL_PL2_auger_cascade_kissel, "PL2_AUGER_CASCADE_KISSEL", 4, 4, 0 , 0},
+	{IDL_PL2_full_cascade_kissel, "PL2_FULL_CASCADE_KISSEL", 4, 4, 0 , 0},
+
+	{IDL_PL3_pure_kissel, "PL3_PURE_KISSEL", 4, 4, 0 , 0},
+	{IDL_PL3_rad_cascade_kissel, "PL3_RAD_CASCADE_KISSEL", 5, 5, 0 , 0},
+	{IDL_PL3_auger_cascade_kissel, "PL3_AUGER_CASCADE_KISSEL", 5, 5, 0 , 0},
+	{IDL_PL3_full_cascade_kissel, "PL3_FULL_CASCADE_KISSEL", 5, 5, 0 , 0},
+
+	{IDL_PM1_pure_kissel, "PM1_PURE_KISSEL", 2, 2, 0 , 0},
+	{IDL_PM1_rad_cascade_kissel, "PM1_RAD_CASCADE_KISSEL", 6,6, 0 , 0},
+	{IDL_PM1_auger_cascade_kissel, "PM1_AUGER_CASCADE_KISSEL", 6, 6, 0 , 0},
+	{IDL_PM1_full_cascade_kissel, "PM1_FULL_CASCADE_KISSEL", 6, 6, 0 , 0},
+
+	{IDL_PM2_pure_kissel, "PM2_PURE_KISSEL", 3 , 3, 0 , 0},
+	{IDL_PM2_rad_cascade_kissel, "PM2_RAD_CASCADE_KISSEL", 7,7, 0 , 0},
+	{IDL_PM2_auger_cascade_kissel, "PM2_AUGER_CASCADE_KISSEL", 7, 7, 0 , 0},
+	{IDL_PM2_full_cascade_kissel, "PM2_FULL_CASCADE_KISSEL",7,7, 0 , 0},
+
+	{IDL_PM3_pure_kissel, "PM3_PURE_KISSEL", 4, 4, 0 , 0},
+	{IDL_PM3_rad_cascade_kissel, "PM3_RAD_CASCADE_KISSEL", 8, 8, 0 , 0},
+	{IDL_PM3_auger_cascade_kissel, "PM3_AUGER_CASCADE_KISSEL", 8 , 8, 0 , 0},
+	{IDL_PM3_full_cascade_kissel, "PM3_FULL_CASCADE_KISSEL", 8, 8, 0 , 0},
+
+	{IDL_PM4_pure_kissel, "PM4_PURE_KISSEL", 5, 5, 0 , 0},
+	{IDL_PM4_rad_cascade_kissel, "PM4_RAD_CASCADE_KISSEL", 9, 9, 0 , 0},
+	{IDL_PM4_auger_cascade_kissel, "PM4_AUGER_CASCADE_KISSEL", 9 , 9, 0 , 0},
+	{IDL_PM4_full_cascade_kissel, "PM4_FULL_CASCADE_KISSEL", 9, 9, 0 , 0},
+
+	{IDL_PM5_pure_kissel, "PM5_PURE_KISSEL", 6, 6, 0 , 0},
+	{IDL_PM5_rad_cascade_kissel, "PM5_RAD_CASCADE_KISSEL", 10, 10, 0 , 0},
+	{IDL_PM5_auger_cascade_kissel, "PM5_AUGER_CASCADE_KISSEL", 10 , 10, 0 , 0},
+	{IDL_PM5_full_cascade_kissel, "PM5_FULL_CASCADE_KISSEL", 10, 10, 0 , 0},
+
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
@@ -446,6 +530,257 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
+#define XRL_5IFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  int Z;\
+  float Z2;\
+  float Z3;\
+  float Z4;\
+  float Z5;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  IDL_ENSURE_SCALAR(argv[4]);\
+  IDL_EXCLUDE_STRING(argv[4]);\
+  Z = IDL_LongScalar(argv[0]);\
+  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(Z, Z2, Z3, Z4, Z5);\
+  \
+  return out_var;\
+}
+
+#define XRL_6IFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  int Z;\
+  float Z2;\
+  float Z3;\
+  float Z4;\
+  float Z5;\
+  float Z6;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  IDL_ENSURE_SCALAR(argv[4]);\
+  IDL_EXCLUDE_STRING(argv[4]);\
+  IDL_ENSURE_SCALAR(argv[5]);\
+  IDL_EXCLUDE_STRING(argv[5]);\
+  Z = IDL_LongScalar(argv[0]);\
+  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  Z6 = (float) IDL_DoubleScalar(argv[5]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6);\
+  \
+  return out_var;\
+}
+
+#define XRL_7IFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  int Z;\
+  float Z2;\
+  float Z3;\
+  float Z4;\
+  float Z5;\
+  float Z6;\
+  float Z7;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  IDL_ENSURE_SCALAR(argv[4]);\
+  IDL_EXCLUDE_STRING(argv[4]);\
+  IDL_ENSURE_SCALAR(argv[5]);\
+  IDL_EXCLUDE_STRING(argv[5]);\
+  IDL_ENSURE_SCALAR(argv[6]);\
+  IDL_EXCLUDE_STRING(argv[6]);\
+  Z = IDL_LongScalar(argv[0]);\
+  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  Z6 = (float) IDL_DoubleScalar(argv[5]);\
+  Z7 = (float) IDL_DoubleScalar(argv[6]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7);\
+  \
+  return out_var;\
+}
+
+#define XRL_8IFFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  int Z;\
+  float Z2;\
+  float Z3;\
+  float Z4;\
+  float Z5;\
+  float Z6;\
+  float Z7;\
+  float Z8;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  IDL_ENSURE_SCALAR(argv[4]);\
+  IDL_EXCLUDE_STRING(argv[4]);\
+  IDL_ENSURE_SCALAR(argv[5]);\
+  IDL_EXCLUDE_STRING(argv[5]);\
+  IDL_ENSURE_SCALAR(argv[6]);\
+  IDL_EXCLUDE_STRING(argv[6]);\
+  IDL_ENSURE_SCALAR(argv[7]);\
+  IDL_EXCLUDE_STRING(argv[7]);\
+  Z = IDL_LongScalar(argv[0]);\
+  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  Z6 = (float) IDL_DoubleScalar(argv[5]);\
+  Z7 = (float) IDL_DoubleScalar(argv[6]);\
+  Z8 = (float) IDL_DoubleScalar(argv[7]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8);\
+  \
+  return out_var;\
+}
+
+#define XRL_9IFFFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  int Z;\
+  float Z2;\
+  float Z3;\
+  float Z4;\
+  float Z5;\
+  float Z6;\
+  float Z7;\
+  float Z8;\
+  float Z9;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  IDL_ENSURE_SCALAR(argv[4]);\
+  IDL_EXCLUDE_STRING(argv[4]);\
+  IDL_ENSURE_SCALAR(argv[5]);\
+  IDL_EXCLUDE_STRING(argv[5]);\
+  IDL_ENSURE_SCALAR(argv[6]);\
+  IDL_EXCLUDE_STRING(argv[6]);\
+  IDL_ENSURE_SCALAR(argv[7]);\
+  IDL_EXCLUDE_STRING(argv[7]);\
+  IDL_ENSURE_SCALAR(argv[8]);\
+  IDL_EXCLUDE_STRING(argv[8]);\
+  Z = IDL_LongScalar(argv[0]);\
+  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  Z6 = (float) IDL_DoubleScalar(argv[5]);\
+  Z7 = (float) IDL_DoubleScalar(argv[6]);\
+  Z8 = (float) IDL_DoubleScalar(argv[7]);\
+  Z9 = (float) IDL_DoubleScalar(argv[8]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9);\
+  \
+  return out_var;\
+}
+#define XRL_10IFFFFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
+{\
+  int Z;\
+  float Z2;\
+  float Z3;\
+  float Z4;\
+  float Z5;\
+  float Z6;\
+  float Z7;\
+  float Z8;\
+  float Z9;\
+  float Z10;\
+  IDL_VPTR out_var;\
+  \
+  IDL_ENSURE_SCALAR(argv[0]);\
+  IDL_EXCLUDE_STRING(argv[0]);\
+  IDL_ENSURE_SCALAR(argv[1]);\
+  IDL_EXCLUDE_STRING(argv[1]);\
+  IDL_ENSURE_SCALAR(argv[2]);\
+  IDL_EXCLUDE_STRING(argv[2]);\
+  IDL_ENSURE_SCALAR(argv[3]);\
+  IDL_EXCLUDE_STRING(argv[3]);\
+  IDL_ENSURE_SCALAR(argv[4]);\
+  IDL_EXCLUDE_STRING(argv[4]);\
+  IDL_ENSURE_SCALAR(argv[5]);\
+  IDL_EXCLUDE_STRING(argv[5]);\
+  IDL_ENSURE_SCALAR(argv[6]);\
+  IDL_EXCLUDE_STRING(argv[6]);\
+  IDL_ENSURE_SCALAR(argv[7]);\
+  IDL_EXCLUDE_STRING(argv[7]);\
+  IDL_ENSURE_SCALAR(argv[8]);\
+  IDL_EXCLUDE_STRING(argv[8]);\
+  IDL_ENSURE_SCALAR(argv[9]);\
+  IDL_EXCLUDE_STRING(argv[9]);\
+  Z = IDL_LongScalar(argv[0]);\
+  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  Z6 = (float) IDL_DoubleScalar(argv[5]);\
+  Z7 = (float) IDL_DoubleScalar(argv[6]);\
+  Z8 = (float) IDL_DoubleScalar(argv[7]);\
+  Z9 = (float) IDL_DoubleScalar(argv[8]);\
+  Z10 = (float) IDL_DoubleScalar(argv[9]);\
+  \
+  out_var = IDL_Gettmp();\
+  out_var->type = IDL_TYP_FLOAT;\
+  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, Z10);\
+  \
+  return out_var;\
+}
+
 //2 arguments: 1 string, 1 float
 #define XRL_2SF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
@@ -627,6 +962,38 @@ XRL_3IIF(CS_FluorLine_Kissel_Nonradiative_Cascade)
 XRL_3IIF(CSb_FluorLine_Kissel_Nonradiative_Cascade)
 XRL_3IIF(CS_FluorLine_Kissel_Radiative_Cascade)
 XRL_3IIF(CSb_FluorLine_Kissel_Radiative_Cascade)
+XRL_2IF(PL1_pure_kissel)
+XRL_3IFF(PL1_rad_cascade_kissel)
+XRL_3IFF(PL1_auger_cascade_kissel)
+XRL_3IFF(PL1_full_cascade_kissel)
+XRL_3IFF(PL2_pure_kissel)
+XRL_4IFFF(PL2_rad_cascade_kissel)
+XRL_4IFFF(PL2_auger_cascade_kissel)
+XRL_4IFFF(PL2_full_cascade_kissel)
+XRL_4IFFF(PL3_pure_kissel)
+XRL_5IFFFF(PL3_rad_cascade_kissel)
+XRL_5IFFFF(PL3_auger_cascade_kissel)
+XRL_5IFFFF(PL3_full_cascade_kissel)
+XRL_2IF(PM1_pure_kissel)
+XRL_6IFFFFF(PM1_rad_cascade_kissel)
+XRL_6IFFFFF(PM1_auger_cascade_kissel)
+XRL_6IFFFFF(PM1_full_cascade_kissel)
+XRL_3IFF(PM2_pure_kissel)
+XRL_7IFFFFFF(PM2_rad_cascade_kissel)
+XRL_7IFFFFFF(PM2_auger_cascade_kissel)
+XRL_7IFFFFFF(PM2_full_cascade_kissel)
+XRL_4IFFF(PM3_pure_kissel)
+XRL_8IFFFFFFF(PM3_rad_cascade_kissel)
+XRL_8IFFFFFFF(PM3_auger_cascade_kissel)
+XRL_8IFFFFFFF(PM3_full_cascade_kissel)
+XRL_5IFFFF(PM4_pure_kissel)
+XRL_9IFFFFFFFF(PM4_rad_cascade_kissel)
+XRL_9IFFFFFFFF(PM4_auger_cascade_kissel)
+XRL_9IFFFFFFFF(PM4_full_cascade_kissel)
+XRL_6IFFFFF(PM5_pure_kissel)
+XRL_10IFFFFFFFFF(PM5_rad_cascade_kissel)
+XRL_10IFFFFFFFFF(PM5_auger_cascade_kissel)
+XRL_10IFFFFFFFFF(PM5_full_cascade_kissel)
 
 
 void release(UCHAR *memPtr) {
