@@ -1423,6 +1423,325 @@ INTERFACE
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
         ENDFUNCTION CSb_FluorLine_Kissel_no_Cascade
+
+!xrf_cross_sections_aux function
+        PURE FUNCTION PL1_pure_kissel(Z, E) &
+                BIND(C, NAME='PL1_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION PL1_pure_kissel
+
+        PURE FUNCTION PL2_pure_kissel(Z, E, PL1) &
+                BIND(C, NAME='PL2_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PL1
+        ENDFUNCTION PL2_pure_kissel
+
+        PURE FUNCTION PL3_pure_kissel(Z, E, PL1, PL2) &
+                BIND(C, NAME='PL3_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PL1, PL2
+        ENDFUNCTION PL3_pure_kissel
+
+        PURE FUNCTION PM1_pure_kissel(Z, E) &
+                BIND(C, NAME='PM1_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION PM1_pure_kissel
+
+        PURE FUNCTION PM2_pure_kissel(Z, E, PM1) &
+                BIND(C, NAME='PM2_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1
+        ENDFUNCTION PM2_pure_kissel
+
+        PURE FUNCTION PM3_pure_kissel(Z, E, PM1, PM2) &
+                BIND(C, NAME='PM3_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1, PM2
+        ENDFUNCTION PM3_pure_kissel
+
+        PURE FUNCTION PM4_pure_kissel(Z, E, PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1, PM2, PM3
+        ENDFUNCTION PM4_pure_kissel
+
+        PURE FUNCTION PM5_pure_kissel(Z, E, PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_pure_kissel
+
+        PURE FUNCTION PL1_rad_cascade_kissel(Z, E, PK) &
+                BIND(C, NAME='PL1_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK
+        ENDFUNCTION PL1_rad_cascade_kissel
+
+        PURE FUNCTION PL2_rad_cascade_kissel(Z, E, PK, PL1) &
+                BIND(C, NAME='PL2_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1
+        ENDFUNCTION PL2_rad_cascade_kissel
+
+        PURE FUNCTION PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2) &
+                BIND(C, NAME='PL3_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2
+        ENDFUNCTION PL3_rad_cascade_kissel
+
+        PURE FUNCTION PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3) &
+                BIND(C, NAME='PM1_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3
+        ENDFUNCTION PM1_rad_cascade_kissel
+
+        PURE FUNCTION PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1) &
+                BIND(C, NAME='PM2_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1
+        ENDFUNCTION PM2_rad_cascade_kissel
+
+        PURE FUNCTION PM3_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2) &
+                BIND(C, NAME='PM3_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3,PM1, PM2
+        ENDFUNCTION PM3_rad_cascade_kissel
+
+        PURE FUNCTION PM4_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1, PM2, PM3
+        ENDFUNCTION PM4_rad_cascade_kissel
+
+        PURE FUNCTION PM5_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
+                PL3, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_rad_cascade_kissel
+
+        PURE FUNCTION PL1_auger_cascade_kissel(Z, E, PK) &
+                BIND(C, NAME='PL1_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK
+        ENDFUNCTION PL1_auger_cascade_kissel
+
+        PURE FUNCTION PL2_auger_cascade_kissel(Z, E, PK, PL1) &
+                BIND(C, NAME='PL2_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1
+        ENDFUNCTION PL2_auger_cascade_kissel
+
+        PURE FUNCTION PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2) &
+                BIND(C, NAME='PL3_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2
+        ENDFUNCTION PL3_auger_cascade_kissel
+
+        PURE FUNCTION PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3) &
+                BIND(C, NAME='PM1_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3
+        ENDFUNCTION PM1_auger_cascade_kissel
+
+        PURE FUNCTION PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1) &
+                BIND(C, NAME='PM2_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1
+        ENDFUNCTION PM2_auger_cascade_kissel
+
+        PURE FUNCTION PM3_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2) &
+                BIND(C, NAME='PM3_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3,PM1, PM2
+        ENDFUNCTION PM3_auger_cascade_kissel
+
+        PURE FUNCTION PM4_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1, PM2, PM3
+        ENDFUNCTION PM4_auger_cascade_kissel
+
+        PURE FUNCTION PM5_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
+                PL3, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_auger_cascade_kissel
+
+        PURE FUNCTION PL1_full_cascade_kissel(Z, E, PK) &
+                BIND(C, NAME='PL1_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK
+        ENDFUNCTION PL1_full_cascade_kissel
+
+        PURE FUNCTION PL2_full_cascade_kissel(Z, E, PK, PL1) &
+                BIND(C, NAME='PL2_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1
+        ENDFUNCTION PL2_full_cascade_kissel
+
+        PURE FUNCTION PL3_full_cascade_kissel(Z, E, PK, PL1, PL2) &
+                BIND(C, NAME='PL3_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2
+        ENDFUNCTION PL3_full_cascade_kissel
+
+        PURE FUNCTION PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3) &
+                BIND(C, NAME='PM1_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3
+        ENDFUNCTION PM1_full_cascade_kissel
+
+        PURE FUNCTION PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1) &
+                BIND(C, NAME='PM2_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1
+        ENDFUNCTION PM2_full_cascade_kissel
+
+        PURE FUNCTION PM3_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2) &
+                BIND(C, NAME='PM3_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3,PM1, PM2
+        ENDFUNCTION PM3_full_cascade_kissel
+
+        PURE FUNCTION PM4_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1, PM2, PM3
+        ENDFUNCTION PM4_full_cascade_kissel
+
+        PURE FUNCTION PM5_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
+                PL3, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_full_cascade_kissel
+
+
+
 ENDINTERFACE
 
 CONTAINS
