@@ -124,6 +124,28 @@ float LineEnergy(int Z, int line)
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
   	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
   }
+  //special cases for composed lines
+  else if (line == L1N67_LINE) {
+ 	return (LineEnergy(Z, L1N6_LINE)+LineEnergy(Z,L1N7_LINE))/2.0; 
+  }
+  else if (line == L1O45_LINE) {
+ 	return (LineEnergy(Z, L1O4_LINE)+LineEnergy(Z,L1O5_LINE))/2.0; 
+  }
+  else if (line == L1P23_LINE) {
+ 	return (LineEnergy(Z, L1P2_LINE)+LineEnergy(Z,L1P3_LINE))/2.0; 
+  }
+  else if (line == L2P23_LINE) {
+ 	return (LineEnergy(Z, L2P2_LINE)+LineEnergy(Z,L2P3_LINE))/2.0; 
+  }
+  else if (line == L3O45_LINE) {
+ 	return (LineEnergy(Z, L3O4_LINE)+LineEnergy(Z,L3O5_LINE))/2.0; 
+  }
+  else if (line == L3P23_LINE) {
+ 	return (LineEnergy(Z, L3P2_LINE)+LineEnergy(Z,L3P3_LINE))/2.0; 
+  }
+  else if (line == L3P45_LINE) {
+ 	return (LineEnergy(Z, L3P4_LINE)+LineEnergy(Z,L3P5_LINE))/2.0; 
+  }
   
   line = -line - 1;
   if (line<0 || line>=LINENUM) {
