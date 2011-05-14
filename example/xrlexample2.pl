@@ -37,6 +37,11 @@ printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",xraylib::Refractive_In
 printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",xraylib::Refractive_Index_Re("SiO2",5.0,2.65),xraylib::Refractive_Index_Im("SiO2",5.0,2.65));
 printf("Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile(26,1.1));
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile_Partial(26,$xraylib::M5_SHELL,1.1));
+printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",xraylib::CosKronTransProb(79,$xraylib::FM15_TRANS));
+printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",xraylib::CosKronTransProb(26,$xraylib::FL13_TRANS));
+printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MA1_LINE,10.0));
+printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MB_LINE,10.0));
+printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MG_LINE,10.0));
 
 
 exit 0;

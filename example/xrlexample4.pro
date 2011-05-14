@@ -41,6 +41,11 @@ PRINT,'C16H14O3 Refractive Index at 1 keV : ',Refractive_Index_Re("C16H14O3",1.0
 PRINT,'SiO2 Refractive Index at 5.0 keV : ',Refractive_Index_Re("SiO2",5.0,2.65),' - ',Refractive_Index_Im("SiO2",5.0,2.65),' i'  
 PRINT,'Compton profile for Fe at pz = 1.1 : ',ComptonProfile(26,1.1)
 PRINT,'M5 Partial Compton profile for Fe at pz = 1.1 : ',ComptonProfile_Partial(26,M5_SHELL,1.1)
+PRINT,'M1->M5 Coster-Kronig transition probability for Au : ',CosKronTransProb(79,FM15_TRANS)
+PRINT,'L1->L3 Coster-Kronig transition probability for Fe : ',CosKronTransProb(26,FL13_TRANS)
+PRINT,'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0)
+PRINT,'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0)
+PRINT,'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0)
 
 
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check

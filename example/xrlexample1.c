@@ -60,7 +60,7 @@ int main()
   printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
   printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",CosKronTransProb(79,FM15_TRANS));
-  printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",CosKronTransProb(26,F13_TRANS));
+  printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",CosKronTransProb(26,FL13_TRANS));
   printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MA1_LINE,10.0f));
   printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MB_LINE,10.0f));
   printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MG_LINE,10.0f));
