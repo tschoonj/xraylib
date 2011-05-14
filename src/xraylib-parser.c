@@ -162,6 +162,12 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			else {
 				tempSubstring = strndup(upper_locs[i]+2,j-2);
 				tempnAtoms = (int) strtol(tempSubstring,NULL,10);
+				//zero subscript is not allowed
+				if (tempnAtoms == 0) {
+					sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
+					ErrorExit(buffer);
+					return 0;
+				}
 				free(tempSubstring);
 			}
 			free(tempElement);
@@ -188,6 +194,12 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			else {
 				tempSubstring = strndup(upper_locs[i]+1,j-1);
 				tempnAtoms = (int) strtol(tempSubstring,NULL,10);
+				//zero subscript is not allowed
+				if (tempnAtoms == 0) {
+					sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
+					ErrorExit(buffer);
+					return 0;
+				}
 				free(tempSubstring);
 			}
 			free(tempElement);
@@ -253,6 +265,12 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 		else {
 			tempSubstring = strndup(brackets_end_locs[i]+1,j-1);
 			tempnAtoms = (int) strtol(tempSubstring,NULL,10);
+			//zero subscript is not allowed
+			if (tempnAtoms == 0) {
+				sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
+				ErrorExit(buffer);
+				return 0;
+			}
 			free(tempSubstring);
 		}
 
