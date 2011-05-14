@@ -33,6 +33,13 @@ TYPE :: compoundData_F
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
 ENDTYPE 
 
+!NIST constants
+REAL (KIND=C_DOUBLE),PARAMETER :: AVOGNUM = 0.602214179     ! Avogadro number (mol-1 * barn-1 * cm2) 
+REAL (KIND=C_DOUBLE),PARAMETER :: KEV2ANGST = 12.39841875   ! keV to angstrom-1 conversion factor 
+REAL (KIND=C_DOUBLE),PARAMETER :: MEC2 = 510.998910         ! electron rest mass (keV) 
+REAL (KIND=C_DOUBLE),PARAMETER :: RE2 = 0.079407877         ! square of classical electron radius (barn)
+
+
 
 !Constants
 
