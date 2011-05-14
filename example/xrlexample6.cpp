@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010, Tom Schoonjans
+Copyright (c) 2010, 2011 Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,8 @@ int main()
   std::printf("SiO2 Refractive Index at 5 keV : %f - %f i\n",Refractive_Index_Re("SiO2",5.0f,2.65f),Refractive_Index_Im("SiO2",5.0f,2.65f));
   std::printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   std::printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
+
+  std::printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
 
   return 0;
 }
