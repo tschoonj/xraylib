@@ -1110,6 +1110,38 @@ INTERFACE
                 REAL (KIND=C_FLOAT) :: ElectronConfig 
         ENDFUNCTION ElectronConfig
 
+        PURE FUNCTION AtomicNumberToSymbol_c(Z)&
+                BIND(C,NAME='AtomicNumberToSymbol')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR) :: rv
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+        ENDFUNCTION AtomicNumberToSymbol_c
+
+        PURE FUNCTION SymbolToAtomicNumber_c(symbol)&
+                BIND(C,NAME='SymbolToAtomicNumber')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: symbol
+                INTEGER (KIND=C_INT) :: rv
+        ENDFUNCTION SymbolToAtomicNumber_c
+
+        PURE SUBROUTINE xrlFree(xrlPtr)&
+        BIND(C,NAME='xrlFree')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
+        ENDSUBROUTINE xrlFree
+
+        !interface for the libc strlen function
+        PURE FUNCTION strlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: strlen
+        ENDFUNCTION strlen
 ENDINTERFACE
 
 CONTAINS
@@ -1126,5 +1158,62 @@ SUBROUTINE compoundDataAssoc(in_C, out_F)
         CALL C_F_POINTER(in_C%massFractions,out_F%massFractions,[out_F%nElements])
 
 ENDSUBROUTINE compoundDataAssoc
+
+FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        INTEGER (KIND=C_INT), INTENT(IN) :: Z
+        CHARACTER (KIND=C_CHAR,LEN=3) :: rv
+       
+        TYPE (C_PTR) :: symbol_C
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: symbol_F
+        INTEGER :: i
+        INTEGER (C_SIZE_T) :: symbol_len
+
+        symbol_C = AtomicNumberToSymbol_c(Z)
+        IF (C_ASSOCIATED(symbol_C,C_NULL_PTR)) THEN
+                DO i=1,3
+                        rv(i:i) = ' '
+                ENDDO
+                RETURN
+        ENDIF
+
+        symbol_len = strlen(symbol_C)
+
+        CALL C_F_POINTER(symbol_C, symbol_F,[symbol_len])
+        DO i=1,3
+                IF (i .LE. symbol_len) THEN
+                        rv(i:i) = symbol_F(i)
+                ELSE
+                        rv(i:i) = ' '
+                ENDIF
+        ENDDO
+
+        CALL xrlFree(symbol_C)
+
+        RETURN
+ENDFUNCTION AtomicNumberToSymbol
+
+FUNCTION SymbolToAtomicNumber(symbol) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: symbol
+        INTEGER (KIND=C_INT) :: rv
+
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: symbol_F
+        TYPE (C_PTR) :: symbol_C
+        INTEGER :: i
+
+        ALLOCATE(symbol_F(1+LEN_TRIM(symbol)))
+        DO i=1,LEN_TRIM(symbol)
+                symbol_F(i) = symbol(i:i)
+        ENDDO
+        symbol_F(1+LEN_TRIM(symbol)) = C_NULL_CHAR
+        symbol_C = C_LOC(symbol_F)
+
+        rv = SymbolToAtomicNumber_c(symbol_C)
+
+        RETURN
+ENDFUNCTION SymbolToAtomicNumber
 
 ENDMODULE

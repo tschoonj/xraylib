@@ -1,4 +1,4 @@
-!Copyright (c) 2009, Tom Schoonjans
+!Copyright (c) 2009, 2010, 2011 Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -74,5 +74,7 @@ WRITE (6,'(A,F12.6)') 'Compton profile for Fe at pz = 1.1 : ' ,&
 WRITE (6,'(A,F12.6)') 'M5 Compton profile for Fe at pz = 1.1 : ' ,&
         ComptonProfile_Partial(26,M5_SHELL,1.1) 
 
+WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
+WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 
 ENDPROGRAM
