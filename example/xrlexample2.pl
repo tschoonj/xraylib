@@ -46,4 +46,9 @@ printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLi
 
 printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
 
+printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",xraylib::CS_FluorLine_Kissel(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Radiative_Cascade(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Nonradiative_Cascade(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_no_Cascade(82,$xraylib::MA1_LINE,20.0));
+  
 exit 0;

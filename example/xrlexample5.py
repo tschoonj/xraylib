@@ -37,4 +37,8 @@ if __name__ == '__main__' :
 	print "Au Ma1 XRF production cs at 10.0 keV (Kissel): %f" % CS_FluorLine_Kissel(79,MA1_LINE,10.0)
 	print "Au Mb XRF production cs at 10.0 keV (Kissel): %f" % CS_FluorLine_Kissel(79,MB_LINE,10.0)
 	print "Au Mg XRF production cs at 10.0 keV (Kissel): %f" % CS_FluorLine_Kissel(79,MG_LINE,10.0)
+	print "Pb Malpha XRF production cs at 20.0 keV with cascade effect: %g\n" % CS_FluorLine_Kissel(82,MA1_LINE,20.0)
+	print "Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %g\n" % CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
+	print "Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %g\n" % CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
+	print "Pb Malpha XRF production cs at 20.0 keV without cascade effect: %g\n" % CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 	sys.exit(0)

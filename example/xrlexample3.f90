@@ -82,6 +82,14 @@ WRITE (6,'(A,F12.6)') 'L1->L3 Coster-Kronig transition probability for Fe : ',Co
 WRITE (6,'(A,F12.6)') 'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0)
 WRITE (6,'(A,F12.6)') 'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0)
 WRITE (6,'(A,F12.6)') 'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with cascade effect: ',&
+CS_FluorLine_Kissel(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',&
+CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',&
+CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',&
+CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
 
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)

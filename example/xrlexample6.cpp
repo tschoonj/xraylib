@@ -67,6 +67,11 @@ int main()
 
   std::printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
 
+  std::printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",CS_FluorLine_Kissel(82,MA1_LINE,20.0));
+  std::printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0));
+  std::printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
+  std::printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
+
   return 0;
 }
 
