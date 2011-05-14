@@ -36,6 +36,11 @@ public class xrlexample7 {
 		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.out.println("K atomic level width for Fe: "+xraylib.AtomicLevelWidth(26,xraylib.K_SHELL));
 		System.out.println("Bi L2-M5M5 Auger non-radiative rate: "+xraylib.AugerRate(86,xraylib.L2_M5M5_AUGER));
+		System.out.println("M1->M5 Coster-Kronig transition probability for Au : "+xraylib.CosKronTransProb(79,xraylib.FM15_TRANS));
+		System.out.println("L1->L3 Coster-Kronig transition probability for Fe : "+xraylib.CosKronTransProb(26,xraylib.FL13_TRANS));
+		System.out.println("Au Ma1 XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MA1_LINE,(float) 10.0));
+		System.out.println("Au Mb XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MB_LINE,(float) 10.0));
+		System.out.println("Au Mg XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MG_LINE,(float) 10.0));
 		System.exit(0);
 	}
 }

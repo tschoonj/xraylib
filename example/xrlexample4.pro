@@ -43,6 +43,11 @@ PRINT,'Compton profile for Fe at pz = 1.1 : ',ComptonProfile(26,1.1)
 PRINT,'M5 Partial Compton profile for Fe at pz = 1.1 : ',ComptonProfile_Partial(26,M5_SHELL,1.1)
 PRINT,'K atomic level width for Fe: ',$
         AtomicLevelWidth(26,K_SHELL)
+PRINT,'M1->M5 Coster-Kronig transition probability for Au : ',CosKronTransProb(79,FM15_TRANS)
+PRINT,'L1->L3 Coster-Kronig transition probability for Fe : ',CosKronTransProb(26,FL13_TRANS)
+PRINT,'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0)
+PRINT,'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0)
+PRINT,'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0)
 
 PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 PRINT,'Number of element Fe is: ',SymbolToAtomicNumber('Fe')

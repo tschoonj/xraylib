@@ -59,6 +59,11 @@ int main()
   std::printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   std::printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
   std::printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
+  std::printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",CosKronTransProb(79,FM15_TRANS));
+  std::printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",CosKronTransProb(26,FL13_TRANS));
+  std::printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MA1_LINE,10.0f));
+  std::printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MB_LINE,10.0f));
+  std::printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MG_LINE,10.0f));
 
   std::printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
 

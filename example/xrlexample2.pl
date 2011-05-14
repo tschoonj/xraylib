@@ -38,6 +38,11 @@ printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",xraylib::Refractive_Index_
 printf("Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile(26,1.1));
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile_Partial(26,$xraylib::M5_SHELL,1.1));
 printf("K atomic level width for Fe: %g\n", xraylib::AtomicLevelWidth(26,$xraylib::K_SHELL));
+printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",xraylib::CosKronTransProb(79,$xraylib::FM15_TRANS));
+printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",xraylib::CosKronTransProb(26,$xraylib::FL13_TRANS));
+printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MA1_LINE,10.0));
+printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MB_LINE,10.0));
+printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MG_LINE,10.0));
 
 printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
 
