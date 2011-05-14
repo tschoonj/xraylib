@@ -35,6 +35,10 @@ public class xrlexample7 {
 		System.out.println("Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile(26,(float) 1.1));
 		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.out.println("K atomic level width for Fe: "+xraylib.AtomicLevelWidth(26,xraylib.K_SHELL));
+		System.out.println("Pb Malpha XRF production cs at 20.0 keV with cascade effect: "+xraylib.CS_FluorLine_Kissel(82,xraylib.MA1_LINE,(float) 20.0));
+		System.out.println("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
+	System.out.println("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
+		System.out.println("Pb Malpha XRF production cs at 20.0 keV without cascade effect: "+xraylib.CS_FluorLine_Kissel_no_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
 		System.exit(0);
 	}
 }

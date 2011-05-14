@@ -77,7 +77,13 @@ WRITE (6,'(A,F12.6)') 'K atomic level width for Fe: ',&
         AtomicLevelWidth(26,K_SHELL)
 WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
         AugerRate(86,L2_M5M5_AUGER)
-
-
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with cascade effect: ',&
+CS_FluorLine_Kissel(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',&
+CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',&
+CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',&
+CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
 ENDPROGRAM

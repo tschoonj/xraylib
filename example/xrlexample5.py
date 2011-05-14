@@ -32,4 +32,8 @@ if __name__ == '__main__' :
 	print "Compton profile for Fe at pz = 1.1 : %g" % ComptonProfile(26,1.1)
 	print "M5 Compton profile for Fe at pz = 1.1 : %g" % ComptonProfile_Partial(26,M5_SHELL,1.1)
 	print "K atomic level width for Fe: %g" % AtomicLevelWidth(26,K_SHELL)
+	print "Pb Malpha XRF production cs at 20.0 keV with cascade effect: %g\n" % CS_FluorLine_Kissel(82,MA1_LINE,20.0)
+	print "Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %g\n" % CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
+	print "Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %g\n" % CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
+	print "Pb Malpha XRF production cs at 20.0 keV without cascade effect: %g\n" % CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 	sys.exit(0)

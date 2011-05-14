@@ -86,5 +86,10 @@ int main()
   printf("Symbol of element 26 is: %s\n",symbol);
   xrlFree(symbol);
 
+  printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",CS_FluorLine_Kissel(82,MA1_LINE,20.0));
+  printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0));
+  printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
+  printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
+
   return 0;
 }

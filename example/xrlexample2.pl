@@ -39,4 +39,9 @@ printf("Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile(26,1.
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile_Partial(26,$xraylib::M5_SHELL,1.1));
 printf("K atomic level width for Fe: %g\n", xraylib::AtomicLevelWidth(26,$xraylib::K_SHELL));
 
+printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",xraylib::CS_FluorLine_Kissel(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Radiative_Cascade(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Nonradiative_Cascade(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_no_Cascade(82,$xraylib::MA1_LINE,20.0));
+  
 exit 0;
