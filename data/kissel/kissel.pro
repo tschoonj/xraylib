@@ -38,8 +38,6 @@ REPEAT BEGIN
  nlines += 1
 ENDREP UNTIL 0
 
-temp_cs=temp_cs > 0.0
-
 ;calculate the second derivatives
 temp_cs2=DERIV(temp_energies,DERIV(temp_energies,temp_cs))
 temp_cs2[WHERE(temp_cs2 lt -1.0 OR temp_cs2 gt 1.0)] = 0.0
@@ -85,7 +83,6 @@ REPEAT BEGIN
  nlines += 1
 ENDREP UNTIL 0
 
-temp_cs=temp_cs > 0.0
 
 ;calculate the second derivatives
 temp_cs2=DERIV(temp_energies,DERIV(temp_energies,temp_cs))
