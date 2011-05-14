@@ -1,4 +1,4 @@
-!Copyright (c) 2009, Tom Schoonjans
+!Copyright (c) 2009, 2010, 2011 Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -79,5 +79,7 @@ WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
         AugerRate(86,L2_M5M5_AUGER)
 
 
+WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
+WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 
 ENDPROGRAM
