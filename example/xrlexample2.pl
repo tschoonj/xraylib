@@ -1,6 +1,6 @@
 #!/usr/bin/perl 
 
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -38,5 +38,7 @@ printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",xraylib::Refractive_Index_
 printf("Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile(26,1.1));
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile_Partial(26,$xraylib::M5_SHELL,1.1));
 printf("K atomic level width for Fe: %g\n", xraylib::AtomicLevelWidth(26,$xraylib::K_SHELL));
+
+printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
 
 exit 0;

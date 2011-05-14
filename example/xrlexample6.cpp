@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010, Tom Schoonjans
+Copyright (c) 2010, 2011 Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,8 @@ int main()
   std::printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   std::printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
   std::printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
+
+  std::printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
 
   return 0;
 }

@@ -35,6 +35,7 @@ public class xrlexample7 {
 		System.out.println("Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile(26,(float) 1.1));
 		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.out.println("K atomic level width for Fe: "+xraylib.AtomicLevelWidth(26,xraylib.K_SHELL));
+		System.out.println("Bi L2-M5M5 Auger non-radiative rate: "+xraylib.AugerRate(86,xraylib.L2_M5M5_AUGER));
 		System.exit(0);
 	}
 }
