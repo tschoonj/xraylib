@@ -84,6 +84,7 @@ float CS_Photo_Total(int Z, float E) {
 float CSb_Photo_Partial(int Z, int shell, float E) {
   double ln_E, ln_sigma, sigma;
   double x0, x1, y0, y1;
+  double m;
 
   if (Z < 1 || Z > ZMAX) {
     ErrorExit("Z out of range in function CSb_Photo_Partial");
@@ -114,7 +115,13 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
 	x1 = E_Photo_Partial_Kissel[Z][shell][1];
 	y0 = Photo_Partial_Kissel[Z][shell][0];
 	y1 = Photo_Partial_Kissel[Z][shell][1];
-	ln_sigma = y0+(y1-y0)*(ln_E-x0)/(x1-x0);
+	//do not allow "extreme" slopes... force them to be within -1;1
+	m = (y1-y0)/(x1-x0);
+	if (m > 1.0)
+		m=1.0;
+	else if (m < -1.0)
+		m=-1.0;
+	ln_sigma = y0+m*(ln_E-x0);
     }
     else {
     	splintd(E_Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel2[Z][shell]-1,NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
