@@ -15,6 +15,17 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayvars.h"
 #include "xrayglob.h"
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Fractional non Radiative Rate                     //
+//                                                                  //
+//          Z : atomic number                                       //
+//          auger_trans: macro identifying initial                  //
+//            ionized shell and two resulting                       //
+//            ejected electrons                                     //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
 float AugerRate(int Z, int auger_trans) {
 	float rv;
 

@@ -1,3 +1,12 @@
+Version 2.15.0 Tom Schoonjans
+
+-Auger probabilities (AugerRate) and its macros
+-Revised interpolation scheme of the Kissel PE cross-sections
+-M-shell Coster-Kronig transition probabilities 
+-XRF CS with cascade effects!! 
+-Atomic level widths
+
+
 Version 2.14.1 Tom Schoonjans
 
 Bugfixes.

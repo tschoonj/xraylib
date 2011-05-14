@@ -153,3 +153,15 @@ Atomic Data and Nuclear Data Tables 16, 201-309 (1975)
 
 Taken from the LSCAT extension to the EGS4 program from Namito et al
 
+Atomic level widths
+===================
+
+The data contained within atomiclevelswidth.dat were obtained from Campbell and Papp's paper "Widths of the atomic K-N7 levels", Atomic Data and Nuclear Data Tables (2001)
+
+Non-radiative (Auger) rates
+===========================
+
+Taken from the EADL97 database. Originally published by Chen and Crasemann in their papers "Relativistic radiationless tranqition probabilities for atomic K- and L-shells", Atomic Data and Nulear Data Tables (1979) and "Relativistic M-shell radiationless transitions", Physical Review A (1980)
+====================
+
+

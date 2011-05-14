@@ -166,118 +166,9 @@ float CS_Photo_Partial(int Z, int shell, float E) {
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-/*float CS_FluorLine_Kissel(int Z, int line, float E) {
-
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function CS_FluorLine_Kissel");
-    return 0.0;
-  }
-
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_FluorLine_Kissel");
-    return 0.0;
-  }
-
-  if (line>=KN5_LINE && line<=KB_LINE) {
-    //K lines
-    return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    //L1 lines
-    return CS_Photo_Partial(Z, L1_SHELL, E)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    //L2 lines
-    return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
-		(CS_Photo_Partial(Z, L2_SHELL, E)+
-		(CS_Photo_Partial(Z, L1_SHELL, E)*CosKronTransProb(Z,F12_TRANS)));
-  }
-  else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    //L3 lines
-    return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*
-		(CS_Photo_Partial(Z, L3_SHELL, E)+
-		(CS_Photo_Partial(Z, L2_SHELL, E)*CosKronTransProb(Z,F23_TRANS))+
-		(CS_Photo_Partial(Z, L1_SHELL, E)*(CosKronTransProb(Z,F13_TRANS) + CosKronTransProb(Z,FP13_TRANS) + CosKronTransProb(Z,F12_TRANS) * CosKronTransProb(Z,F23_TRANS)))
-		);
-
-  }
-  else if (line == LA_LINE) {
-    return (CS_FluorLine_Kissel(Z,L3M4_LINE,E)+CS_FluorLine_Kissel(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
-    return (CS_FluorLine_Kissel(Z,L2M4_LINE,E)+
-    	CS_FluorLine_Kissel(Z,L2M3_LINE,E)+
-        CS_FluorLine_Kissel(Z,L3N5_LINE,E)+
-        CS_FluorLine_Kissel(Z,L3O4_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3O5_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3O45_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3N1_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3O1_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3N6_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3N7_LINE,E)+
-	CS_FluorLine_Kissel(Z,L3N4_LINE,E)+
-	CS_FluorLine_Kissel(Z,L1M3_LINE,E)+
-	CS_FluorLine_Kissel(Z,L1M2_LINE,E)+
-	CS_FluorLine_Kissel(Z,L1M5_LINE,E)+
-	CS_FluorLine_Kissel(Z,L1M4_LINE,E)
-    );
-  }
-#define FM12 CosKronTransProb(Z,FM12_TRANS)
-#define FM23 CosKronTransProb(Z,FM23_TRANS)
-#define FM34 CosKronTransProb(Z,FM34_TRANS)
-#define FM45 CosKronTransProb(Z,FM45_TRANS)
-#define FM13 CosKronTransProb(Z,FM13_TRANS)
-#define FM24 CosKronTransProb(Z,FM24_TRANS)
-#define FM14 CosKronTransProb(Z,FM14_TRANS)
-#define FM35 CosKronTransProb(Z,FM35_TRANS)
-#define FM25 CosKronTransProb(Z,FM25_TRANS)
-#define FM15 CosKronTransProb(Z,FM15_TRANS)
-  else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    //M1 lines
-    return CS_Photo_Partial(Z, M1_SHELL, E)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    //M2 lines
-    return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
-		(CS_Photo_Partial(Z, M2_SHELL, E)+
-		(CS_Photo_Partial(Z, M1_SHELL, E)*FM12));
-  }
-  else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    //M3 lines
-    return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
-		(CS_Photo_Partial(Z, M3_SHELL, E)+
-		(CS_Photo_Partial(Z, M2_SHELL, E)*FM23)+
-		(CS_Photo_Partial(Z, M1_SHELL, E)*(FM13 + FM12 * FM23))
-		);
-
-  }
-  else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    //M4 lines
-    return (FluorYield(Z, M4_SHELL)*RadRate(Z,line))*
-		(CS_Photo_Partial(Z, M4_SHELL, E)+
-		(CS_Photo_Partial(Z, M3_SHELL, E)*FM34)+
-		(CS_Photo_Partial(Z, M2_SHELL, E)*(FM24 + FM34*FM23))+
-		(CS_Photo_Partial(Z, M1_SHELL, E)*(FM12*FM23*FM34 + FM13*FM34 + FM12*FM24 + FM14)    )
-		);
-
-  }
-  else if (line>=M5P5_LINE && line<=M5N1_LINE) {
- 
-    //M5 lines
-    return (FluorYield(Z, M5_SHELL)*RadRate(Z,line))*
-		(CS_Photo_Partial(Z, M5_SHELL, E)+
-		(CS_Photo_Partial(Z, M4_SHELL, E)*FM45)+
-		(CS_Photo_Partial(Z, M3_SHELL, E)*(FM35 + FM34 * FM45))+
-		(CS_Photo_Partial(Z, M2_SHELL, E)*(FM23 * FM34 * FM45 + FM24 * FM45 + FM23 * FM35 + FM25)    )+
-		(CS_Photo_Partial(Z, M1_SHELL, E)*(FM12*FM23*FM34*FM45 + FM13*FM34*FM45 + FM12*FM24*FM45 + FM14*FM45 + FM12*FM23*FM35 + FM13*FM35 + FM12*FM25 + FM15)
-		));
-
-  }
-  else {
-    ErrorExit("Line not allowed in function CS_FluorLine_Kissel");
-    return 0.0;
-  }  
-}*/
+float CS_FluorLine_Kissel(int Z, int line, float E) {
+	return CS_FluorLine_Kissel_Cascade(Z, line, E);
+}
 
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -293,9 +184,9 @@ float CS_Photo_Partial(int Z, int shell, float E) {
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 
-/*float CSb_FluorLine_Kissel(int Z, int line, float E) {
-  return CS_FluorLine_Kissel(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
-}*/
+float CSb_FluorLine_Kissel(int Z, int line, float E) {
+  return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+}
 
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -337,6 +228,15 @@ float CSb_Total_Kissel(int Z, float E) {
   return CS_Total_Kissel(Z,E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Electronic configuration                        //
+//         		According to Lynn Kissel                    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell : shell macro                                     //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 
 float ElectronConfig(int Z, int shell) {
 
@@ -355,6 +255,22 @@ float ElectronConfig(int Z, int shell) {
 }
 
 //new functions...
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       without cascade effects                    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
 float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
 
@@ -452,6 +368,21 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
     return 0.0;
   }  
 }
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       with radiative cascade effects             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 
 float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
@@ -573,6 +504,21 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   }  
 }
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       with non-radiative cascade effects         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
 float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
 
@@ -692,6 +638,21 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
     return 0.0;
   }  
 }
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       with cascade effects                       //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 
 float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
@@ -813,25 +774,77 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   }  
 }
 
-float CS_FluorLine_Kissel(int Z, int line, float E) {
-	return CS_FluorLine_Kissel_Cascade(Z, line, E);
-}
-
-float CSb_FluorLine_Kissel(int Z, int line, float E) {
-  return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
-}
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with cascade effects                       //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 
 float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with non-radiative cascade effects         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
 float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with radiative cascade effects             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+
 float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
+
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with non-radiative cascade effects         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
 
 float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_no_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;

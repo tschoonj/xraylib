@@ -1,5 +1,4 @@
 
-#Copyright (c) 2009, Tom Schoonjans
 #Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
@@ -17,7 +16,7 @@ MODULE XRAYLIB
 
 DESCRIPTION IDL XRAYLIB BINDINGS
 
-VERSION 2.14.1
+VERSION 2.15.0 
 
 SOURCE A.Brunetti, M. S. del Rio, T. Schoonjans, T. Ikonen, B. Golosio, A. Simionovici, A. Somogyi
 
