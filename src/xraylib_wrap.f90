@@ -1775,12 +1775,12 @@ INTERFACE
         ENDSUBROUTINE xrlFree
 
         !interface for the libc strlen function
-        PURE FUNCTION strlen(s) BIND(C,NAME='strlen')
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
                 USE,INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 TYPE (C_PTR), INTENT(IN), VALUE :: s
-                INTEGER (C_SIZE_T) :: strlen
-        ENDFUNCTION strlen
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
 ENDINTERFACE
 
 CONTAINS
@@ -1817,7 +1817,7 @@ FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
                 RETURN
         ENDIF
 
-        symbol_len = strlen(symbol_C)
+        symbol_len = xrlstrlen(symbol_C)
 
         CALL C_F_POINTER(symbol_C, symbol_F,[symbol_len])
         DO i=1,3
