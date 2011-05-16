@@ -1774,13 +1774,6 @@ INTERFACE
                 TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
         ENDSUBROUTINE xrlFree
 
-        !interface for the libc strlen function
-        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
-                USE,INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: s
-                INTEGER (C_SIZE_T) :: xrlstrlen
-        ENDFUNCTION xrlstrlen
 ENDINTERFACE
 
 CONTAINS
@@ -1808,6 +1801,15 @@ FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: symbol_F
         INTEGER :: i
         INTEGER (C_SIZE_T) :: symbol_len
+        !interface for the libc strlen function
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
 
         symbol_C = AtomicNumberToSymbol_c(Z)
         IF (C_ASSOCIATED(symbol_C,C_NULL_PTR) .EQV. .TRUE.) THEN
