@@ -75,4 +75,40 @@ void _free_compound_data(struct compoundData *);
 int CompoundParser(const char compoundString[], struct compoundData *cd);
 
 
+/*
+ * The add_compound_data function will make calculate the composition
+ * corresponding with the sum of the compositions of A and B, taking into
+ * their weights, with weightA + weightB typically less than 1.0
+ * Returns NULL pointer on error
+ */
+
+
+struct compoundData * add_compound_data(struct compoundData A, double weightA, struct compoundData B, double weightB);
+
+/*
+ * The AtomicNumberToSymbol function returns a pointer to a string containing the element symbol.
+ * If an error occurred, the NULL string is returned.
+ * The string should be freed after usage with the xrlFree function
+ */
+
+char * AtomicNumberToSymbol(int Z);
+
+/*
+ * The SymbolToAtomicNumber function returns the atomic number that corresponds with element symbol
+ * If the element does not exist, 0 is returned
+ */
+
+int SymbolToAtomicNumber(char *symbol);
+
+
+/*
+ *  xrlFree frees memory that was dynamically allocated by xraylib. For now it should only be used
+ *  in combination with AtomicNumberToSymbol and add_compound_data
+ */
+
+void xrlFree(void *);
+
+
+
+
 #endif

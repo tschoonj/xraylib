@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
 	
 	File: XrfLibNET.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2008
+	Compiler: Microsoft Visual Studio 2010
 	Created: September 4, 2010
 	$Version:$
 	$Revision:$
@@ -106,9 +106,10 @@ namespace Science {
 		/// </summary>
 		XrayLib();
 
-	public: 
+	public:
+		#pragma region  Constants
 		literal int VERSION_MAJOR = 2;
-		literal int VERSION_MINOR = 14;
+		literal int VERSION_MINOR = 15;
 		literal double PI = 3.14159265359;
 
 		// Values taken from physics.nist.gov
@@ -510,7 +511,7 @@ namespace Science {
 		literal int LA_LINE = 2;            // LA1
 		literal int LB_LINE = 3;            // LB1
 
-  		//single lines
+  		// Single lines
 		literal int KA1_LINE = KL3_LINE;
 		literal int KA2_LINE = KL2_LINE;
 		literal int KB1_LINE = KM3_LINE;
@@ -592,6 +593,228 @@ namespace Science {
 		literal int FP13_TRANS = 3;
 		literal int F23_TRANS = 4;
 
+		literal int FL12_TRANS = 1;
+		literal int FL13_TRANS = 2;
+		literal int FLP13_TRANS = 3;
+		literal int FL23_TRANS = 4;
+		literal int FM12_TRANS = 5;
+		literal int FM13_TRANS = 6;
+		literal int FM14_TRANS = 7;
+		literal int FM15_TRANS = 8;
+		literal int FM23_TRANS = 9;
+		literal int FM24_TRANS = 10;
+		literal int FM25_TRANS = 11;
+		literal int FM34_TRANS = 12;
+		literal int FM35_TRANS = 13;
+		literal int FM45_TRANS = 14;
+
+		// Auger transitions
+		literal int K_L1L1_AUGER = 0;
+		literal int K_L1L2_AUGER = 1;
+		literal int K_L1L3_AUGER = 2;
+		literal int K_L1M1_AUGER = 3;
+		literal int K_L1M2_AUGER = 4;
+		literal int K_L1M3_AUGER = 5;
+		literal int K_L1M4_AUGER = 6;
+		literal int K_L1M5_AUGER = 7;
+		literal int K_L2L1_AUGER = 8;
+		literal int K_L2L2_AUGER = 9;
+		literal int K_L2L3_AUGER = 10;
+		literal int K_L2M1_AUGER = 11;
+		literal int K_L2M2_AUGER = 12;
+		literal int K_L2M3_AUGER = 13;
+		literal int K_L2M4_AUGER = 14;
+		literal int K_L2M5_AUGER = 15;
+		literal int K_L3L1_AUGER = 16;
+		literal int K_L3L2_AUGER = 17;
+		literal int K_L3L3_AUGER = 18;
+		literal int K_L3M1_AUGER = 19;
+		literal int K_L3M2_AUGER = 20;
+		literal int K_L3M3_AUGER = 21;
+		literal int K_L3M4_AUGER = 22;
+		literal int K_L3M5_AUGER = 23;
+		literal int K_M1L1_AUGER = 24;
+		literal int K_M1L2_AUGER = 25;
+		literal int K_M1L3_AUGER = 26;
+		literal int K_M1M1_AUGER = 27;
+		literal int K_M1M2_AUGER = 28;
+		literal int K_M1M3_AUGER = 29;
+		literal int K_M1M4_AUGER = 30;
+		literal int K_M1M5_AUGER = 31;
+		literal int K_M2L1_AUGER = 32;
+		literal int K_M2L2_AUGER = 33;
+		literal int K_M2L3_AUGER = 34;
+		literal int K_M2M1_AUGER = 35;
+		literal int K_M2M2_AUGER = 36;
+		literal int K_M2M3_AUGER = 37;
+		literal int K_M2M4_AUGER = 38;
+		literal int K_M2M5_AUGER = 39;
+		literal int K_M3L1_AUGER = 40;
+		literal int K_M3L2_AUGER = 41;
+		literal int K_M3L3_AUGER = 42;
+		literal int K_M3M1_AUGER = 43;
+		literal int K_M3M2_AUGER = 44;
+		literal int K_M3M3_AUGER = 45;
+		literal int K_M3M4_AUGER = 46;
+		literal int K_M3M5_AUGER = 47;
+		literal int K_M4L1_AUGER = 48;
+		literal int K_M4L2_AUGER = 49;
+		literal int K_M4L3_AUGER = 50;
+		literal int K_M4M1_AUGER = 51;
+		literal int K_M4M2_AUGER = 52;
+		literal int K_M4M3_AUGER = 53;
+		literal int K_M4M4_AUGER = 54;
+		literal int K_M4M5_AUGER = 55;
+		literal int K_M5L1_AUGER = 56;
+		literal int K_M5L2_AUGER = 57;
+		literal int K_M5L3_AUGER = 58;
+		literal int K_M5M1_AUGER = 59;
+		literal int K_M5M2_AUGER = 60;
+		literal int K_M5M3_AUGER = 61;
+		literal int K_M5M4_AUGER = 62;
+		literal int K_M5M5_AUGER = 63;
+		literal int L1_L2L2_AUGER = 64;
+		literal int L1_L2L3_AUGER = 65;
+		literal int L1_L2M1_AUGER = 66;
+		literal int L1_L2M2_AUGER = 67;
+		literal int L1_L2M3_AUGER = 68;
+		literal int L1_L2M4_AUGER = 69;
+		literal int L1_L2M5_AUGER = 70;
+		literal int L1_L3L2_AUGER = 71;
+		literal int L1_L3L3_AUGER = 72;
+		literal int L1_L3M1_AUGER = 73;
+		literal int L1_L3M2_AUGER = 74;
+		literal int L1_L3M3_AUGER = 75;
+		literal int L1_L3M4_AUGER = 76;
+		literal int L1_L3M5_AUGER = 77;
+		literal int L1_M1L2_AUGER = 78;
+		literal int L1_M1L3_AUGER = 79;
+		literal int L1_M1M1_AUGER = 80;
+		literal int L1_M1M2_AUGER = 81;
+		literal int L1_M1M3_AUGER = 82;
+		literal int L1_M1M4_AUGER = 83;
+		literal int L1_M1M5_AUGER = 84;
+		literal int L1_M2L2_AUGER = 85;
+		literal int L1_M2L3_AUGER = 86;
+		literal int L1_M2M1_AUGER = 87;
+		literal int L1_M2M2_AUGER = 88;
+		literal int L1_M2M3_AUGER = 89;
+		literal int L1_M2M4_AUGER = 90;
+		literal int L1_M2M5_AUGER = 91;
+		literal int L1_M3L2_AUGER = 92;
+		literal int L1_M3L3_AUGER = 93;
+		literal int L1_M3M1_AUGER = 94;
+		literal int L1_M3M2_AUGER = 95;
+		literal int L1_M3M3_AUGER = 96;
+		literal int L1_M3M4_AUGER = 97;
+		literal int L1_M3M5_AUGER = 98;
+		literal int L1_M4L2_AUGER = 99;
+		literal int L1_M4L3_AUGER = 100;
+		literal int L1_M4M1_AUGER = 101;
+		literal int L1_M4M2_AUGER = 102;
+		literal int L1_M4M3_AUGER = 103;
+		literal int L1_M4M4_AUGER = 104;
+		literal int L1_M4M5_AUGER = 105;
+		literal int L1_M5L2_AUGER = 106;
+		literal int L1_M5L3_AUGER = 107;
+		literal int L1_M5M1_AUGER = 108;
+		literal int L1_M5M2_AUGER = 109;
+		literal int L1_M5M3_AUGER = 110;
+		literal int L1_M5M4_AUGER = 111;
+		literal int L1_M5M5_AUGER = 112;
+		literal int L2_L3L3_AUGER = 113;
+		literal int L2_L3M1_AUGER = 114;
+		literal int L2_L3M2_AUGER = 115;
+		literal int L2_L3M3_AUGER = 116;
+		literal int L2_L3M4_AUGER = 117;
+		literal int L2_L3M5_AUGER = 118;
+		literal int L2_M1L3_AUGER = 119;
+		literal int L2_M1M1_AUGER = 120;
+		literal int L2_M1M2_AUGER = 121;
+		literal int L2_M1M3_AUGER = 122;
+		literal int L2_M1M4_AUGER = 123;
+		literal int L2_M1M5_AUGER = 124;
+		literal int L2_M2L3_AUGER = 125;
+		literal int L2_M2M1_AUGER = 126;
+		literal int L2_M2M2_AUGER = 127;
+		literal int L2_M2M3_AUGER = 128;
+		literal int L2_M2M4_AUGER = 129;
+		literal int L2_M2M5_AUGER = 130;
+		literal int L2_M3L3_AUGER = 131;
+		literal int L2_M3M1_AUGER = 132;
+		literal int L2_M3M2_AUGER = 133;
+		literal int L2_M3M3_AUGER = 134;
+		literal int L2_M3M4_AUGER = 135;
+		literal int L2_M3M5_AUGER = 136;
+		literal int L2_M4L3_AUGER = 137;
+		literal int L2_M4M1_AUGER = 138;
+		literal int L2_M4M2_AUGER = 139;
+		literal int L2_M4M3_AUGER = 140;
+		literal int L2_M4M4_AUGER = 141;
+		literal int L2_M4M5_AUGER = 142;
+		literal int L2_M5L3_AUGER = 143;
+		literal int L2_M5M1_AUGER = 144;
+		literal int L2_M5M2_AUGER = 145;
+		literal int L2_M5M3_AUGER = 146;
+		literal int L2_M5M4_AUGER = 147;
+		literal int L2_M5M5_AUGER = 148;
+		literal int L3_M1M1_AUGER = 149;
+		literal int L3_M1M2_AUGER = 150;
+		literal int L3_M1M3_AUGER = 151;
+		literal int L3_M1M4_AUGER = 152;
+		literal int L3_M1M5_AUGER = 153;
+		literal int L3_M2M1_AUGER = 154;
+		literal int L3_M2M2_AUGER = 155;
+		literal int L3_M2M3_AUGER = 156;
+		literal int L3_M2M4_AUGER = 157;
+		literal int L3_M2M5_AUGER = 158;
+		literal int L3_M3M1_AUGER = 159;
+		literal int L3_M3M2_AUGER = 160;
+		literal int L3_M3M3_AUGER = 161;
+		literal int L3_M3M4_AUGER = 162;
+		literal int L3_M3M5_AUGER = 163;
+		literal int L3_M4M1_AUGER = 164;
+		literal int L3_M4M2_AUGER = 165;
+		literal int L3_M4M3_AUGER = 166;
+		literal int L3_M4M4_AUGER = 167;
+		literal int L3_M4M5_AUGER = 168;
+		literal int L3_M5M1_AUGER = 169;
+		literal int L3_M5M2_AUGER = 170;
+		literal int L3_M5M3_AUGER = 171;
+		literal int L3_M5M4_AUGER = 172;
+		literal int L3_M5M5_AUGER = 173;
+		literal int M1_M2M2_AUGER = 174;
+		literal int M1_M2M3_AUGER = 175;
+		literal int M1_M2M4_AUGER = 176;
+		literal int M1_M2M5_AUGER = 177;
+		literal int M1_M3M2_AUGER = 178;
+		literal int M1_M3M3_AUGER = 179;
+		literal int M1_M3M4_AUGER = 180;
+		literal int M1_M3M5_AUGER = 181;
+		literal int M1_M4M2_AUGER = 182;
+		literal int M1_M4M3_AUGER = 183;
+		literal int M1_M4M4_AUGER = 184;
+		literal int M1_M4M5_AUGER = 185;
+		literal int M1_M5M2_AUGER = 186;
+		literal int M1_M5M3_AUGER = 187;
+		literal int M1_M5M4_AUGER = 188;
+		literal int M1_M5M5_AUGER = 189;
+		literal int M2_M3M3_AUGER = 190;
+		literal int M2_M3M4_AUGER = 191;
+		literal int M2_M3M5_AUGER = 192;
+		literal int M2_M4M3_AUGER = 193;
+		literal int M2_M4M4_AUGER = 194;
+		literal int M2_M4M5_AUGER = 195;
+		literal int M2_M5M3_AUGER = 196;
+		literal int M2_M5M4_AUGER = 197;
+		literal int M2_M5M5_AUGER = 198;
+		literal int M3_M4M4_AUGER = 199;
+		literal int M3_M4M5_AUGER = 200;
+		literal int M3_M5M4_AUGER = 201;
+		literal int M3_M5M5_AUGER = 202;
+		literal int M4_M5M5_AUGER = 203;
+		#pragma endregion
+
 		/// <summary>
 		/// Gets the single instance of the class.
 		/// </summary>
@@ -621,6 +844,16 @@ namespace Science {
 		/// </summary>
 		/// <returns>Exit status code</returns>
 		int GetExitStatus();
+
+		/// <summary>	
+		/// Sets whether, or not, error messages are displayed. 
+		/// </summary>
+		/// <param name="status">status is non-zero to display messages</param>
+		void SetErrorMessages(int status);
+
+		/// <summary>Gets whether, or now, error messages are displayed. </summary>
+		/// <returns>Returns a non-zero if messages are displayed</returns>
+		int GetErrorMessages(void);
 
 		/// <summary>
 		/// Gets the atomic weight of the element with the specified atomic number.
@@ -1006,6 +1239,78 @@ namespace Science {
 		/// <returns>Cross section (barn)</returns>
 		double CSb_Total_Kissel(int Z, double E); 
 
+		/// <summary>
+		/// Calculates the fluorescent line cross section including cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns> 
+		double CS_FluorLine_Kissel_Cascade(int Z, int line, double E); 
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section including cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns> 
+		double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section with non-radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns>
+		double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section with non-radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns>
+		double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section with radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns>
+		double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section with non-radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns>
+		double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section without cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns>
+		double CS_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent line cross section without cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns>
+		double CSb_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
+
 		//Cross Section functions using the compound parser
 		/// <summary>
 		/// Calculates the total cross section of a compound.
@@ -1223,6 +1528,18 @@ namespace Science {
 		/// <param name="pz">Momentum</param>
 		/// <returns>Compton profile</returns> 
 		double ComptonProfile_Partial(int Z, int shell, double pz);
+
+		/// <summary>Calculates the atomic level width. </summary>
+		/// <param name="Z">Atomic number of the element. </param>
+		/// <param name="shell">Atomic shell ID. </param>
+		/// <returns>Level width (keV)</returns>
+		double AtomicLevelWidth(int Z, int shell);
+
+		/// <summary>Calculates the Auger non-radiative rate. </summary>
+		/// <param name="Z">Atomic number of the element. </param>
+		/// <param name="auger_trans">Value identifying initial ionized shell and two resulting ejected electrons</param>
+		/// <returns>Non-radiative rate</returns>
+		double AugerRate(int Z, int auger_trans);
 
 		/// <summary>
 		/// Returns the Siegbahn line name corresponding to the specified IUPAC name.

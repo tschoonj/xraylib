@@ -1,4 +1,4 @@
-/*Copyright (c) 2010, Tom Schoonjans
+/*Copyright (c) 2010, 2011, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 #include "xraylib.h"
 #include "xraylib-aux.h"
+#include "xrayvars.h"
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -23,7 +24,7 @@ struct MendeljevElement {
 	char *name;
 };
 
-struct MendeljevElement MendeljevArray[] = {
+static struct MendeljevElement MendeljevArray[] = {
 	{1,"H"},{2,"He"},{3,"Li"},{4,"Be"},{5,"B"},{6,"C"},{7,"N"},{8,"O"},{9,"F"},{10,"Ne"},
 	{11,"Na"},{12,"Mg"},{13,"Al"},{14,"Si"},{15,"P"},{16,"S"},{17,"Cl"},{18,"Ar"},{19,"K"},{20,"Ca"},
 	{21,"Sc"},{22,"Ti"},{23,"V"},{24,"Cr"},{25,"Mn"},{26,"Fe"},{27,"Co"},{28,"Ni"},{29,"Cu"},{30,"Zn"},
@@ -62,7 +63,9 @@ static int compareMendeljevElements(const void *i1, const void *i2) {
 	return strcmp(ca1->name,ca2->name);
 }
 
-int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct MendeljevElement *MendeljevArrayLocal) {
+static int compareInt(const void *A, const void *B); 
+
+static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct MendeljevElement *MendeljevArrayLocal) {
 
 	int nbrackets=0;
 	int nuppers=0;
@@ -159,6 +162,12 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct
 			else {
 				tempSubstring = strndup(upper_locs[i]+2,j-2);
 				tempnAtoms = (int) strtol(tempSubstring,NULL,10);
+				//zero subscript is not allowed
+				if (tempnAtoms == 0) {
+					sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
+					ErrorExit(buffer);
+					return 0;
+				}
 				free(tempSubstring);
 			}
 			free(tempElement);
@@ -185,6 +194,12 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct
 			else {
 				tempSubstring = strndup(upper_locs[i]+1,j-1);
 				tempnAtoms = (int) strtol(tempSubstring,NULL,10);
+				//zero subscript is not allowed
+				if (tempnAtoms == 0) {
+					sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
+					ErrorExit(buffer);
+					return 0;
+				}
 				free(tempSubstring);
 			}
 			free(tempElement);
@@ -250,6 +265,12 @@ int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct
 		else {
 			tempSubstring = strndup(brackets_end_locs[i]+1,j-1);
 			tempnAtoms = (int) strtol(tempSubstring,NULL,10);
+			//zero subscript is not allowed
+			if (tempnAtoms == 0) {
+				sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
+				ErrorExit(buffer);
+				return 0;
+			}
 			free(tempSubstring);
 		}
 
@@ -352,5 +373,102 @@ void _free_compound_data(struct compoundData *cd) {
 	
 	free(cd->Elements);
 	free(cd->massFractions);
+}
+
+
+struct compoundData * add_compound_data(struct compoundData A, double weightA, struct compoundData B, double weightB) {
+	struct compoundData *rv, *longest, *shortest;
+	int i,j,found=0;
+	double *longestW, *shortestW;
+
+
+	rv = (struct compoundData *) malloc(sizeof(struct compoundData)) ;
+	
+	if (A.nElements >= B.nElements) {
+		longest = &A;
+		shortest = &B;
+		longestW = &weightA;
+		shortestW = &weightB;
+	}
+	else {
+		longest = &B;
+		shortest = &A;
+		longestW = &weightB;
+		shortestW = &weightA;
+	}
+
+	rv->Elements = (int *) malloc(sizeof(int)*longest->nElements);
+	memcpy(rv->Elements,longest->Elements, sizeof(int)*longest->nElements);
+	rv->nElements = longest->nElements;
+
+	//determine the unique Elements from A and B
+	for (i = 0 ; i < shortest->nElements ; i++) {
+		found = 0;
+		for (j = 0 ; j < longest->nElements ; j++) {
+			if (shortest->Elements[i] == longest->Elements[j]) { 
+				found = 1;
+				break;
+			}
+		}
+		if (!found) {
+			//add to array
+			rv->Elements = (int *) realloc(rv->Elements, sizeof(int) * ++(rv->nElements));
+			rv->Elements[rv->nElements-1] = shortest->Elements[i];
+		}
+	}
+
+	//sort array
+	qsort(rv->Elements, rv->nElements, sizeof(int),compareInt );
+	
+	//use of this is questionable...
+	rv->nAtomsAll = longest->nAtomsAll + shortest->nAtomsAll;
+	
+	rv->massFractions = (double *) calloc(rv->nElements,sizeof(double) );
+
+	for (i = 0 ; i < rv->nElements ; i++) {
+		for (j = 0 ; j < longest->nElements ; j++) {
+			if (rv->Elements[i] == longest->Elements[j])
+				rv->massFractions[i] += longest->massFractions[j]**longestW;
+		}
+		for (j = 0 ; j < shortest->nElements ; j++) {
+			if (rv->Elements[i] == shortest->Elements[j])
+				rv->massFractions[i] += shortest->massFractions[j]**shortestW;
+		}
+	}
+
+	return rv;
+}
+
+static int compareInt(const void *A, const void *B) {
+
+	return (int)*((int*)A) - (int)*((int*)B);
+}
+
+
+char *AtomicNumberToSymbol(int Z) {
+	if (Z < 1 || Z > 107 ) {
+		ErrorExit("AtomicNumberToSymbol: Z out of range");
+		return NULL;
+	}
+
+	return strdup(MendeljevArray[Z-1].name );
+}
+
+int SymbolToAtomicNumber(char *symbol) {
+	int i;
+
+	for (i=0 ; i <= 107 ; i++) {
+		if (strcmp(symbol,MendeljevArray[i].name) == 0) 
+			return MendeljevArray[i].number;
+	}
+
+	return 0;
+}
+
+
+
+void xrlFree(void *Ptr) {
+	//just a wrapper around free really... because we don't trust msvcrtXX.dll
+	free(Ptr);
 }
 

@@ -1,6 +1,6 @@
 #!/usr/bin/perl 
 
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,7 @@ use xraylib;
 
 
 xraylib::XRayInit();
-xraylib::SetHardExit(1);
+#xraylib::SetHardExit(1);
 
 
 
@@ -37,6 +37,18 @@ printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",xraylib::Refractive_In
 printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",xraylib::Refractive_Index_Re("SiO2",5.0,2.65),xraylib::Refractive_Index_Im("SiO2",5.0,2.65));
 printf("Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile(26,1.1));
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",xraylib::ComptonProfile_Partial(26,$xraylib::M5_SHELL,1.1));
+printf("K atomic level width for Fe: %g\n", xraylib::AtomicLevelWidth(26,$xraylib::K_SHELL));
+printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",xraylib::CosKronTransProb(79,$xraylib::FM15_TRANS));
+printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",xraylib::CosKronTransProb(26,$xraylib::FL13_TRANS));
+printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MA1_LINE,10.0));
+printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MB_LINE,10.0));
+printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MG_LINE,10.0));
 
+printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
 
+printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",xraylib::CS_FluorLine_Kissel(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Radiative_Cascade(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Nonradiative_Cascade(82,$xraylib::MA1_LINE,20.0));
+printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_no_Cascade(82,$xraylib::MA1_LINE,20.0));
+  
 exit 0;

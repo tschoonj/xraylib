@@ -17,11 +17,12 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 int main()
 {
-  struct compoundData cdtest;
+  struct compoundData cdtest, cdtest1, cdtest2, *cdtest3;
   int i;
+  char *symbol;
   XRayInit();
   //if something goes wrong, the test will end with EXIT_FAILURE
-  SetHardExit(1);
+  //SetHardExit(1);
 
   printf("Example of C program using xraylib\n");
   printf("Ca K-alpha Fluorescence Line Energy: %f\n",
@@ -59,8 +60,38 @@ int main()
 
   printf("Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile(26,1.1f));
   printf("M5 Compton profile for Fe at pz = 1.1 : %f\n",ComptonProfile_Partial(26,M5_SHELL,1.1f));
+  printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",CosKronTransProb(79,FM15_TRANS));
+  printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",CosKronTransProb(26,FL13_TRANS));
+  printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MA1_LINE,10.0f));
+  printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MB_LINE,10.0f));
+  printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", CS_FluorLine_Kissel(79,MG_LINE,10.0f));
 
+  printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
+  printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
 
+  if (CompoundParser("SiO2",&cdtest1) == 0)
+	return 1;
+
+  if (CompoundParser("Ca(HCO3)2",&cdtest2) == 0)
+	return 1;
+
+  cdtest3 = add_compound_data(cdtest1, 0.4, cdtest2, 0.6);
+  for (i = 0 ; i < cdtest3->nElements ; i++)
+    printf("Element %i: %lf %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
+
+  FREE_COMPOUND_DATA(*cdtest3)
+  xrlFree(cdtest3);
+
+  symbol = AtomicNumberToSymbol(26);
+  printf("Symbol of element 26 is: %s\n",symbol);
+  xrlFree(symbol);
+
+  printf("Number of element Fe is: %i\n",SymbolToAtomicNumber("Fe"));
+
+  printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",CS_FluorLine_Kissel(82,MA1_LINE,20.0));
+  printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0));
+  printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
+  printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
   return 0;
 }

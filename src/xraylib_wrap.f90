@@ -1,5 +1,5 @@
 
-!Copyright (c) 2009-2010, Tom Schoonjans
+!Copyright (c) 2009,2010,2011, Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -13,15 +13,6 @@
 
 
 !Fortran 2003 bindings for xraylib
-!By Tom Schoonjans (Tom.Schoonjans@UGent.be)
-
-!Warning: can ony be compiled with Intel Fortran 10 or later, GFortran 4.3.0 or later and G95
-
-
-
-
-      
-
 
 MODULE xraylib
 
@@ -42,6 +33,13 @@ TYPE :: compoundData_F
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
 ENDTYPE 
 
+!NIST constants
+REAL (KIND=C_DOUBLE),PARAMETER :: AVOGNUM = 0.602214179     ! Avogadro number (mol-1 * barn-1 * cm2) 
+REAL (KIND=C_DOUBLE),PARAMETER :: KEV2ANGST = 12.39841875   ! keV to angstrom-1 conversion factor 
+REAL (KIND=C_DOUBLE),PARAMETER :: MEC2 = 510.998910         ! electron rest mass (keV) 
+REAL (KIND=C_DOUBLE),PARAMETER :: RE2 = 0.079407877         ! square of classical electron radius (barn)
+
+
 
 !Constants
 
@@ -51,6 +49,21 @@ INTEGER (KIND=C_INT),PARAMETER ::  F12_TRANS  = 1
 INTEGER (KIND=C_INT),PARAMETER ::  F13_TRANS  = 2
 INTEGER (KIND=C_INT),PARAMETER ::  FP13_TRANS = 3
 INTEGER (KIND=C_INT),PARAMETER ::  F23_TRANS  = 4
+
+INTEGER (KIND=C_INT),PARAMETER :: FL12_TRANS = 1
+INTEGER (KIND=C_INT),PARAMETER :: FL13_TRANS = 2
+INTEGER (KIND=C_INT),PARAMETER :: FLP13_TRANS = 3
+INTEGER (KIND=C_INT),PARAMETER :: FL23_TRANS = 4
+INTEGER (KIND=C_INT),PARAMETER :: FM12_TRANS = 5
+INTEGER (KIND=C_INT),PARAMETER :: FM13_TRANS = 6
+INTEGER (KIND=C_INT),PARAMETER :: FM14_TRANS = 7
+INTEGER (KIND=C_INT),PARAMETER :: FM15_TRANS = 8
+INTEGER (KIND=C_INT),PARAMETER :: FM23_TRANS = 9
+INTEGER (KIND=C_INT),PARAMETER :: FM24_TRANS = 10
+INTEGER (KIND=C_INT),PARAMETER :: FM25_TRANS = 11
+INTEGER (KIND=C_INT),PARAMETER :: FM34_TRANS = 12
+INTEGER (KIND=C_INT),PARAMETER :: FM35_TRANS = 13
+INTEGER (KIND=C_INT),PARAMETER :: FM45_TRANS = 14
 
 INTEGER (KIND=C_INT),PARAMETER ::  KA_LINE = 0
 INTEGER (KIND=C_INT),PARAMETER ::  KB_LINE = 1
@@ -513,35 +526,258 @@ INTEGER (KIND=C_INT),PARAMETER ::  MA2_LINE = M5N6_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  MB_LINE = M4N6_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  MG_LINE = M3N5_LINE
 
+!Auger macros
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1L1_AUGER = 0
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1L2_AUGER = 1
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1L3_AUGER = 2
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1M1_AUGER = 3
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1M2_AUGER = 4
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1M3_AUGER = 5
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1M4_AUGER = 6
+INTEGER (KIND=C_INT),PARAMETER ::  K_L1M5_AUGER = 7
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2L1_AUGER = 8
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2L2_AUGER = 9
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2L3_AUGER = 10
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2M1_AUGER = 11
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2M2_AUGER = 12
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2M3_AUGER = 13
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2M4_AUGER = 14
+INTEGER (KIND=C_INT),PARAMETER ::  K_L2M5_AUGER = 15
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3L1_AUGER = 16
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3L2_AUGER = 17
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3L3_AUGER = 18
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3M1_AUGER = 19
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3M2_AUGER = 20
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3M3_AUGER = 21
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3M4_AUGER = 22
+INTEGER (KIND=C_INT),PARAMETER ::  K_L3M5_AUGER = 23
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1L1_AUGER = 24
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1L2_AUGER = 25
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1L3_AUGER = 26
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1M1_AUGER = 27
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1M2_AUGER = 28
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1M3_AUGER = 29
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1M4_AUGER = 30
+INTEGER (KIND=C_INT),PARAMETER ::  K_M1M5_AUGER = 31
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2L1_AUGER = 32
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2L2_AUGER = 33
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2L3_AUGER = 34
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2M1_AUGER = 35
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2M2_AUGER = 36
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2M3_AUGER = 37
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2M4_AUGER = 38
+INTEGER (KIND=C_INT),PARAMETER ::  K_M2M5_AUGER = 39
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3L1_AUGER = 40
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3L2_AUGER = 41
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3L3_AUGER = 42
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3M1_AUGER = 43
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3M2_AUGER = 44
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3M3_AUGER = 45
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3M4_AUGER = 46
+INTEGER (KIND=C_INT),PARAMETER ::  K_M3M5_AUGER = 47
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4L1_AUGER = 48
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4L2_AUGER = 49
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4L3_AUGER = 50
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4M1_AUGER = 51
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4M2_AUGER = 52
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4M3_AUGER = 53
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4M4_AUGER = 54
+INTEGER (KIND=C_INT),PARAMETER ::  K_M4M5_AUGER = 55
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5L1_AUGER = 56
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5L2_AUGER = 57
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5L3_AUGER = 58
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5M1_AUGER = 59
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5M2_AUGER = 60
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5M3_AUGER = 61
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5M4_AUGER = 62
+INTEGER (KIND=C_INT),PARAMETER ::  K_M5M5_AUGER = 63
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2L2_AUGER = 64
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2L3_AUGER = 65
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2M1_AUGER = 66
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2M2_AUGER = 67
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2M3_AUGER = 68
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2M4_AUGER = 69
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L2M5_AUGER = 70
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3L2_AUGER = 71
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3L3_AUGER = 72
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3M1_AUGER = 73
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3M2_AUGER = 74
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3M3_AUGER = 75
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3M4_AUGER = 76
+INTEGER (KIND=C_INT),PARAMETER ::  L1_L3M5_AUGER = 77
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1L2_AUGER = 78
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1L3_AUGER = 79
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1M1_AUGER = 80
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1M2_AUGER = 81
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1M3_AUGER = 82
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1M4_AUGER = 83
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M1M5_AUGER = 84
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2L2_AUGER = 85
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2L3_AUGER = 86
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2M1_AUGER = 87
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2M2_AUGER = 88
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2M3_AUGER = 89
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2M4_AUGER = 90
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M2M5_AUGER = 91
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3L2_AUGER = 92
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3L3_AUGER = 93
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3M1_AUGER = 94
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3M2_AUGER = 95
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3M3_AUGER = 96
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3M4_AUGER = 97
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M3M5_AUGER = 98
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4L2_AUGER = 99
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4L3_AUGER = 100
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4M1_AUGER = 101
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4M2_AUGER = 102
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4M3_AUGER = 103
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4M4_AUGER = 104
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M4M5_AUGER = 105
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5L2_AUGER = 106
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5L3_AUGER = 107
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5M1_AUGER = 108
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5M2_AUGER = 109
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5M3_AUGER = 110
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5M4_AUGER = 111
+INTEGER (KIND=C_INT),PARAMETER ::  L1_M5M5_AUGER = 112
+INTEGER (KIND=C_INT),PARAMETER ::  L2_L3L3_AUGER = 113
+INTEGER (KIND=C_INT),PARAMETER ::  L2_L3M1_AUGER = 114
+INTEGER (KIND=C_INT),PARAMETER ::  L2_L3M2_AUGER = 115
+INTEGER (KIND=C_INT),PARAMETER ::  L2_L3M3_AUGER = 116
+INTEGER (KIND=C_INT),PARAMETER ::  L2_L3M4_AUGER = 117
+INTEGER (KIND=C_INT),PARAMETER ::  L2_L3M5_AUGER = 118
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M1L3_AUGER = 119
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M1M1_AUGER = 120
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M1M2_AUGER = 121
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M1M3_AUGER = 122
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M1M4_AUGER = 123
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M1M5_AUGER = 124
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M2L3_AUGER = 125
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M2M1_AUGER = 126
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M2M2_AUGER = 127
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M2M3_AUGER = 128
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M2M4_AUGER = 129
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M2M5_AUGER = 130
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M3L3_AUGER = 131
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M3M1_AUGER = 132
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M3M2_AUGER = 133
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M3M3_AUGER = 134
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M3M4_AUGER = 135
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M3M5_AUGER = 136
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M4L3_AUGER = 137
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M4M1_AUGER = 138
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M4M2_AUGER = 139
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M4M3_AUGER = 140
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M4M4_AUGER = 141
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M4M5_AUGER = 142
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M5L3_AUGER = 143
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M5M1_AUGER = 144
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M5M2_AUGER = 145
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M5M3_AUGER = 146
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M5M4_AUGER = 147
+INTEGER (KIND=C_INT),PARAMETER ::  L2_M5M5_AUGER = 148
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M1M1_AUGER = 149
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M1M2_AUGER = 150
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M1M3_AUGER = 151
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M1M4_AUGER = 152
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M1M5_AUGER = 153
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M2M1_AUGER = 154
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M2M2_AUGER = 155
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M2M3_AUGER = 156
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M2M4_AUGER = 157
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M2M5_AUGER = 158
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M3M1_AUGER = 159
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M3M2_AUGER = 160
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M3M3_AUGER = 161
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M3M4_AUGER = 162
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M3M5_AUGER = 163
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M4M1_AUGER = 164
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M4M2_AUGER = 165
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M4M3_AUGER = 166
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M4M4_AUGER = 167
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M4M5_AUGER = 168
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M5M1_AUGER = 169
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M5M2_AUGER = 170
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M5M3_AUGER = 171
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M5M4_AUGER = 172
+INTEGER (KIND=C_INT),PARAMETER ::  L3_M5M5_AUGER = 173
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M2M2_AUGER = 174
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M2M3_AUGER = 175
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M2M4_AUGER = 176
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M2M5_AUGER = 177
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M3M2_AUGER = 178
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M3M3_AUGER = 179
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M3M4_AUGER = 180
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M3M5_AUGER = 181
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M4M2_AUGER = 182
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M4M3_AUGER = 183
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M4M4_AUGER = 184
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M4M5_AUGER = 185
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M5M2_AUGER = 186
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M5M3_AUGER = 187
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M5M4_AUGER = 188
+INTEGER (KIND=C_INT),PARAMETER ::  M1_M5M5_AUGER = 189
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M3M3_AUGER = 190
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M3M4_AUGER = 191
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M3M5_AUGER = 192
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M4M3_AUGER = 193
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M4M4_AUGER = 194
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M4M5_AUGER = 195
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M5M3_AUGER = 196
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M5M4_AUGER = 197
+INTEGER (KIND=C_INT),PARAMETER ::  M2_M5M5_AUGER = 198
+INTEGER (KIND=C_INT),PARAMETER ::  M3_M4M4_AUGER = 199
+INTEGER (KIND=C_INT),PARAMETER ::  M3_M4M5_AUGER = 200
+INTEGER (KIND=C_INT),PARAMETER ::  M3_M5M4_AUGER = 201
+INTEGER (KIND=C_INT),PARAMETER ::  M3_M5M5_AUGER = 202
+INTEGER (KIND=C_INT),PARAMETER ::  M4_M5M5_AUGER = 203
+
+
+
+
 
 
 INTERFACE
 !All procedures are pure
 
-	!Initialization
-	SUBROUTINE XRayInit() BIND(C,NAME='XRayInit')
-	ENDSUBROUTINE XRayInit
+        !Initialization
+        SUBROUTINE XRayInit() BIND(C,NAME='XRayInit')
+        ENDSUBROUTINE XRayInit
 
-	!Error handling
-	PURE SUBROUTINE SetHardExit(hard_exit) BIND(C,NAME='SetHardExit')
+        !Error handling
+        SUBROUTINE SetHardExit(hard_exit) BIND(C,NAME='SetHardExit')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		INTEGER (KIND=C_INT),INTENT(IN),VALUE :: hard_exit
-	ENDSUBROUTINE SetHardExit
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: hard_exit
+        ENDSUBROUTINE SetHardExit
 
-	PURE SUBROUTINE SetExitStatus(exit_status) BIND(C,NAME='SetExitStatus')
+        SUBROUTINE SetExitStatus(exit_status) BIND(C,NAME='SetExitStatus')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		INTEGER (KIND=C_INT),INTENT(IN),VALUE :: exit_status
-	ENDSUBROUTINE SetExitStatus
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: exit_status
+        ENDSUBROUTINE SetExitStatus
 
-	PURE FUNCTION GetExitStatus() BIND(C,NAME='GetExitStatus')
+        FUNCTION GetExitStatus() BIND(C,NAME='GetExitStatus')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		INTEGER (KIND=C_INT) :: GetExitStatus
-	ENDFUNCTION
+                INTEGER (KIND=C_INT) :: GetExitStatus
+        ENDFUNCTION
 
-	!Atomic Weights
+        SUBROUTINE SetErrorMessages(status) BIND(C,NAME='SetErrorMessages')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: status
+        ENDSUBROUTINE SetErrorMessages
+
+        FUNCTION GetErrorMessages() BIND(C,NAME='GetErrorMessages')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT) :: GetErrorMessages
+        ENDFUNCTION
+
+
+
+        !Atomic Weights
         PURE FUNCTION AtomicWeight(Z) BIND(C,NAME='AtomicWeight')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -549,7 +785,7 @@ INTERFACE
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z
         END FUNCTION AtomicWeight
 
-	!Cross sections (cm2/g)
+        !Cross sections (cm2/g)
         PURE FUNCTION CS_Total(Z,E) BIND(C,NAME='CS_Total')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -867,25 +1103,6 @@ INTERFACE
 		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
 	ENDFUNCTION CSb_Photo_Partial
 
-	!XRF cross sections using Kissel partial photoelectric cross sections
-	PURE FUNCTION CS_FluorLine_Kissel (Z,line, E) &
-		BIND(C, NAME='CS_FluorLine_Kissel')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-	ENDFUNCTION CS_FluorLine_Kissel
-
-	PURE FUNCTION CSb_FluorLine_Kissel (Z,line, E) & 
-		BIND(C, NAME='CSb_FluorLine_Kissel')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-	ENDFUNCTION CSb_FluorLine_Kissel
-
 	PURE FUNCTION CS_Total_Kissel (Z, E) BIND(C, NAME='CS_Total_Kissel')
 		USE, INTRINSIC :: ISO_C_BINDING
 		IMPLICIT NONE
@@ -1110,6 +1327,453 @@ INTERFACE
                 REAL (KIND=C_FLOAT) :: ElectronConfig 
         ENDFUNCTION ElectronConfig
 
+        PURE FUNCTION AtomicLevelWidth(Z,shell) BIND(C,NAME='AtomicLevelWidth')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
+                REAL (KIND=C_FLOAT) :: AtomicLevelWidth
+        ENDFUNCTION AtomicLevelWidth
+        PURE FUNCTION AugerRate(Z,auger_trans) BIND(C,NAME='AugerRate')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, auger_trans
+                REAL (KIND=C_FLOAT) :: AugerRate
+        ENDFUNCTION
+
+        !XRF cross sections using Kissel partial photoelectric cross sections
+        PURE FUNCTION CS_FluorLine_Kissel (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel
+
+        PURE FUNCTION CSb_FluorLine_Kissel (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel
+
+        PURE FUNCTION CS_FluorLine_Kissel_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_Cascade
+
+        PURE FUNCTION CS_FluorLine_Kissel_Nonradiative_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_Nonradiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_Nonradiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_Nonradiative_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_Nonradiative_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_Nonradiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_Nonradiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_Nonradiative_Cascade
+
+        PURE FUNCTION CS_FluorLine_Kissel_Radiative_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_Radiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_Radiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_Radiative_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_Radiative_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_Radiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_Radiative_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_Radiative_Cascade
+
+        PURE FUNCTION CS_FluorLine_Kissel_no_Cascade (Z,line, E) &
+                BIND(C, NAME='CS_FluorLine_Kissel_no_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_FluorLine_Kissel_no_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_FluorLine_Kissel_no_Cascade
+
+        PURE FUNCTION CSb_FluorLine_Kissel_no_Cascade (Z,line, E) & 
+                BIND(C, NAME='CSb_FluorLine_Kissel_no_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_FluorLine_Kissel_no_Cascade
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: line, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_FluorLine_Kissel_no_Cascade
+
+!xrf_cross_sections_aux function
+        PURE FUNCTION PL1_pure_kissel(Z, E) &
+                BIND(C, NAME='PL1_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION PL1_pure_kissel
+
+        PURE FUNCTION PL2_pure_kissel(Z, E, PL1) &
+                BIND(C, NAME='PL2_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PL1
+        ENDFUNCTION PL2_pure_kissel
+
+        PURE FUNCTION PL3_pure_kissel(Z, E, PL1, PL2) &
+                BIND(C, NAME='PL3_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PL1, PL2
+        ENDFUNCTION PL3_pure_kissel
+
+        PURE FUNCTION PM1_pure_kissel(Z, E) &
+                BIND(C, NAME='PM1_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION PM1_pure_kissel
+
+        PURE FUNCTION PM2_pure_kissel(Z, E, PM1) &
+                BIND(C, NAME='PM2_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1
+        ENDFUNCTION PM2_pure_kissel
+
+        PURE FUNCTION PM3_pure_kissel(Z, E, PM1, PM2) &
+                BIND(C, NAME='PM3_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1, PM2
+        ENDFUNCTION PM3_pure_kissel
+
+        PURE FUNCTION PM4_pure_kissel(Z, E, PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1, PM2, PM3
+        ENDFUNCTION PM4_pure_kissel
+
+        PURE FUNCTION PM5_pure_kissel(Z, E, PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_pure_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_pure_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_pure_kissel
+
+        PURE FUNCTION PL1_rad_cascade_kissel(Z, E, PK) &
+                BIND(C, NAME='PL1_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK
+        ENDFUNCTION PL1_rad_cascade_kissel
+
+        PURE FUNCTION PL2_rad_cascade_kissel(Z, E, PK, PL1) &
+                BIND(C, NAME='PL2_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1
+        ENDFUNCTION PL2_rad_cascade_kissel
+
+        PURE FUNCTION PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2) &
+                BIND(C, NAME='PL3_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2
+        ENDFUNCTION PL3_rad_cascade_kissel
+
+        PURE FUNCTION PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3) &
+                BIND(C, NAME='PM1_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3
+        ENDFUNCTION PM1_rad_cascade_kissel
+
+        PURE FUNCTION PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1) &
+                BIND(C, NAME='PM2_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1
+        ENDFUNCTION PM2_rad_cascade_kissel
+
+        PURE FUNCTION PM3_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2) &
+                BIND(C, NAME='PM3_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3,PM1, PM2
+        ENDFUNCTION PM3_rad_cascade_kissel
+
+        PURE FUNCTION PM4_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1, PM2, PM3
+        ENDFUNCTION PM4_rad_cascade_kissel
+
+        PURE FUNCTION PM5_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_rad_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_rad_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
+                PL3, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_rad_cascade_kissel
+
+        PURE FUNCTION PL1_auger_cascade_kissel(Z, E, PK) &
+                BIND(C, NAME='PL1_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK
+        ENDFUNCTION PL1_auger_cascade_kissel
+
+        PURE FUNCTION PL2_auger_cascade_kissel(Z, E, PK, PL1) &
+                BIND(C, NAME='PL2_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1
+        ENDFUNCTION PL2_auger_cascade_kissel
+
+        PURE FUNCTION PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2) &
+                BIND(C, NAME='PL3_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2
+        ENDFUNCTION PL3_auger_cascade_kissel
+
+        PURE FUNCTION PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3) &
+                BIND(C, NAME='PM1_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3
+        ENDFUNCTION PM1_auger_cascade_kissel
+
+        PURE FUNCTION PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1) &
+                BIND(C, NAME='PM2_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1
+        ENDFUNCTION PM2_auger_cascade_kissel
+
+        PURE FUNCTION PM3_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2) &
+                BIND(C, NAME='PM3_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3,PM1, PM2
+        ENDFUNCTION PM3_auger_cascade_kissel
+
+        PURE FUNCTION PM4_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1, PM2, PM3
+        ENDFUNCTION PM4_auger_cascade_kissel
+
+        PURE FUNCTION PM5_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_auger_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_auger_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
+                PL3, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_auger_cascade_kissel
+
+        PURE FUNCTION PL1_full_cascade_kissel(Z, E, PK) &
+                BIND(C, NAME='PL1_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL1_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK
+        ENDFUNCTION PL1_full_cascade_kissel
+
+        PURE FUNCTION PL2_full_cascade_kissel(Z, E, PK, PL1) &
+                BIND(C, NAME='PL2_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL2_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1
+        ENDFUNCTION PL2_full_cascade_kissel
+
+        PURE FUNCTION PL3_full_cascade_kissel(Z, E, PK, PL1, PL2) &
+                BIND(C, NAME='PL3_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PL3_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2
+        ENDFUNCTION PL3_full_cascade_kissel
+
+        PURE FUNCTION PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3) &
+                BIND(C, NAME='PM1_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM1_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3
+        ENDFUNCTION PM1_full_cascade_kissel
+
+        PURE FUNCTION PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1) &
+                BIND(C, NAME='PM2_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM2_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1
+        ENDFUNCTION PM2_full_cascade_kissel
+
+        PURE FUNCTION PM3_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2) &
+                BIND(C, NAME='PM3_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM3_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3,PM1, PM2
+        ENDFUNCTION PM3_full_cascade_kissel
+
+        PURE FUNCTION PM4_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3) &
+                BIND(C, NAME='PM4_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM4_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
+                PL3, PM1, PM2, PM3
+        ENDFUNCTION PM4_full_cascade_kissel
+
+        PURE FUNCTION PM5_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, &
+                PM1, PM2, PM3, PM4) &
+                BIND(C, NAME='PM5_full_cascade_kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: PM5_full_cascade_kissel 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
+                PL3, PM1, PM2, PM3, PM4
+        ENDFUNCTION PM5_full_cascade_kissel
+
+
+
+        PURE FUNCTION AtomicNumberToSymbol_c(Z)&
+                BIND(C,NAME='AtomicNumberToSymbol')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR) :: rv
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+        ENDFUNCTION AtomicNumberToSymbol_c
+
+        PURE FUNCTION SymbolToAtomicNumber_c(symbol)&
+                BIND(C,NAME='SymbolToAtomicNumber')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: symbol
+                INTEGER (KIND=C_INT) :: rv
+        ENDFUNCTION SymbolToAtomicNumber_c
+
+        PURE SUBROUTINE xrlFree(xrlPtr)&
+        BIND(C,NAME='xrlFree')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
+        ENDSUBROUTINE xrlFree
+
 ENDINTERFACE
 
 CONTAINS
@@ -1126,5 +1790,71 @@ SUBROUTINE compoundDataAssoc(in_C, out_F)
         CALL C_F_POINTER(in_C%massFractions,out_F%massFractions,[out_F%nElements])
 
 ENDSUBROUTINE compoundDataAssoc
+
+FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        INTEGER (KIND=C_INT), INTENT(IN) :: Z
+        CHARACTER (KIND=C_CHAR,LEN=3) :: rv
+       
+        TYPE (C_PTR) :: symbol_C
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: symbol_F
+        INTEGER :: i
+        INTEGER (C_SIZE_T) :: symbol_len
+        !interface for the libc strlen function
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
+        symbol_C = AtomicNumberToSymbol_c(Z)
+        IF (C_ASSOCIATED(symbol_C,C_NULL_PTR) .EQV. .TRUE.) THEN
+                DO i=1,3
+                        rv(i:i) = ' '
+                ENDDO
+                RETURN
+        ENDIF
+
+        symbol_len = xrlstrlen(symbol_C)
+
+        CALL C_F_POINTER(symbol_C, symbol_F,[symbol_len])
+        DO i=1,3
+                IF (i .LE. symbol_len) THEN
+                        rv(i:i) = symbol_F(i)
+                ELSE
+                        rv(i:i) = ' '
+                ENDIF
+        ENDDO
+
+        CALL xrlFree(symbol_C)
+
+        RETURN
+ENDFUNCTION AtomicNumberToSymbol
+
+FUNCTION SymbolToAtomicNumber(symbol) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: symbol
+        INTEGER (KIND=C_INT) :: rv
+
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: symbol_F
+        TYPE (C_PTR) :: symbol_C
+        INTEGER :: i
+
+        ALLOCATE(symbol_F(1+LEN_TRIM(symbol)))
+        DO i=1,LEN_TRIM(symbol)
+                symbol_F(i) = symbol(i:i)
+        ENDDO
+        symbol_F(1+LEN_TRIM(symbol)) = C_NULL_CHAR
+        symbol_C = C_LOC(symbol_F)
+
+        rv = SymbolToAtomicNumber_c(symbol_C)
+
+        RETURN
+ENDFUNCTION SymbolToAtomicNumber
 
 ENDMODULE

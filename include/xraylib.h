@@ -23,7 +23,7 @@ extern "C" {
 
 
 #define XRAYLIB_MAJOR 2
-#define XRAYLIB_MINOR 14
+#define XRAYLIB_MINOR 15
 
 
 //#define ZMAX 120
@@ -40,6 +40,7 @@ extern "C" {
 #include "shells.h"
 #include "lines.h"
 #include "xraylib-parser.h"
+#include "xraylib-auger.h"
 
 //Siegbahn notation
 //according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
@@ -96,6 +97,22 @@ extern "C" {
 #define FP13_TRANS 3     
 #define F23_TRANS  4    
 
+#define FL12_TRANS 1
+#define FL13_TRANS 2
+#define FLP13_TRANS 3
+#define FL23_TRANS 4
+#define FM12_TRANS 5
+#define FM13_TRANS 6
+#define FM14_TRANS 7
+#define FM15_TRANS 8
+#define FM23_TRANS 9
+#define FM24_TRANS 10
+#define FM25_TRANS 11
+#define FM34_TRANS 12
+#define FM35_TRANS 13
+#define FM45_TRANS 14
+
+
 // Initialization
 void XRayInit(void);
 
@@ -103,7 +120,10 @@ void XRayInit(void);
 void SetHardExit(int hard_exit);
 void SetExitStatus(int exit_status);
 int GetExitStatus(void);
-	
+void SetErrorMessages(int status);
+int GetErrorMessages(void);
+
+
 // Atomic weights
 float AtomicWeight(int Z);
                                   
@@ -178,6 +198,16 @@ float CSb_Photo_Partial(int Z, int shell, float E);
 // XRF cross sections using Kissel partial photoelectric cross sections
 float CS_FluorLine_Kissel(int Z, int line, float E); 
 float CSb_FluorLine_Kissel(int Z, int line, float E); 
+float CS_FluorLine_Kissel_Cascade(int Z, int line, float E); 
+float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E); 
+float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E); 
+float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E); 
+float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E); 
+float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E); 
+float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E);
+float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E); 
+
+
 
 // Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections
 float CS_Total_Kissel(int Z, float E); 
@@ -216,6 +246,14 @@ float Refractive_Index_Im(const char compound[], float E, float density);
 //ComptonProfiles
 float ComptonProfile(int Z, float pz);
 float ComptonProfile_Partial(int Z, int shell, float pz);
+
+//Atomic level widths
+float AtomicLevelWidth(int Z, int shell);
+
+
+//Auger non-radiative rates
+float AugerRate(int Z, int auger_trans);
+
 
 #ifdef __cplusplus
 }

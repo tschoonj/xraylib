@@ -52,6 +52,7 @@ extern float FluorYield_arr[ZMAX+1][SHELLNUM];
 extern float JumpFactor_arr[ZMAX+1][SHELLNUM];
 extern float CosKron_arr[ZMAX+1][TRANSNUM];
 extern float RadRate_arr[ZMAX+1][LINENUM];
+extern float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
 
 extern int NE_Photo[ZMAX+1];
 extern float *E_Photo_arr[ZMAX+1];
@@ -110,6 +111,8 @@ extern double *Total_ComptonProfiles2[ZMAX+1];
 extern double *Partial_ComptonProfiles[ZMAX+1][SHELLNUM_C];
 extern double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 
+extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
+extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 
 
 #endif

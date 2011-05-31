@@ -1,4 +1,4 @@
-xraylib v2.14.1 revised February 2011 
+xraylib v2.15.0 revised May 2011 
 Authors: A. Brunetti, M. S. del Rio, T. Schoonjans, T. Ikonen , B. Golosio,
          A. Simionovici, A. Somogyi, Matthew Wormington
          ESRF, Grenoble, France, Univ. di Sassari, Italy, Ghent University,

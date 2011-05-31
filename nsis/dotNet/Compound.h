@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
 
 	File: Compound.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2008
+	Compiler: Microsoft Visual Studio 2010
 	Created: September 5, 2010
 	$Version:$
 	$Revision:$
@@ -92,8 +92,78 @@ namespace Science {
 			_atomicNumber = gcnew List<int>();	
 			_massFraction = gcnew List<double>();	
 			Clear();
-			if (compound != nullptr)
-				Parse(compound);
+
+			Parse(compound);
+		}
+
+		/// <summary>Constructor. </summary>
+		/// <remarks>Will calculate the composition corresponding to the sum of the 
+		/// compositions of A and B, taking into their weights, with 
+		/// weightA + weightB typically less than 1.0.</remarks>
+		/// <param name="compoundA">The chemical formula of compound A. </param>
+		/// <param name="weightA">The weight of compound A. </param>
+		/// <param name="compoundB">The chemical formula of compound B. </param>
+		/// <param name="weightB">The weight of compound B. </param>
+		CompoundData(String^ compoundA, double weightA, String^ compoundB, double weightB)
+		{
+			struct ::compoundData cdA, cdB;
+			struct ::compoundData* cd;
+			int validCompound;
+
+			_atomicNumber = gcnew List<int>();	
+			_massFraction = gcnew List<double>();	
+			Clear();
+			if (String::IsNullOrEmpty(compoundA) || String::IsNullOrEmpty(compoundB) || (weightA < 0.0) || (weightB < 0.0))
+				return;
+
+			IntPtr p = Marshal::StringToHGlobalAnsi(compoundA);
+			try
+			{					
+				char* pCompound = static_cast<char*>(p.ToPointer());
+				validCompound = ::CompoundParser(pCompound, &cdA);
+			}
+			finally
+			{
+				Marshal::FreeHGlobal(p);
+			}
+			if (validCompound == 0)
+				return;
+
+			p = Marshal::StringToHGlobalAnsi(compoundB);
+			try
+			{					
+				char* pCompound = static_cast<char*>(p.ToPointer());
+				validCompound = ::CompoundParser(pCompound, &cdB);
+			}
+			finally
+			{
+				Marshal::FreeHGlobal(p);
+			}
+			if (validCompound == 0)
+			{
+				::_free_compound_data(&cdA); 
+				return;
+			}
+
+			cd = ::add_compound_data(cdA, weightA, cdB, weightB);		
+			if (cd != nullptr)
+			{
+				_atomCount = cd->nAtomsAll;
+				_elementCount = cd->nElements;
+				if (_elementCount > 0)
+				{
+					for (int i = 0; i < _elementCount; i++)
+					{
+						_atomicNumber->Add(cd->Elements[i]);
+						_massFraction->Add(cd->massFractions[i]);
+					}
+				}
+				::_free_compound_data(cd);
+				::xrlFree(cd);
+			}
+
+			::_free_compound_data(&cdA); 
+			::_free_compound_data(&cdB); 			
 		}
 
 		/// <summary> Parses the chemical formula of the compound into its component elements. </summary>
@@ -153,7 +223,7 @@ namespace Science {
 			}
 		}
 
-		/// <summary>	Gets the number of elements. </summary>
+		/// <summary>Gets the number of elements. </summary>
 		/// <value>	The number of elements. </value>
 		property int ElementCount
 		{
@@ -196,5 +266,44 @@ namespace Science {
 			
 			return sb->ToString();
 		}
+
+		/// <summary>Returns the atomic symbol for the specified element.</summary>
+		/// <param name="Z">Atomic number of the element.</param>
+		/// <returns>Atomic symbol, else null if it fails.</returns>
+		static String^ AtomicNumberToSymbol(int Z)
+		{
+			char* pSymbol = ::AtomicNumberToSymbol(Z);
+
+			String^ symbol = gcnew String(pSymbol);
+
+			::xrlFree(pSymbol);
+
+			return symbol;
+		}
+
+		/// <summary>Returns the atomic number for the specified element.</summary>
+		/// <param name="symbol">Atomic symbol of the element.</param>
+		/// <returns>Atomic number, else zero if it fails. </returns>
+		static int SymbolToAtomicNumber(String^ symbol)
+		{
+			int result = 0;
+			
+			IntPtr p = Marshal::StringToHGlobalAnsi(symbol);
+			try
+			{					
+				char* pSymbol = static_cast<char*>(p.ToPointer());
+				result = ::SymbolToAtomicNumber(pSymbol);
+			}
+			finally
+			{
+				Marshal::FreeHGlobal(p);
+			}
+
+			return result;
+		}
+
 	};
 }
+
+
+// Update help

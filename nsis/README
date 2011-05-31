@@ -1,6 +1,6 @@
 Some info on how we have built the Windows package:
 
-First of all: we don't compile it on Windows itself! It may be possible using mingw32 and msys but we haven't tried it (feel free to report us your successes and/or failures in this regard). Instead we use a cross-compiler on linux by running configure with the option: --host=i386-mingw32 or something similar depending on your mingw32 installation. This will also test for the presence of wine (The WINdows Emulator), due to its requirement during the build phase. Assuming make and make check didn't end horribly, you now have built the dll and static archive of xraylib that can be used on the Windows platform. Unfortunately these files can not be linked in on Windows when you use the Microsoft Visual C++ compiler (MSVC) due to the missing .lib file. To produce this file, we used a trick described on http://www.mingw.org/wiki/MSVC_and_MinGW_DLLs
+First of all: we don't compile it on Windows itself! Instead we use a cross-compiler on linux by running configure with the option: --host=i386-mingw32 or something similar depending on your mingw32 installation. This will also test for the presence of wine (The WINdows Emulator), due to its requirement during the build phase. Assuming make and make check didn't end horribly, you now have built the dll and static archive of xraylib that can be used on the Windows platform. Unfortunately these files can not be linked in on Windows when you use the Microsoft Visual C++ compiler (MSVC) due to the missing .lib file. To produce this file, we used a trick described on http://www.mingw.org/wiki/MSVC_and_MinGW_DLLs
 
 We used the DEF file produced during the compilation phase, copied it to a Windows machine with MSVC installed and ran the following command on a Windows shell:
 
@@ -13,6 +13,48 @@ implib.exe -a -c libxrl-{version}-bcc.lib libxrl-{version}.dll
 
 
 Now to produce the installer itself we used the NullSoft Installer System. After running ./configure, a script xraylib.nsi will be produced in the nsis subdirectory of the xraylib package. After the crosscompilation, run "makensis xraylib.nsi" in this folder to create the executable. Note that this does not work with the NSIS package available from MacPorts!!! We used Fedora 11 to create the package. 
+
+
+----
+
+Recently we have been successful in compiling xraylib natively on the Windows platform using the MinGW32 compiler. These notes were contributed by Matthew Wormington:
+
+The easiest way to build XrayLib under Windows is to use the "Minimalist GNU for Windows" toolset that is freely available from http://www.MinGW.org <http://www.mingw.org/> . The Graphical Installer provides a convenient and simple means to install components from MinGW and MSYS. This can be downloaded from the links on the MinGW.org website, or directly from the project page on SourceForge:   http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst/ <http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst/> 
+
+
+
+To install MinGW:
+
+1)      Run the Graphical Installer. If you are running on Windows Vista or 7 then you will need to run the program as an administrator.
+
+2)      Click the Next > button three times to move through the installation accepting the default options
+
+3)      Accept the license agreement and then click the Next button
+
+4)      Accept the default installation folder (C:\MinGW) and shortcut folder (MinGW) by clicking the Next button twice
+
+5)      Select the C++ Compiler and MinGW Developer Toolkit from the list of available components and click the Next button
+
+6)      Click the Install button to start downloading and installing the toolkit. This may take few minutes and the status will be displayed in a console window.   
+
+7)      Click finish to complete the installation.
+
+
+
+To build XrayLib using MinGW:
+
+1)      Select the Start > All Programs > MinGW > MinGW Shell menu item. This will start the shell in which you can build the project.
+
+2)      In the shell change to the source code directory using the appropriate cd command
+
+3)      Enter ./configure in the shell to create the XrayLib makefiles. This will take a few minutes and the status will be updated in the shell window.
+
+4)      Enter make to start the build process. The status will be displayed in the shell window and when completed, the compiled dynamic link library (.DLL) will be located in the src\.libs folder
+
+
+----
+
+We have also been successful in compiling xraylib using MinGW-w64, using the distribution available from http://tdm-gcc.tdragon.net. With this compiler, it is even possible to compile a 64-bit version of xraylib for Windows. An installer package containing the 64-bit dll is currently not scheduled
 
 
 ----

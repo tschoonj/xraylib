@@ -1,4 +1,4 @@
-!Copyright (c) 2009, Tom Schoonjans
+!Copyright (c) 2009, 2010, 2011 Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,7 @@ CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
 INTEGER :: i
 
 CALL XRayInit()
-CALL SetHardExit(1)
+!CALL SetHardExit(1)
 
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
 WRITE (6,'(A,F12.6)') 'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE);
@@ -73,6 +73,26 @@ WRITE (6,'(A,F12.6)') 'Compton profile for Fe at pz = 1.1 : ' ,&
         ComptonProfile(26,1.1) 
 WRITE (6,'(A,F12.6)') 'M5 Compton profile for Fe at pz = 1.1 : ' ,&
         ComptonProfile_Partial(26,M5_SHELL,1.1) 
+WRITE (6,'(A,F12.6)') 'K atomic level width for Fe: ',&
+        AtomicLevelWidth(26,K_SHELL)
+WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
+        AugerRate(86,L2_M5M5_AUGER)
+WRITE (6,'(A,F12.6)') 'M1->M5 Coster-Kronig transition probability for Au : ',CosKronTransProb(79,FM15_TRANS)
+WRITE (6,'(A,F12.6)') 'L1->L3 Coster-Kronig transition probability for Fe : ',CosKronTransProb(26,FL13_TRANS)
+WRITE (6,'(A,F12.6)') 'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0)
+WRITE (6,'(A,F12.6)') 'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0)
+WRITE (6,'(A,F12.6)') 'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with cascade effect: ',&
+CS_FluorLine_Kissel(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',&
+CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',&
+CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',&
+CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
+
+WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
+WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 
 ENDPROGRAM

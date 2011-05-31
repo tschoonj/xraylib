@@ -197,6 +197,11 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\Include\shells.h.fix"
 	Call unix2dos
 	Rename shells.h.fix shells.h
+	File ${abs_top_srcdir_win}\include\xraylib-auger.h
+	Push "$INSTDIR\Include\xraylib-auger.h"
+	Push "$INSTDIR\Include\xraylib-auger.h.fix"
+	Call unix2dos
+	Rename xraylib-auger.h.fix xraylib-auger.h
 
 	;python bindings
 	DetailPrint "Installing Python bindings"
@@ -265,6 +270,11 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\pro\xraylib_shells.pro.fix"
 	Call unix2dos
 	Rename xraylib_shells.pro.fix xraylib_shells.pro
+	File ${abs_top_srcdir_win}\idl\xraylib_auger.pro
+	Push "$INSTDIR\pro\xraylib_auger.pro"
+	Push "$INSTDIR\pro\xraylib_auger.pro.fix"
+	Call unix2dos
+	Rename xraylib_auger.pro.fix xraylib_auger.pro
 	${EnvVarUpdate} $0 "IDL_PATH" "P" "HKLM" "<IDL_DEFAULT>"
 	${EnvVarUpdate} $0 "IDL_PATH" "A" "HKLM" "$INSTDIR\pro"
 
@@ -294,6 +304,7 @@ SectionEnd
 Section "Uninstall"
 	Delete "$INSTDIR\Include\xraylib.h"
 	Delete "$INSTDIR\Include\xraylib-parser.h"
+	Delete "$INSTDIR\Include\xraylib-auger.h"
 	Delete "$INSTDIR\Include\lines.h"
 	Delete "$INSTDIR\Include\shells.h"
 ;	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
@@ -333,6 +344,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\pro\xraylib_help.pro"
 	Delete "$INSTDIR\pro\xraylib_shells.pro"
 	Delete "$INSTDIR\pro\xraylib_lines.pro"
+	Delete "$INSTDIR\pro\xraylib_auger.pro"
 
 	RMDir "$INSTDIR\Include"
 	RMDir "$INSTDIR\Lib"

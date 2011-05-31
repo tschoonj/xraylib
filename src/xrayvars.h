@@ -19,7 +19,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define SHELLNUM_K 31
 #define SHELLNUM_C 29
 #define LINENUM 383
-#define TRANSNUM 5
+#define TRANSNUM 15
+#define AUGERNUM 204
+#define SHELLNUM_A 9
 
 #ifndef VARSH
 #define VARSH
@@ -41,6 +43,8 @@ extern char XRayLibDir[];
 
 extern char ShellName[][5];
 extern char LineName[][6];
-extern char TransName[][5];
+extern char TransName[][6];
+extern char AugerName[][9];
+extern char AugerNameTotal[][9];
 
 #endif

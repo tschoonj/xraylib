@@ -61,7 +61,9 @@ WHILE(NOT EOF(lun)) DO BEGIN
 ;						PRINT,'N_ELEMENTS(my_data)',N_ELEMENTS(my_data)
 ;						PRINT,'my_data[nstructs].N-2',my_data[nstructs].N-2
 ;						PRINT,'N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2)',N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2)
-						*(my_data[nstructs].partial) = REFORM(*(my_data[nstructs].partial), my_data[nstructs].N-2,N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2),/overwrite)
+						*(my_data[nstructs].partial) = ALOG(REFORM(*(my_data[nstructs].partial), my_data[nstructs].N-2,N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2),/overwrite))
+						*(my_data[nstructs].total) = ALOG(*(my_data[nstructs].total))
+						*(my_data[nstructs].pz)=ALOG(*(my_data[nstructs].pz)+1)
 						;calculate second derivatives
 						my_data[nstructs].total_secderiv = PTR_NEW(DERIV(*(my_data[nstructs].pz),DERIV(*(my_data[nstructs].pz),*(my_data[nstructs].total))))
 						my_data[nstructs].partial_secderiv = PTR_NEW(DBLARR(my_data[nstructs].N-2,N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2)))
@@ -187,7 +189,9 @@ WHILE(NOT EOF(lun)) DO BEGIN
 	ENDSWITCH
 ENDWHILE
 
-*(my_data[nstructs].partial) = REFORM(*(my_data[nstructs].partial), my_data[nstructs].N-2,N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2),/overwrite)
+*(my_data[nstructs].partial) = ALOG(REFORM(*(my_data[nstructs].partial), my_data[nstructs].N-2,N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2),/overwrite))
+*(my_data[nstructs].total) = ALOG(*(my_data[nstructs].total))
+*(my_data[nstructs].pz)=ALOG(*(my_data[nstructs].pz)+1)
 ;calculate second derivatives
 my_data[nstructs].total_secderiv = PTR_NEW(DERIV(*(my_data[nstructs].pz),DERIV(*(my_data[nstructs].pz),*(my_data[nstructs].total))))
 my_data[nstructs].partial_secderiv = PTR_NEW(DBLARR(my_data[nstructs].N-2,N_ELEMENTS(*(my_data[nstructs].partial))/(my_data[nstructs].N-2)))

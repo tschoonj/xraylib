@@ -869,3 +869,187 @@ ComptonProfile_Partial
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> float ComptonProfile_Partial(int Z, int shell, float pz);
+
+AugerRate
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Fractional non Radiative Rate                     //
+//                                                                  //
+//          Z : atomic number                                       //
+//          auger_trans: macro identifying initial                  //
+//		ionized shell and two resulting                     //
+//              ejected electrons                                   //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float AugerRate(int Z, int auger_trans);
+
+AtomicLevelWidth
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Atomic level width (keV)                      //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell :                                                 //
+//            K_SHELL  0                                            //
+//            L1_SHELL 1                                            //
+//            L2_SHELL 2                                            //
+//            L3_SHELL 3                                            //
+//            M1_SHELL 4                                            //
+//            M2_SHELL 5                                            //
+//            M3_SHELL 6                                            //
+//            M4_SHELL 7                                            //
+//            M5_SHELL 8                                            //
+//             .......                                              //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float AtomicLevelWidth(int Z, int shell);
+
+ElectronConfig
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                  Electronic configuration                        //
+//                      According to Lynn Kissel                    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell : shell macro                                     //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float ElectronConfig(int Z, int shell);
+
+CS_FluorLine_Kissel_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       with cascade effects                       //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_FluorLine_Kissel_Cascade(int Z, int line, float E)
+
+CSb_FluorLine_Kissel_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with cascade effects                       //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E)
+
+CS_FluorLine_Kissel_Radiative_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       with radiative cascade effects             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E)
+
+CSb_FluorLine_Kissel_Radiative_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with radiative cascade effects             //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E)
+
+CS_FluorLine_Kissel_Nonradiative_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       with non-radiative cascade effects         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E)
+
+CSb_FluorLine_Kissel_Nonradiative_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with non-radiative cascade effects         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E)
+
+CS_FluorLine_Kissel_no_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (cm2/g)        //
+//                       without cascade effects                    //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E)
+
+CSb_FluorLine_Kissel_no_Cascade
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                    Fluorescent line cross section (barns/atom)   //
+//                       with non-radiative cascade effects         //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//          line :                                                  //
+//            KA_LINE 0                                             //
+//            KB_LINE 1                                             //
+//            LA_LINE 2                                             //
+//            LB_LINE 3                                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E)
+
+
