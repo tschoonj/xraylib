@@ -23,7 +23,7 @@ extern "C" {
 
 
 #define XRAYLIB_MAJOR 2
-#define XRAYLIB_MINOR 14
+#define XRAYLIB_MINOR 15
 
 
 //#define ZMAX 120
