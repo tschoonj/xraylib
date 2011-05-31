@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
 	
 	File: XrfLibNET.cpp
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2008
+	Compiler: Microsoft Visual Studio 2010
 	Created: September 4, 2010
 	$Version:$
 	$Revision:$
@@ -87,6 +87,16 @@ void Science::XrayLib::SetExitStatus( int exit_status )
 int Science::XrayLib::GetExitStatus()
 {
 	return ::GetExitStatus();
+}
+
+void Science::XrayLib::SetErrorMessages( int status )
+{
+	::SetErrorMessages(status);
+}
+
+int Science::XrayLib::GetErrorMessages( void )
+{
+	return ::GetErrorMessages();
 }
 
 double Science::XrayLib::AtomicWeight( int Z )
@@ -328,298 +338,404 @@ double Science::XrayLib::CSb_Total_Kissel( int Z, double E )
 	return ::CSb_Total_Kissel(Z, float(E));
 }
 
+double Science::XrayLib::CS_FluorLine_Kissel_Cascade( int Z, int line, double E )
+{
+	return ::CS_FluorLine_Kissel_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CSb_FluorLine_Kissel_Cascade( int Z, int line, double E )
+{
+	return ::CSb_FluorLine_Kissel_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CS_FluorLine_Kissel_Nonradiative_Cascade( int Z, int line, double E )
+{
+	return ::CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CSb_FluorLine_Kissel_Nonradiative_Cascade( int Z, int line, double E )
+{
+	return ::CSb_FluorLine_Kissel_Nonradiative_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CS_FluorLine_Kissel_Radiative_Cascade( int Z, int line, double E )
+{
+	return ::CS_FluorLine_Kissel_Radiative_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CSb_FluorLine_Kissel_Radiative_Cascade( int Z, int line, double E )
+{
+	return ::CSb_FluorLine_Kissel_Radiative_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CS_FluorLine_Kissel_No_Cascade( int Z, int line, double E )
+{
+	return ::CS_FluorLine_Kissel_no_Cascade(Z, line, float(E));
+}
+
+double Science::XrayLib::CSb_FluorLine_Kissel_No_Cascade( int Z, int line, double E )
+{
+	return ::CSb_FluorLine_Kissel_no_Cascade(Z, line, float(E));
+}
+
 double Science::XrayLib::CS_Total_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CS_Total_CP(pCompound, (float)E);
+		result = ::CS_Total_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CS_Photo_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CS_Photo_CP(pCompound, (float)E);
+		result = ::CS_Photo_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CS_Rayl_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CS_Rayl_CP(pCompound, (float)E);
+		result = ::CS_Rayl_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CS_Compt_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CS_Compt_CP(pCompound, (float)E);
+		result = ::CS_Compt_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CSb_Total_CP( String^ compound, double E )
 {
+	double result = -1.0;
+
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CSb_Total_CP(pCompound, (float)E);
+		result = ::CSb_Total_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CSb_Photo_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CSb_Photo_CP(pCompound, (float)E);
+		result = ::CSb_Photo_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CSb_Rayl_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CSb_Rayl_CP(pCompound, (float)E);
+		result = ::CSb_Rayl_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CSb_Compt_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CSb_Compt_CP(pCompound, (float)E);
+		result = ::CSb_Compt_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCS_Rayl_CP( String^ compound, double E, double theta )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCS_Rayl_CP(pCompound, (float)E, (float)theta);
+		result = ::DCS_Rayl_CP(pCompound, (float)E, (float)theta);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCS_Compt_CP( String^ compound, double E, double theta )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCS_Compt_CP(pCompound, (float)E, (float)theta);
+		result = ::DCS_Compt_CP(pCompound, (float)E, (float)theta);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCSb_Rayl_CP( String^ compound, double E, double theta )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCSb_Rayl_CP(pCompound, (float)E, (float)theta);
+		result = ::DCSb_Rayl_CP(pCompound, (float)E, (float)theta);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCSb_Compt_CP( String^ compound, double E, double theta )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCSb_Compt_CP(pCompound, (float)E, (float)theta);
+		result = ::DCSb_Compt_CP(pCompound, (float)E, (float)theta);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCSP_Rayl_CP( String^ compound, double E, double theta, double phi )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCSP_Rayl_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSP_Rayl_CP(pCompound, (float)E, (float)theta, (float)phi);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCSP_Compt_CP( String^ compound, double E, double theta, double phi )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCSP_Compt_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSP_Compt_CP(pCompound, (float)E, (float)theta, (float)phi);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCSPb_Rayl_CP( String^ compound, double E, double theta, double phi )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCSPb_Rayl_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSPb_Rayl_CP(pCompound, (float)E, (float)theta, (float)phi);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::DCSPb_Compt_CP( String^ compound, double E, double theta, double phi )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::DCSPb_Compt_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSPb_Compt_CP(pCompound, (float)E, (float)theta, (float)phi);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CS_Photo_Total_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CS_Photo_Total_CP(pCompound, (float)E);
+		result = ::CS_Photo_Total_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CSb_Photo_Total_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CSb_Photo_Total_CP(pCompound, (float)E);
+		result = ::CSb_Photo_Total_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CS_Total_Kissel_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CS_Total_Kissel_CP(pCompound, (float)E);
+		result = ::CS_Total_Kissel_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
+
+	return result;
 }
 
 double Science::XrayLib::CSb_Total_Kissel_CP( String^ compound, double E )
 {
+	double result = -1.0;
+	
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::CSb_Total_Kissel_CP(pCompound, (float)E);
+		result = ::CSb_Total_Kissel_CP(pCompound, (float)E);
 	}
 	finally
 	{
 		Marshal::FreeHGlobal(p);
 	}
-}
 
-double Science::XrayLib::Refractive_Index_Re( String^ compound, double E, double density )
-{
-	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
-	try
-	{					
-		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::Refractive_Index_Re(pCompound, (float)E, (float)density);
-	}
-	finally
-	{
-		Marshal::FreeHGlobal(p);
-	}
+	return result;
 }
 
 double Science::XrayLib::ElectronConfig( int Z, int shell )
@@ -637,6 +753,20 @@ double Science::XrayLib::ComptonProfile_Partial( int Z, int shell, double pz )
 	return ::ComptonProfile_Partial(Z, shell, (float)pz);
 }
 
+double Science::XrayLib::Refractive_Index_Re( String^ compound, double E, double density )
+{
+	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
+	try
+	{					
+		char* pCompound = static_cast<char*>(p.ToPointer());
+		return ::Refractive_Index_Re(pCompound, (float)E, (float)density);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(p);
+	}
+}
+
 double Science::XrayLib::Refractive_Index_Im( String^ compound, double E, double density )
 {
 	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
@@ -651,6 +781,15 @@ double Science::XrayLib::Refractive_Index_Im( String^ compound, double E, double
 	}
 }
 
+double Science::XrayLib::AtomicLevelWidth( int Z, int shell )
+{
+	return ::AtomicLevelWidth(Z, shell);
+}
+
+double Science::XrayLib::AugerRate( int Z, int auger_trans )
+{
+	return ::AugerRate(Z, auger_trans);
+}
 
 System::String ^ Science::XrayLib::IUPACToSiegbahnLineName( System::String ^name )
 {
@@ -754,7 +893,6 @@ double Science::XrayLib::LineEnergyFromName( System::String ^lineName )
 	//  Return the X-ray fluorescence energy (keV)
 	return LineEnergy(Z, line);
 }
-
 
 int Science::XrayLib::SiegbahnLineIndex( System::String ^name )
 {
