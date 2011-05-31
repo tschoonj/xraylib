@@ -160,11 +160,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/pro/xraylib_shells.pro
 %{_prefix}/pro/xraylib_help.pro
 %{_prefix}/pro/xraylib_lines.pro
+%{_prefix}/pro/xraylib_auger.pro
 %{_prefix}/pro/xraylib.pro
 
 
 
 %changelog
+* Wed May 18 2011 Tom Schoonjans
+- Added xraylib_auger.pro to idl package
+
 * Mon Mar 22 2010 Tom Schoonjans
 - Python files modified so they don't contain java files
 
