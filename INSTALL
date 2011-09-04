@@ -15,7 +15,7 @@ You can then build the library and the bindings which can be built as determined
 
 	make
 
-To verify that the build went ok use,
+To verify that the build went ok, and to compile the example programs in the example directory,  use,
 
 	make check
 
@@ -147,7 +147,9 @@ The simplest way to compile this package is:
   2. Type `make' to compile the package.
 
   3. Optionally, type `make check' to run any self-tests that come with
-     the package.
+     the package and to compile and link the example programs in the 
+     example directory.
+
   4. Type `make install' to install the programs and any data files and
      documentation.
 
