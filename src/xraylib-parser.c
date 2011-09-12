@@ -9,34 +9,15 @@ modification, are permitted provided that the following conditions are met:
 
 THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 #include "xraylib.h"
 #include "xraylib-aux.h"
 #include "xrayvars.h"
+#include "xrayglob.h"
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
-
-
-
-struct MendeljevElement {
-	int number;
-	char *name;
-};
-
-static struct MendeljevElement MendeljevArray[] = {
-	{1,"H"},{2,"He"},{3,"Li"},{4,"Be"},{5,"B"},{6,"C"},{7,"N"},{8,"O"},{9,"F"},{10,"Ne"},
-	{11,"Na"},{12,"Mg"},{13,"Al"},{14,"Si"},{15,"P"},{16,"S"},{17,"Cl"},{18,"Ar"},{19,"K"},{20,"Ca"},
-	{21,"Sc"},{22,"Ti"},{23,"V"},{24,"Cr"},{25,"Mn"},{26,"Fe"},{27,"Co"},{28,"Ni"},{29,"Cu"},{30,"Zn"},
-	{31,"Ga"},{32,"Ge"},{33,"As"},{34,"Se"},{35,"Br"},{36,"Kr"},{37,"Rb"},{38,"Sr"},{39,"Y"},{40,"Zr"},
-	{41,"Nb"},{42,"Mo"},{43,"Tc"},{44,"Ru"},{45,"Rh"},{46,"Pd"},{47,"Ag"},{48,"Cd"},{49,"In"},{50,"Sn"},
-	{51,"Sb"},{52,"Te"},{53,"I"},{54,"Xe"},{55,"Cs"},{56,"Ba"},{57,"La"},{58,"Ce"},{59,"Pr"},{60,"Nd"},
-	{61,"Pm"},{62,"Sm"},{63,"Eu"},{64,"Gd"},{65,"Tb"},{66,"Dy"},{67,"Ho"},{68,"Er"},{69,"Tm"},{70,"Yb"},
-	{71,"Lu"},{72,"Hf"},{73,"Ta"},{74,"W"},{75,"Re"},{76,"Os"},{77,"Ir"},{78,"Pt"},{79,"Au"},{80,"Hg"},
-	{81,"Tl"},{82,"Pb"},{83,"Bi"},{84,"Po"},{85,"At"},{86,"Rn"},{87,"Fr"},{88,"Ra"},{89,"Ac"},{90,"Th"},
-	{91,"Pa"},{92,"U"},{93,"Np"},{94,"Pu"},{95,"Am"},{96,"Cm"},{97,"Bk"},{98,"Cf"},{99,"Es"},{100,"Fm"},
-	{101,"Md"},{102,"No"},{103,"Lr"},{104,"Rf"},{105,"Db"},{106,"Sg"},{107,"Bh"}
-	};
 
 
 struct compoundAtom {
@@ -56,16 +37,9 @@ static int compareCompoundAtoms(const void *i1, const void *i2) {
 	return (ca1->Element - ca2->Element);
 }
 
-static int compareMendeljevElements(const void *i1, const void *i2) {
-	struct MendeljevElement *ca1 = (struct MendeljevElement *) i1;
-	struct MendeljevElement *ca2 = (struct MendeljevElement *) i2;
-
-	return strcmp(ca1->name,ca2->name);
-}
-
 static int compareInt(const void *A, const void *B); 
 
-static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, struct MendeljevElement *MendeljevArrayLocal) {
+static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
 
 	int nbrackets=0;
 	int nuppers=0;
@@ -136,8 +110,8 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 	char *tempElement;
 	char *tempSubstring;
 	int tempnAtoms;
-	struct MendeljevElement *res,key;
-	struct compoundAtom *res2,key2;
+	struct MendelElement *res, key;
+	struct compoundAtom *res2, key2;
 	//parse locally
 	for (i = 0 ; i < nuppers ; i++) {
 		if (islower(upper_locs[i][1]) && !islower(upper_locs[i][2])) {
@@ -145,7 +119,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			tempElement = strndup(upper_locs[i],2);
 			//get corresponding atomic number
 			key.name = tempElement;	
-			res = bsearch(&key,MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
+			res = bsearch(&key,MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement),compareMendelElements);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
@@ -177,7 +151,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			tempElement = strndup(upper_locs[i],1);
 			//get corresponding atomic number
 			key.name = tempElement;	
-			res = bsearch(&key,MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
+			res = bsearch(&key,MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement),compareMendelElements);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
@@ -250,7 +224,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 		tempBracketAtoms->nElements = 0;
 		tempBracketAtoms->singleElements = NULL;
 		//recursive call
-		if (CompoundParserSimple(tempBracketString,tempBracketAtoms,MendeljevArrayLocal) == 0) {
+		if (CompoundParserSimple(tempBracketString,tempBracketAtoms) == 0) {
 			return 0;
 		}
 		free(tempBracketString);
@@ -321,24 +295,11 @@ int CompoundParser(const char compoundString[], struct compoundData *cd) {
 	struct compoundAtoms ca = {0,NULL};
 	int rvCPS,i;
 	double sum = 0.0;
-	//to ensure that the CompoundParser function is threadsafe, work with a local copy of MendeljevArray
-	struct MendeljevElement *MendeljevArrayLocal;
-	char *compoundStringCopy;
 
-	MendeljevArrayLocal = (struct MendeljevElement *) malloc(sizeof(struct MendeljevElement)*107);
+	char *compoundStringCopy;
 	compoundStringCopy = strdup(compoundString);
 
-	for (i = 0 ; i < 107 ; i++) {
-		MendeljevArrayLocal[i].name = strdup(MendeljevArray[i].name); 
-		MendeljevArrayLocal[i].number = MendeljevArray[i].number; 
-	}
-
-
-
-	//sort MendeljevArrayLocal
-	qsort(MendeljevArrayLocal,107,sizeof(struct MendeljevElement),compareMendeljevElements);
-
-	rvCPS=CompoundParserSimple(compoundStringCopy,&ca,MendeljevArrayLocal);
+	rvCPS=CompoundParserSimple(compoundStringCopy,&ca);
 
 	if (rvCPS) {
 		cd->nElements = ca.nElements;
@@ -356,10 +317,7 @@ int CompoundParser(const char compoundString[], struct compoundData *cd) {
 		free(ca.singleElements);
 
 		//cleanup
-		for (i = 0 ; i < 107 ; i++) {
-			free(MendeljevArrayLocal[i].name); 
-		}
-		free(MendeljevArrayLocal); 
+
 		free(compoundStringCopy);
 
 		return 1;
@@ -446,20 +404,20 @@ static int compareInt(const void *A, const void *B) {
 
 
 char *AtomicNumberToSymbol(int Z) {
-	if (Z < 1 || Z > 107 ) {
+	if (Z < 1 || Z > MENDEL_MAX ) {
 		ErrorExit("AtomicNumberToSymbol: Z out of range");
 		return NULL;
 	}
 
-	return strdup(MendeljevArray[Z-1].name );
+	return strdup(MendelArray[Z-1].name );
 }
 
 int SymbolToAtomicNumber(char *symbol) {
 	int i;
 
-	for (i=0 ; i <= 107 ; i++) {
-		if (strcmp(symbol,MendeljevArray[i].name) == 0) 
-			return MendeljevArray[i].number;
+	for (i=0 ; i <= MENDEL_MAX ; i++) {
+		if (strcmp(symbol,MendelArray[i].name) == 0) 
+			return MendelArray[i].number;
 	}
 
 	return 0;

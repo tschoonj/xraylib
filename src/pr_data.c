@@ -144,7 +144,21 @@ fprintf(f, "};\n\n");
   print_intvec(ZMAX+1, NVAR); \
   fprintf(f, ";\n\n");
 
+//-----------------------------------------------------
 
+void print_mendelvec(int arrmax, struct MendelElement *arr)
+{
+  int i;
+  int MENDEL_PER_LINE = 10;
+  fprintf(f, "{\n"); 
+  for(i = 0; i < arrmax; i++) {
+    fprintf(f, "{%d,\"%s\"}, ", arr[i].number, arr[i].name);
+    if(i%MENDEL_PER_LINE == (MENDEL_PER_LINE-1))
+      fprintf(f, "\n");
+  }
+  fprintf(f, "}");
+  fprintf(f, ";\n\n");
+}
 
 void print_floatvec(int arrmax, float *arr)
 {
@@ -195,8 +209,13 @@ int main(void)
     perror("file open");
   }
 
-  fprintf(f, "#define GLOBH\n");
-  fprintf(f, "#include \"xrayglob.h\"\n\n");
+  fprintf(f, "#include \"xray_defs.h\"\n\n");
+
+  fprintf(f, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
+  print_mendelvec(MENDEL_MAX, MendelArray);
+
+  fprintf(f, "struct MendelElement MendelArraySorted[MENDEL_MAX] = \n");
+  print_mendelvec(MENDEL_MAX, MendelArraySorted);
 
   fprintf(f, "float AtomicWeight_arr[ZMAX+1] =\n");
   print_floatvec(ZMAX+1, AtomicWeight_arr);
