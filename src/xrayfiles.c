@@ -48,16 +48,16 @@ void ArrayInit(void);
 void XRayInit(void)
 {
 
-  int ex;
   FILE *fp;
   char file_name[MAXFILENAMESIZE];
   char shell_name[5], line_name[5], trans_name[5], auger_name[10];
   char *path;
   int Z, iE;
-  int i;
+  int i, n, ex;
   int shell, line, trans, auger;
-  float E, prob;
+  float E, prob, aa, bb, cc, alpha, beta, gamma;
   char buffer[1024];
+  int found_it;
 
   SetHardExit(1);
   SetExitStatus(0);
@@ -66,12 +66,12 @@ void XRayInit(void)
 
   for (i = 0 ; i < MENDEL_MAX ; i++) {
 		MendelArraySorted[i].name = strdup(MendelArray[i].name); 
-		MendelArraySorted[i].number = MendelArray[i].number; 
+		MendelArraySorted[i].Zatom = MendelArray[i].Zatom; 
 	}
 
 	qsort(MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), compareMendelElements);
 
-  //
+  // Define XRayLibDir
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
     if ((path = getenv("HOME")) == NULL) {
@@ -88,7 +88,133 @@ void XRayInit(void)
 
   ArrayInit();
 
-//  fprintf(stdout,"Initializing XRL\n");
+  //--------------------------------------------------------------------------
+  // Parse Crystals.dat
+
+  struct CrystalStruct* crystal;
+  struct CrystalAtom* atom;
+  char tag[21], compound[21];
+  long floc;
+
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name, "Crystals.dat");
+  if ((fp = fopen(file_name, "r")) == NULL) {
+    printf ("Full file name: %s\n", file_name);
+    ErrorExit("File Crystals.dat not found");
+    return;
+  }
+
+  crystalarray_max = 0;   // Number of crystals
+
+  while (!feof(fp)) {
+
+    // Start of compound def looks like: "#S <num> <Compound>"
+
+    fgets (buffer, 100, fp);
+    if (buffer[0] != '#' || buffer[1] != 'S') continue;
+
+    ex = sscanf(buffer, "%20s %d %20s", &tag, &i, &compound);
+    if (ex != 3) {
+      ErrorExit("Malformed '#S <num> <crystal_name>' construct.");
+      return;
+    }
+
+    crystal = &(CrystalArray[crystalarray_max++]);
+    if (crystalarray_max > CRYSTALARRAY_MAX) {
+      ErrorExit("Number of Crystals in Crystals.dat exceeds internal array size.");
+      return;
+    }
+
+    crystal->name = strdup(compound);
+
+    // Parse lines of the crystal definition before list of atom positions.
+    // The only info we need to pickup here is the #UCELL unit cell parameters.
+
+    found_it = FALSE;
+
+    while (!feof(fp)) {
+
+      fgets (buffer, 100, fp);
+
+      if (buffer[0] == '#' && buffer[1] == 'L') break;
+
+      if (buffer[0] == '#' && buffer[1] == 'U' && buffer[2] == 'C' && 
+          buffer[3] == 'E' && buffer[4] == 'L' && buffer[5] == 'L') {
+        ex = sscanf(buffer,"%20s %f %f %f %f %f %f", &tag, &crystal->a, &crystal->b, &crystal->c, 
+                                                       &crystal->alpha, &crystal->beta, &crystal->gamma);
+        if (found_it) {
+          printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
+          ErrorExit ("Multiple #UCELL lines found.");
+          return;
+        }
+        if (ex != 7) {
+          printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
+          ErrorExit("Malformed '#UCELL' construct");
+          return;
+        }
+        found_it = TRUE;
+      }
+
+    }
+
+    // Error check
+
+    if (!found_it) {
+      printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
+      ErrorExit ("No #UCELL line found for crystal."); 
+      return;
+    }
+
+    // Now read in the atom positions.
+    // First cound how many atoms there are and then backup to read in the locations.
+
+    floc = ftell(fp);  // Memorize current location in file
+
+    n = 0;
+    while (!feof(fp)) {
+      fgets (buffer, 100, fp);
+      if (buffer[0] == '#') break;
+      n++;
+    }
+      
+    if (n == 0 && feof(fp)) {
+      printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
+      ErrorExit ("End of file before definition complete.");
+      return;
+    }
+
+    if (n > CRYSTALATOM_MAX) {
+      printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
+      ErrorExit ("Number of atoms exceeds CRYSTALATOM_MAX array size.");
+      return;
+    }
+
+    crystal->n_atom = n;
+
+    // Now rewind and fill in the array
+
+    fseek(fp, floc, SEEK_SET);
+    
+    for (i = 0; i < n; i++) {
+      atom = &(crystal->atom[i]);
+      ex = fscanf(fp, "%i %f %f %f %f", &atom->Zatom, &atom->fraction, &atom->x, &atom->y, &atom->z);
+      if (ex != 5) {
+        printf ("For crystal definition of: %s in Crystals.dat. Atom position line %d\n", crystal->name, i);
+        ErrorExit ("Error parsing atom position.");
+        return;
+      }
+    }
+
+  }
+
+  fclose(fp);
+
+  // Now sort
+
+	qsort(CrystalArray, crystalarray_max, sizeof(struct CrystalStruct), compareCrystalStruct);
+
+  //--------------------------------------------------------------------------
+  // Parse atomicweight.dat 
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "atomicweight.dat");
@@ -96,6 +222,7 @@ void XRayInit(void)
     ErrorExit("File atomicweight.dat not found");
     return;
   }
+
   while ( !feof(fp) ) {
     ex=fscanf(fp,"%d", &Z);
     if (ex != 1) break;

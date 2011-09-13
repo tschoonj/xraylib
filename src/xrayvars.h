@@ -21,6 +21,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //////////////////////////////////////////////////////////////////////
 
 int compareMendelElements (const void *i1, const void *i2);
+int compareCrystalStruct (const void *i1, const void *i2);
 
 void XRayInit(void);
 void ErrorExit(char *error_message);

@@ -188,19 +188,19 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 		if (ca->nElements == 0) {
 			//array is empty
 			ca->singleElements = (struct compoundAtom *) malloc(sizeof(struct compoundAtom));
-			ca->singleElements[0].Element = res->number;
+			ca->singleElements[0].Element = res->Zatom;
 			ca->singleElements[0].nAtoms = tempnAtoms;
 			ca->nElements++;
 		}
 		else {
 			//array is not empty
 			//check if current element is already present in the array
-			key2.Element = res->number;
+			key2.Element = res->Zatom;
 			res2 = bsearch(&key2,ca->singleElements,ca->nElements,sizeof(struct compoundAtom),compareCompoundAtoms);
 			if (res2 == NULL) {
 				//element not in array -> add it
 				ca->singleElements = (struct compoundAtom *) realloc((struct compoundAtom *) ca->singleElements,(++ca->nElements)*sizeof(struct compoundAtom));
-				ca->singleElements[ca->nElements-1].Element = res->number; 
+				ca->singleElements[ca->nElements-1].Element = res->Zatom; 
 				ca->singleElements[ca->nElements-1].nAtoms = tempnAtoms; 
 				//sort array
 				qsort(ca->singleElements,ca->nElements,sizeof(struct compoundAtom), compareCompoundAtoms);
@@ -417,7 +417,7 @@ int SymbolToAtomicNumber(char *symbol) {
 
 	for (i=0 ; i <= MENDEL_MAX ; i++) {
 		if (strcmp(symbol,MendelArray[i].name) == 0) 
-			return MendelArray[i].number;
+			return MendelArray[i].Zatom;
 	}
 
 	return 0;

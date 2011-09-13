@@ -33,6 +33,9 @@ struct MendelElement MendelArray[MENDEL_MAX] = {
 
 struct MendelElement MendelArraySorted[MENDEL_MAX];
 
+struct CrystalStruct CrystalArray[CRYSTALARRAY_MAX];
+int crystalarray_max;
+
 float AtomicWeight_arr[ZMAX+1];
 float EdgeEnergy_arr[ZMAX+1][SHELLNUM];
 float LineEnergy_arr[ZMAX+1][LINENUM];

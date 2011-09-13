@@ -127,6 +127,13 @@ int compareMendelElements(const void *i1, const void *i2) {
 	return strcmp(ca1->name, ca2->name);
 }
 
+int compareCrystalStruct(const void *i1, const void *i2) {
+	struct CrystalStruct *ca1 = (struct CrystalStruct *) i1;
+	struct CrystalStruct *ca2 = (struct CrystalStruct *) i2;
+
+	return strcmp(ca1->name, ca2->name);
+}
+
 void ErrorExit(char *error_message)
 {
   if (ErrorMessages) {

@@ -152,7 +152,7 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
   int MENDEL_PER_LINE = 10;
   fprintf(f, "{\n"); 
   for(i = 0; i < arrmax; i++) {
-    fprintf(f, "{%d,\"%s\"}, ", arr[i].number, arr[i].name);
+    fprintf(f, "{%d,\"%s\"}, ", arr[i].Zatom, arr[i].name);
     if(i%MENDEL_PER_LINE == (MENDEL_PER_LINE-1))
       fprintf(f, "\n");
   }
@@ -216,6 +216,27 @@ int main(void)
 
   fprintf(f, "struct MendelElement MendelArraySorted[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArraySorted);
+
+  fprintf(f, "int crystalarray_max = %i;\n\n", crystalarray_max);
+
+  struct CrystalStruct* crystal;
+  struct CrystalAtom* atom;
+
+  fprintf(f, "struct CrystalStruct CrystalArray[CRYSTALARRAY_MAX] = {\n");
+  for (i = 0; i < crystalarray_max; i++) {
+    crystal = &CrystalArray[i];
+    fprintf(f, "  {\"%s\", %f, %f, %f, %f, %f, %f, %f, %i,\n   {", crystal->name, 
+              crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma, 
+              crystal->volume, crystal->n_atom);
+    for (j = 0; j < crystal->n_atom; j++) {
+      if (j % 2 == 0) fprintf(f, "\n      ");
+      atom = &crystal->atom[j];
+      fprintf(f, "{%i, %f, %f, %f, %f}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
+    }
+    fprintf (f, "    }\n");
+    fprintf (f, "  },\n");
+  }
+  fprintf (f, "};\n\n");
 
   fprintf(f, "float AtomicWeight_arr[ZMAX+1] =\n");
   print_floatvec(ZMAX+1, AtomicWeight_arr);

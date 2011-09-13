@@ -16,6 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #define ZMAX 120
 #define MENDEL_MAX 107
+#define CRYSTALARRAY_MAX 100  // Size of array. craystalarray_max gives number of crystals.
+#define CRYSTALATOM_MAX 120
 #define MAXFILENAMESIZE 1000
 #define SHELLNUM 28
 #define SHELLNUM_K 31
@@ -25,11 +27,30 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define AUGERNUM 204
 #define SHELLNUM_A 9
 
+#define FALSE 0
+#define TRUE 1
+
 // Structs
 
 struct MendelElement {
-        int number;
-        char *name;
+  int Zatom;              // Atomic number of atom.
+  char *name;             // Name of atom.
+};
+
+struct CrystalAtom {
+  int Zatom;              // Atomic number of atom.
+  float fraction;         // Fraction contribution. Normally 1.0.
+  float x, y, z;          // Atom position.
+
+};
+
+struct CrystalStruct {
+  char* name;                 // Name of crystal.
+  float a, b, c;              // Unit cell size.
+  float alpha, beta, gamma;   // Unit cell angles.
+  float volume;               // Unit cell volume.
+  int n_atom;                 // Number of atoms.
+  struct CrystalAtom atom[CRYSTALATOM_MAX];   // Array of atoms in unit cell.
 };
 
 #endif

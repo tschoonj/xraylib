@@ -23,6 +23,9 @@ extern struct MendelElement Mmmm[10];
 extern struct MendelElement MendelArray[MENDEL_MAX];
 extern struct MendelElement MendelArraySorted[MENDEL_MAX];
 
+extern struct CrystalStruct CrystalArray[CRYSTALARRAY_MAX];
+extern int crystalarray_max;
+
 extern float AtomicWeight_arr[ZMAX+1];
 extern float EdgeEnergy_arr[ZMAX+1][SHELLNUM];
 extern float LineEnergy_arr[ZMAX+1][LINENUM];
