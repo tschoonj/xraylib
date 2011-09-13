@@ -19,30 +19,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #define OUTD -9999
 
-/*
-void ErrorExit(char *error_message)
-{
-  printf("%s\n", error_message);
-  ExitStatus = 1;
-  if (HardExit != 0) exit(EXIT_FAILURE);
-}
-
-void SetHardExit(int hard_exit)
-{
-  HardExit = hard_exit;
-}
-
-void SetExitStatus(int exit_status)
-{
-  ExitStatus = exit_status;
-}
-
-int GetExitStatus()
-{
-  return ExitStatus;
-}
-*/
-
 void ArrayInit(void);
 
 void XRayInit(void)
@@ -166,7 +142,7 @@ void XRayInit(void)
     }
 
     // Now read in the atom positions.
-    // First cound how many atoms there are and then backup to read in the locations.
+    // First count how many atoms there are and then backup to read in the locations.
 
     floc = ftell(fp);  // Memorize current location in file
 
@@ -183,13 +159,8 @@ void XRayInit(void)
       return;
     }
 
-    if (n > CRYSTALATOM_MAX) {
-      printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
-      ErrorExit ("Number of atoms exceeds CRYSTALATOM_MAX array size.");
-      return;
-    }
-
     crystal->n_atom = n;
+    crystal->atom = malloc(n * sizeof(struct CrystalAtom));
 
     // Now rewind and fill in the array
 
