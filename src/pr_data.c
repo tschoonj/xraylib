@@ -224,7 +224,7 @@ int main(void)
 
   for (i = 0; i < crystalarray_max; i++) {
     crystal = &CrystalArray[i];
-    fprintf(f, "struct CrystalAtom atoms_%s[%i] = {", crystal->name, crystal->n_atom);
+    fprintf(f, "struct CrystalAtom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
     for (j = 0; j < crystal->n_atom; j++) {
       if (j % 2 == 0) fprintf(f, "\n  ");
       atom = &crystal->atom[j];
@@ -236,7 +236,7 @@ int main(void)
   fprintf(f, "struct CrystalStruct CrystalArray[CRYSTALARRAY_MAX] = {\n");
   for (i = 0; i < crystalarray_max; i++) {
     crystal = &CrystalArray[i];
-    fprintf(f, "  {\"%s\", %f, %f, %f, %f, %f, %f, %f, %i, atoms_%s},\n", crystal->name, 
+    fprintf(f, "  {\"%s\", %f, %f, %f, %f, %f, %f, %f, %i, __atoms_%s},\n", crystal->name, 
               crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma, 
               crystal->volume, crystal->n_atom, crystal->name);
   }

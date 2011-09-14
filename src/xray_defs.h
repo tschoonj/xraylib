@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include <complex.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #define FALSE false
 #define TRUE true

@@ -118,8 +118,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			//second letter is lowercase and third one isn't -> valid
 			tempElement = strndup(upper_locs[i],2);
 			//get corresponding atomic number
-			key.name = tempElement;	
-			res = bsearch(&key,MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement),compareMendelElements);
+			res = bsearch(tempElement, MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement), matchMendelElement);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
@@ -150,8 +149,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			//second letter is not lowercase -> valid
 			tempElement = strndup(upper_locs[i],1);
 			//get corresponding atomic number
-			key.name = tempElement;	
-			res = bsearch(&key,MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement),compareMendelElements);
+			res = bsearch(tempElement, MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement), matchMendelElement);
 			if (res == NULL) {
 				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
 				ErrorExit(buffer);
