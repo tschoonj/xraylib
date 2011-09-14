@@ -18,34 +18,44 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 //--------------------------------------------------------------------------------------------------
 
-struct CrystalStruct* Crystal_MakeCrystalStructCopy (struct CrystalStruct* crystal) {
-  struct CrystalStruct* crystal_out = malloc(sizeof(CrystalStruct));
-  *crystal_out = *crystal;
-  crystal_out->atom = malloc(crystal->n_atom * sizeof(CrystalAtom));
-  *crystal_out->atom = *crystal->atom;
+struct CrystalStruct Crystal_MakeCopy (struct CrystalStruct crystal) {
+
+  struct CrystalStruct crystal_out;
+  crystal_out = crystal;
+  crystal_out.atom = malloc(crystal.n_atom * sizeof(struct CrystalAtom));
+  *crystal_out.atom = *crystal.atom;
   return crystal_out;
+
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Crystal_FreeCrystalStruct (struct CrystalStruct* crystal) {
-  free(crystal->atom);
-  free(crystal);
+void Crystal_FreeMemory (struct CrystalStruct crystal) {
+  free(crystal.name);
+  free(crystal.atom);
 }
 
 
 //--------------------------------------------------------------------------------------------------
 
-struct CrystalStruct* Crystal_GetCrystalStruct(char* material) {
+struct CrystalStruct Crystal_GetCrystal (char* material, struct CrystalStruct* crystal_array, int n_crystals) {
 
-  return bsearch(material, CrystalArray, crystalarray_max, sizeof(struct CrystalStruct), matchCrystalStruct);
+  struct CrystalStruct* c_out;
+
+  if (crystal_array == NULL) {
+    c_out = bsearch(material, CrystalArray, crystalarray_max, sizeof(struct CrystalStruct), matchCrystalStruct);
+  } else {
+    c_out = bsearch(material, crystal_array, n_crystals, sizeof(struct CrystalStruct), matchCrystalStruct);
+  }
+
+  return Crystal_MakeCopy(*c_out);
 
 }
 
 //--------------------------------------------------------------------------------------------------
 // Compute F_H
 
-complex Crystal_F_H_StructureFactor (struct CrystalStruct* crystal, double energy, 
+complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel) {
 
 }
@@ -53,7 +63,7 @@ complex Crystal_F_H_StructureFactor (struct CrystalStruct* crystal, double energ
 //--------------------------------------------------------------------------------------------------
 // Compute unit cell volume
 
-float Crystal_UnitCellVolume (struct CrystalStruct* crystal) {
+float Crystal_UnitCellVolume (struct CrystalStruct crystal) {
 
   float volume;
 
@@ -82,33 +92,40 @@ char** Crystal_GetMaterialNames() {
 //--------------------------------------------------------------------------------------------------
 // Add a new CrystalStruct to the official array of crystals.
 
-int Crystal_AddCrystalStruct (struct CrystalStruct* crystal) {
+int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals) {
 
+  if (crystal_array == NULL) {
+    crystal_array = CrystalArray;
+    n_crystals = &crystalarray_max;
+  }
+
+  int crystals_max = sizeof(crystal_array) / sizeof(struct CrystalStruct);
+  int n_cryst = *n_crystals;
+
+  crystal.volume = Crystal_UnitCellVolume(crystal);
 
   // See if the crystal material is already present.
   // If so replace it.
   // Otherwise must be a new material...
 
-  struct CrystalStruct* cryst;
-  cryst = bsearch(crystal->material, CrystalArray, crystalarray_max, sizeof(struct CrystalStruct), matchCrystalStruct);
+  struct CrystalStruct* a_cryst;
+  a_cryst = bsearch(crystal.name, crystal_array, n_cryst, sizeof(struct CrystalStruct), matchCrystalStruct);
   
-  if (crystal != NULL) {
-    *cryst_ptr = crystal;
-    return EXIT_SUCCESS;
-  } else {
-    if (crystalarray_max == CRYSTALARRAY_MAX) {
-      ErrorExit("Number of Crystals in Crystals.dat exceeds internal array size.");
+  if (a_cryst == NULL) {
+    if (n_cryst == crystals_max) {
+      ErrorExit("Number of Crystals exceeds internal array size.");
       return EXIT_FAILURE;
     }
-    CrystalArray[++crystalarray_max] = crystal;
+    crystal_array[++n_cryst] = Crystal_MakeCopy(crystal);
+  } else {
+    *a_cryst = Crystal_MakeCopy(crystal);
   }
 
-  // Find volume, sort and return
+  // sort and return
 
-  crystal->volume = Crystal_UnitCellVolume(&CrystalArray[i]);
+  *n_crystals = n_cryst;
+	qsort(crystal_array, n_cryst, sizeof(struct CrystalStruct), compareCrystalStructs);
 
-	qsort(CrystalArray, crystalarray_max, sizeof(struct CrystalStruct), compareCrystalStructs);
-  
   return EXIT_SUCCESS;
 
 }
@@ -116,18 +133,26 @@ int Crystal_AddCrystalStruct (struct CrystalStruct* crystal) {
 //--------------------------------------------------------------------------------------------------
 // Read in a set of crystal structs.
 
-int Crystal_ReadFile (char* file_name) {
+int Crystal_ReadFile (char* file_name, struct CrystalStruct* crystal_array, int* n_crystals) {
 
   FILE* fp;
   struct CrystalStruct* crystal;
   struct CrystalAtom* atom;
   int i, n, ex, found_it;
-  char tag[21], compound[21], buffer[128];
+  char tag[21], compound[21], buffer[512];
   long floc;
 
+  if (crystal_array == NULL) {
+    crystal_array = CrystalArray;
+    n_crystals = &crystalarray_max;
+  }
+
+  int crystals_max = sizeof(crystal_array) / sizeof(struct CrystalStruct);
+  int n_cryst = *n_crystals;
+
   if ((fp = fopen(file_name, "r")) == NULL) {
-    printf ("Full file name: %s\n", file_name);
-    ErrorExit("File Crystals.dat not found");
+    sprintf (buffer, "Crystal file: %s not found\n", file_name);
+    ErrorExit(buffer);
     return EXIT_FAILURE;
   }
 
@@ -140,13 +165,15 @@ int Crystal_ReadFile (char* file_name) {
 
     ex = sscanf(buffer, "%20s %d %20s", &tag, &i, &compound);
     if (ex != 3) {
-      ErrorExit("Malformed '#S <num> <crystal_name>' construct.");
+      sprintf (buffer, "In crystal file: %s\n  Malformed '#S <num> <crystal_name>' construct.", file_name);
+      ErrorExit(buffer);
       return EXIT_FAILURE;
     }
 
-    crystal = &(CrystalArray[crystalarray_max++]);
-    if (crystalarray_max > CRYSTALARRAY_MAX) {
-      ErrorExit("Number of Crystals in Crystals.dat exceeds internal array size.");
+    crystal = &(crystal_array[n_cryst++]);
+    if (n_cryst > crystals_max) {
+      sprintf (buffer, "In crystal file: %s\n  Number of Crystals exceeds internal array size.", file_name);
+      ErrorExit(buffer);
       return EXIT_FAILURE;
     }
 
@@ -168,13 +195,15 @@ int Crystal_ReadFile (char* file_name) {
         ex = sscanf(buffer,"%20s %f %f %f %f %f %f", &tag, &crystal->a, &crystal->b, &crystal->c, 
                                                        &crystal->alpha, &crystal->beta, &crystal->gamma);
         if (found_it) {
-          printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
-          ErrorExit ("Multiple #UCELL lines found.");
+          sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Multiple #UCELL lines found.", 
+                                                                      file_name, crystal->name);
+          ErrorExit(buffer);
           return EXIT_FAILURE;
         }
         if (ex != 7) {
-          printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
-          ErrorExit("Malformed '#UCELL' construct");
+          sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n Malformed '#UCELL' construct",
+                                                                      file_name, crystal->name);
+          ErrorExit(buffer);
           return EXIT_FAILURE;
         }
         found_it = TRUE;
@@ -185,8 +214,9 @@ int Crystal_ReadFile (char* file_name) {
     // Error check
 
     if (!found_it) {
-      printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
-      ErrorExit ("No #UCELL line found for crystal."); 
+      sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  No #UCELL line found for crystal.",
+                                                                      file_name, crystal->name);
+      ErrorExit(buffer);
       return EXIT_FAILURE;
     }
 
@@ -203,8 +233,9 @@ int Crystal_ReadFile (char* file_name) {
     }
       
     if (n == 0 && feof(fp)) {
-      printf ("For crystal definition of: %s in Crystals.dat.\n", crystal->name);
-      ErrorExit ("End of file before definition complete.");
+      sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  End of file before definition complete.",
+                                                                      file_name, crystal->name);
+      ErrorExit(buffer);
       return EXIT_FAILURE;
     }
 
@@ -219,8 +250,9 @@ int Crystal_ReadFile (char* file_name) {
       atom = &(crystal->atom[i]);
       ex = fscanf(fp, "%i %f %f %f %f", &atom->Zatom, &atom->fraction, &atom->x, &atom->y, &atom->z);
       if (ex != 5) {
-        printf ("For crystal definition of: %s in Crystals.dat. Atom position line %d\n", crystal->name, i);
-        ErrorExit ("Error parsing atom position.");
+        sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Atom position line %d\n  Error parsing atom position.",
+                                                                      file_name, crystal->name, i);
+        ErrorExit(buffer);
         return EXIT_FAILURE;
       }
     }
@@ -231,13 +263,15 @@ int Crystal_ReadFile (char* file_name) {
 
   // Now sort
 
-	qsort(CrystalArray, crystalarray_max, sizeof(struct CrystalStruct), compareCrystalStructs);
+	qsort(crystal_array, n_cryst, sizeof(struct CrystalStruct), compareCrystalStructs);
 
   // Now calculate the unit cell volumes
 
-  for (i = 0; i < crystalarray_max; i++) {
-    CrystalArray[i].volume = Crystal_UnitCellVolume(CrystalArray[i]);
+  for (i = 0; i < n_cryst; i++) {
+    crystal_array[i].volume = Crystal_UnitCellVolume(crystal_array[i]);
   }
+
+  *n_crystals = n_cryst;
 
   return EXIT_SUCCESS;
 

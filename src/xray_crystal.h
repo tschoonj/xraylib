@@ -17,49 +17,68 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xray_defs.h"
 
+// Note for multithreded programs: 
+// The routines Crystal_ReadCrystals and CrystalAddCrystalStruct are not thread safe if crystals are 
+// added to the official array. In this case, locking will have to be used.
+
+
+// Note on memory usage:
+// A CrystalStruct has a pointer to an array of CrystalAtom as well as a name string.
+// Therefore Crystal_FreeMemory needs to be used to free memeory.
+
+//-------------------
+
 // Copy a CrystalStruct.
-// Crystal_FreeCrystalStruct must be called to destroy the copy made.
 
-struct CrystalStruct* Crystal_MakeCrystalStructCopy (struct CrystalStruct* crystal);
+struct CrystalStruct Crystal_MakeCopy (struct CrystalStruct crystal);
 
-// Destroy a CrystalStruct.
+// Free malloc'd memory in CrystalStruct.
 
-void Crystal_FreeCrystalStruct (struct CrystalStruct* crystal);
+void Crystal_FreeMemory (struct CrystalStruct crystal);
 
-// Get a pointer to a CrystalStruct of a given material for use in other routines.
-// Will return NULL is material is not known.
+// Get a to a CrystalStruct of a given material from the crystal_array.
+// If crystal_array is NULL then the official array of crystals is searched and the n_crystals argument is ignored.
+// n_crystal should be the number of existing cyrstals in crystal_array.
+// If not found, the returned crystal will have .n_atom set to -1.
 
-struct CrystalStruct* Crystal_GetCrystalStruct(char* material);
+struct CrystalStruct Crystal_GetCrystal(char* material, struct CrystalStruct* crystal_array, int n_crystals);
 
 // Compute F_H
 
-complex Crystal_F_H_StructureFactor (struct CrystalStruct* crystal, double energy, 
+complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel);
 
 // Compute unit cell volume.
-// Note: Structures obtained from the CrystalArray array of crystals will alrady 
-//  have their volume in crystal.volume.
+// Note: Structures obtained from crystal array will have their volume in .volume.
 
-float Crystal_UnitCellVolume (struct CrystalStruct* crystal);
+float Crystal_UnitCellVolume (struct CrystalStruct crystal);
 
 // Compute d-spacing between planes
 
-float Crystal_dSpacing (struct CrystalStruct* crystal, int i_miller, int j_miller, int k_miller);
+float Crystal_dSpacing (struct CrystalStruct crystal, int i_miller, int j_miller, int k_miller);
 
 // Alphabetical list of material names.
 
 char** Crystal_GetMaterialNames();  
 
-// Add a new CrystalStruct to the CrystalArray array of crystals.
-// If the material already exists in the array then it is overwitten. 
-// Return EXIT_SUCCESS or EXIT_FAILURE.
+// Add a new CrystalStruct to crystal_array.
+// If the material already exists in the array then the existing material data is overwitten. 
+// If crystal_array is NULL then the crystals are added to the official array of crystals and
+//   the n_crystals argument is ignored.
+// On input, n_crystal should be the number of existing cyrstals in crystal_array.
+// On output, n_crystal will be the total number of crystals.
+// Return: EXIT_SUCCESS or EXIT_FAILURE.
 
-int Crystal_AddCrystalStruct (struct CrystalStruct* crystal);
+int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals);
 
-// Read in a set of crystal structs.
-// The crystals will be added to the CrystalArray array of crystals.
-// Return EXIT_SUCCESS or EXIT_FAILURE.
+// Read in a set of crystal structs to crystal_array.
+// If a material already exists in the array then the existing material data is overwitten. 
+// If crystal_array is NULL then the crystals are added to the official array of crystals and
+//   the n_crystals argument is ignored.
+// On input, n_crystal should be the number of existing cyrstals in crystal_array.
+// On output, n_crystal will be the total number of crystals.
+// Return: EXIT_SUCCESS or EXIT_FAILURE.
 
-int Crystal_ReadCrystals (char* file_name);
+int Crystal_ReadFile (char* file_name, struct CrystalStruct* crystal_array, int* n_crystals);
 
 #endif
