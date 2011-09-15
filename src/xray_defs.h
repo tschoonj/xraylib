@@ -24,7 +24,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #define ZMAX 120
 #define MENDEL_MAX 107
-#define CRYSTALARRAY_MAX 100  // Size of array. craystalarray_max gives number of crystals.
+#define CRYSTALARRAY_MAX 100
 #define MAXFILENAMESIZE 1000
 #define SHELLNUM 28
 #define SHELLNUM_K 31
@@ -33,6 +33,10 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define TRANSNUM 15
 #define AUGERNUM 204
 #define SHELLNUM_A 9
+#define N_NEW_CRYSTAL 10   // Delta for size increase of Crystal_Array.crystal array
+
+#define Crystal_Struct struct CrystalStruct 
+#define Crystal_Array  struct CrystalArray
 
 // Structs
 
@@ -60,6 +64,12 @@ struct CrystalStruct {
   float volume;               // Unit cell volume.
   int n_atom;                 // Number of atoms.
   struct CrystalAtom* atom;   // Array of atoms in unit cell.
+};
+
+struct CrystalArray {
+  int n_crystal;          // Number of defined crystals.
+  int n_alloc;            // Size of .crystal array malloc'd
+  Crystal_Struct* crystal;
 };
 
 #endif

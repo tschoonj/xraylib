@@ -128,8 +128,8 @@ int compareMendelElements(const void *i1, const void *i2) {
 }
 
 int compareCrystalStructs(const void *i1, const void *i2) {
-	struct CrystalStruct *ca1 = (struct CrystalStruct *) i1;
-	struct CrystalStruct *ca2 = (struct CrystalStruct *) i2;
+	Crystal_Struct *ca1 = (Crystal_Struct *) i1;
+	Crystal_Struct *ca2 = (Crystal_Struct *) i2;
 
 	return strcmp(ca1->name, ca2->name);
 }
@@ -143,7 +143,7 @@ int matchMendelElement(const void *i1, const void *i2) {
 
 int matchCrystalStruct(const void *i1, const void *i2) {
 	char *ca1 = (char *) i1;
-	struct CrystalStruct *ca2 = (struct CrystalStruct *) i2;
+	Crystal_Struct *ca2 = (Crystal_Struct *) i2;
 
 	return strcmp(ca1, ca2->name);
 }

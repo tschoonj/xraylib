@@ -69,8 +69,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "Crystals.dat");
 
-  crystalarray_max = 0;   // Number of crystals
-  stat = Crystal_ReadFile (file_name, NULL, 0, 0);
+  Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX);
+  stat = Crystal_ReadFile (file_name, NULL);
   if (stat == EXIT_FAILURE) return;
 
   //--------------------------------------------------------------------------
