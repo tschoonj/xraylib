@@ -14,12 +14,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #ifndef XRAY_DEFS
 #define XRAY_DEFS
 
-#include <complex.h>
-#include <stdbool.h>
 #include <stdlib.h>
 
-#define FALSE false
-#define TRUE true
+#define FALSE 0
+#define TRUE 1
+
+#define SUCCESS 0
+#define FAILURE 1
 
 #define ZMAX 120
 #define MENDEL_MAX 107
@@ -34,6 +35,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define SHELLNUM_A 9
 
 // Structs
+
+struct Complex {
+  float re;
+  float im;
+};
 
 struct MendelElement {
   int Zatom;              // Atomic number of atom.

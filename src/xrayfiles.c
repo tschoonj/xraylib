@@ -70,7 +70,7 @@ void XRayInit(void)
   strcat(file_name, "Crystals.dat");
 
   crystalarray_max = 0;   // Number of crystals
-  stat = Crystal_ReadFile (file_name, NULL, 0);
+  stat = Crystal_ReadFile (file_name, NULL, 0, 0);
   if (stat == EXIT_FAILURE) return;
 
   //--------------------------------------------------------------------------

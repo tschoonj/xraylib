@@ -55,7 +55,7 @@ struct CrystalStruct Crystal_GetCrystal (char* material, struct CrystalStruct* c
 //--------------------------------------------------------------------------------------------------
 // Compute F_H
 
-complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
+struct Complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel) {
 
 }
@@ -82,24 +82,16 @@ float Crystal_dSpacing (struct CrystalStruct crystal, int i_miller, int j_miller
 }
 
 //--------------------------------------------------------------------------------------------------
-// Alphabetical list of material names.
-
-char** Crystal_GetMaterialNames() {
-
-
-}
-
-//--------------------------------------------------------------------------------------------------
 // Add a new CrystalStruct to the official array of crystals.
 
-int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals) {
+int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals, int array_max) {
 
   if (crystal_array == NULL) {
     crystal_array = CrystalArray;
     n_crystals = &crystalarray_max;
+    array_max = CRYSTALARRAY_MAX;
   }
 
-  int crystals_max = sizeof(crystal_array) / sizeof(struct CrystalStruct);
   int n_cryst = *n_crystals;
 
   crystal.volume = Crystal_UnitCellVolume(crystal);
@@ -112,7 +104,7 @@ int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crys
   a_cryst = bsearch(crystal.name, crystal_array, n_cryst, sizeof(struct CrystalStruct), matchCrystalStruct);
   
   if (a_cryst == NULL) {
-    if (n_cryst == crystals_max) {
+    if (n_cryst == array_max) {
       ErrorExit("Number of Crystals exceeds internal array size.");
       return EXIT_FAILURE;
     }
@@ -133,7 +125,7 @@ int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crys
 //--------------------------------------------------------------------------------------------------
 // Read in a set of crystal structs.
 
-int Crystal_ReadFile (char* file_name, struct CrystalStruct* crystal_array, int* n_crystals) {
+int Crystal_ReadFile (char* file_name, struct CrystalStruct crystal_array[], int* n_crystals, int array_max) {
 
   FILE* fp;
   struct CrystalStruct* crystal;
@@ -145,9 +137,9 @@ int Crystal_ReadFile (char* file_name, struct CrystalStruct* crystal_array, int*
   if (crystal_array == NULL) {
     crystal_array = CrystalArray;
     n_crystals = &crystalarray_max;
+    array_max = CRYSTALARRAY_MAX;
   }
 
-  int crystals_max = sizeof(crystal_array) / sizeof(struct CrystalStruct);
   int n_cryst = *n_crystals;
 
   if ((fp = fopen(file_name, "r")) == NULL) {
@@ -171,7 +163,7 @@ int Crystal_ReadFile (char* file_name, struct CrystalStruct* crystal_array, int*
     }
 
     crystal = &(crystal_array[n_cryst++]);
-    if (n_cryst > crystals_max) {
+    if (n_cryst > array_max) {
       sprintf (buffer, "In crystal file: %s\n  Number of Crystals exceeds internal array size.", file_name);
       ErrorExit(buffer);
       return EXIT_FAILURE;

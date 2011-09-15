@@ -26,59 +26,63 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 // A CrystalStruct has a pointer to an array of CrystalAtom as well as a name string.
 // Therefore Crystal_FreeMemory needs to be used to free memeory.
 
-//-------------------
-
+//--------------------------------------------------------------------------------
 // Copy a CrystalStruct.
 
 struct CrystalStruct Crystal_MakeCopy (struct CrystalStruct crystal);
 
+//--------------------------------------------------------------------------------
 // Free malloc'd memory in CrystalStruct.
 
 void Crystal_FreeMemory (struct CrystalStruct crystal);
 
+//--------------------------------------------------------------------------------
 // Get a to a CrystalStruct of a given material from the crystal_array.
 // If crystal_array is NULL then the official array of crystals is searched and the n_crystals argument is ignored.
-// n_crystal should be the number of existing cyrstals in crystal_array.
+// n_crystal is the number of defined cyrstals in crystal_array.
 // If not found, the returned crystal will have .n_atom set to -1.
 
 struct CrystalStruct Crystal_GetCrystal(char* material, struct CrystalStruct* crystal_array, int n_crystals);
 
+//--------------------------------------------------------------------------------
 // Compute F_H
 
-complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
+struct Complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel);
 
+//--------------------------------------------------------------------------------
 // Compute unit cell volume.
 // Note: Structures obtained from crystal array will have their volume in .volume.
 
 float Crystal_UnitCellVolume (struct CrystalStruct crystal);
 
+//--------------------------------------------------------------------------------
 // Compute d-spacing between planes
 
 float Crystal_dSpacing (struct CrystalStruct crystal, int i_miller, int j_miller, int k_miller);
 
-// Alphabetical list of material names.
-
-char** Crystal_GetMaterialNames();  
-
+//--------------------------------------------------------------------------------
 // Add a new CrystalStruct to crystal_array.
 // If the material already exists in the array then the existing material data is overwitten. 
 // If crystal_array is NULL then the crystals are added to the official array of crystals and
-//   the n_crystals argument is ignored.
+//   the n_crystals and array_max arguments are ignored.
 // On input, n_crystal should be the number of existing cyrstals in crystal_array.
 // On output, n_crystal will be the total number of crystals.
+// array_max is the size of the crystal_array.
 // Return: EXIT_SUCCESS or EXIT_FAILURE.
 
-int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals);
+int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals, int array_max);
 
+//--------------------------------------------------------------------------------
 // Read in a set of crystal structs to crystal_array.
 // If a material already exists in the array then the existing material data is overwitten. 
 // If crystal_array is NULL then the crystals are added to the official array of crystals and
-//   the n_crystals argument is ignored.
+//   the n_crystals and array_max arguments are ignored.
 // On input, n_crystal should be the number of existing cyrstals in crystal_array.
 // On output, n_crystal will be the total number of crystals.
+// array_max is the size of the crystal_array.
 // Return: EXIT_SUCCESS or EXIT_FAILURE.
 
-int Crystal_ReadFile (char* file_name, struct CrystalStruct* crystal_array, int* n_crystals);
+int Crystal_ReadFile (char* file_name, struct CrystalStruct crystal_array[], int* n_crystals, int array_max);
 
 #endif
