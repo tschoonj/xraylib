@@ -18,27 +18,28 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 //--------------------------------------------------------------------------------------------------
 
-struct CrystalStruct Crystal_MakeCopy (struct CrystalStruct crystal) {
+struct CrystalStruct* Crystal_MakeCopy (struct CrystalStruct* crystal) {
 
-  struct CrystalStruct crystal_out;
-  crystal_out = crystal;
-  crystal_out.atom = malloc(crystal.n_atom * sizeof(struct CrystalAtom));
-  *crystal_out.atom = *crystal.atom;
+  struct CrystalStruct* crystal_out = malloc(sizeof(struct CrystalStruct));
+  *crystal_out = *crystal;
+  crystal_out->atom = malloc(crystal->n_atom * sizeof(struct CrystalAtom));
+  *crystal_out->atom = *crystal->atom;
   return crystal_out;
 
 }
 
 //--------------------------------------------------------------------------------------------------
 
-void Crystal_FreeMemory (struct CrystalStruct crystal) {
-  free(crystal.name);
-  free(crystal.atom);
+void Crystal_FreeMemory (struct CrystalStruct* crystal) {
+  free(crystal->name);
+  free(crystal->atom);
+  free(crystal);
 }
 
 
 //--------------------------------------------------------------------------------------------------
 
-struct CrystalStruct Crystal_GetCrystal (char* material, struct CrystalStruct* crystal_array, int n_crystals) {
+struct CrystalStruct* Crystal_GetCrystal (char* material, struct CrystalStruct* crystal_array, int n_crystals) {
 
   struct CrystalStruct* c_out;
 
@@ -48,14 +49,14 @@ struct CrystalStruct Crystal_GetCrystal (char* material, struct CrystalStruct* c
     c_out = bsearch(material, crystal_array, n_crystals, sizeof(struct CrystalStruct), matchCrystalStruct);
   }
 
-  return Crystal_MakeCopy(*c_out);
+  return c_out;
 
 }
 
 //--------------------------------------------------------------------------------------------------
 // Compute F_H
 
-struct Complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double energy, 
+struct Complex Crystal_F_H_StructureFactor (struct CrystalStruct* crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel) {
 
 }
@@ -63,11 +64,11 @@ struct Complex Crystal_F_H_StructureFactor (struct CrystalStruct crystal, double
 //--------------------------------------------------------------------------------------------------
 // Compute unit cell volume
 
-float Crystal_UnitCellVolume (struct CrystalStruct crystal) {
+float Crystal_UnitCellVolume (struct CrystalStruct* crystal) {
 
   float volume;
 
-  volume = crystal.a * crystal.b * crystal.c;   // Temp until real calc is implemented.
+  volume = crystal->a * crystal->b * crystal->c;   // Temp until real calc is implemented.
 
   return volume;
 
@@ -76,7 +77,7 @@ float Crystal_UnitCellVolume (struct CrystalStruct crystal) {
 //--------------------------------------------------------------------------------------------------
 // Compute d-spacing between planes
 
-float Crystal_dSpacing (struct CrystalStruct crystal, int i_miller, int j_miller, int k_miller) {
+float Crystal_dSpacing (struct CrystalStruct* crystal, int i_miller, int j_miller, int k_miller) {
 
 
 }
@@ -84,7 +85,7 @@ float Crystal_dSpacing (struct CrystalStruct crystal, int i_miller, int j_miller
 //--------------------------------------------------------------------------------------------------
 // Add a new CrystalStruct to the official array of crystals.
 
-int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crystal_array, int* n_crystals, int array_max) {
+int Crystal_AddCrystal (struct CrystalStruct* crystal, struct CrystalStruct* crystal_array, int* n_crystals, int array_max) {
 
   if (crystal_array == NULL) {
     crystal_array = CrystalArray;
@@ -94,28 +95,27 @@ int Crystal_AddCrystal (struct CrystalStruct crystal, struct CrystalStruct* crys
 
   int n_cryst = *n_crystals;
 
-  crystal.volume = Crystal_UnitCellVolume(crystal);
-
   // See if the crystal material is already present.
   // If so replace it.
   // Otherwise must be a new material...
 
   struct CrystalStruct* a_cryst;
-  a_cryst = bsearch(crystal.name, crystal_array, n_cryst, sizeof(struct CrystalStruct), matchCrystalStruct);
+  a_cryst = bsearch(crystal->name, crystal_array, n_cryst, sizeof(struct CrystalStruct), matchCrystalStruct);
   
   if (a_cryst == NULL) {
     if (n_cryst == array_max) {
       ErrorExit("Number of Crystals exceeds internal array size.");
       return EXIT_FAILURE;
     }
-    crystal_array[++n_cryst] = Crystal_MakeCopy(crystal);
+    crystal_array[++n_cryst] = *Crystal_MakeCopy(crystal);
+    a_cryst = &crystal_array[n_cryst];
+    *n_crystals = n_cryst;
   } else {
-    *a_cryst = Crystal_MakeCopy(crystal);
+    *a_cryst = *Crystal_MakeCopy(crystal);
   }
 
   // sort and return
-
-  *n_crystals = n_cryst;
+  a_cryst->volume = Crystal_UnitCellVolume(a_cryst);
 	qsort(crystal_array, n_cryst, sizeof(struct CrystalStruct), compareCrystalStructs);
 
   return EXIT_SUCCESS;
@@ -260,7 +260,7 @@ int Crystal_ReadFile (char* file_name, struct CrystalStruct crystal_array[], int
   // Now calculate the unit cell volumes
 
   for (i = 0; i < n_cryst; i++) {
-    crystal_array[i].volume = Crystal_UnitCellVolume(crystal_array[i]);
+    crystal_array[i].volume = Crystal_UnitCellVolume(&crystal_array[i]);
   }
 
   *n_crystals = n_cryst;
