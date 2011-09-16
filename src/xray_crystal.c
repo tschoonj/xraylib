@@ -51,10 +51,11 @@ void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc) {
 
   c_array->n_crystal = 0;
   c_array->n_alloc = n_crystal_alloc;
-  if (n_crystal_alloc = 0) {
+
+  if (n_crystal_alloc == 0) {
     c_array->crystal = NULL;
   } else {
-    c_array->crystal = malloc(n_crystal_alloc * sizeof(Crystal_Array));
+    c_array->crystal = malloc(n_crystal_alloc * sizeof(Crystal_Struct));
   }
 
 }

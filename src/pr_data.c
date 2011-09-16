@@ -240,7 +240,7 @@ int main(void)
   }
   fprintf (f, "};\n\n");
 
-  fprintf(f, "Crystal_arr = {%i, %i, __Crystal_arr};/n/n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
+  fprintf(f, "Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
 
   fprintf(f, "float AtomicWeight_arr[ZMAX+1] =\n");
   print_floatvec(ZMAX+1, AtomicWeight_arr);
