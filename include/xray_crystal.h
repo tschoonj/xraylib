@@ -50,7 +50,7 @@ void Crystal_Free (Crystal_Struct* crystal);
 // If c_array is NULL then the official array of crystals is searched.
 // If not found, NULL is returned.
 
-Crystal_Struct* Crystal_GetCrystal(char* material, Crystal_Array* c_array);
+Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array);
 
 //--------------------------------------------------------------------------------
 // Compute F_H
@@ -84,6 +84,6 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array);
 // If crystal_array is NULL then the crystals are added to the official array of crystals.
 // Return: EXIT_SUCCESS or EXIT_FAILURE.
 
-int Crystal_ReadFile (char* file_name, Crystal_Array* c_array);
+int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array);
 
 #endif

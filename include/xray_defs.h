@@ -36,6 +36,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define N_NEW_CRYSTAL 10   // Delta for size increase of Crystal_Array.crystal array
 
 #define Crystal_Struct struct CrystalStruct 
+#define Crystal_Atom   struct CrystalAtom 
 #define Crystal_Array  struct CrystalArray
 
 // Structs

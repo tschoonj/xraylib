@@ -41,6 +41,7 @@ extern "C" {
 #include "lines.h"
 #include "xraylib-parser.h"
 #include "xraylib-auger.h"
+#include "xray_crystal.h"
 
 //Siegbahn notation
 //according to Table VIII.2 from Nomenclature system for X-ray spectroscopy

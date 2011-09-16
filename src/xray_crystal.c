@@ -15,6 +15,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xrayglob.h"
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
+#define M_PI		3.14159265358979323846	/* pi */
+#define RADEG     ( 180.0 / M_PI )
+#define DEGRAD    ( M_PI / 180.0 )
+#define sind(x)  sin((x)*DEGRAD)
+#define cosd(x)  cos((x)*DEGRAD)
+#define tand(x)  tan((x)*DEGRAD)
 
 //--------------------------------------------------------------------------------------------------
 // Private function to extend the crystal array size.
@@ -77,9 +84,12 @@ void Crystal_ArrayFree (Crystal_Array* c_array) {
 Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal) {
 
   Crystal_Struct* crystal_out = malloc(sizeof(Crystal_Struct));
+
   *crystal_out = *crystal;
-  crystal_out->atom = malloc(crystal->n_atom * sizeof(struct CrystalAtom));
-  *crystal_out->atom = *crystal->atom;
+  int n = crystal->n_atom * sizeof(Crystal_Atom);
+  crystal_out->atom = malloc(n);
+  memcpy (crystal->atom, crystal_out->atom, n);
+
   return crystal_out;
 
 }
@@ -95,7 +105,7 @@ void Crystal_Free (Crystal_Struct* crystal) {
 
 //--------------------------------------------------------------------------------------------------
 
-Crystal_Struct* Crystal_GetCrystal (char* material, Crystal_Array* c_array) {
+Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array) {
 
   if (c_array == NULL) c_array = &Crystal_arr;
 
@@ -116,11 +126,10 @@ struct Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double ener
 
 float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
 
-  float volume;
+  Crystal_Struct* cc = crystal;  // Just for an abbreviation.
 
-  volume = crystal->a * crystal->b * crystal->c;   // Temp until real calc is implemented.
-
-  return volume;
+  return cc->a * cc->b * cc->c * sqrt((1 - pow(cosd(cc->alpha), 2) - pow(cosd(cc->beta), 2) - pow(cosd(cc->gamma), 2)) + 
+                                        2 * cosd(cc->alpha) * cosd(cc->beta) * cosd(cc->gamma));
 
 }
 
@@ -165,11 +174,11 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
 //--------------------------------------------------------------------------------------------------
 // Read in a set of crystal structs.
 
-int Crystal_ReadFile (char* file_name, Crystal_Array* c_array) {
+int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
   FILE* fp;
   Crystal_Struct* crystal;
-  struct CrystalAtom* atom;
+  Crystal_Atom* atom;
   int i, n, ex, found_it;
   char tag[21], compound[21], buffer[512];
   long floc;
@@ -262,7 +271,7 @@ int Crystal_ReadFile (char* file_name, Crystal_Array* c_array) {
     }
 
     crystal->n_atom = n;
-    crystal->atom = malloc(n * sizeof(struct CrystalAtom));
+    crystal->atom = malloc(n * sizeof(Crystal_Atom));
 
     // Now rewind and fill in the array
 

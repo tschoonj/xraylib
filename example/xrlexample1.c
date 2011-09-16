@@ -93,5 +93,20 @@ int main()
   printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
   printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
+  // Crystal
+
+  Crystal_Struct* cryst = Crystal_GetCrystal("Si", NULL);
+  if (cryst == NULL) return 1;
+  printf ("Si unit cell dimensions are %f %f %f\n", cryst->a, cryst->b, cryst->c);
+  printf ("Si unit cell angles are %f %f %f\n", cryst->alpha, cryst->beta, cryst->gamma);
+  printf ("Si unit cell volume is %f\n", cryst->volume);
+  printf ("Si atoms at:\n");
+  printf ("   Z  fraction    X        Y        Z\n");
+  Crystal_Atom* atom;
+  for (i = 0; i < cryst->n_atom; i++) {
+    atom = &cryst->atom[i];
+    printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
+  } 
+  printf ("--------------------------- END OF XRLEXAMPLE1 -------------------------------");
   return 0;
 }
