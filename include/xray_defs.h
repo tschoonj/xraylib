@@ -38,6 +38,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define Crystal_Struct struct CrystalStruct 
 #define Crystal_Atom   struct CrystalAtom 
 #define Crystal_Array  struct CrystalArray
+#define ComplexStruct  struct Complex
 
 // Structs
 

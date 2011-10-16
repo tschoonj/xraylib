@@ -1,6 +1,10 @@
 #F Crystals.dat
 #UT Crystals: atoms coordinates in unit cell. Cell's dimensions
 #UIDL xfh
+
+#C File taken from XOP with kind permission from Manuel Sanchez del Rio. David Sagan 2011/09/27
+#C Note: Added "#EOF" marker line at end of file for ease of parsing.
+
 #UD  
 #UD The crystal structures are arranged using as a scan
 #UD identifier (#S) the atomic number of the heavier atom
@@ -177,10 +181,10 @@
 31 1.0 0.0  0.5  0.5
 31 1.0 0.5  0.0  0.5
 31 1.0 0.5  0.5  0.0
-33 1.0 .25  .25  .25
-33 1.0 .25  .75  .75
-33 1.0 .75  .25  .75
-33 1.0 .75  .75  .25
+51 1.0 .25  .25  .25
+51 1.0 .25  .75  .75
+51 1.0 .75  .25  .75
+51 1.0 .75  .75  .25
 #S 31 GaP
 #UCELL 5.45050      5.45050      5.45050      90.0000      90.0000 90.0000
 #USYSTEM Cubic
@@ -1019,4 +1023,88 @@
   8         1.0000        0.24697        0.89953        0.96056
   8         1.0000        0.74697        0.89953        0.53944
   8         1.0000        0.75303        0.39953       0.039440
+#S 13 AlphaAlumina
+#UCELL 4.758846 4.758846 12.99306 90 90 120
+#USYSTEM Trigonal
+#UREF P. Ballirano, R. Caminiti J Appl Crystall (2001) 34, 757-762 
+#UCOMMENT Data calculated with xop/xpowder
+#UCOMMENT Al2 O3 - [Corundum] Dialuminium trioxide - alpha
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+ 13         1.0000         0.0000         0.0000        0.35242
+ 13         1.0000         0.0000         0.0000        0.14758
+ 13         1.0000        -0.0000        -0.0000        0.64758
+ 13         1.0000        -0.0000        -0.0000        0.85242
+ 13         1.0000        0.66667        0.33333        0.68575
+ 13         1.0000        0.66667        0.33333        0.48091
+ 13         1.0000        0.66667        0.33333        0.98091
+ 13         1.0000        0.66667        0.33333        0.18575
+ 13         1.0000        0.33333        0.66667       0.019085
+ 13         1.0000        0.33333        0.66667        0.81425
+ 13         1.0000        0.33333        0.66667        0.31425
+ 13         1.0000        0.33333        0.66667        0.51909
+  8         1.0000        0.30634         0.0000        0.25000
+  8         1.0000        -0.0000        0.30634        0.25000
+  8         1.0000        0.69366        0.69366        0.25000
+  8         1.0000        0.69366        -0.0000        0.75000
+  8         1.0000         0.0000        0.69366        0.75000
+  8         1.0000        0.30634        0.30634        0.75000
+  8         1.0000        0.97301        0.33333        0.58333
+  8         1.0000        0.66667        0.63967        0.58333
+  8         1.0000        0.36033       0.026993        0.58333
+  8         1.0000        0.36033        0.33333       0.083333
+  8         1.0000        0.66667       0.026993       0.083333
+  8         1.0000        0.97301        0.63967       0.083333
+  8         1.0000        0.63967        0.66667        0.91667
+  8         1.0000        0.33333        0.97301        0.91667
+  8         1.0000       0.026993        0.36033        0.91667
+  8         1.0000       0.026993        0.66667        0.41667
+  8         1.0000        0.33333        0.36033        0.41667
+  8         1.0000        0.63967        0.97301        0.41667
+#S 13 Aluminum
+#UCELL 4.04958  4.04958 4.04958   90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1963, 1, p.10
+#UTEMP 298.15
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+13 1.0 0.0  0.0  0.0
+13 1.0 0.0  0.5  0.5
+13 1.0 0.5  0.0  0.5
+13 1.0 0.5  0.5  0.0 
+#S 26 Iron
+#UCELL 3.5910 3.5910 3.5910    90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1963, 1, p.10
+#UTEMP 295.15
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+26 1.0 0.0  0.0  0.0
+26 1.0 0.0  0.5  0.5
+26 1.0 0.5  0.0  0.5
+26 1.0 0.5  0.5  0.0 
+#S 22 Titanium
+#UCELL 2.950  2.950  4.686  90.0000 90.0000 120.000
+#USYSTEM Hexagonal
+#ULATTICE P
+#USTRUCTURE Berilium
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1963, vol 1, 11
+#UTEMP 298.15
+#UCOMMENT The Hexagonal Closed-packed structure is defined by an atom A
+#UCOMMENT located at (1/3 2/3 1/4) and an atom B at (2/3  1/3  3/4) in the
+#UCOMMENT prism cell. Example: Berilium (with a=2.287  c=3.583)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+22 1.0 0.333333  0.666667  0.25
+22 1.0 0.666667  0.333333  0.75
 #EOF

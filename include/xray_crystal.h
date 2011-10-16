@@ -55,8 +55,15 @@ Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array)
 //--------------------------------------------------------------------------------
 // Compute F_H
 
-struct Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
-                      int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel);
+ComplexStruct Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
+                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle);
+
+//--------------------------------------------------------------------------------------------------
+// Compute F_H
+
+ComplexStruct Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, 
+                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
+                      int f0_flag, int f_prime_flag, int f_prime2_flag);
 
 //--------------------------------------------------------------------------------
 // Compute unit cell volume.
@@ -65,7 +72,9 @@ struct Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double ener
 float Crystal_UnitCellVolume (Crystal_Struct* crystal);
 
 //--------------------------------------------------------------------------------
-// Compute d-spacing between planes
+// Compute d-spacing between planes.
+// This routine assumes that if crystal.volume is nonzero then it holds a valid value.
+// If (i, j, k) = (0, 0, 0) then zero is returned.
 
 float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller);
 

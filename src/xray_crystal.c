@@ -16,12 +16,14 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#define M_PI		3.14159265358979323846	/* pi */
-#define RADEG     ( 180.0 / M_PI )
-#define DEGRAD    ( M_PI / 180.0 )
-#define sind(x)  sin((x)*DEGRAD)
-#define cosd(x)  cos((x)*DEGRAD)
-#define tand(x)  tan((x)*DEGRAD)
+#define PI        3.14159265358979323846  /* pi */
+#define TWOPI     (2 * PI)
+#define RADEG     ( 180.0 / PI )
+#define DEGRAD    ( PI / 180.0 )
+#define sind(x)  sin(x * DEGRAD)
+#define cosd(x)  cos(x * DEGRAD)
+#define tand(x)  tan(x * DEGRAD)
+#define pow2(x)  pow(x, 2)
 
 //--------------------------------------------------------------------------------------------------
 // Private function to extend the crystal array size.
@@ -116,8 +118,100 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
 //--------------------------------------------------------------------------------------------------
 // Compute F_H
 
-struct Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
-                      int i_miller, int j_miller, int k_miller, float debye_factor, float angle_rel) {
+ComplexStruct Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
+                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle) {
+  return Crystal_F_H_StructureFactor_Partial (crystal, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, 2, 2, 2);
+}
+
+//--------------------------------------------------------------------------------------------------
+// Compute F_H
+
+ComplexStruct Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, 
+                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
+                      int f0_flag, int f_prime_flag, int f_prime2_flag) {
+
+  float f0, f_prime, f_prime2, theta_bragg, d_spacing, wavelength, q;
+  float f_re[120], f_im[120], Hx, Hy, Hz, cos_phi, cos_rho, H_dot_r;
+  int f_is_computed[120];
+  ComplexStruct F_H = {0, 0};
+  char buffer[512];
+  int i, Z;
+  Crystal_Struct* cc = crystal;  // Just for an abbreviation.
+
+  d_spacing = Crystal_dSpacing (cc, i_miller, j_miller, k_miller);
+  wavelength = 1.240e-6 / energy;
+  theta_bragg = asin(wavelength / (2 * d_spacing));
+  q = sin(rel_angle * theta_bragg) / wavelength;
+
+  // Loop over all atoms and compute the f values
+
+  for (i = 0; i < cc->n_atom; i++) {
+
+    Z = cc->atom[i].Zatom;
+    if (f_is_computed[Z]) continue;
+
+    switch (f0_flag) {
+    case 0:
+      f_re[Z] = 0;
+      break;
+    case 1:
+      f_re[Z] = 1;
+      break;
+    case 2:
+      f_re[Z] = FF_Rayl(Z, q);
+      break;
+    default:
+      sprintf (buffer, "Bad f0_flag argument in Crystal_F_H_StructureFactor_Partial: %i", f0_flag);
+      ErrorExit(buffer);
+      return F_H;
+    }
+
+    switch (f_prime_flag) {
+    case 0:
+      break;
+    case 2:
+      f_re[Z] = f_re[Z] + Fi(Z, energy);
+      break;
+    default:
+      sprintf (buffer, "Bad f_prime_flag argument in Crystal_F_H_StructureFactor_Partial: %i", f_prime_flag);
+      ErrorExit(buffer);
+      return F_H;
+    }
+
+    switch (f_prime2_flag) {
+    case 0:
+      f_im[Z] = 0;
+      break;
+    case 2:
+      f_im[Z] = -Fii(Z, energy);
+      break;
+    default:
+      sprintf (buffer, "Bad f_prime2_flag argument in Crystal_F_H_StructureFactor_Partial: %i", f_prime2_flag);
+      ErrorExit(buffer);
+      return F_H;;
+    }
+
+  }
+
+  // Now compute F_H
+
+  cos_phi = (cosd(cc->beta) - cosd(cc->gamma) * cosd(cc->alpha)) / sind(cc->gamma);
+  cos_rho = sqrt(1 - cos_phi * cos_phi - cosd(cc->alpha) * cosd(cc->alpha));
+
+  Hx = i_miller * cc->a * sind(cc->gamma) + k_miller * cc->c * cos_phi;
+  Hy = i_miller * cc->a * cosd(cc->gamma) + j_miller * cc->b + k_miller * cc->c * cosd(cc->alpha);
+  Hz = k_miller * cc->c * cos_rho;
+
+  for (i = 0; i < cc->n_atom; i++) {
+
+    Z = cc->atom[i].Zatom;
+    H_dot_r = TWOPI * (Hx * cc->atom[i].x + Hy * cc->atom[i].y + Hz * cc->atom[i].z);
+    F_H.re = F_H.re + f_re[Z] * cos(H_dot_r) - f_im[Z] * sin(H_dot_r); 
+    F_H.im = F_H.im + f_re[Z] * sin(H_dot_r) + f_im[Z] * cos(H_dot_r);
+
+  }
+
+  return F_H;
 
 }
 
@@ -128,7 +222,7 @@ float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
 
   Crystal_Struct* cc = crystal;  // Just for an abbreviation.
 
-  return cc->a * cc->b * cc->c * sqrt((1 - pow(cosd(cc->alpha), 2) - pow(cosd(cc->beta), 2) - pow(cosd(cc->gamma), 2)) + 
+  return cc->a * cc->b * cc->c * sqrt( (1 - pow2(cosd(cc->alpha)) - pow2(cosd(cc->beta)) - pow2(cosd(cc->gamma))) + 
                                         2 * cosd(cc->alpha) * cosd(cc->beta) * cosd(cc->gamma));
 
 }
@@ -138,7 +232,15 @@ float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
 
 float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller) {
 
+  if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
 
+  Crystal_Struct* cc = crystal;  // Just for an abbreviation.
+
+  return cc->volume * cc->a * cc->b * cc->c * sqrt(1 / (
+          pow2(i_miller * sind(cc->alpha) / cc->a) + pow2(j_miller * sind(cc->beta) / cc->b) + pow2(k_miller * sind(cc->gamma) / cc->c) +
+          2 * i_miller * j_miller * (cosd(cc->alpha) * cosd(cc->beta)  - cosd(cc->gamma)) / (cc->a * cc->b) +
+          2 * i_miller * k_miller * (cosd(cc->alpha) * cosd(cc->gamma) - cosd(cc->beta))  / (cc->a * cc->c) +
+          2 * j_miller * k_miller * (cosd(cc->beta) * cosd(cc->gamma)  - cosd(cc->alpha)) / (cc->b * cc->c)));
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -165,7 +267,7 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
 
   // sort and return
   a_cryst->volume = Crystal_UnitCellVolume(a_cryst);
-	qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
+  qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
 
   return EXIT_SUCCESS;
 
@@ -190,6 +292,8 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
     ErrorExit(buffer);
     return EXIT_FAILURE;
   }
+
+  // Loop over all lines of the file.
 
   while (!feof(fp)) {
 
@@ -294,7 +398,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
   // Now sort
 
-	qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
+  qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
 
   // Now calculate the unit cell volumes
 

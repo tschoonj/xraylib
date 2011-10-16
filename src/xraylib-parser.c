@@ -20,6 +20,11 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <stdio.h>
 
 
+// strndup is a glibc extension and the local declaration here is to keep the compiler from
+// warning about "incompatible implicit declaration of built-in function 'strndup'"
+
+char * strndup (const char *s, size_t size);  
+
 struct compoundAtom {
 	int Element;
 	int nAtoms;
