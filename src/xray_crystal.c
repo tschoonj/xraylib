@@ -138,11 +138,7 @@ double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
 
 void Atomic_Factors (int Z, double energy, double q, float debye_factor, float* f0, float* f_prime, float* f_prime2) {
 
-  if (q == 0)
-    *f0 = Z;
-  else
-    *f0       = FF_Rayl(Z, q) * debye_factor; 
-
+  *f0       = FF_Rayl(Z, q) * debye_factor; 
   *f_prime  = Fi(Z, energy) * debye_factor;
   *f_prime2 = -Fii(Z, energy) * debye_factor;
 

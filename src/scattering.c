@@ -33,8 +33,10 @@ float FF_Rayl(int Z, float q)
     return 0;
   }
 
-  if (q <= 0.) {
-    ErrorExit("q <=0 in function FF_Rayl");
+  if (q == 0) return Z;
+
+  if (q < 0.) {
+    ErrorExit("q < 0 in function FF_Rayl");
     return 0;
   }
 
