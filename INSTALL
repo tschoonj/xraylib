@@ -10,8 +10,13 @@ xraylib you will need at least an ANSI C-compiler. Depending on the
 requested bindings, other compilers and/or software packages will be
 required in addition to the C compiler.
 
-After unpacking the distribution the Makefiles can be prepared using
-the configure command:
+After unpacking the distribution, if the "configure" file is missing, this file
+is generated using the command:
+
+	autoconf -i
+
+If errors are generated, make sure you have a relatively up-to-date version of autoconf.
+Makefiles can be prepared using the configure command:
 
   ./configure
 
@@ -54,7 +59,7 @@ Platforms known to compile and run xraylib
 Not all bindings have been tested on each of these platforms. The
 following table summarizes the current status.
 
-   | Linux | Mac OS X | Solaris | Cygwin | FreeBSD |
+         | Linux | Mac OS X | Solaris | Cygwin | FreeBSD |
 ----------------------------------------------------------
  Fortran |   x   |     x    |    x    |    x   |    x    |
   Perl   |   x   |     x    |    x    |    x   |    x    |

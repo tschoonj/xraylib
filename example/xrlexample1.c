@@ -107,6 +107,23 @@ int main()
     atom = &cryst->atom[i];
     printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
   } 
-  printf ("--------------------------- END OF XRLEXAMPLE1 -------------------------------");
+
+  // Crystal structure factors, etc.
+
+  float q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
+  printf ("Q Scattering amplitude for Si111 at 8 KeV: %f\n", q);
+
+  float f0, fp, fpp;
+  Atomic_Factors (14, 8.0, q, 1.0, &f0, &fp, &fpp);
+  printf ("Atomic factors f0, fp, fpp for Si111 at 8 KeV: %f, %f, i*%f\n", f0, fp, fpp);
+
+  ComplexStruct F;
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 1, 1, 1, 1.0, 1.0);
+  printf ("FH(1,1,1) structure factor for Si at 8 KeV, on Bragg angle: (%f, %f)\n", F.re, F.im);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
+  printf ("F0 structure factor for Si at 8 KeV: (%f, %f)\n", F.re, F.im);
+
+  printf ("--------------------------- END OF XRLEXAMPLE1 -------------------------------\n");
   return 0;
 }

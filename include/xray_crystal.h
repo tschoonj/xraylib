@@ -21,9 +21,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 // The routines Crystal_ReadCrystals and CrystalAddCrystalStruct are not thread safe if crystals are 
 // added to the official array. In this case, locking will have to be used.
 
-
 // Note on memory usage:
 // Crystal_FreeMemory needs to be used to free memeory.
+
+// Parameters:
+//   energy    -- KeV
+//   rel_angle -- photon angle / bragg angle
+//   
 
 //--------------------------------------------------------------------------------
 // Initialize a new crystal array.
@@ -52,14 +56,33 @@ void Crystal_Free (Crystal_Struct* crystal);
 
 Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array);
 
+//--------------------------------------------------------------------------------------------------
+// Sin(theta) / wavelength scattering factor
+
+double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, 
+                                    int i_miller, int j_miller, int k_miller, double rel_angle);
+
+//--------------------------------------------------------------------------------------------------
+// Atomic Factors f0, f', f''
+
+void Atomic_Factors (int Z, double energy, double q, float debye_factor, float* f0, float* f_primep, float* f_prime2);
+
 //--------------------------------------------------------------------------------
 // Compute F_H
+// See also Crystal_F_H_StructureFactor_Partial 
 
 ComplexStruct Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle);
 
 //--------------------------------------------------------------------------------------------------
 // Compute F_H
+// See also Crystal_F_H_StructureFactor
+// The Atomic structure factor has three terms: F = f0 + f' + f''
+// For each of these three terms, there is a corresponding *_flag argument 
+//   which controls the numerical value used in computing F_H:
+//      *_flag = 0 --> Set this term to 0.
+//      *_flag = 1 --> Set this term to 1. Only used for f0.
+//      *_flag = 2 --> Set this term to the value given 
 
 ComplexStruct Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,

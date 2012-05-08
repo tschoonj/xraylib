@@ -42,31 +42,40 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 // Structs
 
+// Complex number
+
 struct Complex {
-  float re;
-  float im;
+  float re;               // Real part
+  float im;               // Imaginary part.
 };
+
+// Struct to hold info on a particular type of atom.
 
 struct MendelElement {
   int Zatom;              // Atomic number of atom.
   char *name;             // Name of atom.
 };
 
+// Struct for an atom in a crystal.
+
 struct CrystalAtom {
   int Zatom;              // Atomic number of atom.
-  float fraction;         // Fraction contribution. Normally 1.0.
-  float x, y, z;          // Atom position.
-
+  float fraction;         // Fractional contribution. Normally 1.0.
+  float x, y, z;          // Atom position in fractions of the unit cell lengths.
 };
+
+// Struct for a crystal.
 
 struct CrystalStruct {
   char* name;                 // Name of crystal.
-  float a, b, c;              // Unit cell size.
-  float alpha, beta, gamma;   // Unit cell angles.
-  float volume;               // Unit cell volume.
+  float a, b, c;              // Unit cell size in Angstroms.
+  float alpha, beta, gamma;   // Unit cell angles in degrees.
+  float volume;               // Unit cell volume in Angstroms^3.
   int n_atom;                 // Number of atoms.
   struct CrystalAtom* atom;   // Array of atoms in unit cell.
 };
+
+// Container struct to hold an array of CrystalStructs
 
 struct CrystalArray {
   int n_crystal;          // Number of defined crystals.

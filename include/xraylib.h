@@ -28,14 +28,22 @@ extern "C" {
 
 //#define ZMAX 120
 #ifndef PI
-#define PI  3.14159265359
+#define PI  3.1415926535897932384626433832795
 #endif
 
+#ifndef TWOPI
+#define TWOPI     (2 * PI)
+#endif
+
+#define RADEG     ( 180.0 / PI )
+#define DEGRAD    ( PI / 180.0 )
+
+
 //values taken from physics.nist.gov
-#define AVOGNUM 0.602214179        // Avogadro number (mol-1 * barn-1 * cm2) 
-#define KEV2ANGST 12.39841875   // keV to angstrom-1 conversion factor 
-#define MEC2 510.998910         // electron rest mass (keV) 
-#define RE2 0.079407877        // square of classical electron radius (barn)
+#define AVOGNUM 0.602214129        // Avogadro number (mol-1 * barn-1 * cm2) 
+#define KEV2ANGST 12.39841930      // keV to angstrom-1 conversion factor 
+#define MEC2 510.998928            // electron rest mass (keV) 
+#define RE2 0.079407877            // square of classical electron radius (barn)
 
 #include "shells.h"
 #include "lines.h"
