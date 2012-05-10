@@ -93,7 +93,7 @@ int main()
   printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
   printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
-  // Crystal
+  // Si Crystal structure
 
   Crystal_Struct* cryst = Crystal_GetCrystal("Si", NULL);
   if (cryst == NULL) return 1;
@@ -108,22 +108,93 @@ int main()
     printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
   } 
 
-  // Crystal structure factors, etc.
+  // Si diffraction parameters
 
-  float q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
-  printf ("Q Scattering amplitude for Si111 at 8 KeV: %f\n", q);
+  printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  float f0, fp, fpp;
+  double bragg = Bragg_angle (cryst, 8.0, 1, 1, 1);
+  printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  double q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
+  printf ("  Q Scattering amplitude: %f\n", q);
+
+  double f0, fp, fpp;
   Atomic_Factors (14, 8.0, q, 1.0, &f0, &fp, &fpp);
-  printf ("Atomic factors f0, fp, fpp for Si111 at 8 KeV: %f, %f, i*%f\n", f0, fp, fpp);
+  printf ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
   ComplexStruct F;
   F = Crystal_F_H_StructureFactor (cryst, 8.0, 1, 1, 1, 1.0, 1.0);
-  printf ("FH(1,1,1) structure factor for Si at 8 KeV, on Bragg angle: (%f, %f)\n", F.re, F.im);
+  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
 
   F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
-  printf ("F0 structure factor for Si at 8 KeV: (%f, %f)\n", F.re, F.im);
+  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
 
-  printf ("--------------------------- END OF XRLEXAMPLE1 -------------------------------\n");
+  // Diamond diffraction parameters
+
+  cryst = Crystal_GetCrystal("Diamond", NULL);
+
+  printf ("\nDiamond 111 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  bragg = Bragg_angle (cryst, 8.0, 1, 1, 1);
+  printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
+  printf ("  Q Scattering amplitude: %f\n", q);
+
+  Atomic_Factors (6, 8.0, q, 1.0, &f0, &fp, &fpp);
+  printf ("  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 1, 1, 1, 1.0, 1.0);
+  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
+  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+
+  // Alpha Quartz diffraction parameters
+
+  cryst = Crystal_GetCrystal("AlphaQuartz", NULL);
+
+  printf ("\nAlpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  bragg = Bragg_angle (cryst, 8.0, 0, 2, 0);
+  printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  q = Q_scattering_amplitude (cryst, 8.0, 0, 2, 0, 1.0);
+  printf ("  Q Scattering amplitude: %f\n", q);
+
+  f0, fp, fpp;
+  Atomic_Factors (8, 8.0, q, 1.0, &f0, &fp, &fpp);
+  printf ("  Atomic factors (Z = 8) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 2, 0, 1.0, 1.0);
+  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
+  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+
+  // Muscovite diffraction parameters
+
+  cryst = Crystal_GetCrystal("Muscovite", NULL);
+
+  printf ("\nMuscovite 331 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  bragg = Bragg_angle (cryst, 8.0, 3, 3, 1);
+  printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  q = Q_scattering_amplitude (cryst, 8.0, 3, 3, 1, 1.0);
+  printf ("  Q Scattering amplitude: %f\n", q);
+
+  f0, fp, fpp;
+  Atomic_Factors (19, 8.0, q, 1.0, &f0, &fp, &fpp);
+  printf ("  Atomic factors (Z = 19) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 3, 3, 1, 1.0, 1.0);
+  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+
+  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
+  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+
+
+  printf ("\n--------------------------- END OF XRLEXAMPLE1 -------------------------------\n");
   return 0;
 }

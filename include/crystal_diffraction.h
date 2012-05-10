@@ -57,6 +57,11 @@ void Crystal_Free (Crystal_Struct* crystal);
 Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array);
 
 //--------------------------------------------------------------------------------------------------
+// Bragg angle in radians.
+
+double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller);
+
+//--------------------------------------------------------------------------------------------------
 // Q scattering factor = Sin(theta) / wavelength 
 
 double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, 
@@ -65,14 +70,14 @@ double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
 //--------------------------------------------------------------------------------------------------
 // Atomic Factors f0, f', f''
 
-void Atomic_Factors (int Z, double energy, double q, float debye_factor, float* f0, float* f_primep, float* f_prime2);
+void Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_primep, double* f_prime2);
 
 //--------------------------------------------------------------------------------
 // Compute F_H
 // See also Crystal_F_H_StructureFactor_Partial 
 
 ComplexStruct Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
-                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle);
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle);
 
 //--------------------------------------------------------------------------------------------------
 // Compute F_H
@@ -85,21 +90,21 @@ ComplexStruct Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energ
 //      *_flag = 2 --> Set this term to the value given 
 
 ComplexStruct Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, 
-                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag);
 
 //--------------------------------------------------------------------------------
 // Compute unit cell volume.
 // Note: Structures obtained from crystal array will have their volume in .volume.
 
-float Crystal_UnitCellVolume (Crystal_Struct* crystal);
+double Crystal_UnitCellVolume (Crystal_Struct* crystal);
 
 //--------------------------------------------------------------------------------
 // Compute d-spacing between planes.
 // This routine assumes that if crystal.volume is nonzero then it holds a valid value.
 // If (i, j, k) = (0, 0, 0) then zero is returned.
 
-float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller);
+double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller);
 
 //--------------------------------------------------------------------------------
 // Add a new CrystalStruct to crystal_array.
