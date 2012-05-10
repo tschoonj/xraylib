@@ -12,8 +12,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 
-#ifndef XRAY_CRYSTAL
-#define XRAY_CRYSTAL
+#ifndef CRYSTAL_DIFFRACTION
+#define CRYSTAL_DIFFRACTION
 
 #include "xray_defs.h"
 
@@ -57,7 +57,7 @@ void Crystal_Free (Crystal_Struct* crystal);
 Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array);
 
 //--------------------------------------------------------------------------------------------------
-// Sin(theta) / wavelength scattering factor
+// Q scattering factor = Sin(theta) / wavelength 
 
 double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, 
                                     int i_miller, int j_miller, int k_miller, double rel_angle);

@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include <string.h>
 #include "xrayglob.h"
 #include "xraylib.h"
-#include "xray_crystal.h"
+#include "crystal_diffraction.h"
 
 #define OUTD -9999
 

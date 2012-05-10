@@ -11,7 +11,7 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ANYONE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "xray_crystal.h"
+#include "crystal_diffraction.h"
 #include "xrayglob.h"
 #include "xraylib.h"
 
@@ -115,7 +115,7 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
 }
 
 //--------------------------------------------------------------------------------------------------
-// Sin(theta) / wavelength scattering factor
+// Q scattering factor = Sin(theta) / wavelength 
 
 double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, 
                                     int i_miller, int j_miller, int k_miller, double rel_angle) {
