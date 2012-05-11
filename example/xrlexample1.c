@@ -112,13 +112,13 @@ int main()
 
   printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  double bragg = Bragg_angle (cryst, 8.0, 1, 1, 1);
+  float bragg = Bragg_angle (cryst, 8.0, 1, 1, 1);
   printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  double q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
+  float q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
   printf ("  Q Scattering amplitude: %f\n", q);
 
-  double f0, fp, fpp;
+  float f0, fp, fpp;
   Atomic_Factors (14, 8.0, q, 1.0, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
