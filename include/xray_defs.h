@@ -38,16 +38,18 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define Crystal_Struct struct CrystalStruct 
 #define Crystal_Atom   struct CrystalAtom 
 #define Crystal_Array  struct CrystalArray
-#define ComplexStruct  struct Complex
 
 // Structs
 
 // Complex number
 
-struct Complex {
+typedef struct {
   float re;               // Real part
   float im;               // Imaginary part.
-};
+} Complex;
+
+float c_abs(Complex x);
+Complex c_mul(Complex x, Complex y);
 
 // Struct to hold info on a particular type of atom.
 

@@ -112,22 +112,28 @@ int main()
 
   printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  float bragg = Bragg_angle (cryst, 8.0, 1, 1, 1);
+  float energy = 8;
+  float debye_temp_factor = 1.0;
+  float rel_angle = 1.0;
+
+  float bragg = Bragg_angle (cryst, energy, 1, 1, 1);
   printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  float q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
+  float q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
   float f0, fp, fpp;
-  Atomic_Factors (14, 8.0, q, 1.0, &f0, &fp, &fpp);
+  Atomic_Factors (14, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
-  ComplexStruct F;
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 1, 1, 1, 1.0, 1.0);
-  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+  Complex FH, F0;
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  printf ("  FH(1,1,1) structure factor: (%f, %f)\n", FH.re, FH.im);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
-  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+
 
   // Diamond diffraction parameters
 
@@ -135,20 +141,24 @@ int main()
 
   printf ("\nDiamond 111 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  bragg = Bragg_angle (cryst, 8.0, 1, 1, 1);
+  bragg = Bragg_angle (cryst, energy, 1, 1, 1);
   printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0);
+  q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
-  Atomic_Factors (6, 8.0, q, 1.0, &f0, &fp, &fpp);
+  Atomic_Factors (6, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 1, 1, 1, 1.0, 1.0);
-  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  printf ("  FH(1,1,1) structure factor: (%f, %f)\n", FH.re, FH.im);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
-  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+  Complex FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
+  float dw = 1e10 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
+  printf ("  Darwin width: %f raidans\n", dw);
 
   // Alpha Quartz diffraction parameters
 
@@ -156,21 +166,21 @@ int main()
 
   printf ("\nAlpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  bragg = Bragg_angle (cryst, 8.0, 0, 2, 0);
+  bragg = Bragg_angle (cryst, energy, 0, 2, 0);
   printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  q = Q_scattering_amplitude (cryst, 8.0, 0, 2, 0, 1.0);
+  q = Q_scattering_amplitude (cryst, energy, 0, 2, 0, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
   f0, fp, fpp;
-  Atomic_Factors (8, 8.0, q, 1.0, &f0, &fp, &fpp);
+  Atomic_Factors (8, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 8) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 2, 0, 1.0, 1.0);
-  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 0, 2, 0, debye_temp_factor, rel_angle);
+  printf ("  FH(0,2,0) structure factor: (%f, %f)\n", FH.re, FH.im);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
-  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
   // Muscovite diffraction parameters
 
@@ -178,21 +188,21 @@ int main()
 
   printf ("\nMuscovite 331 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  bragg = Bragg_angle (cryst, 8.0, 3, 3, 1);
+  bragg = Bragg_angle (cryst, energy, 3, 3, 1);
   printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  q = Q_scattering_amplitude (cryst, 8.0, 3, 3, 1, 1.0);
+  q = Q_scattering_amplitude (cryst, energy, 3, 3, 1, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
   f0, fp, fpp;
-  Atomic_Factors (19, 8.0, q, 1.0, &f0, &fp, &fpp);
+  Atomic_Factors (19, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 19) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 3, 3, 1, 1.0, 1.0);
-  printf ("  FH(i,j,k) structure factor: (%f, %f)\n", F.re, F.im);
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 3, 3, 1, debye_temp_factor, rel_angle);
+  printf ("  FH(3,3,1) structure factor: (%f, %f)\n", FH.re, FH.im);
 
-  F = Crystal_F_H_StructureFactor (cryst, 8.0, 0, 0, 0, 1.0, 1.0);
-  printf ("  F0 structure factor: (%f, %f)\n", F.re, F.im);
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
 
   printf ("\n--------------------------- END OF XRLEXAMPLE1 -------------------------------\n");
