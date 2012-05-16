@@ -144,7 +144,21 @@ fprintf(f, "};\n\n");
   print_intvec(ZMAX+1, NVAR); \
   fprintf(f, ";\n\n");
 
+//-----------------------------------------------------
 
+void print_mendelvec(int arrmax, struct MendelElement *arr)
+{
+  int i;
+  int MENDEL_PER_LINE = 10;
+  fprintf(f, "{\n"); 
+  for(i = 0; i < arrmax; i++) {
+    fprintf(f, "{%d,\"%s\"}, ", arr[i].Zatom, arr[i].name);
+    if(i%MENDEL_PER_LINE == (MENDEL_PER_LINE-1))
+      fprintf(f, "\n");
+  }
+  fprintf(f, "}");
+  fprintf(f, ";\n\n");
+}
 
 void print_floatvec(int arrmax, float *arr)
 {
@@ -195,8 +209,41 @@ int main(void)
     perror("file open");
   }
 
-  fprintf(f, "#define GLOBH\n");
-  fprintf(f, "#include \"xrayglob.h\"\n\n");
+  fprintf(f, "// File created from program in pr_data.c\n");
+  fprintf(f, "// Do not directly modify this file.\n\n");
+
+  fprintf(f, "#include \"xray_defs.h\"\n\n");
+
+  fprintf(f, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
+  print_mendelvec(MENDEL_MAX, MendelArray);
+
+  fprintf(f, "struct MendelElement MendelArraySorted[MENDEL_MAX] = \n");
+  print_mendelvec(MENDEL_MAX, MendelArraySorted);
+
+  Crystal_Struct* crystal;
+  struct CrystalAtom* atom;
+
+  for (i = 0; i < Crystal_arr.n_crystal; i++) {
+    crystal = &Crystal_arr.crystal[i];
+    fprintf(f, "struct CrystalAtom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
+    for (j = 0; j < crystal->n_atom; j++) {
+      if (j % 2 == 0) fprintf(f, "\n  ");
+      atom = &crystal->atom[j];
+      fprintf(f, "{%i, %f, %f, %f, %f}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
+    }
+    fprintf (f, "\n};\n\n");
+  }
+
+  fprintf(f, "Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
+  for (i = 0; i < Crystal_arr.n_crystal; i++) {
+    crystal = &Crystal_arr.crystal[i];
+    fprintf(f, "  {\"%s\", %f, %f, %f, %f, %f, %f, %f, %i, __atoms_%s},\n", crystal->name, 
+              crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma, 
+              crystal->volume, crystal->n_atom, crystal->name);
+  }
+  fprintf (f, "};\n\n");
+
+  fprintf(f, "Crystal_Array Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
 
   fprintf(f, "float AtomicWeight_arr[ZMAX+1] =\n");
   print_floatvec(ZMAX+1, AtomicWeight_arr);

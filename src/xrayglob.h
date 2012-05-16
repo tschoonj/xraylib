@@ -13,38 +13,18 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 
-#include "xrayvars.h"
-
-
-/*
-#define ZMAX 120
-#define MAXFILENAMESIZE 1000
-#define SHELLNUM 28
-#define LINENUM 50
-#define TRANSNUM 5
-
-//////////////////////////////////////////////////////////////////////
-/////            Functions                                       /////
-//////////////////////////////////////////////////////////////////////
-void XRayInit(void);
-void ErrorExit(char *error_message);
-
-
-//////////////////////////////////////////////////////////////////////
-/////            Variables                                       /////
-//////////////////////////////////////////////////////////////////////
-*/
 #ifndef GLOBH
 #define GLOBH
-/*
-extern int HardExit;
-extern int ExitStatus;
-extern char XRayLibDir[];
 
-extern char ShellName[][5];
-extern char LineName[][5];
-extern char TransName[][5];
-*/
+#include "xrayvars.h"
+
+extern struct MendelElement Mmmm[10];
+
+extern struct MendelElement MendelArray[MENDEL_MAX];
+extern struct MendelElement MendelArraySorted[MENDEL_MAX];
+
+extern Crystal_Array Crystal_arr;
+
 extern float AtomicWeight_arr[ZMAX+1];
 extern float EdgeEnergy_arr[ZMAX+1][SHELLNUM];
 extern float LineEnergy_arr[ZMAX+1][LINENUM];
@@ -113,7 +93,6 @@ extern double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 
 extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
 extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
-
 
 #endif
 

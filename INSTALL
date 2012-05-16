@@ -5,45 +5,61 @@ xraylib
 Installation Instructions
 =========================
 
-xraylib follows the standard GNU installation procedure. To compile xraylib you will need at least an ANSI C-compiler. Depending on the requested bindings, other compilers and/or software packages will be required in addition to the C compiler.
+xraylib follows the standard GNU installation procedure. To compile
+xraylib you will need at least an ANSI C-compiler. Depending on the
+requested bindings, other compilers and/or software packages will be
+required in addition to the C compiler.
 
-After unpacking the distribution the Makefiles can be prepared using the configure command:
+After unpacking the distribution, if the "configure" file is missing, this file
+is generated using the command:
 
-	./configure
+	autoconf -i
 
-You can then build the library and the bindings which can be built as determined by configure by typing,
+If errors are generated, make sure you have a relatively up-to-date version of autoconf.
+Makefiles can be prepared using the configure command:
 
-	make
+  ./configure
 
-To verify that the build went ok use,
+You can then build the library and the bindings which can be built as
+determined by configure by typing,
 
-	make check
+  make
+
+To verify that the build went ok, and to compile the example programs
+in the example directory, use,
+
+  make check
 
 The installation can be performed with the command
 
-	make install
+  make install
 
-The default installation directory prefix is /usr/local. Installing in this directory will require root privileges on most systems.
+The default installation directory prefix is /usr/local. Installing in
+this directory will require root privileges on most systems.
 
-The installation directory can be changed with the --prefix option to configure. Consult the "Further information" section below for instructions on installing the library in another location or changing other default compilation options.
+The installation directory can be changed with the --prefix option to
+configure. Consult the "Further information" section below for
+instructions on installing the library in another location or changing
+other default compilation options.
 
 
 
-		-----------------------------------------------
+    -----------------------------------------------
 
 
 Platforms known to compile and run xraylib
 ==========================================
 
-	Linux (32-bit/64-bit)
-	Solaris 10 (32-bit/64-bit)
-	Mac OS X (32-bit/64-bit)
-	Windows (native and Cygwin)
-	FreeBSD (64-bit)
+  Linux (32-bit/64-bit)
+  Solaris 10 (32-bit/64-bit)
+  Mac OS X (32-bit/64-bit)
+  Windows (native and Cygwin)
+  FreeBSD (64-bit)
 
-Not all bindings have been tested on each of these platforms. The following table summarizes the current status.
+Not all bindings have been tested on each of these platforms. The
+following table summarizes the current status.
 
-	 | Linux | Mac OS X | Solaris | Cygwin | FreeBSD |
+         | Linux | Mac OS X | Solaris | Cygwin | FreeBSD |
 ----------------------------------------------------------
  Fortran |   x   |     x    |    x    |    x   |    x    |
   Perl   |   x   |     x    |    x    |    x   |    x    |
@@ -52,7 +68,7 @@ Not all bindings have been tested on each of these platforms. The following tabl
   Java   |   x   |     x    |    ?    |    ?   |         |
 
 
-		-----------------------------------------------
+    -----------------------------------------------
 
 
 
@@ -60,18 +76,24 @@ Not all bindings have been tested on each of these platforms. The following tabl
 Platform Specific Compilation Notes
 ===================================
 
-This section documents any known issues with installing xraylib on specific platforms.
-	* Mac OS X
-	* Solaris
-	* mingw32
+This section documents any known issues with installing xraylib on
+specific platforms.
+  * Mac OS X
+  * Solaris
+  * mingw32
 
 Hints for Mac OS X
 ==================
 
-Standard Mac OS X installations do not come with a C compiler. You can install this essential compiler by installing the XCode package which can be found on the Mac OS X cd or can be downloaded from the Apple Developer Connection website.
-A free Fortran compiler can be downloaded from macports.org.
+Standard Mac OS X installations do not come with a C compiler. You can
+install this essential compiler by installing the XCode package which
+can be found on the Mac OS X cd or can be downloaded from the Apple
+Developer Connection website.  A free Fortran compiler can be
+downloaded from macports.org.
 
-When compiling the IDL bindings on Snow Leopard, make sure that you are using IDL 7.1. Older IDL versions do not have the necessary 64-bit libraries
+When compiling the IDL bindings on Snow Leopard, make sure that you
+are using IDL 7.1. Older IDL versions do not have the necessary 64-bit
+libraries
 
 
 Hints for Solaris
@@ -91,13 +113,24 @@ Use gmake instead of make. To do this, invoke:
 
   $ ./configure MAKE=gmake
 
-gmake is not installed by default on Solaris 10, it can be downloaded from blastwave.org
+gmake is not installed by default on Solaris 10, it can be downloaded
+from blastwave.org
 
-We have noticed that the compilation of the xrayglob_inline.c file (using the Sun Studio C compiler) produces many warnings. These can be ignored safely.
+We have noticed that the compilation of the xrayglob_inline.c file
+(using the Sun Studio C compiler) produces many warnings. These can be
+ignored safely.
 
-Also, the fortran compiler of the Sun Studio package requires the -M command line option or the MODDIR environment variable to search for .mod files. Since not all fortran compilers support this option, we did not include this in the Makefile of the examples, causing the fortran test to fail. This can however be circumvented by setting the MODDIR variable pointing to the src directory.
+Also, the fortran compiler of the Sun Studio package requires the -M
+command line option or the MODDIR environment variable to search for
+.mod files. Since not all fortran compilers support this option, we
+did not include this in the Makefile of the examples, causing the
+fortran test to fail. This can however be circumvented by setting the
+MODDIR variable pointing to the src directory.
 
-The IDL bindings currently do not work on Solaris. The main reason would be that none of the developers currently have access to an IDL software package on this platform. If you do, and can test the bindings, please contact the developers.
+The IDL bindings currently do not work on Solaris. The main reason
+would be that none of the developers currently have access to an IDL
+software package on this platform. If you do, and can test the
+bindings, please contact the developers.
 
 
                     ------------------------------
@@ -135,23 +168,30 @@ it or regenerate `configure' using a newer version of `autoconf'.
 
 The simplest way to compile this package is:
 
-  1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
+  1. `cd' to the directory containing the package's source code.
+
+  2. If you need to create or remake the `configure' file, use  
+     the `autoreconf -i' command. Note: The git repository does not
+     contain a `configure' file.
+
+  3. Type `./configure' to configure the package for your system.  
+     If you're using `csh' on an old version of System V, you might 
+     need to type `sh ./configure' instead to prevent `csh' from 
+     trying to execute `configure' itself.
 
      Running `configure' takes a while.  While running, it prints some
      messages telling which features it is checking for.
 
-  2. Type `make' to compile the package.
+  3. Type `make' to compile the package.
 
-  3. Optionally, type `make check' to run any self-tests that come with
-     the package.
-  4. Type `make install' to install the programs and any data files and
+  4. Optionally, type `make check' to run any self-tests that come with
+     the package and to compile and link the example programs in the 
+     example directory.
+
+  5. Type `make install' to install the programs and any data files and
      documentation.
 
-  5. You can remove the program binaries and object files from the
+  6. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package for
      a different kind of computer), type `make distclean'.  There is

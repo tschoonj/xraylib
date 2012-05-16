@@ -11,24 +11,21 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-
-#define ZMAX 120
-#define MAXFILENAMESIZE 1000
-#define SHELLNUM 28
-#define SHELLNUM_K 31
-#define SHELLNUM_C 29
-#define LINENUM 383
-#define TRANSNUM 15
-#define AUGERNUM 204
-#define SHELLNUM_A 9
-
 #ifndef VARSH
 #define VARSH
+
+#include "xray_defs.h"
 
 //////////////////////////////////////////////////////////////////////
 /////            Functions                                       /////
 //////////////////////////////////////////////////////////////////////
+
+int compareMendelElements (const void *i1, const void *i2);
+int compareCrystalStructs (const void *i1, const void *i2);
+
+int matchMendelElement (const void *i1, const void *i2);
+int matchCrystalStruct (const void *i1, const void *i2);
+
 void XRayInit(void);
 void ErrorExit(char *error_message);
 

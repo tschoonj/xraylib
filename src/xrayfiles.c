@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2011, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009, 2010, 2011, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans, Teemu Ikonen, and David Sagan
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -8,55 +8,45 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
     * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THERE BE ANY LIABILIBY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "crystal_diffraction.h"
 
 #define OUTD -9999
-/*
-void ErrorExit(char *error_message)
-{
-  printf("%s\n", error_message);
-  ExitStatus = 1;
-  if (HardExit != 0) exit(EXIT_FAILURE);
-}
 
-void SetHardExit(int hard_exit)
-{
-  HardExit = hard_exit;
-}
-
-void SetExitStatus(int exit_status)
-{
-  ExitStatus = exit_status;
-}
-
-int GetExitStatus()
-{
-  return ExitStatus;
-}
-*/
 void ArrayInit(void);
 
 void XRayInit(void)
 {
-  int ex;
+
   FILE *fp;
   char file_name[MAXFILENAMESIZE];
   char shell_name[5], line_name[5], trans_name[5], auger_name[10];
   char *path;
   int Z, iE;
+  int i, n, ex, stat;
   int shell, line, trans, auger;
-  float E, prob;
+  float E, prob, aa, bb, cc, alpha, beta, gamma;
   char buffer[1024];
 
   SetHardExit(1);
   SetExitStatus(0);
+
+  // Setup the Mendel table and the sorted Mendel table.
+
+  for (i = 0 ; i < MENDEL_MAX ; i++) {
+		MendelArraySorted[i].name = strdup(MendelArray[i].name); 
+		MendelArraySorted[i].Zatom = MendelArray[i].Zatom; 
+	}
+
+	qsort(MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), compareMendelElements);
+
+  // Define XRayLibDir
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
     if ((path = getenv("HOME")) == NULL) {
@@ -73,7 +63,18 @@ void XRayInit(void)
 
   ArrayInit();
 
-//  fprintf(stdout,"Initializing XRL\n");
+  //--------------------------------------------------------------------------
+  // Parse Crystals.dat
+
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name, "Crystals.dat");
+
+  Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX);
+  stat = Crystal_ReadFile (file_name, NULL);
+  if (stat == EXIT_FAILURE) return;
+
+  //--------------------------------------------------------------------------
+  // Parse atomicweight.dat 
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "atomicweight.dat");
@@ -81,6 +82,7 @@ void XRayInit(void)
     ErrorExit("File atomicweight.dat not found");
     return;
   }
+
   while ( !feof(fp) ) {
     ex=fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -224,7 +226,6 @@ void XRayInit(void)
 
   char **error_lines=NULL;
   int nerror_lines=0;
-  int i;
   int found_error_line;
   int read_error=0;
   strcpy(file_name, XRayLibDir);
