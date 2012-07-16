@@ -1,0 +1,1110 @@
+#F Crystals.dat
+#UT Crystals: atoms coordinates in unit cell. Cell's dimensions
+#UIDL xfh
+
+#C File taken from XOP with kind permission from Manuel Sanchez del Rio. David Sagan 2011/09/27
+#C Note: Added "#EOF" marker line at end of file for ease of parsing.
+
+#UD  
+#UD The crystal structures are arranged using as a scan
+#UD identifier (#S) the atomic number of the heavier atom
+#UD present in the crystal. Several crystal are possible with
+#UD the same scan id, but they do not conflict.
+#UD  
+#UD The following keyword contain other information:
+#UD #UCOMMENT  comment 
+#UD #UCELL a b c alpha beta gamma  
+#UD        The unit cell dimensions (A and deg) (*MANDATORY, IT MUST EXIST*)
+#UD #UTEMP temperature in Kelvin at which UCELL is given
+#UD #UREF reference
+#UD #USYSTEM : 7 crystal system, i.e., triclinic monoclinic orthorhombic 
+#UD                                  tetragonal rhombohedral(trigonal) 
+#UD                                  hexagonal cubic
+#UD #ULATTICE the lattice centering: 
+#UD    P: Primitive centering: lattice points on the cell corners only
+#UD    I: Body centered: one additional lattice point at the center of the cell
+#UD    F: Face centered: one additional lattice point at center of each 
+#UD                 of the faces of the cell 
+#UD    A,B,C Centered on a single face (A, B or C centering): one
+#UD                 additional lattice point at the center of one of the 
+#UD                 cell faces.
+#UD  The 14 Bravais lattices are, then:
+#UD     1 triclinic (P)
+#UD     2 monoclinic (P,C)
+#UD     3 orthorhombic (P,C,I,F)
+#UD     2 tetragonal (P,I)
+#UD     1 rhombohedral (P)
+#UD     1 hexagonal (P)
+#UD     3 cubic (P,I,F)
+#UD
+#UD  #USTRUCTURE Model for structure (e.g., diamond, fcc)
+#UD  
+#UD  Data columns: 
+#UD  4 or 5: 
+#UD  AtomicNumber  Fraction  X  Y  Z Biso
+#UD  The Biso one is optional
+#UD  
+#UD  
+#UD  
+
+#S 14 Si
+#UCELL 5.43070 5.43070 5.43070 90.0000 90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.26
+#UTEMP 298.15
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+14 1.0 0.0  0.0  0.0
+14 1.0 0.0  0.5  0.5
+14 1.0 0.5  0.0  0.5
+14 1.0 0.5  0.5  0.0
+14 1.0 .25  .25  .25
+14 1.0 .25  .75  .75
+14 1.0 .75  .25  .75
+14 1.0 .75  .75  .25
+#S 14 Si_NIST
+#UCELL 5.4311946 5.4311946 5.4311946 90.0000 90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF NIST Standard Reference Material 640c (Silicon Powder)
+#UTEMP 298.15
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+14 1.0 0.0  0.0  0.0
+14 1.0 0.0  0.5  0.5
+14 1.0 0.5  0.0  0.5
+14 1.0 0.5  0.5  0.0
+14 1.0 .25  .25  .25
+14 1.0 .25  .75  .75
+14 1.0 .75  .25  .75
+14 1.0 .75  .75  .25
+#S 14 Si2
+#UCELL 5.43070 5.43070 5.43070 90.0000 90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.26
+#UTEMP 298.15
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+14 1.0 -0.125000    -0.125000    -0.125000
+14 1.0 -0.125000     0.375000     0.375000
+14 1.0 0.375000    -0.125000     0.375000
+14 1.0 0.375000     0.375000    -0.125000
+14 1.0 0.125000     0.125000     0.125000
+14 1.0 0.125000     0.625000     0.625000
+14 1.0 0.625000     0.125000     0.625000
+14 1.0 0.625000     0.625000     0.125000
+#S 32 Ge
+#UCELL 5.65735      5.65735      5.65735      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.26
+#UTEMP 293.15
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+32 1.0 0.0  0.0  0.0
+32 1.0 0.0  0.5  0.5
+32 1.0 0.5  0.0  0.5
+32 1.0 0.5  0.5  0.0
+32 1.0 .25  .25  .25
+32 1.0 .25  .75  .75
+32 1.0 .75  .25  .75
+32 1.0 .75  .75  .25
+#S 6 Diamond
+#UCELL 3.56679      3.56679      3.56679      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.26
+#UTEMP 293.15
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+6 1.0 0.0  0.0  0.0
+6 1.0 0.0  0.5  0.5
+6 1.0 0.5  0.0  0.5
+6 1.0 0.5  0.5  0.0
+6 1.0 .25  .25  .25
+6 1.0 .25  .75  .75
+6 1.0 .75  .25  .75
+6 1.0 .75  .75  .25
+#S 33 GaAs
+#UCELL 5.65370      5.65370      5.65370      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.110
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+31 1.0 0.0  0.0  0.0
+31 1.0 0.0  0.5  0.5
+31 1.0 0.5  0.0  0.5
+31 1.0 0.5  0.5  0.0
+33 1.0 .25  .25  .25
+33 1.0 .25  .75  .75
+33 1.0 .75  .25  .75
+33 1.0 .75  .75  .25
+#S 33 GaSb
+#UCELL 6.09593      6.09593      6.09593      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF http://www.ioffe.rssi.ru/SVA/NSM/Semicond/GaSb/basic.html
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+31 1.0 0.0  0.0  0.0
+31 1.0 0.0  0.5  0.5
+31 1.0 0.5  0.0  0.5
+31 1.0 0.5  0.5  0.0
+51 1.0 .25  .25  .25
+51 1.0 .25  .75  .75
+51 1.0 .75  .25  .75
+51 1.0 .75  .75  .25
+#S 31 GaP
+#UCELL 5.45050      5.45050      5.45050      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.110
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+31 1.0 0.0  0.0  0.0
+31 1.0 0.0  0.5  0.5
+31 1.0 0.5  0.0  0.5
+31 1.0 0.5  0.5  0.0
+15 1.0 .25  .25  .25
+15 1.0 .25  .75  .75
+15 1.0 .75  .25  .75
+15 1.0 .75  .75  .25
+#S 49 InAs
+#UCELL 6.03600      6.03600      6.03600      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.110
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+49 1.0 0.0  0.0  0.0
+49 1.0 0.0  0.5  0.5
+49 1.0 0.5  0.0  0.5
+49 1.0 0.5  0.5  0.0
+33 1.0 .25  .25  .25
+33 1.0 .25  .75  .75
+33 1.0 .75  .25  .75
+33 1.0 .75  .75  .25
+#S 49 InP
+#UCELL 5.86870      5.86870      5.86870      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.110
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+49 1.0 0.0  0.0  0.0
+49 1.0 0.0  0.5  0.5
+49 1.0 0.5  0.0  0.5
+49 1.0 0.5  0.5  0.0
+15 1.0 .25  .25  .25
+15 1.0 .25  .75  .75
+15 1.0 .75  .25  .75
+15 1.0 .75  .75  .25
+#S 51 InSb
+#UCELL 6.47820      6.47820      6.47820      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.110
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+49 1.0 0.0  0.0  0.0
+49 1.0 0.0  0.5  0.5
+49 1.0 0.5  0.0  0.5
+49 1.0 0.5  0.5  0.0
+51 1.0 .25  .25  .25
+51 1.0 .25  .75  .75
+51 1.0 .75  .25  .75
+51 1.0 .75  .75  .25
+#S 14 SiC
+#UCELL 4.34800      4.34800      4.34800      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE ZincBlende
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1
+#UCOMMENT The ZincBlende structure is defined by atom A located at (0 0 0) 
+#UCOMMENT and atom B at (1/4 1/4 1/4) of the fcc lattice. Ex: Si(a=5.4309)
+#UCOMMENT Ge(a=5.657)  Diamond(a=3.56)  GaAs  GaP  InAs InP  InSb  SiC... 
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+14 1.0 0.0  0.0  0.0
+14 1.0 0.0  0.5  0.5
+14 1.0 0.5  0.0  0.5
+14 1.0 0.5  0.5  0.0
+6 1.0 .25  .25  .25
+6 1.0 .25  .75  .75
+6 1.0 .75  .25  .75
+6 1.0 .75  .75  .25
+#S 17 NaCl
+#UCELL 5.63978      5.63978      5.63978      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE NaCl
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.88
+#UTEMP 291.15
+#UCOMMENT The RockSalt structure is defined by atom A located at
+#UCOMMENT (0 0 0) and atom B at (1/2 1/2 1/2) of the fcc lattice.
+#UCOMMENT Examples: NaCl CsF LiF KCl...
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+11 1.0 0.0  0.0  0.0
+11 1.0 0.0  0.5  0.5
+11 1.0 0.5  0.0  0.5
+11 1.0 0.5  0.5  0.0
+17 1.0 0.5  0.5  0.5
+17 1.0 0.5  0.0  0.0
+17 1.0 0.0  0.5  0.0
+17 1.0 0.0  0.0  0.5
+#S 55 CsF
+#UCELL 6.00800      6.00800      6.00800      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE NaCl
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.84
+#UCOMMENT The RockSalt structure is defined by atom A located at
+#UCOMMENT (0 0 0) and atom B at (1/2 1/2 1/2) of the fcc lattice.
+#UCOMMENT Examples: NaCl CsF LiF KCl...
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+55 1.0 0.0  0.0  0.0
+55 1.0 0.0  0.5  0.5
+55 1.0 0.5  0.0  0.5
+55 1.0 0.5  0.5  0.0
+9 1.0 0.5  0.5  0.5
+9 1.0 0.5  0.0  0.0
+9 1.0 0.0  0.5  0.0
+9 1.0 0.0  0.0  0.5
+#S 9 LiF
+#UCELL 4.02630      4.02630      4.02630      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE NaCl
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.86
+#UCOMMENT The RockSalt structure is defined by atom A located at
+#UCOMMENT (0 0 0) and atom B at (1/2 1/2 1/2) of the fcc lattice.
+#UCOMMENT Examples: NaCl CsF LiF KCl...
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+3 1.0 0.0  0.0  0.0
+3 1.0 0.0  0.5  0.5
+3 1.0 0.5  0.0  0.5
+3 1.0 0.5  0.5  0.0
+9 1.0 0.5  0.5  0.5
+9 1.0 0.5  0.0  0.0
+9 1.0 0.0  0.5  0.0
+9 1.0 0.0  0.0  0.5
+#S 19 KCl
+#UCELL 6.29294      6.29294      6.29294      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE NaCl
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.86
+#UTEMP 298.15
+#UCOMMENT The RockSalt structure is defined by atom A located at
+#UCOMMENT (0 0 0) and atom B at (1/2 1/2 1/2) of the fcc lattice.
+#UCOMMENT Examples: NaCl CsF LiF KCl...
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+19 1.0 0.0  0.0  0.0
+19 1.0 0.0  0.5  0.5
+19 1.0 0.5  0.0  0.5
+19 1.0 0.5  0.5  0.0
+17 1.0 0.5  0.5  0.5
+17 1.0 0.5  0.0  0.0
+17 1.0 0.0  0.5  0.0
+17 1.0 0.0  0.0  0.5
+#S 55 CsCl
+#UCELL 7.02000      7.02000      7.02000      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE B
+#USTRUCTURE CsCl
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.86
+#UTEMP 723.15
+#UCOMMENT The CsCl structure is defined by an atom A located at
+#UCOMMENT (0 0 0) and an atom B at (1/2 1/2 1/2) of the cubic lattice
+#UCOMMENT If A = B  then it is a bcc lattice
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+55 1.0 0.0  0.0  0.0
+17 1.0 0.5  0.5  0.5
+#S 4 Be
+#UCELL 2.28660      2.28660      3.58330      90.0000      90.0000 120.000
+#USYSTEM Hexagonal
+#ULATTICE P
+#USTRUCTURE Berilium
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1
+#UTEMP 295.15
+#UCOMMENT The Hexagonal Closed-packed structure is defined by an atom A
+#UCOMMENT located at (1/3 2/3 1/4) and an atom B at (2/3  1/3  3/4) in the
+#UCOMMENT prism cell. Example: Berilium (with a=2.287  c=3.583)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+4 1.0 0.333333  0.666667  0.25
+4 1.0 0.666667  0.333333  0.75
+#S 6 Graphite
+#UCELL 2.45600      2.45600      6.69600      90.0000      90.0000 120.000
+#USYSTEM Hexagonal
+#ULATTICE P
+#USTRUCTURE Graphite
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.28
+#UCOMMENT The graphite structure contains four atom in unit prism in
+#UCOMMENT (0 0 0) (0 0 1/2) (1/3 2/3 0) and (2/3  1/3  1/2)
+#UCOMMENT Example: Graphite (with C atoms and a=2.456  c=6.696)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+6 1.0 0.0  0.0  0.0
+6 1.0 0.0  0.0  0.5
+6 1.0 0.333333  0.666667  0.0
+6 1.0 0.666667  0.333333  0.5
+#S 8 PET
+#UCELL 6.10000      6.10000      8.73000      90.0000      90.0000 90.0000
+#USYSTEM Tetragonal
+#UCOMMENT PET (Pentaerythritol) C(CH2OH)4
+#UCOMMENT Unit cell a: 6.10 A  c: 8.73 A
+#UCOMMENT See also: 
+#UCOMMENT http://www.photonic.saint-gobain.com/Media/Documents/S0000000000000001020/%20XRay.pdf
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+6 1.0  0 0 0
+6 1.0  0.99 0.75 0.85
+6 1.0  -0.99 -0.75 0.85
+6 1.0  -0.75 0.99 -0.85
+6 1.0  0.75 -0.99 -0.85
+6 1.0  0.5 0.5 0.5
+6 1.0  1.49 1.25 1.35
+6 1.0  -0.49 -0.25 1.35
+6 1.0  -0.25 1.49 -0.35
+6 1.0  1.25 -0.49 -0.35   
+8 1.0  1.93 1.5 0.017
+8 1.0  -1.93 -1.5 0.017
+8 1.0  -1.5 1.93 -0.017
+8 1.0  1.5 -1.93 -0.017
+8 1.0  2.43 2 0.517
+8 1.0  -1.43 -1 0.517
+8 1.0  -1 2.43 0.483
+8 1.0  2 -1.43 0.483
+#S 14 Beryl
+#UCELL 9.08800      9.08800      9.18960      90.0000      90.0000 120.000
+#USYSTEM Hexagonal
+#UCOMMENT Al2 Be3 (SiO3)6
+#UCOMMENT Unit cell a: 9.088 A  c: 9.1896 A
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+13 1.0 .6667 .3333 .25
+13 1.0 .3333 .6667 .25
+13 1.0 .6667 .3333 .75
+13 1.0 .3333 .6667 .75
+4 1.0 .5 0.0 .25
+4 1.0 0.0 .5 .25
+4 1.0 .5 .5 .25
+4 1.0 .5 0 .75
+4 1.0 0 .5 .75
+4 1.0 .5 .5 .75
+14 1.0 .3875 .1159 0.0
+14 1.0 -.3875 -.1159 0.0
+14 1.0 .2716 .3875 0.0
+14 1.0 -.2716 -.3875 0.0
+14 1.0 .1159 -.2716 0.0
+14 1.0 -.1159 .2716 0.0
+14 1.0 .3875 .1159 0.5
+14 1.0 -.3875 -.1159 0.5
+14 1.0 .2716 .3875 0.5
+14 1.0 -.2716 -.3875 0.5
+14 1.0 .1159 -.2716 0.5
+14 1.0 -.1159 .2716 0.5
+8 1.0 .31 .2366 0.0
+8 1.0 -.31 -.2366 0.0
+8 1.0 .0734 .31 0.0
+8 1.0 -.0734 -.31 0.0
+8 1.0 0.2366 -.0734 0.0
+8 1.0 -.2366 .0734 0.0
+8 1.0 .31 .2366 0.5
+8 1.0 -.31 -.2366 0.5
+8 1.0 .0734 .31 0.5
+8 1.0 -.0734 -.31 0.5
+8 1.0 0.2366 -.0734 0.5
+8 1.0 -.2366 .0734 0.5
+8 1.0 .4988 .1455 .1453
+8 1.0 -.4988 -.1455 .1453
+8 1.0 .3533 .4988 .1453
+8 1.0 -.3533 -.4988 .1453
+8 1.0 -.1455 .3533 .1453
+8 1.0 .1455 -.3533 .1453
+8 1.0 .4988 .1455 .6453
+8 1.0 -.4988 -.1455 .6453
+8 1.0 .3533 .4988 .6453
+8 1.0 -.3533 -.4988 .6453
+8 1.0 -.1455 .3533 .6453
+8 1.0 .1455 -.3533 .6453
+8 1.0 .4988 .3533 .3547
+8 1.0 .1455 .4988 .3547
+8 1.0 -.3533 .1455 .3547
+8 1.0 .3533 -.1455 .3547
+8 1.0 -.4988 -.3533 .3547
+8 1.0 -.1455 -.4988 .3547
+8 1.0 .4988 .3533 .8547
+8 1.0 .1455 .4988 .8547
+8 1.0 -.3533 .1455 .8547
+8 1.0 .3533 -.1455 .8547
+8 1.0 -.4988 -.3533 .8547
+8 1.0 -.1455 -.4988 .8547
+#S 19 KAP
+#UCELL 6.46000      9.60000      13.8500      90.0000      90.0000 90.0000
+#USYSTEM Orthorhombic
+#UCOMMENT KAP Acide Phatalate K (HOOC C6H4 COO)
+#UCOMMENT (a=6.460  b=9.600  c=13.850)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+19 1.0  0.25 0.09898 0.03878
+19 1.0  0.75 -0.09898 -0.03878
+19 1.0  0.25 0.59898 -0.03878
+19 1.0  0.75 0.40102 0.03878
+6 1.0  0.00561 -0.1778 0.21761
+6 1.0  -0.23842 0.068887 0.15685
+6 1.0  -0.02519 -0.05921 0.28937
+6 1.0  0.06263 -0.06367 0.38466
+6 1.0  0.03824 0.04731 0.4505
+6 1.0  -0.0735 0.1628 0.42058
+6 1.0  -0.15805 0.16928 0.32513
+6 1.0  -0.13588 0.05799 0.25841
+6 1.0  0.50561 0.1778 -0.21761
+6 1.0  0.26158 -0.068887 -0.15685
+6 1.0  0.47481 0.05921 -0.28937
+6 1.0  0.56263 0.06367 -0.38466
+6 1.0  0.53824 -0.04731 -0.4505
+6 1.0  0.4265 -0.1628 -0.42058
+6 1.0  0.34195 -0.16928 -0.32513
+6 1.0  0.36412 -0.05799 -0.25841
+6 1.0  0.00561 0.3222 -0.21761
+6 1.0  -0.23842 0.568887 -0.15685
+6 1.0  -0.02519 0.44079 -0.28937
+6 1.0  0.06263 0.43633 -0.38466
+6 1.0  0.03824 0.54731 -0.4505
+6 1.0  -0.0735 0.6628 -0.42058
+6 1.0  -0.15805 0.66928 -0.32513
+6 1.0  -0.13588 0.55799 -0.25841
+6 1.0  0.50561 0.6778 0.21761
+6 1.0  0.26158 0.431113 0.15685
+6 1.0  0.47481 0.55921 0.28937
+6 1.0  0.56263 0.56367 0.38466
+6 1.0  0.53824 0.45269 0.4505
+6 1.0  0.4265 0.3372 0.42058
+6 1.0  0.34195 0.33072 0.32513
+6 1.0  0.36412 0.44201 0.25841
+8 1.0  0.07871 -0.29831 0.26258
+8 1.0  0.01748 -0.16109 0.12732
+8 1.0  -0.15861 0.14522 0.09314
+8 1.0  -0.40385 0.00006 0.14401
+8 1.0  0.57871 0.29831 -0.26258
+8 1.0  0.51748 0.16109 -0.12732
+8 1.0  0.34139 -0.14522 -0.09314
+8 1.0  0.09615 -0.00006 -0.14401
+8 1.0  0.07871 0.20169 -0.26258
+8 1.0  0.01748 0.33891 -0.12732
+8 1.0  -0.15861 0.64522 -0.09314
+8 1.0  -0.40385 0.50006 -0.14401
+8 1.0  0.57871 0.79831 0.26258
+8 1.0  0.51748 0.66109 0.12732
+8 1.0  0.34139 0.35478 0.09314
+8 1.0  0.09615 0.49994 0.14401
+#S 37 RbAP
+#UCELL 6.56100      10.0640      13.0680      90.0000      90.0000 90.0000
+#USYSTEM Orthorhombic
+#UCOMMENT RbAP Acide Phatalate Rb (HOOC C6H4 COO)
+#UCOMMENT (a=6.561  b=10.064  c=13.068)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+37 1.0  -0.25 0.1014 0.0459
+37 1.0  0.25 -0.1014 -0.0459
+37 1.0  -0.25 0.6014 -0.0459
+37 1.0  0.25 0.3986 0.0459
+6 1.0  0.127 0.051 0.267
+6 1.0  0.009 -0.054 0.296
+6 1.0  -0.088 -0.055 0.392
+6 1.0  -0.07 0.053 0.453
+6 1.0  0.048 0.164 0.425
+6 1.0  0.136 0.161 0.332
+6 1.0  0.239 0.06 0.168
+6 1.0  -0.011 -0.176 0.226
+6 1.0  0.627 -0.051 -0.267
+6 1.0  0.509 0.054 -0.296
+6 1.0  0.412 0.055 -0.392
+6 1.0  0.43 -0.053 -0.453
+6 1.0  0.548 -0.164 -0.425
+6 1.0  0.636 -0.161 -0.332
+6 1.0  0.739 -0.06 -0.168
+6 1.0  0.489 0.176 -0.226
+6 1.0  0.127 0.551 -0.267
+6 1.0  0.009 0.446 -0.296
+6 1.0  -0.088 0.445 -0.392
+6 1.0  -0.07 0.553 -0.453
+6 1.0  0.048 0.664 -0.425
+6 1.0  0.136 0.661 -0.332
+6 1.0  0.239 0.56 -0.168
+6 1.0  -0.011 0.324 -0.226
+6 1.0  0.627 0.449 0.267
+6 1.0  0.509 0.554 0.296
+6 1.0  0.412 0.555 0.392
+6 1.0  0.43 0.447 0.453
+6 1.0  0.548 0.336 0.425
+6 1.0  0.636 0.339 0.332
+6 1.0  0.739 0.44 0.168
+6 1.0  0.489 0.676 0.226
+8 1.0  0.184 0.133 0.1
+8 1.0  0.397 -0.014 0.157
+8 1.0  -0.013 -0.163 0.134
+8 1.0  -0.039 -0.287 0.275
+8 1.0  0.684 -0.133 -0.1
+8 1.0  0.897 0.014 -0.157
+8 1.0  0.487 0.163 -0.134
+8 1.0  0.461 0.287 -0.275
+8 1.0  0.184 0.633 -0.1
+8 1.0  0.397 0.486 -0.157
+8 1.0  -0.013 0.337 -0.134
+8 1.0  -0.039 0.213 -0.275
+8 1.0  0.684 0.367 0.1
+8 1.0  0.897 0.514 0.157
+8 1.0  0.487 0.663 0.134
+8 1.0  0.461 0.787 0.275
+#S 81 TlAP
+#UCELL 6.61500      10.0470      12.8780      90.0000      90.0000 90.0000
+#USYSTEM Orthorhombic
+#UCOMMENT TlAP Acide Phatalate Tl (HOOC C6H4 COO)
+#UCOMMENT (a=6.615  b=10.047  c=12.878)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+81 1.0  0.25 -0.10277 -0.0476
+81 1.0  0.75 0.10277 0.0476
+81 1.0  0.25 0.39723 0.0476
+81 1.0  0.75 0.60277 -0.0476
+6 1.0  0.254 0.059 0.163
+6 1.0  0.124 0.052 0.266
+6 1.0  0.144 0.163 0.325
+6 1.0  0.042 0.167 0.427
+6 1.0  -0.072 0.056 0.456
+6 1.0  -0.086 -0.058 0.392
+6 1.0  0.014 -0.057 0.296
+6 1.0  -0.02 -0.176 0.229
+6 1.0  0.754 -0.059 -0.163
+6 1.0  0.624 -0.052 -0.266
+6 1.0  0.644 -0.163 -0.325
+6 1.0  0.542 -0.167 -0.427
+6 1.0  0.428 -0.056 -0.456
+6 1.0  0.414 0.058 -0.392
+6 1.0  0.514 0.057 -0.296
+6 1.0  0.48 0.176 -0.229
+6 1.0  0.254 0.559 -0.163
+6 1.0  0.124 0.552 -0.266
+6 1.0  0.144 0.663 -0.325
+6 1.0  0.042 0.667 -0.427
+6 1.0  -0.072 0.556 -0.456
+6 1.0  -0.086 0.442 -0.392
+6 1.0  0.014 0.443 -0.296
+6 1.0  -0.02 0.324 -0.229
+6 1.0  0.754 0.441 0.163
+6 1.0  0.624 0.448 0.266
+6 1.0  0.644 0.337 0.325
+6 1.0  0.542 0.333 0.427
+6 1.0  0.428 0.444 0.456
+6 1.0  0.414 0.558 0.392
+6 1.0  0.514 0.557 0.296
+6 1.0  0.48 0.676 0.229
+8 1.0  0.19 0.137 0.097
+8 1.0  0.394 -0.02 0.159
+8 1.0  -0.008 -0.164 0.132
+8 1.0  -0.043 -0.288 0.275
+8 1.0  0.69 -0.137 -0.097
+8 1.0  0.894 0.02 -0.159
+8 1.0  0.492 0.164 -0.132
+8 1.0  0.457 0.288 -0.275
+8 1.0  0.19 0.637 -0.097
+8 1.0  0.394 0.48 -0.159
+8 1.0  -0.008 0.336 -0.132
+8 1.0  -0.043 0.212 -0.275
+8 1.0  0.69 0.363 0.097
+8 1.0  0.894 0.52 0.159
+8 1.0  0.492 0.664 0.132
+8 1.0  0.457 0.788 0.275
+#S 19 Muscovite
+#UCELL 5.18900      8.99500      20.0970      90.0000      95.1800 90.0000
+#USYSTEM Monoclinic
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 4, p.  346
+#UCOMMENT KAl2(AlSi3)O10(OH)2
+#UCOMMENT The muscovite or mica is composed by K Al Si O and H atoms in 10
+#UCOMMENT different sites  making 13 independent element-sites. It belongs
+#UCOMMENT to the monoclinic system with abc=5.189 8.995 20.097 beta=95.18
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+19 1.00    0.0000  0.1016  0.2500
+19 1.00    0.5000  0.6016  0.2500
+19 1.00   -0.0000 -0.1016 -0.2500
+19 1.00   -0.5000 -0.6016 -0.2500
+13 1.00    0.2484  0.0871  0.0016
+13 1.00    0.2484 -0.0871  0.5016
+13 1.00    0.7484  0.5871  0.0016
+13 1.00    0.7484  0.4129  0.5016
+13 1.00   -0.2484 -0.0871 -0.0016
+13 1.00   -0.2484  0.0871 -0.5016
+13 1.00   -0.7484 -0.5871 -0.0016
+13 1.00   -0.7484 -0.4129 -0.5016
+14 0.75    0.4625  0.9242  0.1372
+14 0.75    0.4625 -0.9242  0.6372
+14 0.75    0.9625  1.4242  0.1372
+14 0.75    0.9625 -0.4242  0.6372
+14 0.75   -0.4625 -0.9242 -0.1372
+14 0.75   -0.4625  0.9242 -0.6372
+14 0.75   -0.9625 -1.4242 -0.1372
+14 0.75   -0.9625  0.4242 -0.6372
+13 0.25    0.4625  0.9242  0.1372
+13 0.25    0.4625 -0.9242  0.6372
+13 0.25    0.9625  1.4242  0.1372
+13 0.25    0.9625 -0.4242  0.6372
+13 0.25   -0.4625 -0.9242 -0.1372
+13 0.25   -0.4625  0.9242 -0.6372
+13 0.25   -0.9625 -1.4242 -0.1372
+13 0.25   -0.9625  0.4242 -0.6372
+14 0.75    0.4593  0.2550  0.1365
+14 0.75    0.4593 -0.2550  0.6365
+14 0.75    0.9593  0.7550  0.1365
+14 0.75    0.9593  0.2450  0.6365
+14 0.75   -0.4593 -0.2550 -0.1365
+14 0.75   -0.4593  0.2550 -0.6365
+14 0.75   -0.9593 -0.7550 -0.1365
+14 0.75   -0.9593 -0.2450 -0.6365
+13 0.25    0.4593  0.2550  0.1365
+13 0.25    0.4593 -0.2550  0.6365
+13 0.25    0.9593  0.7550  0.1365
+13 0.25    0.9593  0.2450  0.6365
+13 0.25   -0.4593 -0.2550 -0.1365
+13 0.25   -0.4593  0.2550 -0.6365
+13 0.25   -0.9593 -0.7550 -0.1365
+13 0.25   -0.9593 -0.2450 -0.6365
+8 1.00    0.2629  0.3713  0.1674
+8 1.00    0.2629 -0.3713  0.6674
+8 1.00    0.7629  0.8713  0.1674
+8 1.00    0.7629  0.1287  0.6674
+8 1.00   -0.2629 -0.3713 -0.1674
+8 1.00   -0.2629  0.3713 -0.6674
+8 1.00   -0.7629 -0.8713 -0.1674
+8 1.00   -0.7629 -0.1287 -0.6674
+8 1.00    0.2450  0.8020  0.1620
+8 1.00    0.2450 -0.8020  0.6620
+8 1.00    0.7450  1.3020  0.1620
+8 1.00    0.7450 -0.3020  0.6620
+8 1.00   -0.2450 -0.8020 -0.1620
+8 1.00   -0.2450  0.8020 -0.6620
+8 1.00   -0.7450 -1.3020 -0.1620
+8 1.00   -0.7450  0.3020 -0.6620
+8 1.00    0.4080  0.0960  0.1680
+8 1.00    0.4080 -0.0960  0.6680
+8 1.00    0.9080  0.5960  0.1680
+8 1.00    0.9080  0.4040  0.6680
+8 1.00   -0.4080 -0.0960 -0.1680
+8 1.00   -0.4080  0.0960 -0.6680
+8 1.00   -0.9080 -0.5960 -0.1680
+8 1.00   -0.9080 -0.4040 -0.6680
+8 1.00    0.4650  0.9450  0.0527
+8 1.00    0.4650 -0.9450  0.5527
+8 1.00    0.9650  1.4450  0.0527
+8 1.00    0.9650 -0.4450  0.5527
+8 1.00   -0.4650 -0.9450 -0.0527
+8 1.00   -0.4650  0.9450 -0.5527
+8 1.00   -0.9650 -1.4450 -0.0527
+8 1.00   -0.9650  0.4450 -0.5527
+8 1.00    0.4250  0.2600  0.0542
+8 1.00    0.4250 -0.2600  0.5542
+8 1.00    0.9250  0.7600  0.0542
+8 1.00    0.9250  0.2400  0.5542
+8 1.00   -0.4250 -0.2600 -0.0542
+8 1.00   -0.4250  0.2600 -0.5542
+8 1.00   -0.9250 -0.7600 -0.0542
+8 1.00   -0.9250 -0.2400 -0.5542
+8 1.00    0.4530  0.5580  0.0520
+8 1.00    0.4530 -0.5580  0.5520
+8 1.00    0.9530  1.0580  0.0520
+8 1.00    0.9530 -0.0580  0.5520
+8 1.00   -0.4530 -0.5580 -0.0520
+8 1.00   -0.4530  0.5580 -0.5520
+8 1.00   -0.9530 -1.0580 -0.0520
+8 1.00   -0.9530  0.0580 -0.5520
+1 1.00    0.4530  0.5580  0.0520
+1 1.00    0.4530 -0.5580  0.5520
+1 1.00    0.9530  1.0580  0.0520
+1 1.00    0.9530 -0.0580  0.5520
+1 1.00   -0.4530 -0.5580 -0.0520
+1 1.00   -0.4530  0.5580 -0.5520
+1 1.00   -0.9530 -1.0580 -0.0520
+1 1.00   -0.9530  0.0580 -0.5520
+#S 14 AlphaQuartz
+#UCELL 4.91304      4.91304      5.40463      90.0000      90.0000 120.000
+#USYSTEM Hexagonal
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1
+#UTEMP 298.15
+#ULATTICE P
+#USTRUCTURE AlphaQuartz
+#UCOMMENT The AlphaQuartz (SiO2) structure has three molecules in a
+#UCOMMENT hexagonal unit of dimensions a=4.91304 A  c=5.40463 A
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+14 1.0    0.4697 0. 0.
+14 1.0   -0.4697 -0.4697 0.3333333333
+14 1.0    0. 0.4697 0.6666666666
+8 1.0    0.4125 0.2662 0.1188
+8 1.0   -0.1463 -0.4125 0.4521
+8 1.0   -0.2662 0.1463 -0.2145
+8 1.0    0.1463 -0.2662 -0.1188
+8 1.0   -0.4125 -0.1463 0.2145
+8 1.0    0.2662 0.4125 0.5479
+#S 29 Copper
+#N  5
+#UCELL 3.61496      3.61496      3.61496      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1965, 1, p.10
+#UTEMP 298.15
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+29 1.0 0.0  0.0  0.0
+29 1.0 0.0  0.5  0.5
+29 1.0 0.5  0.0  0.5
+29 1.0 0.5  0.5  0.0
+#S 41 LiNbO3
+#UCELL 5.148      5.148     13.863      90.0000      90.0000 120.0000
+#USYSTEM Trigonal
+#ULATTICE R
+#UREF R.S. Weis and T.K. Gaylord, Appl. Phys. 191-203 (1985)
+#UCOMMENT LiNbO3 Ref:R.S. Weis and T.K. Gaylord, Appl. Phys. 191-203 (1985)
+#UCOMMENT (coordinates calculated by Olivier Mathon (mathon@esrf.fr)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+3  1.0  0  0  0.2829
+3  1.0  0.3333  0.6667  0.9496
+3  1.0  0.6667  0.3333  0.6162
+3  1.0  0  0  0.7829
+3  1.0  0.3333  0.6667  0.4496
+3  1.0  0.6667  0.3333  0.1162
+41 1.0  0  0  0
+41 1.0  0.3333  0.6667  0.6667
+41 1.0  0.6667  0.3333  0.3333
+41 1.0  0  0  0.5
+41 1.0  0.3333  0.6667  0.1667
+41 1.0  0.6667  0.3333  0.8333
+8  1.0  0.0492  0.3446  0.0647
+8  1.0  0.3825  0.0113  0.7314
+8  1.0  0.7159  0.6779  0.3980
+8  1.0  0.6554  0.7046  0.0647
+8  1.0  0.9887  0.3713  0.7314
+8  1.0  0.3221  0.0379  0.3980
+8  1.0  0.2954  0.9508  0.0647
+8  1.0  0.6287  0.6175  0.7314
+8  1.0  0.9621  0.2841  0.3980
+8  1.0  0.6554  0.9508  0.5647
+8  1.0  0.9887  0.6175  0.2314
+8  1.0  0.3221  0.2841  0.8980
+8  1.0  0.0492  0.7046  0.5647
+8  1.0  0.3825  0.3713  0.2314
+8  1.0  0.7159  0.0379  0.8980
+8  1.0  0.2954  0.3446  0.5647
+8  1.0  0.6287  0.0113  0.2314
+8  1.0  0.9621  0.6779  0.8980
+#S 78 Platinum
+#UCELL 3.9242     3.9242     3.9242      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+78 1.0 0.0  0.0  0.0
+78 1.0 0.0  0.5  0.5
+78 1.0 0.5  0.0  0.5
+78 1.0 0.5  0.5  0.0
+#S 79 Gold
+#UCELL 4.0782     4.0782     4.0782      90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+79 1.0 0.0  0.0  0.0
+79 1.0 0.0  0.5  0.5
+79 1.0 0.5  0.0  0.5
+79 1.0 0.5  0.5  0.0 
+#S 13 Sapphire 
+#UCELL 4.7581322 4.7581322 12.9883093 90.0 90.0 120.0
+#USYSTEM Hexagonal
+#ULATTICE P
+#UREF Yuri Shvyd ko X-ray Optics High Energy Resolution Applications, Springer p.337
+#UTEMP 250.0
+#UCOMMENT Sapphire, Alpha-Al2O3, rhombohedral lattice, space group R-3c (D3d,6)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+ 13 1.0   0.00000   0.00000   0.35220
+ 13 1.0   0.00000   0.00000   0.14780
+ 13 1.0   0.00000   0.00000  -0.35220
+ 13 1.0   0.00000   0.00000   0.85220
+ 13 1.0   0.66667   0.33333   0.68553
+ 13 1.0   0.66667   0.33333   0.48113
+ 13 1.0   0.66667   0.33333  -0.01887
+ 13 1.0   0.66667   0.33333   1.18553
+ 13 1.0   0.33333   0.66667   1.01887
+ 13 1.0   0.33333   0.66667   0.81447
+ 13 1.0   0.33333   0.66667   0.31447
+ 13 1.0   0.33333   0.66667   1.51887
+  8 1.0   0.30627   0.00000   0.25000
+  8 1.0   0.00000   0.30627   0.25000
+  8 1.0  -0.30627  -0.30627   0.25000
+  8 1.0  -0.30627   0.00000   0.75000
+  8 1.0   0.00000  -0.30627   0.75000
+  8 1.0   0.30627   0.30627   0.75000
+  8 1.0   0.97294   0.33333   0.58333
+  8 1.0   0.66667   0.63961   0.58333
+  8 1.0   0.36039   0.02706   0.58333
+  8 1.0   0.36039   0.33333   1.08333
+  8 1.0   0.66667   0.02706   1.08333
+  8 1.0   0.97294   0.63961   1.08333
+  8 1.0   0.63961   0.66667   0.91667
+  8 1.0   0.33333   0.97294   0.91667
+  8 1.0   0.02706   0.36039   0.91667
+  8 1.0   0.02706   0.66667   1.41667
+  8 1.0   0.33333   0.36039   1.41667
+  8 1.0   0.63961   0.97294   1.41667
+#S 57 LaB6 
+#UCELL 4.15271 4.15271 4.15271 90 90 90
+#USYSTEM Cubic
+#UREF C.H. Booth et al. Phys. Rev. B 63, 224302 (2001) ICSD Code 94251
+#UCOMMENT C.H. Booth et al. Phys. Rev. B 63, 224302 (2001) ICSD Code 94251
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+57    0.9840 0.0000   0.0000   0.0000    
+5     1.0000 0.1993   0.5000   0.5000 
+5     1.0000 0.8007   0.5000   0.5000 
+5     1.0000 0.5000   0.1993   0.5000 
+5     1.0000 0.5000   0.5000   0.1993 
+5     1.0000 0.5000   0.8007   0.5000 
+5     1.0000 0.5000   0.5000   0.8007 
+#S 57 LaB6_NIST 
+#UCELL 4.1569162 4.1569162 4.1569162 90 90 90
+#USYSTEM Cubic
+#UREF NIST Standard Reference Material 660a (Lanthanum Hexaboride Powder)
+#UCOMMENT C.H. Booth et al. Phys. Rev. B 63, 224302 (2001) ICSD Code 94251
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+57    0.9840 0.0000   0.0000   0.0000    
+5     1.0000 0.1993   0.5000   0.5000 
+5     1.0000 0.8007   0.5000   0.5000 
+5     1.0000 0.5000   0.1993   0.5000 
+5     1.0000 0.5000   0.5000   0.1993 
+5     1.0000 0.5000   0.8007   0.5000 
+5     1.0000 0.5000   0.5000   0.8007 
+#S 19 KTP
+#UCELL 12.8146 10.6165 6.4042 90 90 90
+#USYSTEM Orthorhombic
+#UREF Tordjman et al. Zeitschrift fuer Kristallographie, (1974) 103-115
+#UCOMMENT Tordjman et al. (1974)
+#UCOMMENT Data calculated with data from http://icsd.ill.fr/icsd/index.html
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+ 22         1.0000        0.37291         0.0000        0.50011
+ 22         1.0000        0.12709        0.50000     0.00011122
+ 22         1.0000        0.62709        0.50000        0.49989
+ 22         1.0000        0.87291         0.0000        0.99989
+ 22         1.0000        0.24671        0.25145        0.26915
+ 22         1.0000        0.25329        0.75145        0.76915
+ 22         1.0000        0.75329        0.75145        0.73085
+ 22         1.0000        0.74671        0.25145        0.23085
+ 15         1.0000        0.49801        0.26078        0.33639
+ 15         1.0000      0.0019900        0.76078        0.83639
+ 15         1.0000        0.50199        0.76078        0.66361
+ 15         1.0000        0.99801        0.26078        0.16361
+ 15         1.0000        0.18081        0.51310        0.50197
+ 15         1.0000        0.31919       0.013101      0.0019720
+ 15         1.0000        0.81919       0.013101        0.49803
+ 15         1.0000        0.68081        0.51310        0.99803
+ 19         1.0000        0.37801        0.31201        0.78042
+ 19         1.0000        0.12199        0.81201        0.28042
+ 19         1.0000        0.62199        0.81201        0.21958
+ 19         1.0000        0.87801        0.31201        0.71958
+ 19         1.0000        0.10528       0.066902        0.69892
+ 19         1.0000        0.39472        0.56690        0.19892
+ 19         1.0000        0.89472        0.56690        0.30108
+ 19         1.0000        0.60528       0.066902        0.80108
+  8         1.0000        0.48623        0.15043        0.48656
+  8         1.0000       0.013770        0.65043        0.98656
+  8         1.0000        0.51377        0.65043        0.51344
+  8         1.0000        0.98623        0.15043       0.013440
+  8         1.0000        0.51003        0.38363        0.46507
+  8         1.0000        0.98997        0.88363        0.96507
+  8         1.0000        0.48997        0.88363        0.53493
+  8         1.0000       0.010030        0.38363       0.034930
+  8         1.0000        0.39993        0.28004        0.19896
+  8         1.0000        0.10007        0.78004        0.69896
+  8         1.0000        0.60007        0.78004        0.80104
+  8         1.0000        0.89993        0.28004        0.30104
+  8         1.0000        0.59373        0.24224        0.19256
+  8         1.0000        0.90627        0.74224        0.69256
+  8         1.0000        0.40627        0.74224        0.80744
+  8         1.0000       0.093730        0.24224        0.30744
+  8         1.0000        0.22473        0.64473        0.96664
+  8         1.0000        0.27527        0.14473        0.46664
+  8         1.0000        0.77527        0.14473       0.033360
+  8         1.0000        0.72473        0.64473        0.53336
+  8         1.0000        0.22383        0.39074       0.040560
+  8         1.0000        0.27617        0.89074        0.54056
+  8         1.0000        0.77617        0.89074        0.95944
+  8         1.0000        0.72383        0.39074        0.45944
+  8         1.0000        0.11203        0.54214        0.31055
+  8         1.0000        0.38797       0.042140        0.81055
+  8         1.0000        0.88797       0.042140        0.68945
+  8         1.0000        0.61203        0.54214        0.18945
+  8         1.0000        0.11113        0.48784        0.69185
+  8         1.0000        0.38887        0.98784        0.19185
+  8         1.0000        0.88887        0.98784        0.30815
+  8         1.0000        0.61113        0.48784        0.80815
+  8         1.0000        0.25263        0.62854        0.53967
+  8         1.0000        0.24737        0.12854       0.039670
+  8         1.0000        0.74737        0.12854        0.46033
+  8         1.0000        0.75263        0.62854        0.96033
+  8         1.0000        0.25303        0.39953        0.46056
+  8         1.0000        0.24697        0.89953        0.96056
+  8         1.0000        0.74697        0.89953        0.53944
+  8         1.0000        0.75303        0.39953       0.039440
+#S 13 AlphaAlumina
+#UCELL 4.758846 4.758846 12.99306 90 90 120
+#USYSTEM Trigonal
+#UREF P. Ballirano, R. Caminiti J Appl Crystall (2001) 34, 757-762 
+#UCOMMENT Data calculated with xop/xpowder
+#UCOMMENT Al2 O3 - [Corundum] Dialuminium trioxide - alpha
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+ 13         1.0000         0.0000         0.0000        0.35242
+ 13         1.0000         0.0000         0.0000        0.14758
+ 13         1.0000        -0.0000        -0.0000        0.64758
+ 13         1.0000        -0.0000        -0.0000        0.85242
+ 13         1.0000        0.66667        0.33333        0.68575
+ 13         1.0000        0.66667        0.33333        0.48091
+ 13         1.0000        0.66667        0.33333        0.98091
+ 13         1.0000        0.66667        0.33333        0.18575
+ 13         1.0000        0.33333        0.66667       0.019085
+ 13         1.0000        0.33333        0.66667        0.81425
+ 13         1.0000        0.33333        0.66667        0.31425
+ 13         1.0000        0.33333        0.66667        0.51909
+  8         1.0000        0.30634         0.0000        0.25000
+  8         1.0000        -0.0000        0.30634        0.25000
+  8         1.0000        0.69366        0.69366        0.25000
+  8         1.0000        0.69366        -0.0000        0.75000
+  8         1.0000         0.0000        0.69366        0.75000
+  8         1.0000        0.30634        0.30634        0.75000
+  8         1.0000        0.97301        0.33333        0.58333
+  8         1.0000        0.66667        0.63967        0.58333
+  8         1.0000        0.36033       0.026993        0.58333
+  8         1.0000        0.36033        0.33333       0.083333
+  8         1.0000        0.66667       0.026993       0.083333
+  8         1.0000        0.97301        0.63967       0.083333
+  8         1.0000        0.63967        0.66667        0.91667
+  8         1.0000        0.33333        0.97301        0.91667
+  8         1.0000       0.026993        0.36033        0.91667
+  8         1.0000       0.026993        0.66667        0.41667
+  8         1.0000        0.33333        0.36033        0.41667
+  8         1.0000        0.63967        0.97301        0.41667
+#S 13 Aluminum
+#UCELL 4.04958  4.04958 4.04958   90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1963, 1, p.10
+#UTEMP 298.15
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+13 1.0 0.0  0.0  0.0
+13 1.0 0.0  0.5  0.5
+13 1.0 0.5  0.0  0.5
+13 1.0 0.5  0.5  0.0 
+#S 26 Iron
+#UCELL 3.5910 3.5910 3.5910    90.0000      90.0000 90.0000
+#USYSTEM Cubic
+#ULATTICE F
+#USTRUCTURE Copper
+#UCOMMENT The FCC structure is defined by atom A located at (0 0 0)
+#UCOMMENT and (.5,0,.5), (.5,.5,0) and (0,.5,.5)
+#UCOMMENT Example: Ag, Al, Fe, Cu, Co, etc.
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1963, 1, p.10
+#UTEMP 295.15
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+26 1.0 0.0  0.0  0.0
+26 1.0 0.0  0.5  0.5
+26 1.0 0.5  0.0  0.5
+26 1.0 0.5  0.5  0.0 
+#S 22 Titanium
+#UCELL 2.950  2.950  4.686  90.0000 90.0000 120.000
+#USYSTEM Hexagonal
+#ULATTICE P
+#USTRUCTURE Berilium
+#UREF R.W.G. Wyckoff, Crystal Structures, Interscience Publ. 1963, vol 1, 11
+#UTEMP 298.15
+#UCOMMENT The Hexagonal Closed-packed structure is defined by an atom A
+#UCOMMENT located at (1/3 2/3 1/4) and an atom B at (2/3  1/3  3/4) in the
+#UCOMMENT prism cell. Example: Berilium (with a=2.287  c=3.583)
+#N  5
+#L  AtomicNumber  Fraction  X  Y  Z
+22 1.0 0.333333  0.666667  0.25
+22 1.0 0.666667  0.333333  0.75
+#EOF
