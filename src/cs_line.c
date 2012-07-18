@@ -14,12 +14,12 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xrayglob.h"
 #include "xraylib.h"
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (cm2/g)        //
 //                                                                  //
 //          Z : atomic number                                       //
-//          E : energy (keV)
+//          E : energy (keV)                                        //
 //          line :                                                  //
 //            KA_LINE 0                                             //
 //            KB_LINE 1                                             //
@@ -28,11 +28,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 // Ref: M. O. Krause et. al. "X-Ray Fluorescence Cross Sections     //
 // for K and L X Rays of the Elements", ORNL 53                     //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
       
 static float Jump_from_L1(int Z,float E)
 {
-  float Factor=1.0,JumpL1,TaoL1,JumpK;
+  float Factor=1.0,JumpL1,JumpK;
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
 	  JumpK = JumpFactor(Z,K_SHELL) ;
 	  if( JumpK <= 0. )
@@ -52,7 +52,7 @@ static float Jump_from_L1(int Z,float E)
 
 static float Jump_from_L2(int Z,float E)
 {
-  float Factor=1.0,Jump,JumpL1,JumpL2,JumpK;
+  float Factor=1.0,JumpL1,JumpL2,JumpK;
   float TaoL1=0.0,TaoL2=0.0;
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
 	  JumpK = JumpFactor(Z,K_SHELL) ;
@@ -85,7 +85,7 @@ static float Jump_from_L2(int Z,float E)
 
 static float Jump_from_L3(int Z,float E )
 {
-  float Factor=1.0,Jump,JumpL1,JumpL2,JumpL3,JumpK;
+  float Factor=1.0,JumpL1,JumpL2,JumpL3,JumpK;
   float TaoL1=0.0,TaoL2=0.0,TaoL3=0.0;
 
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
@@ -130,8 +130,7 @@ static float Jump_from_L3(int Z,float E )
 
 float CS_FluorLine(int Z, int line, float E)
 {
-  float JumpK, JumpL1, JumpL2, JumpL3;
-  float TaoL1=0., TaoL2=0., TaoL3=0.;
+  float JumpK;
   float cs_line, Factor = 1.;
 
   if (Z<1 || Z>ZMAX) {
@@ -165,13 +164,17 @@ float CS_FluorLine(int Z, int line, float E)
 	Factor=Jump_from_L2(Z,E);
 	cs_line = CS_Photo(Z, E) * Factor * RadRate(Z, line) ;
   }
-  //it's safe to use LA_LINE since it's only composed of 2 L3-lines 
+  /*
+   * it's safe to use LA_LINE since it's only composed of 2 L3-lines
+   */
   else if ((line>=L3Q1_LINE && line<=L3M1_LINE) || line==LA_LINE) {
 	Factor=Jump_from_L3(Z,E);
 	cs_line = CS_Photo(Z, E) * Factor * RadRate(Z, line) ;
   }
   else if (line==LB_LINE) {
-   	//b1->b17
+   	/*
+	 * b1->b17
+	 */
    	cs_line=Jump_from_L2(Z,E)*(RadRate(Z,L2M4_LINE)+RadRate(Z,L2M3_LINE))+
 		   Jump_from_L3(Z,E)*(RadRate(Z,L3N5_LINE)+RadRate(Z,L3O4_LINE)+RadRate(Z,L3O5_LINE)+RadRate(Z,L3O45_LINE)+RadRate(Z,L3N1_LINE)+RadRate(Z,L3O1_LINE)+RadRate(Z,L3N6_LINE)+RadRate(Z,L3N7_LINE)+RadRate(Z,L3N4_LINE)) +
 		   Jump_from_L1(Z,E)*(RadRate(Z,L1M3_LINE)+RadRate(Z,L1M2_LINE)+RadRate(Z,L1M5_LINE)+RadRate(Z,L1M4_LINE));
@@ -186,15 +189,3 @@ float CS_FluorLine(int Z, int line, float E)
   
   return (cs_line);
 }            
-
-
-
-
-
-
-
-
-
-
-
-

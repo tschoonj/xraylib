@@ -83,11 +83,10 @@ void splint(float xa[], float ya[], float y2a[], int n, float x, float *y)
 	klo = 1;
 	khi = n;
 	while (khi-klo > 1) {
-		k = (khi + klo) >> 1;//division by 2
+		k = (khi + klo) >> 1;
 		if (xa[k] > x) khi = k;
 		else klo = k;
 	}
-	//determine position of x in xa
 
 	h = xa[khi] - xa[klo];
 	if (h == 0.0) {
@@ -120,11 +119,10 @@ void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y)
 	klo = 1;
 	khi = n;
 	while (khi-klo > 1) {
-		k = (khi + klo) >> 1;//division by 2
+		k = (khi + klo) >> 1;
 		if (xa[k] > x) khi = k;
 		else klo = k;
 	}
-	//determine position of x in xa
 
 	h = xa[khi] - xa[klo];
 	if (h == 0.0) {

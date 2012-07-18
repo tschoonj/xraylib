@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 #include "xraylib.h"
+#include "xrayvars.h"
 #include <stdlib.h>
 
 float CS_Total_CP(const char compound[], float E) {

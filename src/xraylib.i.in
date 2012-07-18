@@ -16,9 +16,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %{
 #include "@abs_top_srcdir@/include/xraylib.h"
 %}
+
 %include "@abs_top_srcdir@/include/xraylib.h"
 %include "@abs_top_srcdir@/include/shells.h"
 %include "@abs_top_srcdir@/include/lines.h"
+
 
 
 

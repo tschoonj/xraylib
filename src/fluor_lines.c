@@ -21,7 +21,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define KM3 -KM3_LINE-1
 #define KP5 -KP5_LINE-1
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line energy (keV)                 //
 //                                                                  //
@@ -32,11 +32,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
       
 float LineEnergy(int Z, int line)
 {
-  float line_energy, lE1, lE2, rr1, rr2;
+  float line_energy;
   float lE[50],rr[50];
   float tmp=0.0,tmp1=0.0,tmp2=0.0;
   int i;
@@ -88,43 +88,45 @@ float LineEnergy(int Z, int line)
   	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
   }
   else if (line == LB_LINE) {
-	temp_line = L2M4_LINE;     //b1
+	temp_line = L2M4_LINE;     /* b1 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L2_SHELL)+0.1);
 	tmp2=tmp1;
 	tmp=LineEnergy(Z,temp_line)*tmp1;
 
-	temp_line = L3N5_LINE;     //b2
+	temp_line = L3N5_LINE;     /* b2 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	temp_line = L1M3_LINE;   // b3
+	temp_line = L1M3_LINE;     /* b3 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L1_SHELL)+0.1);
 	tmp2+=tmp1;
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	temp_line = L1M2_LINE;   // b4
+	temp_line = L1M2_LINE;     /* b4 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L1_SHELL)+0.1);
 	tmp2+=tmp1;
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	temp_line = L3O3_LINE;   // b5
+	temp_line = L3O3_LINE;     /* b5 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	temp_line = L3O4_LINE;   // b5
+	temp_line = L3O4_LINE;     /* b5 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
 
-	temp_line = L3N1_LINE;     // b6
+	temp_line = L3N1_LINE;     /* b6 */
 	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
 	tmp2+=tmp1;
 	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
   	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
   }
-  //special cases for composed lines
+  /*
+   * special cases for composed lines
+   */
   else if (line == L1N67_LINE) {
  	return (LineEnergy(Z, L1N6_LINE)+LineEnergy(Z,L1N7_LINE))/2.0; 
   }

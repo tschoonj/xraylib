@@ -19,7 +19,6 @@ float PL1_pure_kissel(int Z, float E) {
 }
 
 float PL1_rad_cascade_kissel(int Z, float E, float PK) {
-	//this function will probably not be very useful...
 	float rv;
 	rv = CS_Photo_Partial(Z,L1_SHELL, E);
 
@@ -107,7 +106,6 @@ float PL2_auger_cascade_kissel(int Z, float E, float PK, float PL1) {
 
 	rv = CS_Photo_Partial(Z,L2_SHELL, E);
 
-	//K contributions
 	if (PK > 0.0)
 		rv += (1.0-FluorYield(Z,K_SHELL))*PK*(
 	AugerRate(Z,K_L1L2_AUGER)+
@@ -126,7 +124,6 @@ float PL2_auger_cascade_kissel(int Z, float E, float PK, float PL1) {
 	AugerRate(Z,K_M4L2_AUGER)+
 	AugerRate(Z,K_M5L2_AUGER));
 
-	//L1 contributions
 	if (PL1 > 0.0)
 		rv += (1.0-FluorYield(Z,L1_SHELL)-CosKronTransProb(Z,FL12_TRANS)-CosKronTransProb(Z,FL13_TRANS))*PL1*(
 		2.0*AugerRate(Z,L1_L2L2_AUGER)+
@@ -153,7 +150,6 @@ float PL2_full_cascade_kissel(int Z, float E, float PK, float PL1) {
 
 	rv = CS_Photo_Partial(Z,L2_SHELL, E);
 
-	//K contributions
 	if (PK > 0.0)
 		rv += FluorYield(Z,K_SHELL)*PK*RadRate(Z,KL2_LINE)+
 		(1.0-FluorYield(Z,K_SHELL))*PK*(
@@ -174,7 +170,6 @@ float PL2_full_cascade_kissel(int Z, float E, float PK, float PL1) {
 		AugerRate(Z,K_M5L2_AUGER)
 		);
 		
-	//L1 contributions
 	if (PL1 > 0.0)
 		rv += (1.0-FluorYield(Z,L1_SHELL)-CosKronTransProb(Z,FL12_TRANS)-CosKronTransProb(Z,FL13_TRANS))*PL1*(
 		2.0*AugerRate(Z,L1_L2L2_AUGER)+
@@ -232,7 +227,6 @@ float PL3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 
 	rv = CS_Photo_Partial(Z,L3_SHELL, E);
 
-	//K-shell
 	if (PK > 0.0)
 		rv += (1.0-FluorYield(Z,K_SHELL))*PK*(
 		AugerRate(Z,K_L1L3_AUGER)+
@@ -252,7 +246,6 @@ float PL3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 		AugerRate(Z,K_M5L3_AUGER)
 		);
 
-	//L1-shell
 	if (PL1 > 0.0)
 		rv += (1.0-FluorYield(Z,L1_SHELL)-CosKronTransProb(Z,FL12_TRANS)-CosKronTransProb(Z,FL13_TRANS))*PL1*(
 		AugerRate(Z,L1_L2L3_AUGER)+
@@ -270,7 +263,6 @@ float PL3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 		AugerRate(Z,L1_M5L3_AUGER)
 		)+CosKronTransProb(Z,FL13_TRANS)*PL1;
 
-	//L2-shell
 	if (PL2 > 0.0)
 		rv += (1.0-FluorYield(Z,L2_SHELL)-CosKronTransProb(Z,FL23_TRANS))*PL2*(
 		2.0*AugerRate(Z,L2_L3L3_AUGER)+
@@ -295,7 +287,6 @@ float PL3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 
 	rv = CS_Photo_Partial(Z,L3_SHELL, E);
 
-	//K-shell
 	if (PK > 0.0)
 		rv += FluorYield(Z,K_SHELL)*PK*RadRate(Z,KL3_LINE)+
 		(1.0-FluorYield(Z,K_SHELL))*PK*(
@@ -316,7 +307,6 @@ float PL3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 		AugerRate(Z,K_M5L3_AUGER)
 		);
 
-	//L1-shell
 	if (PL1 > 0.0)
 		rv += (1.0-FluorYield(Z,L1_SHELL)-CosKronTransProb(Z,FL12_TRANS)-CosKronTransProb(Z,FL13_TRANS))*PL1*(
 		AugerRate(Z,L1_L2L3_AUGER)+
@@ -334,7 +324,6 @@ float PL3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 		AugerRate(Z,L1_M5L3_AUGER)
 		)+CosKronTransProb(Z,FL13_TRANS)*PL1;
 
-	//L2-shell
 	if (PL2 > 0.0)
 		rv += (1.0-FluorYield(Z,L2_SHELL)-CosKronTransProb(Z,FL23_TRANS))*PL2*(
 		2.0*AugerRate(Z,L2_L3L3_AUGER)+
@@ -379,7 +368,6 @@ float PM1_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 
 	rv = CS_Photo_Partial(Z, M1_SHELL, E);
 
-	//first whatever is due to K-shell excitations
 	if (PK > 0.0)
 		rv += (1.0-FluorYield(Z,K_SHELL))*PK*(
 		AugerRate(Z,K_L1M1_AUGER)+
@@ -399,7 +387,6 @@ float PM1_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		AugerRate(Z,K_M5M1_AUGER)
 		);
 	
-	//followed by L1
 	if (PL1 > 0.0)
 		rv += (1.0-FluorYield(Z,L1_SHELL)-CosKronTransProb(Z,FL12_TRANS)-CosKronTransProb(Z,FL13_TRANS))*PL1*(
 		AugerRate(Z,L1_L2M1_AUGER)+
@@ -417,7 +404,6 @@ float PM1_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		AugerRate(Z,L1_M5M1_AUGER)
 		);
 
-	//next is L2
 	if (PL2 > 0.0) 
 		rv += (1.0-FluorYield(Z,L2_SHELL)-CosKronTransProb(Z,FL23_TRANS))*PL2*(
 		AugerRate(Z,L2_L3M1_AUGER)+
@@ -434,7 +420,6 @@ float PM1_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		AugerRate(Z,L2_M5M1_AUGER)
 		);
 	
-	//...L3
 	if (PL3 > 0.0)
 		rv += (1.0-FluorYield(Z,L3_SHELL))*PL3*(
 		2.0*AugerRate(Z,L3_M1M1_AUGER)+
@@ -455,7 +440,6 @@ float PM1_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 
 	rv = CS_Photo_Partial(Z, M1_SHELL, E);
 
-	//first whatever is due to K-shell excitations
 	if (PK > 0.0) 
 		rv += FluorYield(Z,K_SHELL)*PK*RadRate(Z,KM1_LINE)+
 		(1.0-FluorYield(Z,K_SHELL))*PK*(
@@ -477,7 +461,6 @@ float PM1_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 		);
 		
 
-	//followed by L1
 	if (PL1 > 0.0)
 		rv += FluorYield(Z,L1_SHELL)*PL1*RadRate(Z,L1M1_LINE)+
 		(1.0-FluorYield(Z,L1_SHELL)-CosKronTransProb(Z,FL12_TRANS)-CosKronTransProb(Z,FL13_TRANS))*PL1*(
@@ -604,7 +587,6 @@ float PM2_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		AugerRate(Z,L1_M5M2_AUGER)
 		);
 
-	//L2
 	if (PL2 > 0.0)
 		rv += (1.0-FluorYield(Z,L2_SHELL)-CosKronTransProb(Z,FL23_TRANS))*PL2*(
 		AugerRate(Z,L2_L3M2_AUGER)+
@@ -621,7 +603,6 @@ float PM2_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		AugerRate(Z,L2_M4M2_AUGER)+
 		AugerRate(Z,L2_M5M2_AUGER)
 		);
-	//L3
 	if (PL3 > 0.0)
 		rv += (1.0-FluorYield(Z,L3_SHELL))*PL3*(
 		2.0*AugerRate(Z,L3_M1M1_AUGER)+
@@ -635,7 +616,6 @@ float PM2_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 		AugerRate(Z,L3_M5M1_AUGER)
 		);
 
-	//M1
 	if (PM1 > 0.0)
 		rv += (1.0-FluorYield(Z,M1_SHELL)-CosKronTransProb(Z,FM12_TRANS)-CosKronTransProb(Z,FM13_TRANS)-CosKronTransProb(Z,FM14_TRANS)-CosKronTransProb(Z,FM15_TRANS))*PM1*(
 		2.0*AugerRate(Z,M1_M2M2_AUGER)+
@@ -990,7 +970,7 @@ float PM4_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 
 	rv = CS_Photo_Partial(Z, M4_SHELL, E);
 
-	//yes I know that KM4 lines are forbidden...
+	/*yes I know that KM4 lines are forbidden... */
 	if (PK > 0.0) 
 		rv += FluorYield(Z,K_SHELL)*PK*RadRate(Z,KM4_LINE);
 
@@ -1249,7 +1229,7 @@ float PM5_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 
 	rv = CS_Photo_Partial(Z, M5_SHELL, E);
 
-	//yes I know that KM5 lines are forbidden...
+	/*yes I know that KM5 lines are forbidden... */
 	if (PK > 0.0) 
 		rv += FluorYield(Z,K_SHELL)*PK*RadRate(Z,KM5_LINE);
 

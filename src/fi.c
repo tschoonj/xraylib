@@ -16,14 +16,14 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xraylib.h"
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                  Anomalous Scattering Factor Fi                  //
 //                                                                  //
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float Fi(int Z, float E)
 {
   float fi;

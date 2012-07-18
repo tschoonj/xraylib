@@ -27,7 +27,7 @@ float Refractive_Index_Re(const char compound[], float E, float density) {
 		return 0.0;
 	} 
 
-	//Real part is 1-delta
+	/* Real part is 1-delta */
 	for (i=0 ; i < cd.nElements ; i++) {
 		delta += cd.massFractions[i]*KD*(cd.Elements[i]+Fi(cd.Elements[i],E))/AtomicWeight(cd.Elements[i])/E/E;
 	}
@@ -43,7 +43,7 @@ float Refractive_Index_Re(const char compound[], float E, float density) {
 
 float Refractive_Index_Im(const char compound[], float E, float density) {
 
-	//9.8663479e-9 is calculated by planck's constant * speed of light / 4Pi
+	/*9.8663479e-9 is calculated by planck's constant * speed of light / 4Pi */
 	return CS_Total_CP(compound,E)*density*9.8663479e-9/E;	
 
 }

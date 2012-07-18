@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayvars.h"
 #include "xrayglob.h"
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                Fractional non Radiative Rate                     //
 //                                                                  //
@@ -24,7 +24,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //            ionized shell and two resulting                       //
 //            ejected electrons                                     //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float AugerRate(int Z, int auger_trans) {
 	float rv;
@@ -41,7 +41,6 @@ float AugerRate(int Z, int auger_trans) {
 	}
 
 	if (auger_trans >= K_L1L1_AUGER && auger_trans < L1_L2L2_AUGER  ) {
-		//K
 		if (Auger_Transition_Total[Z][K_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][K_SHELL];
@@ -49,43 +48,36 @@ float AugerRate(int Z, int auger_trans) {
 	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER  ) {
 		if (Auger_Transition_Total[Z][L1_SHELL] < 10E-8) 
 			return rv;
-		//L1
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L1_SHELL];
 	}
 	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER  ) {
 		if (Auger_Transition_Total[Z][L2_SHELL] < 10E-8) 
 			return rv;
-		//L2
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L2_SHELL];
 	}
 	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER  ) {
 		if (Auger_Transition_Total[Z][L3_SHELL] < 10E-8) 
 			return rv;
-		//L3
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L3_SHELL];
 	}
 	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER  ) {
 		if (Auger_Transition_Total[Z][M1_SHELL] < 10E-8) 
 			return rv;
-		//M1
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M1_SHELL];
 	}
 	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER  ) {
 		if (Auger_Transition_Total[Z][M2_SHELL] < 10E-8) 
 			return rv;
-		//M2
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M2_SHELL];
 	}
 	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER  ) {
 		if (Auger_Transition_Total[Z][M3_SHELL] < 10E-8) 
 			return rv;
-		//M3
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M3_SHELL];
 	}
 	else if (auger_trans == M4_M5M5_AUGER) {
 		if (Auger_Transition_Total[Z][M4_SHELL] < 10E-8) 
 			return rv;
-		//M4
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M4_SHELL];
 	}
 

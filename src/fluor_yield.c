@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xrayglob.h"
 #include "xraylib.h"
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent Yield                             //
 //                                                                  //
@@ -31,7 +31,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //            M5_SHELL 8                                            //
 //             .......                                              //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
       
 float FluorYield(int Z, int shell)
 {

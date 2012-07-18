@@ -14,13 +14,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xrayglob.h"
 #include "xraylib.h"
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                            Atomic Weight                         //
 //                                                                  //
 //          Z : atomic number                                       //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float AtomicWeight(int Z)
 {
   float atomic_weight;

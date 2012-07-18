@@ -144,7 +144,7 @@ fprintf(f, "};\n\n");
   print_intvec(ZMAX+1, NVAR); \
   fprintf(f, ";\n\n");
 
-//-----------------------------------------------------
+/*----------------------------------------------------- */
 
 void print_mendelvec(int arrmax, struct MendelElement *arr)
 {
@@ -209,10 +209,10 @@ int main(void)
     perror("file open");
   }
 
-  fprintf(f, "// File created from program in pr_data.c\n");
-  fprintf(f, "// Do not directly modify this file.\n\n");
+  fprintf(f, "/* File created from program in pr_data.c\n");
+  fprintf(f, "// Do not directly modify this file.*/\n\n");
 
-  fprintf(f, "#include \"xray_defs.h\"\n\n");
+  fprintf(f, "#include \"xraylib-defs.h\"\n\n");
 
   fprintf(f, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArray);
@@ -295,7 +295,6 @@ int main(void)
   PR_DYNMATF(Nq_Compt, SF_Compt_arr, "SF_Compt_arr");
   PR_DYNMATF(Nq_Compt, SF_Compt_arr2, "SF_Compt_arr2");
 
-//added by Tom Schoonjans 26/03/2008
   PR_NUMVEC1D(NE_Fi, "NE_Fi");
   PR_DYNMATF(NE_Fi, E_Fi_arr, "E_Fi_arr");
   PR_DYNMATF(NE_Fi, Fi_arr, "Fi_arr");
@@ -306,7 +305,6 @@ int main(void)
   PR_DYNMATF(NE_Fii, Fii_arr, "Fii_arr");
   PR_DYNMATF(NE_Fii, Fii_arr2, "Fii_arr2");
 
-//added by Tom Schoonjans 07/04/2008
   fprintf(f, "float Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
 
@@ -325,7 +323,6 @@ int main(void)
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel"); 
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2"); 
 
-//added by Tom Schoonjans 28/07/2010
   PR_NUMVEC1D(NShells_ComptonProfiles, "NShells_ComptonProfiles");
   PR_NUMVEC1D(Npz_ComptonProfiles, "Npz_ComptonProfiles");
   PR_DYNMATD(NShells_ComptonProfiles,UOCCUP_ComptonProfiles,"UOCCUP_ComptonProfiles");

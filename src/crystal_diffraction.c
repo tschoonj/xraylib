@@ -8,23 +8,26 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
     * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ANYONE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY David Sagan ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ANYONE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "crystal_diffraction.h"
+#include "xraylib-crystal-diffraction.h"
 #include "xrayglob.h"
 #include "xraylib.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
 
 #define sind(x)  sin(x * DEGRAD)
 #define cosd(x)  cos(x * DEGRAD)
 #define tand(x)  tan(x * DEGRAD)
 #define pow2(x)  pow(x, 2)
+#define FALSE 0
+#define TRUE 1
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 float c_abs(Complex x) { 
   float ans = x.re * x.re - x.im * x.im; 
@@ -32,21 +35,21 @@ float c_abs(Complex x) {
   return ans; 
 };
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 Complex c_mul(Complex x, Complex y) { 
   Complex ans = {x.re * y.re - x.im * y.im, x.re * y.im + x.im * y.re};
   return ans; 
 };
 
-//--------------------------------------------------------------------------------------------------
-// Private function to extend the crystal array size.
+/*-------------------------------------------------------------------------------------------------- */
+/* Private function to extend the crystal array size. */
 
-void Crystal_ExtendArray (Crystal_Array* c_array, int n_new) {
+static void Crystal_ExtendArray (Crystal_Array* c_array, int n_new) {
 
-  // Special case
+  /* Special case */
 
-  // Transfer data to a temp.
+  /* Transfer data to a temp. */
 
   Crystal_Array* temp_array = malloc(sizeof(Crystal_Array));
   temp_array->n_crystal = c_array->n_crystal;
@@ -58,9 +61,10 @@ void Crystal_ExtendArray (Crystal_Array* c_array, int n_new) {
     temp_array->crystal[i] = c_array->crystal[i];
   }
 
-  // Free memory but we do reuse c_array->crystal[i].atom and c_array->crystal[i].name memory.
-  // Note: If c_array->crystal is pointing to the original Crystal_arr defined in xrayglob_inline.c
-  // then we cannot free memory.
+  /* Free memory but we do reuse c_array->crystal[i].atom and c_array->crystal[i].name memory.
+   * Note: If c_array->crystal is pointing to the original Crystal_arr defined in xrayglob_inline.c
+   * then we cannot free memory.
+   */
 
   if (c_array->crystal != Crystal_arr.crystal) free(c_array->crystal);    
 
@@ -68,7 +72,7 @@ void Crystal_ExtendArray (Crystal_Array* c_array, int n_new) {
 
 }
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc) {
 
@@ -83,7 +87,7 @@ void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc) {
 
 }
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 void Crystal_ArrayFree (Crystal_Array* c_array) {
 
@@ -95,7 +99,7 @@ void Crystal_ArrayFree (Crystal_Array* c_array) {
 
 }
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal) {
 
@@ -110,7 +114,7 @@ Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal) {
 
 }
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 void Crystal_Free (Crystal_Struct* crystal) {
   free(crystal->name);
@@ -119,7 +123,7 @@ void Crystal_Free (Crystal_Struct* crystal) {
 }
 
 
-//--------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------- */
 
 Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array) {
 
@@ -129,8 +133,11 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Bragg angle in radians.
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Bragg angle in radians.
+ *
+ */
 
 float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller) {
 
@@ -142,8 +149,11 @@ float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_mi
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Q scattering factor = Sin(theta) / wavelength 
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Q scattering factor = Sin(theta) / wavelength 
+ *
+ */
 
 float Q_scattering_amplitude(Crystal_Struct* crystal, float energy, 
                                     int i_miller, int j_miller, int k_miller, float rel_angle) {
@@ -157,8 +167,11 @@ float Q_scattering_amplitude(Crystal_Struct* crystal, float energy,
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Atomic Factors f0, f', f''
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Atomic Factors f0, f', f''
+ *
+ */
 
 void Atomic_Factors (int Z, float energy, float q, float debye_factor, 
                                   float* f0, float* f_prime, float* f_prime2) {
@@ -169,8 +182,11 @@ void Atomic_Factors (int Z, float energy, float q, float debye_factor,
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Compute F_H
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Compute F_H
+ *
+ */
 
 Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle) {
@@ -178,8 +194,11 @@ Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy,
                                                                           debye_factor, rel_angle, 2, 2, 2);
 }
 
-//--------------------------------------------------------------------------------------------------
-// Compute F_H
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Compute F_H
+ *
+ */
 
 Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
@@ -191,9 +210,9 @@ Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float ener
   Complex F_H = {0, 0};
   char buffer[512];
   int i, Z;
-  Crystal_Struct* cc = crystal;  // Just for an abbreviation.
+  Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
 
-  // Loop over all atoms and compute the f values
+  /* Loop over all atoms and compute the f values */
 
   q = Q_scattering_amplitude(cc, energy, i_miller, j_miller, k_miller, rel_angle);
 
@@ -249,7 +268,7 @@ Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float ener
 
   }
 
-  // Now compute F_H
+  /* Now compute F_H */
 
   for (i = 0; i < cc->n_atom; i++) {
     Z = cc->atom[i].Zatom;
@@ -262,45 +281,56 @@ Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float ener
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Compute unit cell volume
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Compute unit cell volume
+ *
+ */
 
 float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
 
-  Crystal_Struct* cc = crystal;  // Just for an abbreviation.
+  Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
 
   return cc->a * cc->b * cc->c * 
                   sqrt( (1 - pow2(cosd(cc->alpha)) - pow2(cosd(cc->beta)) - pow2(cosd(cc->gamma))) + 
                          2 * cosd(cc->alpha) * cosd(cc->beta) * cosd(cc->gamma));
 }
 
-//--------------------------------------------------------------------------------------------------
-// Compute d-spacing between planes
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Compute d-spacing between planes
+ *
+ */
 
 float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller) {
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
 
-  Crystal_Struct* cc = crystal;  // Just for an abbreviation.
+  Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
 
   return (cc->volume / (cc->a * cc->b * cc->c)) * sqrt(1 / (
-          pow2(i_miller * sind(cc->alpha) / cc->a) + pow2(j_miller * sind(cc->beta) / cc->b) + 
+   
+   pow2(i_miller * sind(cc->alpha) / cc->a) + pow2(j_miller * sind(cc->beta) / cc->b) + 
           pow2(k_miller * sind(cc->gamma) / cc->c) +
           2 * i_miller * j_miller * (cosd(cc->alpha) * cosd(cc->beta)  - cosd(cc->gamma)) / (cc->a * cc->b) +
           2 * i_miller * k_miller * (cosd(cc->alpha) * cosd(cc->gamma) - cosd(cc->beta))  / (cc->a * cc->c) +
           2 * j_miller * k_miller * (cosd(cc->beta) * cosd(cc->gamma)  - cosd(cc->alpha)) / (cc->b * cc->c)));
 }
 
-//--------------------------------------------------------------------------------------------------
-// Add a new CrystalStruct to an array of crystals.
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Add a new CrystalStruct to an array of crystals.
+ *
+ */
 
 int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
 
   if (c_array == NULL) c_array = &Crystal_arr;
 
-  // See if the crystal material is already present.
-  // If so replace it.
-  // Otherwise must be a new material...
+  /* See if the crystal material is already present.
+   * If so replace it.
+   * Otherwise must be a new material...
+   */
 
   Crystal_Struct* a_cryst;
   a_cryst = bsearch(crystal->name, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
@@ -313,16 +343,18 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
     *a_cryst = *Crystal_MakeCopy(crystal);
   }
 
-  // sort and return
+  /* sort and return */
   a_cryst->volume = Crystal_UnitCellVolume(a_cryst);
   qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
 
-  return EXIT_SUCCESS;
+  return 1;
 
 }
 
-//--------------------------------------------------------------------------------------------------
-// Read in a set of crystal structs.
+/*-------------------------------------------------------------------------------------------------- */
+/*
+ * Read in a set of crystal structs.
+ */
 
 int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
@@ -338,23 +370,23 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
   if ((fp = fopen(file_name, "r")) == NULL) {
     sprintf (buffer, "Crystal file: %s not found\n", file_name);
     ErrorExit(buffer);
-    return EXIT_FAILURE;
+    return 0;
   }
 
-  // Loop over all lines of the file.
+  /* Loop over all lines of the file. */
 
   while (!feof(fp)) {
 
-    // Start of compound def looks like: "#S <num> <Compound>"
+    /* Start of compound def looks like: "#S <num> <Compound>" */
 
     fgets (buffer, 100, fp);
     if (buffer[0] != '#' || buffer[1] != 'S') continue;
 
-    ex = sscanf(buffer, "%20s %d %20s", &tag, &i, &compound);
+    ex = sscanf(buffer, "%20s %d %20s", tag, &i, compound);
     if (ex != 3) {
       sprintf (buffer, "In crystal file: %s\n  Malformed '#S <num> <crystal_name>' construct.", file_name);
       ErrorExit(buffer);
-      return EXIT_FAILURE;
+      return 0;
     }
 
     if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(c_array, N_NEW_CRYSTAL);
@@ -362,8 +394,10 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
     crystal->name = strdup(compound);
 
-    // Parse lines of the crystal definition before list of atom positions.
-    // The only info we need to pickup here is the #UCELL unit cell parameters.
+    /*
+     * Parse lines of the crystal definition before list of atom positions.
+     * The only info we need to pickup here is the #UCELL unit cell parameters.
+     */
 
     found_it = FALSE;
 
@@ -375,38 +409,39 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
       if (buffer[0] == '#' && buffer[1] == 'U' && buffer[2] == 'C' && 
           buffer[3] == 'E' && buffer[4] == 'L' && buffer[5] == 'L') {
-        ex = sscanf(buffer,"%20s %f %f %f %f %f %f", &tag, &crystal->a, &crystal->b, &crystal->c, 
+        ex = sscanf(buffer,"%20s %f %f %f %f %f %f", tag, &crystal->a, &crystal->b, &crystal->c, 
                                                        &crystal->alpha, &crystal->beta, &crystal->gamma);
         if (found_it) {
           sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Multiple #UCELL lines found.", 
                                                                       file_name, crystal->name);
           ErrorExit(buffer);
-          return EXIT_FAILURE;
+          return 0;
         }
         if (ex != 7) {
           sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n Malformed '#UCELL' construct",
                                                                       file_name, crystal->name);
           ErrorExit(buffer);
-          return EXIT_FAILURE;
+          return 0;
         }
         found_it = TRUE;
       }
 
     }
 
-    // Error check
+    /* Error check */
 
     if (!found_it) {
       sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  No #UCELL line found for crystal.",
                                                                       file_name, crystal->name);
       ErrorExit(buffer);
-      return EXIT_FAILURE;
+      return 0;
     }
 
-    // Now read in the atom positions.
-    // First count how many atoms there are and then backup to read in the locations.
+    /* Now read in the atom positions.
+     * First count how many atoms there are and then backup to read in the locations.
+     */
 
-    floc = ftell(fp);  // Memorize current location in file
+    floc = ftell(fp);  /* Memorize current location in file */
 
     n = 0;
     while (!feof(fp)) {
@@ -419,13 +454,13 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
       sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  End of file before definition complete.",
                                                                       file_name, crystal->name);
       ErrorExit(buffer);
-      return EXIT_FAILURE;
+      return 0;
     }
 
     crystal->n_atom = n;
     crystal->atom = malloc(n * sizeof(Crystal_Atom));
 
-    // Now rewind and fill in the array
+    /* Now rewind and fill in the array */
 
     fseek(fp, floc, SEEK_SET);
     
@@ -436,7 +471,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
         sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Atom position line %d\n  Error parsing atom position.",
                                                                       file_name, crystal->name, i);
         ErrorExit(buffer);
-        return EXIT_FAILURE;
+        return 0;
       }
     }
 
@@ -444,16 +479,16 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
   fclose(fp);
 
-  // Now sort
+  /* Now sort */
 
   qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
 
-  // Now calculate the unit cell volumes
+  /* Now calculate the unit cell volumes */
 
   for (i = 0; i < c_array->n_crystal; i++) {
     c_array->crystal[i].volume = Crystal_UnitCellVolume(&c_array->crystal[i]);
   }
 
-  return EXIT_SUCCESS;
+  return 1;
 
 }

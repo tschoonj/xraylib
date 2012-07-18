@@ -14,6 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <stdio.h>
 #include "xraylib.h"
 #include <stdlib.h>
+#include <math.h>
 
 int main()
 {
@@ -21,8 +22,8 @@ int main()
   int i;
   char *symbol;
   XRayInit();
-  //if something goes wrong, the test will end with EXIT_FAILURE
-  //SetHardExit(1);
+  /*if something goes wrong, the test will end with EXIT_FAILURE
+  //SetHardExit(1);*/
 
   printf("Example of C program using xraylib\n");
   printf("Ca K-alpha Fluorescence Line Energy: %f\n",
@@ -33,7 +34,7 @@ int main()
   printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",CS_FluorLine_Kissel(82,LA_LINE,20.0));
   printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
   printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
-  //parser test for Ca(HCO3)2 (calcium bicarbonate)
+  /*parser test for Ca(HCO3)2 (calcium bicarbonate)*/
   if (CompoundParser("Ca(HCO3)2",&cdtest) == 0)
 	return 1;
   printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
@@ -42,7 +43,7 @@ int main()
 
   FREE_COMPOUND_DATA(cdtest)
 
-  //parser test for SiO2 (quartz)
+  /*parser test for SiO2 (quartz)*/
   if (CompoundParser("SiO2",&cdtest) == 0)
 	return 1;
 
@@ -93,7 +94,7 @@ int main()
   printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
   printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
-  // Si Crystal structure
+  /* Si Crystal structure */
 
   Crystal_Struct* cryst = Crystal_GetCrystal("Si", NULL);
   if (cryst == NULL) return 1;
@@ -108,7 +109,7 @@ int main()
     printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
   } 
 
-  // Si diffraction parameters
+  /* Si diffraction parameters */
 
   printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
 
@@ -135,7 +136,7 @@ int main()
 
 
 
-  // Diamond diffraction parameters
+  /* Diamond diffraction parameters */
 
   cryst = Crystal_GetCrystal("Diamond", NULL);
 
@@ -161,7 +162,7 @@ int main()
                                                   sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
   printf ("  Darwin width: %f micro-radians\n", 1e6*dw);
 
-  // Alpha Quartz diffraction parameters
+  /* Alpha Quartz diffraction parameters */
 
   cryst = Crystal_GetCrystal("AlphaQuartz", NULL);
 
@@ -173,7 +174,6 @@ int main()
   q = Q_scattering_amplitude (cryst, energy, 0, 2, 0, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
-  f0, fp, fpp;
   Atomic_Factors (8, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 8) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
@@ -183,7 +183,7 @@ int main()
   F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
-  // Muscovite diffraction parameters
+  /* Muscovite diffraction parameters */
 
   cryst = Crystal_GetCrystal("Muscovite", NULL);
 
@@ -195,7 +195,6 @@ int main()
   q = Q_scattering_amplitude (cryst, energy, 3, 3, 1, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
-  f0, fp, fpp;
   Atomic_Factors (19, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 19) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 

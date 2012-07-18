@@ -18,7 +18,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xraylib.h"
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //         Differential Rayleigh scattering cross section           // 
 //                for polarized beam (cm2/g/sterad)                 //
@@ -28,7 +28,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          theta : scattering polar angle (rad)                    //
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
-//////////////////////////////////////////////////// /////////////////
+/////////////////////////////////////////////////////////////////// */
 float  DCSP_Rayl(int Z, float E, float theta, float phi)
 {
   float F, q;                                                      
@@ -48,7 +48,7 @@ float  DCSP_Rayl(int Z, float E, float theta, float phi)
   return  AVOGNUM / AtomicWeight(Z) * F*F * DCSP_Thoms(theta, phi);
 }                                                                              
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //           Differential Compton scattering cross section          //
 //                for polarized beam (cm2/g/sterad)                 //
@@ -57,7 +57,7 @@ float  DCSP_Rayl(int Z, float E, float theta, float phi)
 //          theta : scattering polar angle (rad)                    //
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
-//////////////////////////////////////////////////// /////////////////
+/////////////////////////////////////////////////////////////////// */
 float  DCSP_Compt(int Z, float E, float theta, float phi)
 { 
   float S, q;                                                      
@@ -78,7 +78,7 @@ float  DCSP_Compt(int Z, float E, float theta, float phi)
 }
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //      Klein-Nishina differential scattering cross section         // 
 //                for polarized beam (barn)                         //
@@ -87,7 +87,7 @@ float  DCSP_Compt(int Z, float E, float theta, float phi)
 //          theta : scattering polar angle (rad)                    //
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
-//////////////////////////////////////////////////// /////////////////
+/////////////////////////////////////////////////////////////////// */
 float DCSP_KN(float E, float theta, float phi)
 { 
   double k0_k, k_k0, k_k0_2, cos_th, sin_th, cos_phi;
@@ -110,7 +110,7 @@ float DCSP_KN(float E, float theta, float phi)
 } 
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //       Thomson differential scattering cross section              //
 //                for polarized beam (barn)                         //
@@ -118,7 +118,7 @@ float DCSP_KN(float E, float theta, float phi)
 //          theta : scattering polar angle (rad)                    //
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
-//////////////////////////////////////////////////// /////////////////
+/////////////////////////////////////////////////////////////////// */
 float  DCSP_Thoms(float theta, float phi)
 { 
   float sin_th, cos_phi ;

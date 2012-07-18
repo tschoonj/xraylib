@@ -23,10 +23,9 @@ extern "C" {
 
 
 #define XRAYLIB_MAJOR 2
-#define XRAYLIB_MINOR 15
+#define XRAYLIB_MINOR 16
 
 
-//#define ZMAX 120
 #ifndef PI
 #define PI  3.1415926535897932384626433832795
 #endif
@@ -39,28 +38,35 @@ extern "C" {
 #define DEGRAD    ( PI / 180.0 )
 
 
-//values taken from physics.nist.gov
-#define AVOGNUM 0.602214129        // Avogadro number (mol-1 * barn-1 * cm2) 
-#define KEV2ANGST 12.39841930      // keV to angstrom-1 conversion factor 
-#define MEC2 510.998928            // electron rest mass (keV) 
-#define RE2 0.079407877            // square of classical electron radius (barn)
-#define R_E 2.8179403267e-15       // Classical electron radius (m)
+/*
+ *
+ * values taken from physics.nist.gov
+ *
+ */
+#define AVOGNUM 0.602214129        /* Avogadro number (mol-1 * barn-1 * cm2) */ 
+#define KEV2ANGST 12.39841930      /* keV to angstrom-1 conversion factor */
+#define MEC2 510.998928            /* electron rest mass (keV) */
+#define RE2 0.079407877            /* square of classical electron radius (barn) */
+#define R_E 2.8179403267e-15       /* Classical electron radius (m) */
 
 #include "shells.h"
 #include "lines.h"
 #include "xraylib-parser.h"
 #include "xraylib-auger.h"
-#include "crystal_diffraction.h"
+#include "xraylib-crystal-diffraction.h"
 
-//Siegbahn notation
-//according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
-//Linegroups -> usage is discouraged
+/*
+ * Siegbahn notation
+ * according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
+ * Linegroups -> usage is discouraged
+ *
+ */
 #define KA_LINE 0
 #define KB_LINE 1
 #define LA_LINE 2
 #define LB_LINE 3
 
-//single lines
+/* single lines */
 #define KA1_LINE KL3_LINE
 #define KA2_LINE KL2_LINE
 #define KB1_LINE KM3_LINE
@@ -123,10 +129,10 @@ extern "C" {
 #define FM45_TRANS 14
 
 
-// Initialization
+/* Initialization */
 void XRayInit(void);
 
-// Error Handling
+/* Error Handling */
 void SetHardExit(int hard_exit);
 void SetExitStatus(int exit_status);
 int GetExitStatus(void);
@@ -134,22 +140,22 @@ void SetErrorMessages(int status);
 int GetErrorMessages(void);
 
 
-// Atomic weights
+/* Atomic weights */
 float AtomicWeight(int Z);
                                   
-// Cross sections (cm2/g)
+/* Cross sections (cm2/g) */
 float CS_Total(int Z, float E);
 float CS_Photo(int Z, float E);
 float CS_Rayl(int Z, float E);
 float CS_Compt(int Z, float E); 
-// barn/atom
+/* barn/atom */
 float CSb_Total(int Z, float E);
 float CSb_Photo(int Z, float E);
 float CSb_Rayl(int Z, float E);
 float CSb_Compt(int Z, float E); 
 float CS_KN(float E);
 
-// Unpolarized differential scattering cross sections
+/* Unpolarized differential scattering cross sections */
 float DCS_Thoms(float theta);
 float DCS_KN(float E, float theta);
 float DCS_Rayl(int Z, float E, float theta);
@@ -157,7 +163,7 @@ float DCS_Compt(int Z, float E, float theta);
 float DCSb_Rayl(int Z, float E, float theta);
 float DCSb_Compt(int Z, float E, float theta);
  
-// Polarized differential scattering cross sections
+/* Polarized differential scattering cross sections */
 float DCSP_Thoms(float theta, float phi);
 float DCSP_KN(float E, float theta, float phi);
 float DCSP_Rayl(int Z, float E, float theta, float phi);
@@ -165,47 +171,47 @@ float DCSP_Compt(int Z, float E, float theta, float phi);
 float DCSPb_Rayl(int Z, float E, float theta, float phi);
 float DCSPb_Compt(int Z, float E, float theta, float phi);
  
-// Scattering factors
+/* Scattering factors */
 float  FF_Rayl(int Z, float q);
 float  SF_Compt(int Z, float q);
 float  MomentTransf(float E, float theta);
 
-// X-ray fluorescent line energy
+/* X-ray fluorescent line energy */
 float LineEnergy(int Z, int line);
 
-// Fluorescence yield 
+/* Fluorescence yield */
 float  FluorYield(int Z, int shell);
 
-// Coster-Kronig transition Probability
+/* Coster-Kronig transition Probability */
 float  CosKronTransProb(int Z, int trans);
 
-// Absorption-edge energies     
+/* Absorption-edge energies */
 float EdgeEnergy(int Z, int shell);
 
-// Jump ratio
+/* Jump ratio */
 float  JumpFactor(int Z, int shell);
 
-// Fluorescent-lines cross sections
+/* Fluorescent-lines cross sections */
 float CS_FluorLine(int Z, int line, float E);
 float CSb_FluorLine(int Z, int line, float E);
 
-// Fractional radiative rate
+/* Fractional radiative rate */
 float  RadRate(int Z, int line);
 
-// Photon energy after Compton scattering
+/* Photon energy after Compton scattering */
 float ComptonEnergy(float E0, float theta);
 
-// Anomalous Scattering Factors
+/* Anomalous Scattering Factors */
 float Fi(int Z, float E);
 float Fii(int Z, float E);
 
-// Kissel Photoelectric cross sections
+/* Kissel Photoelectric cross sections */
 float CS_Photo_Total(int Z, float E);
 float CSb_Photo_Total(int Z, float E);
 float CS_Photo_Partial(int Z, int shell, float E);
 float CSb_Photo_Partial(int Z, int shell, float E);
 
-// XRF cross sections using Kissel partial photoelectric cross sections
+/* XRF cross sections using Kissel partial photoelectric cross sections */
 float CS_FluorLine_Kissel(int Z, int line, float E); 
 float CSb_FluorLine_Kissel(int Z, int line, float E); 
 float CS_FluorLine_Kissel_Cascade(int Z, int line, float E); 
@@ -219,15 +225,15 @@ float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E);
 
 
 
-// Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections
+/* Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections */
 float CS_Total_Kissel(int Z, float E); 
 float CSb_Total_Kissel(int Z, float E); 
 
-//Electron configuration (according to Kissel)
+/* Electron configuration (according to Kissel) */
 float ElectronConfig(int Z, int shell);
 
 
-//Cross Section functions using the compound parser
+/* Cross Section functions using the compound parser */
 float CS_Total_CP(const char compound[], float E);
 float CS_Photo_CP(const char compound[], float E);
 float CS_Rayl_CP(const char compound[], float E);
@@ -249,19 +255,19 @@ float CSb_Photo_Total_CP(const char compound[], float E);
 float CS_Total_Kissel_CP(const char compound[], float E); 
 float CSb_Total_Kissel_CP(const char compound[], float E); 
 
-//Refractive indices functions
+/* Refractive indices functions */
 float Refractive_Index_Re(const char compound[], float E, float density);
 float Refractive_Index_Im(const char compound[], float E, float density);
 
-//ComptonProfiles
+/* ComptonProfiles */
 float ComptonProfile(int Z, float pz);
 float ComptonProfile_Partial(int Z, int shell, float pz);
 
-//Atomic level widths
+/* Atomic level widths */
 float AtomicLevelWidth(int Z, int shell);
 
 
-//Auger non-radiative rates
+/* Auger non-radiative rates */
 float AugerRate(int Z, int auger_trans);
 
 
@@ -270,9 +276,3 @@ float AugerRate(int Z, int auger_trans);
 #endif
 
 #endif
-
-
-
-
-
-

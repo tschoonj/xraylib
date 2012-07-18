@@ -13,11 +13,12 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "xray_defs.h"
+#include <string.h>
+#include "xraylib-defs.h"
 
-//////////////////////////////////////////////////////////////////////
+/*/////////////////////////////////////////////////////////////////////
 /////            Variables                                       /////
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 static int HardExit = 0;
 static int ExitStatus = 0;
@@ -30,7 +31,7 @@ char ShellName[][5] = {
 "O5",   "O6",   "O7",   "P1",   "P2",   "P3",   "P4",   "P5"
 };
 
-//must match with contents of lines.h !!!! -> contains 383 linenames
+/* must match with contents of lines.h !!!! -> contains 383 linenames */
 char LineName[][6] = {
 "KL1", "KL2", "KL3", "KM1", "KM2", "KM3", "KM4", "KM5", "KN1", "KN2",
 "KN3", "KN4", "KN5", "KN6", "KN7", "KO", "KO1", "KO2", "KO3", "KO4",
@@ -115,9 +116,9 @@ char AugerNameTotal[][9] = {
 };
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 /////            Functions                                       /////
-//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////// */
 
 
 int compareMendelElements(const void *i1, const void *i2) {

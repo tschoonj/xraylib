@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayglob.h"
 #include "xraylib.h"
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Atomic level width (keV)                      //
 //                                                                  //
@@ -31,7 +31,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //            M5_SHELL 8                                            //
 //             .......                                              //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float AtomicLevelWidth(int Z, int shell)
 {

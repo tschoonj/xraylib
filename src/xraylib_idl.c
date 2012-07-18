@@ -114,7 +114,7 @@ extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_Radiative_Cascade(int argc, I
 extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_no_Cascade(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel_no_Cascade(int argc, IDL_VPTR argv[]);
 
-//xrf_cross_sections_aux.h functions
+/*xrf_cross_sections_aux.h functions */
 extern IDL_VPTR IDL_CDECL IDL_PL1_pure_kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_PL1_rad_cascade_kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_PL1_auger_cascade_kissel(int argc, IDL_VPTR argv[]);
@@ -160,140 +160,140 @@ extern IDL_VPTR IDL_CDECL IDL_PM5_full_cascade_kissel(int argc, IDL_VPTR argv[])
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
-	{IDL_GetExitStatus,"GETEXITSTATUS", 0 , 0 , 0 , 0},
-	{IDL_GetExitStatus,"GETERRORMESSAGES", 0 , 0 , 0 , 0},
-	{IDL_AtomicWeight,"ATOMICWEIGHT", 1 , 1 , 0 , 0},
-	{IDL_CS_Total,"CS_TOTAL", 2 , 2 , 0 , 0},
-	{IDL_CS_Photo,"CS_PHOTO", 2 , 2 , 0 , 0},
-	{IDL_CS_Rayl,"CS_RAYL", 2 , 2 , 0 , 0},
-	{IDL_CS_Compt,"CS_COMPT", 2 , 2 , 0 , 0},
-	{IDL_CSb_Total,"CSB_TOTAL", 2 , 2 , 0 , 0},
-	{IDL_CSb_Photo,"CSB_PHOTO", 2 , 2 , 0 , 0},
-	{IDL_CSb_Rayl,"CSB_RAYL", 2 , 2 , 0 , 0},
-	{IDL_CSb_Compt,"CSB_COMPT", 2 , 2 , 0 , 0},
-	{IDL_CS_KN,"CS_KN", 1 , 1 , 0 , 0},
-	{IDL_DCS_Thoms,"DCS_THOMS", 1 , 1 , 0 , 0},
-	{IDL_DCS_KN,"DCS_KN", 2 , 2 , 0 , 0},
-	{IDL_DCS_Rayl,"DCS_RAYL", 3 , 3 , 0 , 0},
-	{IDL_DCS_Compt,"DCS_COMPT", 3 , 3 , 0 , 0},
-	{IDL_DCSb_Rayl,"DCSB_RAYL", 3 , 3 , 0 , 0},
-	{IDL_DCSb_Compt,"DCSB_COMPT", 3 , 3 , 0 , 0},
-	{IDL_DCSP_Thoms,"DCSP_THOMS", 2 , 2 , 0 , 0},
-	{IDL_DCSP_KN,"DCSP_KN", 3 , 3 , 0 , 0},
-	{IDL_DCSP_Rayl,"DCSP_RAYL", 4 , 4 , 0 , 0},
-	{IDL_DCSP_Compt,"DCSP_COMPT", 4 , 4 , 0 , 0},
-	{IDL_DCSPb_Rayl,"DCSPB_RAYL", 4 , 4 , 0 , 0},
-	{IDL_DCSPb_Compt,"DCSPB_COMPT", 4 , 4 , 0 , 0},
-	{IDL_FF_Rayl,"FF_RAYL", 2 , 2 , 0 , 0},
-	{IDL_SF_Compt,"SF_COMPT", 2 , 2 , 0 , 0},
-	{IDL_MomentTransf,"MOMENTTRANSF", 2 , 2 , 0 , 0},
-	{IDL_LineEnergy,"LINEENERGY", 2 , 2 , 0 , 0},
-	{IDL_FluorYield,"FLUORYIELD", 2 , 2 , 0 , 0},
-	{IDL_CosKronTransProb,"COSKRONTRANSPROB", 2 , 2 , 0 , 0},
-	{IDL_EdgeEnergy,"EDGEENERGY", 2 , 2 , 0 , 0},
-	{IDL_JumpFactor,"JUMPFACTOR", 2 , 2 , 0 , 0},
-	{IDL_CS_FluorLine,"CS_FLUORLINE", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine,"CSB_FLUORLINE", 3 , 3 , 0 , 0},
-	{IDL_RadRate,"RADRATE", 2 , 2 , 0 , 0},
-	{IDL_ComptonEnergy,"COMPTONENERGY", 2 , 2 , 0 , 0},
-	{IDL_Fi,"FI", 2 , 2 , 0 , 0},
-	{IDL_Fii,"FII", 2 , 2 , 0 , 0},
-	{IDL_CSb_Photo_Total,"CSB_PHOTO_TOTAL", 2 , 2 , 0 , 0},
-	{IDL_CS_Photo_Total,"CS_PHOTO_TOTAL", 2 , 2 , 0 , 0},
-	{IDL_CSb_Photo_Partial,"CSB_PHOTO_PARTIAL", 3 , 3 , 0 , 0},
-	{IDL_CS_Photo_Partial,"CS_PHOTO_PARTIAL", 3 , 3 , 0 , 0},
-	{IDL_CS_Total_Kissel,"CS_TOTAL_KISSEL", 2 , 2 , 0 , 0},
-	{IDL_CSb_Total_Kissel,"CSB_TOTAL_KISSEL", 2 , 2 , 0 , 0},
-	{IDL_CompoundParser,"COMPOUNDPARSER",1, 1, 0, 0},
-	{IDL_CS_Total_CP,"CS_TOTAL_CP",2,2,0,0},
-	{IDL_CS_Photo_CP,"CS_PHOTO_CP",2,2,0,0},
-	{IDL_CS_Rayl_CP,"CS_RAYL_CP",2,2,0,0},
-	{IDL_CS_Compt_CP,"CS_COMPT_CP",2,2,0,0},
-	{IDL_CSb_Total_CP,"CSB_TOTAL_CP",2,2,0,0},
-	{IDL_CSb_Photo_CP,"CSB_PHOTO_CP",2,2,0,0},
-	{IDL_CSb_Rayl_CP,"CSB_RAYL_CP",2,2,0,0},
-	{IDL_CSb_Compt_CP,"CSB_COMPT_CP",2,2,0,0},
-	{IDL_DCS_Rayl_CP,"DCS_RAYL_CP",3,3,0,0},
-	{IDL_DCS_Compt_CP,"DCS_COMPT_CP",3,3,0,0},
-	{IDL_DCSb_Rayl_CP,"DCSB_RAYL_CP",3,3,0,0},
-	{IDL_DCSb_Compt_CP,"DCSB_COMPT_CP",3,3,0,0},
-	{IDL_DCSP_Rayl_CP,"DCSP_RAYL_CP",4,4,0,0},
-	{IDL_DCSP_Compt_CP,"DCSP_COMPT_CP",4,4,0,0},
-	{IDL_DCSPb_Rayl_CP,"DCSPB_RAYL_CP",4,4,0,0},
-	{IDL_DCSPb_Compt_CP,"DCSPB_COMPT_CP",4,4,0,0},
-	{IDL_CS_Photo_Total_CP,"CS_PHOTO_TOTAL_CP",2,2,0,0},
-	{IDL_CSb_Photo_Total_CP,"CSB_PHOTO_TOTAL_CP",2,2,0,0},
-	{IDL_CS_Total_Kissel_CP,"CS_TOTAL_KISSEL_CP",2,2,0,0},
-	{IDL_CSb_Total_Kissel_CP,"CSB_TOTAL_KISSEL_CP",2,2,0,0},
-	{IDL_Refractive_Index_Re,"REFRACTIVE_INDEX_RE",3,3,0,0},
-	{IDL_Refractive_Index_Im,"REFRACTIVE_INDEX_IM",3,3,0,0},
-	{IDL_ComptonProfile,"COMPTONPROFILE",2,2,0,0},
-	{IDL_ComptonProfile_Partial,"COMPTONPROFILE_PARTIAL",3,3,0,0},
-	{IDL_ElectronConfig, "ELECTRONCONFIG", 2, 2, 0, 0},
-	{IDL_AtomicNumberToSymbol,"ATOMICNUMBERTOSYMBOL", 1, 1, 0, 0},
-	{IDL_SymbolToAtomicNumber,"SYMBOLTOATOMICNUMBER", 1, 1, 0, 0},
-	{IDL_AtomicLevelWidth, "ATOMICLEVELWIDTH", 2, 2, 0, 0},
-	{IDL_AugerRate, "AUGERRATE", 2, 2, 0, 0},
-	{IDL_CS_FluorLine_Kissel,"CS_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine_Kissel,"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
-	{IDL_CS_FluorLine_Kissel_Cascade,"CS_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine_Kissel_Cascade,"CSB_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CS_FluorLine_Kissel_no_Cascade,"CS_FLUORLINE_KISSEL_NO_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine_Kissel_no_Cascade,"CSB_FLUORLINE_KISSEL_NO_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CS_FluorLine_Kissel_Nonradiative_Cascade,"CS_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine_Kissel_Nonradiative_Cascade,"CSB_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CS_FluorLine_Kissel_Radiative_Cascade,"CS_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_CSb_FluorLine_Kissel_Radiative_Cascade,"CSB_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
-	{IDL_PL1_pure_kissel, "PL1_PURE_KISSEL", 2, 2,  0 , 0},
-	{IDL_PL1_rad_cascade_kissel, "PL1_RAD_CASCADE_KISSEL", 3, 3, 0 , 0},
-	{IDL_PL1_auger_cascade_kissel, "PL1_AUGER_CASCADE_KISSEL", 3, 3, 0 , 0},
-	{IDL_PL1_full_cascade_kissel, "PL1_FULL_CASCADE_KISSEL", 3, 3, 0 , 0},
+	{{IDL_GetExitStatus},"GETEXITSTATUS", 0 , 0 , 0 , 0},
+	{{IDL_GetExitStatus},"GETERRORMESSAGES", 0 , 0 , 0 , 0},
+	{{IDL_AtomicWeight},"ATOMICWEIGHT", 1 , 1 , 0 , 0},
+	{{IDL_CS_Total},"CS_TOTAL", 2 , 2 , 0 , 0},
+	{{IDL_CS_Photo},"CS_PHOTO", 2 , 2 , 0 , 0},
+	{{IDL_CS_Rayl},"CS_RAYL", 2 , 2 , 0 , 0},
+	{{IDL_CS_Compt},"CS_COMPT", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Total},"CSB_TOTAL", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Photo},"CSB_PHOTO", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Rayl},"CSB_RAYL", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Compt},"CSB_COMPT", 2 , 2 , 0 , 0},
+	{{IDL_CS_KN},"CS_KN", 1 , 1 , 0 , 0},
+	{{IDL_DCS_Thoms},"DCS_THOMS", 1 , 1 , 0 , 0},
+	{{IDL_DCS_KN},"DCS_KN", 2 , 2 , 0 , 0},
+	{{IDL_DCS_Rayl},"DCS_RAYL", 3 , 3 , 0 , 0},
+	{{IDL_DCS_Compt},"DCS_COMPT", 3 , 3 , 0 , 0},
+	{{IDL_DCSb_Rayl},"DCSB_RAYL", 3 , 3 , 0 , 0},
+	{{IDL_DCSb_Compt},"DCSB_COMPT", 3 , 3 , 0 , 0},
+	{{IDL_DCSP_Thoms},"DCSP_THOMS", 2 , 2 , 0 , 0},
+	{{IDL_DCSP_KN},"DCSP_KN", 3 , 3 , 0 , 0},
+	{{IDL_DCSP_Rayl},"DCSP_RAYL", 4 , 4 , 0 , 0},
+	{{IDL_DCSP_Compt},"DCSP_COMPT", 4 , 4 , 0 , 0},
+	{{IDL_DCSPb_Rayl},"DCSPB_RAYL", 4 , 4 , 0 , 0},
+	{{IDL_DCSPb_Compt},"DCSPB_COMPT", 4 , 4 , 0 , 0},
+	{{IDL_FF_Rayl},"FF_RAYL", 2 , 2 , 0 , 0},
+	{{IDL_SF_Compt},"SF_COMPT", 2 , 2 , 0 , 0},
+	{{IDL_MomentTransf},"MOMENTTRANSF", 2 , 2 , 0 , 0},
+	{{IDL_LineEnergy},"LINEENERGY", 2 , 2 , 0 , 0},
+	{{IDL_FluorYield},"FLUORYIELD", 2 , 2 , 0 , 0},
+	{{IDL_CosKronTransProb},"COSKRONTRANSPROB", 2 , 2 , 0 , 0},
+	{{IDL_EdgeEnergy},"EDGEENERGY", 2 , 2 , 0 , 0},
+	{{IDL_JumpFactor},"JUMPFACTOR", 2 , 2 , 0 , 0},
+	{{IDL_CS_FluorLine},"CS_FLUORLINE", 3 , 3 , 0 , 0},
+	{{IDL_CSb_FluorLine},"CSB_FLUORLINE", 3 , 3 , 0 , 0},
+	{{IDL_RadRate},"RADRATE", 2 , 2 , 0 , 0},
+	{{IDL_ComptonEnergy},"COMPTONENERGY", 2 , 2 , 0 , 0},
+	{{IDL_Fi},"FI", 2 , 2 , 0 , 0},
+	{{IDL_Fii},"FII", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Photo_Total},"CSB_PHOTO_TOTAL", 2 , 2 , 0 , 0},
+	{{IDL_CS_Photo_Total},"CS_PHOTO_TOTAL", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Photo_Partial},"CSB_PHOTO_PARTIAL", 3 , 3 , 0 , 0},
+	{{IDL_CS_Photo_Partial},"CS_PHOTO_PARTIAL", 3 , 3 , 0 , 0},
+	{{IDL_CS_Total_Kissel},"CS_TOTAL_KISSEL", 2 , 2 , 0 , 0},
+	{{IDL_CSb_Total_Kissel},"CSB_TOTAL_KISSEL", 2 , 2 , 0 , 0},
+	{{IDL_CompoundParser},"COMPOUNDPARSER",1, 1, 0, 0},
+	{{IDL_CS_Total_CP},"CS_TOTAL_CP",2,2,0,0},
+	{{IDL_CS_Photo_CP},"CS_PHOTO_CP",2,2,0,0},
+	{{IDL_CS_Rayl_CP},"CS_RAYL_CP",2,2,0,0},
+	{{IDL_CS_Compt_CP},"CS_COMPT_CP",2,2,0,0},
+	{{IDL_CSb_Total_CP},"CSB_TOTAL_CP",2,2,0,0},
+	{{IDL_CSb_Photo_CP},"CSB_PHOTO_CP",2,2,0,0},
+	{{IDL_CSb_Rayl_CP},"CSB_RAYL_CP",2,2,0,0},
+	{{IDL_CSb_Compt_CP},"CSB_COMPT_CP",2,2,0,0},
+	{{IDL_DCS_Rayl_CP},"DCS_RAYL_CP",3,3,0,0},
+	{{IDL_DCS_Compt_CP},"DCS_COMPT_CP",3,3,0,0},
+	{{IDL_DCSb_Rayl_CP},"DCSB_RAYL_CP",3,3,0,0},
+	{{IDL_DCSb_Compt_CP},"DCSB_COMPT_CP",3,3,0,0},
+	{{IDL_DCSP_Rayl_CP},"DCSP_RAYL_CP",4,4,0,0},
+	{{IDL_DCSP_Compt_CP},"DCSP_COMPT_CP",4,4,0,0},
+	{{IDL_DCSPb_Rayl_CP},"DCSPB_RAYL_CP",4,4,0,0},
+	{{IDL_DCSPb_Compt_CP},"DCSPB_COMPT_CP",4,4,0,0},
+	{{IDL_CS_Photo_Total_CP},"CS_PHOTO_TOTAL_CP",2,2,0,0},
+	{{IDL_CSb_Photo_Total_CP},"CSB_PHOTO_TOTAL_CP",2,2,0,0},
+	{{IDL_CS_Total_Kissel_CP},"CS_TOTAL_KISSEL_CP",2,2,0,0},
+	{{IDL_CSb_Total_Kissel_CP},"CSB_TOTAL_KISSEL_CP",2,2,0,0},
+	{{IDL_Refractive_Index_Re},"REFRACTIVE_INDEX_RE",3,3,0,0},
+	{{IDL_Refractive_Index_Im},"REFRACTIVE_INDEX_IM",3,3,0,0},
+	{{IDL_ComptonProfile},"COMPTONPROFILE",2,2,0,0},
+	{{IDL_ComptonProfile_Partial},"COMPTONPROFILE_PARTIAL",3,3,0,0},
+	{{IDL_ElectronConfig},"ELECTRONCONFIG", 2, 2, 0, 0},
+	{{IDL_AtomicNumberToSymbol},"ATOMICNUMBERTOSYMBOL", 1, 1, 0, 0},
+	{{IDL_SymbolToAtomicNumber},"SYMBOLTOATOMICNUMBER", 1, 1, 0, 0},
+	{{IDL_AtomicLevelWidth},"ATOMICLEVELWIDTH", 2, 2, 0, 0},
+	{{IDL_AugerRate},"AUGERRATE", 2, 2, 0, 0},
+	{{IDL_CS_FluorLine_Kissel},"CS_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
+	{{IDL_CSb_FluorLine_Kissel},"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
+	{{IDL_CS_FluorLine_Kissel_Cascade},"CS_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CSb_FluorLine_Kissel_Cascade},"CSB_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CS_FluorLine_Kissel_no_Cascade},"CS_FLUORLINE_KISSEL_NO_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CSb_FluorLine_Kissel_no_Cascade},"CSB_FLUORLINE_KISSEL_NO_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CS_FluorLine_Kissel_Nonradiative_Cascade},"CS_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CSb_FluorLine_Kissel_Nonradiative_Cascade},"CSB_FLUORLINE_KISSEL_NONRADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CS_FluorLine_Kissel_Radiative_Cascade},"CS_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_CSb_FluorLine_Kissel_Radiative_Cascade},"CSB_FLUORLINE_KISSEL_RADIATIVE_CASCADE", 3 , 3 , 0 , 0},
+	{{IDL_PL1_pure_kissel},"PL1_PURE_KISSEL", 2, 2,  0 , 0},
+	{{IDL_PL1_rad_cascade_kissel},"PL1_RAD_CASCADE_KISSEL", 3, 3, 0 , 0},
+	{{IDL_PL1_auger_cascade_kissel},"PL1_AUGER_CASCADE_KISSEL", 3, 3, 0 , 0},
+	{{IDL_PL1_full_cascade_kissel},"PL1_FULL_CASCADE_KISSEL", 3, 3, 0 , 0},
 
-	{IDL_PL2_pure_kissel, "PL2_PURE_KISSEL", 3, 3, 0 , 0},
-	{IDL_PL2_rad_cascade_kissel, "PL2_RAD_CASCADE_KISSEL", 4, 4, 0 , 0},
-	{IDL_PL2_auger_cascade_kissel, "PL2_AUGER_CASCADE_KISSEL", 4, 4, 0 , 0},
-	{IDL_PL2_full_cascade_kissel, "PL2_FULL_CASCADE_KISSEL", 4, 4, 0 , 0},
+	{{IDL_PL2_pure_kissel},"PL2_PURE_KISSEL", 3, 3, 0 , 0},
+	{{IDL_PL2_rad_cascade_kissel},"PL2_RAD_CASCADE_KISSEL", 4, 4, 0 , 0},
+	{{IDL_PL2_auger_cascade_kissel},"PL2_AUGER_CASCADE_KISSEL", 4, 4, 0 , 0},
+	{{IDL_PL2_full_cascade_kissel},"PL2_FULL_CASCADE_KISSEL", 4, 4, 0 , 0},
 
-	{IDL_PL3_pure_kissel, "PL3_PURE_KISSEL", 4, 4, 0 , 0},
-	{IDL_PL3_rad_cascade_kissel, "PL3_RAD_CASCADE_KISSEL", 5, 5, 0 , 0},
-	{IDL_PL3_auger_cascade_kissel, "PL3_AUGER_CASCADE_KISSEL", 5, 5, 0 , 0},
-	{IDL_PL3_full_cascade_kissel, "PL3_FULL_CASCADE_KISSEL", 5, 5, 0 , 0},
+	{{IDL_PL3_pure_kissel},"PL3_PURE_KISSEL", 4, 4, 0 , 0},
+	{{IDL_PL3_rad_cascade_kissel},"PL3_RAD_CASCADE_KISSEL", 5, 5, 0 , 0},
+	{{IDL_PL3_auger_cascade_kissel},"PL3_AUGER_CASCADE_KISSEL", 5, 5, 0 , 0},
+	{{IDL_PL3_full_cascade_kissel},"PL3_FULL_CASCADE_KISSEL", 5, 5, 0 , 0},
 
-	{IDL_PM1_pure_kissel, "PM1_PURE_KISSEL", 2, 2, 0 , 0},
-	{IDL_PM1_rad_cascade_kissel, "PM1_RAD_CASCADE_KISSEL", 6,6, 0 , 0},
-	{IDL_PM1_auger_cascade_kissel, "PM1_AUGER_CASCADE_KISSEL", 6, 6, 0 , 0},
-	{IDL_PM1_full_cascade_kissel, "PM1_FULL_CASCADE_KISSEL", 6, 6, 0 , 0},
+	{{IDL_PM1_pure_kissel},"PM1_PURE_KISSEL", 2, 2, 0 , 0},
+	{{IDL_PM1_rad_cascade_kissel},"PM1_RAD_CASCADE_KISSEL", 6,6, 0 , 0},
+	{{IDL_PM1_auger_cascade_kissel},"PM1_AUGER_CASCADE_KISSEL", 6, 6, 0 , 0},
+	{{IDL_PM1_full_cascade_kissel},"PM1_FULL_CASCADE_KISSEL", 6, 6, 0 , 0},
 
-	{IDL_PM2_pure_kissel, "PM2_PURE_KISSEL", 3 , 3, 0 , 0},
-	{IDL_PM2_rad_cascade_kissel, "PM2_RAD_CASCADE_KISSEL", 7,7, 0 , 0},
-	{IDL_PM2_auger_cascade_kissel, "PM2_AUGER_CASCADE_KISSEL", 7, 7, 0 , 0},
-	{IDL_PM2_full_cascade_kissel, "PM2_FULL_CASCADE_KISSEL",7,7, 0 , 0},
+	{{IDL_PM2_pure_kissel},"PM2_PURE_KISSEL", 3 , 3, 0 , 0},
+	{{IDL_PM2_rad_cascade_kissel},"PM2_RAD_CASCADE_KISSEL", 7,7, 0 , 0},
+	{{IDL_PM2_auger_cascade_kissel},"PM2_AUGER_CASCADE_KISSEL", 7, 7, 0 , 0},
+	{{IDL_PM2_full_cascade_kissel},"PM2_FULL_CASCADE_KISSEL",7,7, 0 , 0},
 
-	{IDL_PM3_pure_kissel, "PM3_PURE_KISSEL", 4, 4, 0 , 0},
-	{IDL_PM3_rad_cascade_kissel, "PM3_RAD_CASCADE_KISSEL", 8, 8, 0 , 0},
-	{IDL_PM3_auger_cascade_kissel, "PM3_AUGER_CASCADE_KISSEL", 8 , 8, 0 , 0},
-	{IDL_PM3_full_cascade_kissel, "PM3_FULL_CASCADE_KISSEL", 8, 8, 0 , 0},
+	{{IDL_PM3_pure_kissel},"PM3_PURE_KISSEL", 4, 4, 0 , 0},
+	{{IDL_PM3_rad_cascade_kissel},"PM3_RAD_CASCADE_KISSEL", 8, 8, 0 , 0},
+	{{IDL_PM3_auger_cascade_kissel},"PM3_AUGER_CASCADE_KISSEL", 8 , 8, 0 , 0},
+	{{IDL_PM3_full_cascade_kissel},"PM3_FULL_CASCADE_KISSEL", 8, 8, 0 , 0},
 
-	{IDL_PM4_pure_kissel, "PM4_PURE_KISSEL", 5, 5, 0 , 0},
-	{IDL_PM4_rad_cascade_kissel, "PM4_RAD_CASCADE_KISSEL", 9, 9, 0 , 0},
-	{IDL_PM4_auger_cascade_kissel, "PM4_AUGER_CASCADE_KISSEL", 9 , 9, 0 , 0},
-	{IDL_PM4_full_cascade_kissel, "PM4_FULL_CASCADE_KISSEL", 9, 9, 0 , 0},
+	{{IDL_PM4_pure_kissel},"PM4_PURE_KISSEL", 5, 5, 0 , 0},
+	{{IDL_PM4_rad_cascade_kissel},"PM4_RAD_CASCADE_KISSEL", 9, 9, 0 , 0},
+	{{IDL_PM4_auger_cascade_kissel},"PM4_AUGER_CASCADE_KISSEL", 9 , 9, 0 , 0},
+	{{IDL_PM4_full_cascade_kissel},"PM4_FULL_CASCADE_KISSEL", 9, 9, 0 , 0},
 
-	{IDL_PM5_pure_kissel, "PM5_PURE_KISSEL", 6, 6, 0 , 0},
-	{IDL_PM5_rad_cascade_kissel, "PM5_RAD_CASCADE_KISSEL", 10, 10, 0 , 0},
-	{IDL_PM5_auger_cascade_kissel, "PM5_AUGER_CASCADE_KISSEL", 10 , 10, 0 , 0},
-	{IDL_PM5_full_cascade_kissel, "PM5_FULL_CASCADE_KISSEL", 10, 10, 0 , 0},
+	{{IDL_PM5_pure_kissel},"PM5_PURE_KISSEL", 6, 6, 0 , 0},
+	{{IDL_PM5_rad_cascade_kissel},"PM5_RAD_CASCADE_KISSEL", 10, 10, 0 , 0},
+	{{IDL_PM5_auger_cascade_kissel},"PM5_AUGER_CASCADE_KISSEL", 10 , 10, 0 , 0},
+	{{IDL_PM5_full_cascade_kissel},"PM5_FULL_CASCADE_KISSEL", 10, 10, 0 , 0},
 
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
-	{(IDL_SYSRTN_GENERIC) IDL_XRayInit,"XRAYINIT", 0 , 0 , 0 , 0},
-	{(IDL_SYSRTN_GENERIC) IDL_SetHardExit,"SETHARDEXIT", 1 , 1 , 0 , 0},
-	{(IDL_SYSRTN_GENERIC) IDL_SetExitStatus,"SETEXITSTATUS", 1 , 1 , 0 , 0},
-	{(IDL_SYSRTN_GENERIC) IDL_SetErrorMessages,"SETERRORMESSAGES", 1 , 1 , 0 , 0},
+	{{(IDL_SYSRTN_GENERIC) IDL_XRayInit},"XRAYINIT", 0 , 0 , 0 , 0},
+	{{(IDL_SYSRTN_GENERIC) IDL_SetHardExit},"SETHARDEXIT", 1 , 1 , 0 , 0},
+	{{(IDL_SYSRTN_GENERIC) IDL_SetExitStatus},"SETEXITSTATUS", 1 , 1 , 0 , 0},
+	{{(IDL_SYSRTN_GENERIC) IDL_SetErrorMessages},"SETERRORMESSAGES", 1 , 1 , 0 , 0},
 };
 
 
-// Error Handling
+/* Error Handling */
 void IDL_CDECL IDL_SetHardExit(int argc, IDL_VPTR argv[])
 {
   SetHardExit(IDL_LongScalar(argv[0]));
@@ -326,9 +326,9 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   XRayInit();
 }
 
-//macros for the IDL functions
+/*macros for the IDL functions */
 
-//1 argument: 1 int
+/*1 argument: 1 int */
 #define XRL_1I(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
@@ -345,7 +345,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//1 argument: 1 float
+/*1 argument: 1 float */
 #define XRL_1F(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   float E;\
@@ -363,7 +363,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 }
 
 
-//2 arguments: 1 int, 1 float
+/*2 arguments: 1 int, 1 float */
 #define XRL_2IF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
@@ -384,7 +384,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//2 arguments: 2 int
+/*2 arguments: 2 int */
 #define XRL_2II(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
@@ -405,7 +405,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//2 arguments: 2 float
+/*2 arguments: 2 float */
 #define XRL_2FF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   float Z;\
@@ -426,7 +426,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//3 arguments: int, float, float
+/*3 arguments: int, float, float */
 #define XRL_3IFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
@@ -451,7 +451,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//3 arguments: float, float, float
+/*3 arguments: float, float, float */
 #define XRL_3FFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   float Z;\
@@ -476,7 +476,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//3 arguments: int, int, float
+/*3 arguments: int, int, float */
 #define XRL_3IIF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
@@ -501,7 +501,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//4 arguments: int, float, float, float
+/*4 arguments: int, float, float, float */
 #define XRL_4IFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
@@ -781,7 +781,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//2 arguments: 1 string, 1 float
+/*2 arguments: 1 string, 1 float */
 #define XRL_2SF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
@@ -802,7 +802,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//3 arguments: 1 string, 2 float
+/*3 arguments: 1 string, 2 float */
 #define XRL_3SFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
@@ -827,7 +827,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//4 arguments: 1 string, 3 float
+/*4 arguments: 1 string, 3 float */
 #define XRL_4SFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
@@ -856,7 +856,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   return out_var;\
 }
 
-//3 arguments: 1 string, 1 int, 1 float
+/*3 arguments: 1 string, 1 int, 1 float*/
 #define XRL_3SIF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
@@ -1012,7 +1012,6 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 	
-	//success!
 	IDL_MEMINT array_dims[] = {1,cd.nElements};
 	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
 	void *sdef;
@@ -1077,7 +1076,6 @@ IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]) {
 
 int IDL_Load (void) 
 {
-	//register the routines
 	return IDL_SysRtnAdd(xrl_functions, TRUE, IDL_CARRAY_ELTS(xrl_functions)) &&
                 IDL_SysRtnAdd(xrl_procedures, FALSE, IDL_CARRAY_ELTS(xrl_procedures));
 }

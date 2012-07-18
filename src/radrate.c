@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define KM2 -KM2_LINE-1
 #define KM3 -KM3_LINE-1
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fractional Radiative Rate                     //
 //                                                                  //
@@ -30,7 +30,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
       
 float RadRate(int Z, int line)
 {
@@ -49,7 +49,9 @@ float RadRate(int Z, int line)
 		rr += RadRate_arr[Z][i];
     }
     else if (line == KB_LINE) {
-    	//we assume that RR(Ka)+RR(Kb) = 1.0
+    	/*
+	 * we assume that RR(Ka)+RR(Kb) = 1.0
+	 */
     	return 1.0 - RadRate(Z,KA_LINE);
     }
     if (rr == 0.0 || rr == 1.0) {
@@ -59,7 +61,6 @@ float RadRate(int Z, int line)
     return rr;
   }
 
-  //this is a temporary solution -> must be changed in 2.14.0
   if (line == LA_LINE) {
 	line = -L3M5_LINE-1;
 	rr=RadRate_arr[Z][line];
@@ -67,10 +68,9 @@ float RadRate(int Z, int line)
 	rr+=RadRate_arr[Z][line];
 	return rr;
   }
-  //in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
-/*  else if (line == LB_LINE) {
-    line = L2M4_LINE;
-  }*/
+  /*
+   * in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
+   */
 
   line = -line - 1;
   if (line<0 || line>=LINENUM) {
@@ -86,6 +86,3 @@ float RadRate(int Z, int line)
 
   return rad_rate;
 }
-
-                          
-                          

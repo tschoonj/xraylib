@@ -13,9 +13,10 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "xrayglob.h"
 #include "xraylib.h"
-#include "crystal_diffraction.h"
+#include "xraylib-crystal-diffraction.h"
 
 #define OUTD -9999
 
@@ -29,15 +30,16 @@ void XRayInit(void)
   char shell_name[5], line_name[5], trans_name[5], auger_name[10];
   char *path;
   int Z, iE;
-  int i, n, ex, stat;
+  int i, ex, stat;
   int shell, line, trans, auger;
-  float E, prob, aa, bb, cc, alpha, beta, gamma;
+  float E, prob;
   char buffer[1024];
 
   SetHardExit(1);
   SetExitStatus(0);
 
-  // Setup the Mendel table and the sorted Mendel table.
+  /* Setup the Mendel table and the sorted Mendel table. */
+
 
   for (i = 0 ; i < MENDEL_MAX ; i++) {
 		MendelArraySorted[i].name = strdup(MendelArray[i].name); 
@@ -46,7 +48,7 @@ void XRayInit(void)
 
 	qsort(MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), compareMendelElements);
 
-  // Define XRayLibDir
+  /* Define XRayLibDir */
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
     if ((path = getenv("HOME")) == NULL) {
@@ -63,18 +65,25 @@ void XRayInit(void)
 
   ArrayInit();
 
-  //--------------------------------------------------------------------------
-  // Parse Crystals.dat
+  /*-------------------------------------------------------------------------- */
+  /*
+   * Parse Crystals.dat
+   */
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "Crystals.dat");
 
   Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX);
   stat = Crystal_ReadFile (file_name, NULL);
-  if (stat == EXIT_FAILURE) return;
+  if (stat == 0) {
+    ErrorExit("Could not read Crystals.dat");
+    return;
+  } 
 
-  //--------------------------------------------------------------------------
-  // Parse atomicweight.dat 
+  /*-------------------------------------------------------------------------- */
+  /*
+   * Parse atomicweight.dat
+   */
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "atomicweight.dat");
@@ -87,7 +96,7 @@ void XRayInit(void)
     ex=fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp, "%f", &AtomicWeight_arr[Z]);
-    // printf("%d\t%f\n", Z, AtomicWeight_arr[Z]);
+    /* printf("%d\t%f\n", Z, AtomicWeight_arr[Z]);*/
   }
   fclose(fp);
 
@@ -99,7 +108,7 @@ void XRayInit(void)
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Photo[Z]);
-    // printf("%d\n", NE_Photo[Z]); 
+    /* printf("%d\n", NE_Photo[Z]); */
     if (ex != 1) break;
     E_Photo_arr[Z] = (float*)malloc(NE_Photo[Z]*sizeof(float));
     CS_Photo_arr[Z] = (float*)malloc(NE_Photo[Z]*sizeof(float));
@@ -107,8 +116,8 @@ void XRayInit(void)
     for (iE=0; iE<NE_Photo[Z]; iE++) {
       fscanf(fp, "%f%f%f", &E_Photo_arr[Z][iE], &CS_Photo_arr[Z][iE],
 	     &CS_Photo_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", E_Photo_arr[Z][iE], CS_Photo_arr[Z][iE],
-      //     CS_Photo_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", E_Photo_arr[Z][iE], CS_Photo_arr[Z][iE],
+           CS_Photo_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
@@ -121,7 +130,7 @@ void XRayInit(void)
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Rayl[Z]);
-    // printf("%d\n", NE_Rayl[Z]); 
+    /* printf("%d\n", NE_Rayl[Z]); */
     if (ex != 1) break;
     E_Rayl_arr[Z] = (float*)malloc(NE_Rayl[Z]*sizeof(float));
     CS_Rayl_arr[Z] = (float*)malloc(NE_Rayl[Z]*sizeof(float));
@@ -129,8 +138,8 @@ void XRayInit(void)
     for (iE=0; iE<NE_Rayl[Z]; iE++) {
       fscanf(fp, "%f%f%f", &E_Rayl_arr[Z][iE], &CS_Rayl_arr[Z][iE],
 	     &CS_Rayl_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", E_Rayl_arr[Z][iE], CS_Rayl_arr[Z][iE],
-      //     CS_Rayl_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", E_Rayl_arr[Z][iE], CS_Rayl_arr[Z][iE],
+           CS_Rayl_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
@@ -144,7 +153,7 @@ void XRayInit(void)
 
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Compt[Z]);
-    // printf("%d\n", NE_Compt[Z]); 
+    /* printf("%d\n", NE_Compt[Z]); */
     if (ex != 1) break;
     E_Compt_arr[Z] = (float*)malloc(NE_Compt[Z]*sizeof(float));
     CS_Compt_arr[Z] = (float*)malloc(NE_Compt[Z]*sizeof(float));
@@ -152,8 +161,8 @@ void XRayInit(void)
     for (iE=0; iE<NE_Compt[Z]; iE++) {
       fscanf(fp, "%f%f%f", &E_Compt_arr[Z][iE], &CS_Compt_arr[Z][iE],
 	     &CS_Compt_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", E_Compt_arr[Z][iE], CS_Compt_arr[Z][iE],
-      //     CS_Compt_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", E_Compt_arr[Z][iE], CS_Compt_arr[Z][iE],
+           CS_Compt_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
@@ -166,7 +175,7 @@ void XRayInit(void)
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &Nq_Rayl[Z]);
-    // printf("%d\n", Nq_Rayl[Z]); 
+    /* printf("%d\n", Nq_Rayl[Z]);*/
     if (ex != 1) break;
     q_Rayl_arr[Z] = (float*)malloc(Nq_Rayl[Z]*sizeof(float));
     FF_Rayl_arr[Z] = (float*)malloc(Nq_Rayl[Z]*sizeof(float));
@@ -174,8 +183,8 @@ void XRayInit(void)
     for (iE=0; iE<Nq_Rayl[Z]; iE++) {
       fscanf(fp, "%f%f%f", &q_Rayl_arr[Z][iE], &FF_Rayl_arr[Z][iE],
 	     &FF_Rayl_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", q_Rayl_arr[Z][iE], FF_Rayl_arr[Z][iE],
-      //     FF_Rayl_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", q_Rayl_arr[Z][iE], FF_Rayl_arr[Z][iE],
+           FF_Rayl_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
@@ -188,7 +197,7 @@ void XRayInit(void)
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &Nq_Compt[Z]);
-    // printf("%d\n", Nq_Compt[Z]); 
+    /* printf("%d\n", Nq_Compt[Z]); */
     if (ex != 1) break;
     q_Compt_arr[Z] = (float*)malloc(Nq_Compt[Z]*sizeof(float));
     SF_Compt_arr[Z] = (float*)malloc(Nq_Compt[Z]*sizeof(float));
@@ -196,8 +205,8 @@ void XRayInit(void)
     for (iE=0; iE<Nq_Compt[Z]; iE++) {
       fscanf(fp, "%f%f%f", &q_Compt_arr[Z][iE], &SF_Compt_arr[Z][iE],
 	     &SF_Compt_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", q_Compt_arr[Z][iE], SF_Compt_arr[Z][iE],
-      //     SF_Compt_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", q_Compt_arr[Z][iE], SF_Compt_arr[Z][iE],
+           SF_Compt_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
@@ -217,7 +226,7 @@ void XRayInit(void)
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
 	EdgeEnergy_arr[Z][shell] = E;
-	// printf("%d\t%s\t%e\n", Z, ShellName[shell], E);
+	/* printf("%d\t%s\t%e\n", Z, ShellName[shell], E);*/
 	break;
       } 
     }
@@ -245,7 +254,6 @@ void XRayInit(void)
     for (line=0; line<LINENUM; line++) {
       if (strcmp(line_name, LineName[line]) == 0) {
 	LineEnergy_arr[Z][line] = E;
-	//printf("%d\t%s\t%e\n", Z, LineName[line], E);
         read_error=0;
 	break;
       } 
@@ -281,7 +289,7 @@ void XRayInit(void)
     ErrorExit(buffer);
   }
 
-  //atomic level widths
+  /*atomic level widths*/
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "atomiclevelswidth.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
@@ -301,7 +309,6 @@ void XRayInit(void)
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
 	AtomicLevelWidth_arr[Z][shell] = E;
-	//printf("%d\t%s\t%e\n", Z, LineName[line], E);
         read_error=0;
 	break;
       } 
@@ -352,7 +359,6 @@ void XRayInit(void)
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
 	FluorYield_arr[Z][shell] = prob;
-	// printf("%d\t%s\t%e\n", Z, ShellName[shell], prob);
 	break;
       } 
     }
@@ -373,7 +379,7 @@ void XRayInit(void)
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
 	JumpFactor_arr[Z][shell] = prob;
-	// printf("%d\t%s\t%e\n", Z, ShellName[shell], prob);
+	/* printf("%d\t%s\t%e\n", Z, ShellName[shell], prob);*/
 	break;
       } 
     }
@@ -394,7 +400,7 @@ void XRayInit(void)
     for (trans=0; trans<TRANSNUM; trans++) {
       if (strcmp(trans_name, TransName[trans]) == 0) {
 	CosKron_arr[Z][trans] = prob;
-	// printf("%d\t%s\t%e\n", Z, TransName[trans], prob);
+	/* printf("%d\t%s\t%e\n", Z, TransName[trans], prob);*/
 	break;
       } 
     }
@@ -417,7 +423,7 @@ void XRayInit(void)
     for (line=0; line<LINENUM; line++) {
       if (strcmp(line_name, LineName[line]) == 0) {
 	RadRate_arr[Z][line] = prob;
-	// printf("%d\t%s\t%e\n", Z, LineName[line], prob);
+	/* printf("%d\t%s\t%e\n", Z, LineName[line], prob);*/
 	read_error=0;
 	break;
       } 
@@ -453,7 +459,7 @@ void XRayInit(void)
     ErrorExit(buffer);
   }
 
-  //auger non-radiative transitions
+  /*auger non-radiative transitions*/
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "auger_rates.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
@@ -470,7 +476,7 @@ void XRayInit(void)
     for (shell=0; shell < SHELLNUM_A; shell++) {
       if (strcmp(auger_name, AugerNameTotal[shell]) == 0) {
 	Auger_Transition_Total[Z][shell] = prob;
-	// printf("%d\t%s\t%e\n", Z, LineName[line], prob);
+	/* printf("%d\t%s\t%e\n", Z, LineName[line], prob);*/
 	read_error=0;
 	break;
       } 
@@ -478,7 +484,7 @@ void XRayInit(void)
     for (auger=0; auger < AUGERNUM; auger++) {
       if (strcmp(auger_name, AugerName[auger]) == 0) {
 	Auger_Transition_Individual[Z][auger] = prob;
-	// printf("%d\t%s\t%e\n", Z, LineName[line], prob);
+	/* printf("%d\t%s\t%e\n", Z, LineName[line], prob);*/
 	read_error=0;
 	break;
       } 
@@ -515,7 +521,7 @@ void XRayInit(void)
     ErrorExit(buffer);
   }
 
-  //anomalous scattering factors
+  /*anomalous scattering factors */
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fi.dat");
@@ -526,7 +532,7 @@ void XRayInit(void)
 
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Fi[Z]);
-   // printf("%d\n", NE_Fi[Z]); 
+   /* printf("%d\n", NE_Fi[Z]); */
     if (ex != 1) break;
     E_Fi_arr[Z] = (float*)malloc(NE_Fi[Z]*sizeof(float));
     Fi_arr[Z] = (float*)malloc(NE_Fi[Z]*sizeof(float));
@@ -534,8 +540,8 @@ void XRayInit(void)
     for (iE=0; iE<NE_Fi[Z]; iE++) {
       fscanf(fp, "%f%f%f", &E_Fi_arr[Z][iE], &Fi_arr[Z][iE],
 	     &Fi_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", E_Fi_arr[Z][iE], Fi_arr[Z][iE],
-      //     Fi_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", E_Fi_arr[Z][iE], Fi_arr[Z][iE],
+           Fi_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
@@ -549,7 +555,7 @@ void XRayInit(void)
 
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Fii[Z]);
-    // printf("%d\n", NE_Fii[Z]); 
+    /* printf("%d\n", NE_Fii[Z]); */
     if (ex != 1) break;
     E_Fii_arr[Z] = (float*)malloc(NE_Fii[Z]*sizeof(float));
     Fii_arr[Z] = (float*)malloc(NE_Fii[Z]*sizeof(float));
@@ -557,13 +563,13 @@ void XRayInit(void)
     for (iE=0; iE<NE_Fii[Z]; iE++) {
       fscanf(fp, "%f%f%f", &E_Fii_arr[Z][iE], &Fii_arr[Z][iE],
 	     &Fii_arr2[Z][iE]);
-      // printf("%e\t%e\t%e\n", E_Fii_arr[Z][iE], Fii_arr[Z][iE],
-      //     Fii_arr2[Z][iE]);
+      /* printf("%e\t%e\t%e\n", E_Fii_arr[Z][iE], Fii_arr[Z][iE],
+           Fii_arr2[Z][iE]);*/
     }
   }
   fclose(fp);
 
-  //read kissel data
+  /*read kissel data*/
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name,"kissel_pe.dat");
@@ -575,18 +581,18 @@ void XRayInit(void)
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%i" , &NE_Photo_Total_Kissel[Z]);
     if (ex != 1) break;
-    //read the total PE cross sections
+    /*read the total PE cross sections*/
     E_Photo_Total_Kissel[Z] = (double*)malloc(NE_Photo_Total_Kissel[Z]*sizeof(double));
     Photo_Total_Kissel[Z] = (double*)malloc(NE_Photo_Total_Kissel[Z]*sizeof(double));
     Photo_Total_Kissel2[Z] = (double*)malloc(NE_Photo_Total_Kissel[Z]*sizeof(double));
     for (iE=0; iE<NE_Photo_Total_Kissel[Z]; iE++) {
       fscanf(fp,"%lf%lf%lf",&E_Photo_Total_Kissel[Z][iE],&Photo_Total_Kissel[Z][iE],&Photo_Total_Kissel2[Z][iE]);
     }
-    //read the electronic configuration
+    /*read the electronic configuration*/
     for (shell = 0 ; shell < SHELLNUM_K ; shell++) {
       fscanf(fp,"%f",&Electron_Config_Kissel[Z][shell]);
     }
-    //read the partial PE cross sections
+    /*read the partial PE cross sections*/
     for (shell = 0 ; shell < SHELLNUM_K ; shell++) {
       fscanf(fp,"%i",&NE_Photo_Partial_Kissel[Z][shell]);
       if (NE_Photo_Partial_Kissel[Z][shell] == 0 ) continue;
@@ -602,7 +608,7 @@ void XRayInit(void)
   }
   fclose(fp);
 
-  //read Compton profiles
+  /*read Compton profiles*/
   strcpy(file_name, XRayLibDir);
   strcat(file_name,"comptonprofiles.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
@@ -611,36 +617,34 @@ void XRayInit(void)
   }
 
   for (Z = 1 ; Z <= ZMAX ; Z++) {
-  //for (Z = 1 ; Z <= 1 ; Z++) {
  	ex = fscanf(fp, "%i %i",NShells_ComptonProfiles+Z,Npz_ComptonProfiles+Z);
 	if (ex != 2) break;
-	//allocate required amount of memory
 	UOCCUP_ComptonProfiles[Z] = (double *) malloc(NShells_ComptonProfiles[Z]*sizeof(double));
   	pz_ComptonProfiles[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
 	Total_ComptonProfiles[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
 	Total_ComptonProfiles2[Z] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
  	for (iE=0; iE < NShells_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &UOCCUP_ComptonProfiles[Z][iE]);
-//		fprintf(stdout,"%lf\n", UOCCUP_ComptonProfiles[Z][iE]);
+/*		fprintf(stdout,"%lf\n", UOCCUP_ComptonProfiles[Z][iE]);*/
 	} 
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &pz_ComptonProfiles[Z][iE]);
-//		fprintf(stdout,"%lf\n", pz_ComptonProfiles[Z][iE]);
+/*		fprintf(stdout,"%lf\n", pz_ComptonProfiles[Z][iE]);*/
 	} 
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &Total_ComptonProfiles[Z][iE]);
-//		fprintf(stdout,"%lf\n", Total_ComptonProfiles[Z][iE]);
+/*		fprintf(stdout,"%lf\n", Total_ComptonProfiles[Z][iE]);*/
 	} 
  	for (iE=0; iE < Npz_ComptonProfiles[Z] ; iE++) {
 		fscanf(fp,"%lf", &Total_ComptonProfiles2[Z][iE]);
-//		fprintf(stdout,"%lf\n", Total_ComptonProfiles2[Z][iE]);
+/*		fprintf(stdout,"%lf\n", Total_ComptonProfiles2[Z][iE]);*/
 	} 
 	for (shell = 0 ; shell < NShells_ComptonProfiles[Z] ; shell++) {
 		if (UOCCUP_ComptonProfiles[Z][shell] > 0.0) {
 			Partial_ComptonProfiles[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
 			for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
 				fscanf(fp, "%lf", &Partial_ComptonProfiles[Z][shell][iE]);
-//				fprintf(stdout, "%lf\n", Partial_ComptonProfiles[Z][shell][iE]);
+/*				fprintf(stdout, "%lf\n", Partial_ComptonProfiles[Z][shell][iE]);*/
 			}
 		}
 		else
@@ -651,7 +655,7 @@ void XRayInit(void)
 			Partial_ComptonProfiles2[Z][shell] = (double *) malloc(Npz_ComptonProfiles[Z]*sizeof(double));
 			for (iE = 0 ; iE < Npz_ComptonProfiles[Z] ; iE++) {
 				fscanf(fp, "%lf", &Partial_ComptonProfiles2[Z][shell][iE]);
-//				fprintf(stdout, "%lf\n", Partial_ComptonProfiles2[Z][shell][iE]);
+/*				fprintf(stdout, "%lf\n", Partial_ComptonProfiles2[Z][shell][iE]);*/
 			}
 		}
 		else

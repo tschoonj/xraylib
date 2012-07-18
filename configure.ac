@@ -12,7 +12,7 @@
 
 
 
-AC_INIT([xraylib],[2.15.0],[Tom.Schoonjans@UGent.be])
+AC_INIT([xraylib],[2.16.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -20,9 +20,9 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CANONICAL_HOST
 
 
-LIB_CURRENT=5
+LIB_CURRENT=6
 LIB_REVISION=0
-LIB_AGE=2
+LIB_AGE=3
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
@@ -37,6 +37,7 @@ AC_CHECK_FUNCS([strndup strdup])
 
 
 
+AM_PROG_AR
 #at least version 2.0 of libtool is required for creating the fortran bindings
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
@@ -45,6 +46,7 @@ LT_INIT([dlopen disable-fast-install win32-dll])
 AC_PROG_LIBTOOL
 
 AC_PROG_CC
+AM_PROG_CC_C_O
 #this next line may never be reached...
 if test -z $CC ; then
 	AC_MSG_ERROR([no C compiler was found on the system.])

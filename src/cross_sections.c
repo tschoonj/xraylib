@@ -17,7 +17,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xraylib.h"
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                  Total cross section  (cm2/g)                    //
 //               (Photoelectric + Compton + Rayleigh)               //
@@ -25,7 +25,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float CS_Total(int Z, float E)
 {
   if (Z<1 || Z>ZMAX || NE_Photo[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
@@ -41,14 +41,14 @@ float CS_Total(int Z, float E)
   return CS_Photo(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //         Photoelectric absorption cross section  (cm2/g)          //
 //                                                                  //
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float CS_Photo(int Z, float E)
 {
   float ln_E, ln_sigma, sigma;
@@ -73,14 +73,14 @@ float CS_Photo(int Z, float E)
   return sigma;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //            Rayleigh scattering cross section  (cm2/g)            //
 //                                                                  //
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float CS_Rayl(int Z, float E)
 {
   float ln_E, ln_sigma, sigma;
@@ -104,14 +104,14 @@ float CS_Rayl(int Z, float E)
   return sigma;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //            Compton scattering cross section  (cm2/g)             //
 //                                                                  //
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float CS_Compt(int Z, float E) 
 {
   float ln_E, ln_sigma, sigma;

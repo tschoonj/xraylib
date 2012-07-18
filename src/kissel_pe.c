@@ -19,7 +19,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrf_cross_sections_aux.h"
 
 
-///////////////////////////////////////////////////////////
+/*/////////////////////////////////////////////////////////
 //                                                       //
 //        Photoelectric cross section  (barns/atom)      //
 //                  Using the Kissel data                //
@@ -27,9 +27,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //    Z : atomic number                                  //
 //    E : energy (keV)                                   //
 //                                                       //
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////// */
 float CSb_Photo_Total(int Z, float E) {
-  double ln_E, ln_sigma, sigma;
   int shell;
   float rv = 0.0;
 
@@ -56,7 +55,7 @@ float CSb_Photo_Total(int Z, float E) {
   return rv;
 }
 
-///////////////////////////////////////////////////////////
+/*/////////////////////////////////////////////////////////
 //                                                       //
 //        Photoelectric cross section  (cm2/g)           //
 //                  Using the Kissel data                //
@@ -64,14 +63,14 @@ float CSb_Photo_Total(int Z, float E) {
 //    Z : atomic number                                  //
 //    E : energy (keV)                                   //
 //                                                       //
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////// */
 
 float CS_Photo_Total(int Z, float E) {
   return CSb_Photo_Total(Z, E)*AVOGNUM/AtomicWeight_arr[Z];
 }
 
 
-///////////////////////////////////////////////////////////
+/*/////////////////////////////////////////////////////////
 //                                                       //
 //   Partial Photoelectric cross section  (barns/elec)   //
 //                  Using the Kissel data                //
@@ -80,7 +79,7 @@ float CS_Photo_Total(int Z, float E) {
 //    shell : shell                                      //
 //    E : energy (keV)                                   //
 //                                                       //
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////// */
 
 float CSb_Photo_Partial(int Z, int shell, float E) {
   double ln_E, ln_sigma, sigma;
@@ -111,12 +110,16 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
   else {
     ln_E = log((double) E);
     if (EdgeEnergy_Kissel[Z][shell] > EdgeEnergy_arr[Z][shell] && E < EdgeEnergy_Kissel[Z][shell]) {
-   	//use log-log extrapolation 
+   	/*
+	 * use log-log extrapolation 
+	 */
 	x0 = E_Photo_Partial_Kissel[Z][shell][0];
 	x1 = E_Photo_Partial_Kissel[Z][shell][1];
 	y0 = Photo_Partial_Kissel[Z][shell][0];
 	y1 = Photo_Partial_Kissel[Z][shell][1];
-	//do not allow "extreme" slopes... force them to be within -1;1
+	/*
+	 * do not allow "extreme" slopes... force them to be within -1;1
+	 */
 	m = (y1-y0)/(x1-x0);
 	if (m > 1.0)
 		m=1.0;
@@ -135,7 +138,7 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
   }
 }
 
-///////////////////////////////////////////////////////////
+/*/////////////////////////////////////////////////////////
 //                                                       //
 //   Partial Photoelectric cross section  (cm2/g)        //
 //                  Using the Kissel data                //
@@ -144,7 +147,7 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
 //    shell : shell                                      //
 //    E : energy (keV)                                   //
 //                                                       //
-///////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////// */
 
 
 float CS_Photo_Partial(int Z, int shell, float E) {
@@ -152,7 +155,7 @@ float CS_Photo_Partial(int Z, int shell, float E) {
 }
 
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (cm2/g)        //
 //                                                                  //
@@ -164,13 +167,13 @@ float CS_Photo_Partial(int Z, int shell, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CS_FluorLine_Kissel(int Z, int line, float E) {
 	return CS_FluorLine_Kissel_Cascade(Z, line, E);
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
 //                                                                  //
@@ -182,13 +185,13 @@ float CS_FluorLine_Kissel(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CSb_FluorLine_Kissel(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                  Total cross section  (cm2/g)                    //
 //         (Photoelectric (Kissel) + Compton + Rayleigh)            //
@@ -196,7 +199,7 @@ float CSb_FluorLine_Kissel(int Z, int line, float E) {
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 float CS_Total_Kissel(int Z, float E) { 
 
   if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
@@ -213,7 +216,7 @@ float CS_Total_Kissel(int Z, float E) {
 
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                  Total cross section  (barn/atom)                //
 //         (Photoelectric (Kissel) + Compton + Rayleigh)            //
@@ -221,14 +224,14 @@ float CS_Total_Kissel(int Z, float E) {
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CSb_Total_Kissel(int Z, float E) {
 
   return CS_Total_Kissel(Z,E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                  Electronic configuration                        //
 //         		According to Lynn Kissel                    //
@@ -236,7 +239,7 @@ float CSb_Total_Kissel(int Z, float E) {
 //          Z : atomic number                                       //
 //          shell : shell macro                                     //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float ElectronConfig(int Z, int shell) {
 
@@ -254,9 +257,8 @@ float ElectronConfig(int Z, int shell) {
 
 }
 
-//new functions...
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (cm2/g)        //
 //                       without cascade effects                    //
@@ -269,7 +271,7 @@ float ElectronConfig(int Z, int shell) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
@@ -288,21 +290,29 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
   }
 
   if (line>=KN5_LINE && line<=KB_LINE) {
-    //K lines -> never cascade effect!
+    /*
+     * K lines -> never cascade effect!
+     */
     return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
   }
   else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    //L1 lines
+    /*
+     * L1 lines
+     */
     return PL1_pure_kissel(Z,E)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
   }
   else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    //L2 lines
+    /*
+     * L2 lines
+     */
     PL1 = PL1_pure_kissel(Z,E);
     return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
 		PL2_pure_kissel(Z, E, PL1);
   }
   else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    //L3 lines
+    /*
+     * L3 lines
+     */
     PL1 = PL1_pure_kissel(Z,E);
     PL2 = PL2_pure_kissel(Z, E, PL1);
     return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*PL3_pure_kissel(Z, E, PL1, PL2);
@@ -329,24 +339,32 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
     );
   }
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    //M1 lines
+    /*
+     * M1 lines
+     */
     return PM1_pure_kissel(Z, E)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
   }
   else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    //M2 lines
+    /*
+     * M2 lines
+     */
     PM1 = PM1_pure_kissel(Z, E);
     return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
 		PM2_pure_kissel(Z, E, PM1);
   }
   else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    //M3 lines
+    /*
+     * M3 lines
+     */
     PM1 = PM1_pure_kissel(Z, E);
     PM2 = PM2_pure_kissel(Z, E, PM1);
     return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
 		PM3_pure_kissel(Z, E, PM1, PM2);
   }
   else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    //M4 lines
+    /*
+     * M4 lines
+     */
     PM1 = PM1_pure_kissel(Z, E);
     PM2 = PM2_pure_kissel(Z, E, PM1);
     PM3 = PM3_pure_kissel(Z, E, PM1, PM2);
@@ -354,7 +372,9 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
 		PM4_pure_kissel(Z, E, PM1, PM2, PM3);
   }
   else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    //M5 lines
+    /*
+     * M5 lines
+     */
     PM1 = PM1_pure_kissel(Z, E);
     PM2 = PM2_pure_kissel(Z, E, PM1);
     PM3 = PM3_pure_kissel(Z, E, PM1, PM2);
@@ -369,7 +389,7 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
   }  
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (cm2/g)        //
 //                       with radiative cascade effects             //
@@ -382,7 +402,7 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
@@ -401,23 +421,31 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   }
 
   if (line>=KN5_LINE && line<=KB_LINE) {
-    //K lines -> never cascade effect!
+    /*
+     * K lines -> never cascade effect!
+     */
     return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
   }
   else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    //L1 lines
+    /*
+     * L1 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     return PL1_rad_cascade_kissel(Z, E, PK)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
   }
   else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    //L2 lines
+    /*
+     * L2 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z,E, PK);
     return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
 		PL2_rad_cascade_kissel(Z, E, PK, PL1);
   }
   else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    //L3 lines
+    /*
+     * L3 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z, E, PK);
     PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
@@ -445,7 +473,9 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
     );
   }
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    //M1 lines
+    /*
+     * M1 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z, E, PK);
     PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
@@ -453,7 +483,9 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
     return PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
   }
   else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    //M2 lines
+    /*
+     * M2 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z, E, PK);
     PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
@@ -463,7 +495,9 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 		PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
   }
   else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    //M3 lines
+    /*
+     * M3 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z, E, PK);
     PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
@@ -474,7 +508,9 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 		PM3_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
   }
   else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    //M4 lines
+    /*
+     * M4 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z, E, PK);
     PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
@@ -486,7 +522,9 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 		PM4_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
   }
   else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    //M5 lines
+    /*
+     * M5 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_rad_cascade_kissel(Z, E, PK);
     PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
@@ -504,7 +542,7 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   }  
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (cm2/g)        //
 //                       with non-radiative cascade effects         //
@@ -517,7 +555,7 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
@@ -536,23 +574,31 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
   }
 
   if (line>=KN5_LINE && line<=KB_LINE) {
-    //K lines -> never cascade effect!
+    /*
+     * K lines -> never cascade effect!
+     */
     return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
   }
   else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    //L1 lines
+    /*
+     * L1 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     return PL1_auger_cascade_kissel(Z, E, PK)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
   }
   else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    //L2 lines
+    /*
+     * L2 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z,E, PK);
     return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
 		PL2_auger_cascade_kissel(Z, E, PK, PL1);
   }
   else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    //L3 lines
+    /*
+     * L3 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z, E, PK);
     PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
@@ -580,7 +626,9 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
     );
   }
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    //M1 lines
+    /*
+     * M1 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z, E, PK);
     PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
@@ -588,7 +636,9 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
     return PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
   }
   else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    //M2 lines
+    /*
+     * M2 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z, E, PK);
     PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
@@ -598,7 +648,9 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 		PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
   }
   else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    //M3 lines
+    /*
+     * M3 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z, E, PK);
     PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
@@ -609,7 +661,9 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 		PM3_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
   }
   else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    //M4 lines
+    /*
+     * M4 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z, E, PK);
     PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
@@ -621,7 +675,9 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 		PM4_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
   }
   else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    //M5 lines
+    /*
+     * M5 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_auger_cascade_kissel(Z, E, PK);
     PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
@@ -639,7 +695,7 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
   }  
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (cm2/g)        //
 //                       with cascade effects                       //
@@ -652,7 +708,7 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
@@ -671,23 +727,31 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   }
 
   if (line>=KN5_LINE && line<=KB_LINE) {
-    //K lines -> never cascade effect!
+    /*
+     * K lines -> never cascade effect!
+     */
     return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
   }
   else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    //L1 lines
+    /*
+     * L1 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     return PL1_full_cascade_kissel(Z, E, PK)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
   }
   else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    //L2 lines
+    /*
+     * L2 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z,E, PK);
     return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
 		PL2_full_cascade_kissel(Z, E, PK, PL1);
   }
   else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    //L3 lines
+    /*
+     * L3 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z, E, PK);
     PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
@@ -715,7 +779,9 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
     );
   }
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    //M1 lines
+    /*
+     * M1 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z, E, PK);
     PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
@@ -723,7 +789,9 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
     return PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
   }
   else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    //M2 lines
+    /*
+     * M2 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z, E, PK);
     PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
@@ -733,7 +801,9 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 		PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
   }
   else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    //M3 lines
+    /*
+     * M3 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z, E, PK);
     PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
@@ -744,7 +814,9 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 		PM3_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
   }
   else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    //M4 lines
+    /*
+     * M4 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z, E, PK);
     PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
@@ -756,7 +828,9 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 		PM4_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
   }
   else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    //M5 lines
+    /*
+     * M5 lines
+     */
     PK = CS_Photo_Partial(Z, K_SHELL, E);
     PL1 = PL1_full_cascade_kissel(Z, E, PK);
     PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
@@ -774,7 +848,7 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   }  
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
 //                       with cascade effects                       //
@@ -787,13 +861,13 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
 //                       with non-radiative cascade effects         //
@@ -806,13 +880,13 @@ float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
 //                       with radiative cascade effects             //
@@ -825,13 +899,13 @@ float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-//////////////////////////////////////////////////////////////////////
+/*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
 //                       with non-radiative cascade effects         //
@@ -844,7 +918,7 @@ float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 //            LA_LINE 2                                             //
 //            LB_LINE 3                                             //
 //                                                                  //
-//////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// */
 
 float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
   return CS_FluorLine_Kissel_no_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
