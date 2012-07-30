@@ -29,7 +29,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan ''AS IS'' AND ANY EXPRESS OR IMPLIED WA
 
 /*-------------------------------------------------------------------------------------------------- */
 
-float c_abs(Complex x) { 
+float cmplx_abs(Complex x) { 
   float ans = x.re * x.re - x.im * x.im; 
   ans = sqrt(ans);
   return ans; 
@@ -37,7 +37,7 @@ float c_abs(Complex x) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-Complex c_mul(Complex x, Complex y) { 
+Complex cmplx_mul(Complex x, Complex y) { 
   Complex ans = {x.re * y.re - x.im * y.im, x.re * y.im + x.im * y.re};
   return ans; 
 };

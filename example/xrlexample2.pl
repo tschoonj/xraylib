@@ -51,4 +51,5 @@ printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %
 printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Nonradiative_Cascade(82,$xraylib::MA1_LINE,20.0));
 printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_no_Cascade(82,$xraylib::MA1_LINE,20.0));
   
+printf("\n--------------------------- END OF XRLEXAMPLE2 -------------------------------\n");
 exit 0;

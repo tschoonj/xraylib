@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 #include "xraylib.h"
 
 int main()
@@ -72,6 +73,118 @@ int main()
   std::printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
   std::printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
+  /* Si Crystal structure */
+
+  Crystal_Struct* cryst = Crystal_GetCrystal("Si", NULL);
+  if (cryst == NULL) return 1;
+  std::printf ("Si unit cell dimensions are %f %f %f\n", cryst->a, cryst->b, cryst->c);
+  std::printf ("Si unit cell angles are %f %f %f\n", cryst->alpha, cryst->beta, cryst->gamma);
+  std::printf ("Si unit cell volume is %f\n", cryst->volume);
+  std::printf ("Si atoms at:\n");
+  std::printf ("   Z  fraction    X        Y        Z\n");
+  Crystal_Atom* atom;
+  for (i = 0; i < cryst->n_atom; i++) {
+    atom = &cryst->atom[i];
+    std::printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
+  } 
+
+  /* Si diffraction parameters */
+
+  std::printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  float energy = 8;
+  float debye_temp_factor = 1.0;
+  float rel_angle = 1.0;
+
+  float bragg = Bragg_angle (cryst, energy, 1, 1, 1);
+  std::printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  float q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+  std::printf ("  Q Scattering amplitude: %f\n", q);
+
+  float f0, fp, fpp;
+  Atomic_Factors (14, energy, q, debye_temp_factor, &f0, &fp, &fpp);
+  std::printf ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  Complex FH, F0;
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  std::printf ("  FH(1,1,1) structure factor: (%f, %f)\n", FH.re, FH.im);
+
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+
+
+  /* Diamond diffraction parameters */
+
+  cryst = Crystal_GetCrystal("Diamond", NULL);
+
+  std::printf ("\nDiamond 111 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  bragg = Bragg_angle (cryst, energy, 1, 1, 1);
+  std::printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+  std::printf ("  Q Scattering amplitude: %f\n", q);
+
+  Atomic_Factors (6, energy, q, debye_temp_factor, &f0, &fp, &fpp);
+  std::printf ("  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  std::printf ("  FH(1,1,1) structure factor: (%f, %f)\n", FH.re, FH.im);
+
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+  Complex FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
+  float dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
+                                                  sqrt(cmplx_abs(cmplx_mul(FH, FHbar))) / PI / sin(2*bragg);
+  std::printf ("  Darwin width: %f micro-radians\n", 1e6*dw);
+
+  /* Alpha Quartz diffraction parameters */
+
+  cryst = Crystal_GetCrystal("AlphaQuartz", NULL);
+
+  std::printf ("\nAlpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  bragg = Bragg_angle (cryst, energy, 0, 2, 0);
+  std::printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  q = Q_scattering_amplitude (cryst, energy, 0, 2, 0, rel_angle);
+  std::printf ("  Q Scattering amplitude: %f\n", q);
+
+  Atomic_Factors (8, energy, q, debye_temp_factor, &f0, &fp, &fpp);
+  std::printf ("  Atomic factors (Z = 8) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 0, 2, 0, debye_temp_factor, rel_angle);
+  std::printf ("  FH(0,2,0) structure factor: (%f, %f)\n", FH.re, FH.im);
+
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+  /* Muscovite diffraction parameters */
+
+  cryst = Crystal_GetCrystal("Muscovite", NULL);
+
+  std::printf ("\nMuscovite 331 at 8 KeV. Incidence at the Bragg angle:\n");
+
+  bragg = Bragg_angle (cryst, energy, 3, 3, 1);
+  std::printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
+
+  q = Q_scattering_amplitude (cryst, energy, 3, 3, 1, rel_angle);
+  std::printf ("  Q Scattering amplitude: %f\n", q);
+
+  Atomic_Factors (19, energy, q, debye_temp_factor, &f0, &fp, &fpp);
+  std::printf ("  Atomic factors (Z = 19) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
+
+  FH = Crystal_F_H_StructureFactor (cryst, energy, 3, 3, 1, debye_temp_factor, rel_angle);
+  std::printf ("  FH(3,3,1) structure factor: (%f, %f)\n", FH.re, FH.im);
+
+  F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+
+  std::printf ("\n--------------------------- END OF XRLEXAMPLE6 -------------------------------\n");
   return 0;
 }
 

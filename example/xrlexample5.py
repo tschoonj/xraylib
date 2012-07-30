@@ -42,4 +42,7 @@ if __name__ == '__main__' :
 	print "Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %g" % _xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,_xraylib.MA1_LINE,20.0)
 	print "Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %g" % _xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,_xraylib.MA1_LINE,20.0)
 	print "Pb Malpha XRF production cs at 20.0 keV without cascade effect: %g" % _xraylib.CS_FluorLine_Kissel_no_Cascade(82,_xraylib.MA1_LINE,20.0)
+	print ""
+	print "--------------------------- END OF XRLEXAMPLE5 -------------------------------"
+	print ""
 	sys.exit(0)

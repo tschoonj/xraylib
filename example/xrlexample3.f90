@@ -94,5 +94,8 @@ CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
-
+ 
+WRITE (6,'(A)') ''
+WRITE (6,'(A)') '--------------------------- END OF XRLEXAMPLE3 -------------------------------'
+WRITE (6,'(A)') ''
 ENDPROGRAM

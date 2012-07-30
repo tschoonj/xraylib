@@ -58,5 +58,9 @@ PRINT,'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
 PRINT,'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
+PRINT,''
+PRINT,'--------------------------- END OF XRLEXAMPLE4 -------------------------------'
+PRINT,''
+
 ;the value of !ERROR_STATE will determine the exit status of IDL and therefore the outcome of make check
 IF !ERROR_STATE.CODE eq 0 THEN EXIT,STATUS=0 ELSE EXIT,STATUS=1
