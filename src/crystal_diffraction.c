@@ -127,7 +127,9 @@ void Crystal_Free (Crystal_Struct* crystal) {
 
 Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array) {
 
-  if (c_array == NULL) c_array = &Crystal_arr;
+  if (c_array == NULL) {
+  	c_array = &Crystal_arr;
+  }
 
   return bsearch(material, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
 

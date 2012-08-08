@@ -1,5 +1,5 @@
 
-!Copyright (c) 2009,2010,2011, Tom Schoonjans
+!Copyright (c) 2009,2010,2011,2012 Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,60 @@ TYPE :: compoundData_F
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
 ENDTYPE 
 
+TYPE, BIND(C) :: Complex_C
+        REAL (C_FLOAT) :: re
+        REAL (C_FLOAT) :: im
+ENDTYPE
+
+TYPE, BIND(C) :: Crystal_Atom
+        INTEGER (C_INT) :: Zatom
+        REAL (C_FLOAT) :: fraction
+        REAL (C_FLOAT) :: x
+        REAL (C_FLOAT) :: y
+        REAL (C_FLOAT) :: z
+ENDTYPE
+
+TYPE, BIND(C) :: Crystal_Struct_C
+        TYPE (C_PTR) :: name
+        REAL (C_FLOAT) :: a
+        REAL (C_FLOAT) :: b
+        REAL (C_FLOAT) :: c
+        REAL (C_FLOAT) :: alpha
+        REAL (C_FLOAT) :: beta
+        REAL (C_FLOAT) :: gamma
+        REAL (C_FLOAT) :: volume
+        INTEGER (C_INT) :: n_atom
+        TYPE (C_PTR) :: atom
+ENDTYPE
+
+TYPE :: Crystal_Struct
+        CHARACTER (KIND=C_CHAR,LEN=40) :: name
+        REAL (C_FLOAT) :: a
+        REAL (C_FLOAT) :: b
+        REAL (C_FLOAT) :: c
+        REAL (C_FLOAT) :: alpha
+        REAL (C_FLOAT) :: beta
+        REAL (C_FLOAT) :: gamma
+        REAL (C_FLOAT) :: volume
+        INTEGER (C_INT) :: n_atom
+        TYPE (Crystal_Atom), DIMENSION(:), POINTER :: atom
+ENDTYPE
+
+TYPE, BIND(C) :: Crystal_Array
+        INTEGER (C_INT) :: n_crystal
+        INTEGER (C_INT) :: n_alloc
+        TYPE (C_PTR) :: crystal
+ENDTYPE
+
+
+
+
 !NIST constants
 REAL (KIND=C_DOUBLE),PARAMETER :: AVOGNUM = 0.602214179     ! Avogadro number (mol-1 * barn-1 * cm2) 
 REAL (KIND=C_DOUBLE),PARAMETER :: KEV2ANGST = 12.39841875   ! keV to angstrom-1 conversion factor 
 REAL (KIND=C_DOUBLE),PARAMETER :: MEC2 = 510.998910         ! electron rest mass (keV) 
 REAL (KIND=C_DOUBLE),PARAMETER :: RE2 = 0.079407877         ! square of classical electron radius (barn)
+REAL (KIND=C_DOUBLE),PARAMETER :: R_E = 2.8179403267E-15    ! Classical electron radius (barn)
 
 
 
@@ -1774,6 +1823,103 @@ INTERFACE
                 TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
         ENDSUBROUTINE xrlFree
 
+        FUNCTION Crystal_GetCrystal_C (material, c_array)&
+                BIND(C,NAME='Crystal_GetCrystal')&
+                RESULT (rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: material
+                TYPE (C_PTR), INTENT(IN), VALUE :: c_array
+                TYPE (C_PTR) :: rv
+        ENDFUNCTION Crystal_GetCrystal_C
+
+        FUNCTION Crystal_AddCrystal_C (crystal, c_array)&
+                BIND(C,NAME='Crystal_AddCrystal')&
+                RESULT (rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                TYPE (C_PTR), INTENT(IN), VALUE :: c_array
+                INTEGER (C_INT) :: rv
+        ENDFUNCTION Crystal_AddCrystal_C
+
+        FUNCTION Bragg_angle_C (crystal, energy, i_miller, j_miller, k_miller)&
+                BIND(C,NAME='Bragg_angle')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_FLOAT), INTENT(IN), VALUE :: energy
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                REAL (C_FLOAT) :: rv
+        ENDFUNCTION Bragg_angle_C
+
+        FUNCTION Q_scattering_amplitude_C(crystal, energy, i_miller, j_miller, &
+                k_miller, rel_angle) BIND(C,NAME='Q_scattering_amplitude')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_FLOAT), INTENT(IN), VALUE :: energy, rel_angle
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                REAL (C_FLOAT) :: rv
+        ENDFUNCTION Q_scattering_amplitude_C
+
+        SUBROUTINE Atomic_Factors (Z, energy, q, debye_factor, f0, &
+                f_primep, f_prime2) BIND(C,NAME='Atomic_Factors')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                REAL (C_FLOAT), INTENT(IN), VALUE :: energy, q,debye_factor
+                REAL (C_FLOAT), INTENT(OUT) :: f0, f_primep, f_prime2
+        ENDSUBROUTINE Atomic_Factors
+        
+        FUNCTION Crystal_F_H_StructureFactor_C(crystal, energy, i_miller,&
+        j_miller, k_miller, debye_factor, rel_angle) BIND(C,NAME=&
+        'Crystal_F_H_StructureFactor') RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPORT :: Complex_C
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_FLOAT), INTENT(IN), VALUE :: energy, rel_angle,&
+                debye_factor
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                TYPE(Complex_C) :: rv
+        ENDFUNCTION Crystal_F_H_StructureFactor_C
+
+        FUNCTION Crystal_F_H_StructureFactor_Partial_C(crystal, &
+        energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, &
+        f0_flag, f_prime_flag, f_prime2_flag) BIND(C,NAME=&
+        'Crystal_F_H_StructureFactor_Partial') RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPORT :: Complex_C
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_FLOAT), INTENT(IN), VALUE :: energy, rel_angle,&
+                debye_factor
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller,&
+                f0_flag, f_prime_flag, f_prime2_flag
+                TYPE(Complex_C) :: rv
+        ENDFUNCTION Crystal_F_H_StructureFactor_Partial_C
+
+        FUNCTION Crystal_UnitCellVolume_C(crystal)&
+        BIND (C,NAME='Crystal_UnitCellVolume')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_FLOAT) :: rv
+        ENDFUNCTION Crystal_UnitCellVolume_C
+
+        FUNCTION Crystal_dSpacing_C(crystal, i_miller, j_miller, k_miller)&
+        BIND (C,NAME='Crystal_dSpacing')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                REAL (C_FLOAT) :: rv
+        ENDFUNCTION Crystal_dSpacing_C
 ENDINTERFACE
 
 CONTAINS
@@ -1812,7 +1958,7 @@ FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
         ENDINTERFACE
 
         symbol_C = AtomicNumberToSymbol_c(Z)
-        IF (C_ASSOCIATED(symbol_C,C_NULL_PTR) .EQV. .TRUE.) THEN
+        IF (C_ASSOCIATED(symbol_C) .EQV. .FALSE.) THEN
                 DO i=1,3
                         rv(i:i) = ' '
                 ENDDO
@@ -1857,4 +2003,284 @@ FUNCTION SymbolToAtomicNumber(symbol) RESULT(rv)
         RETURN
 ENDFUNCTION SymbolToAtomicNumber
 
+FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE (Crystal_Array), INTENT(INOUT), OPTIONAL, TARGET :: c_array
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: material
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: material_F
+        TYPE (C_PTR) :: material_C, crystal_C
+        INTEGER :: i
+        TYPE (Crystal_Struct_C), POINTER :: c_struct_c
+        TYPE (Crystal_Struct) :: rv 
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_F
+        
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
+        ALLOCATE(material_F(1+LEN_TRIM(material)))
+        DO i=1,LEN_TRIM(material)
+                material_F(i) = material(i:i)
+        ENDDO
+        material_F(1+LEN_TRIM(material)) = C_NULL_CHAR
+        material_C = C_LOC(material_F)
+
+        IF (PRESENT(c_array)) THEN
+                crystal_c = Crystal_GetCrystal_C(material_C, C_LOC(c_array))
+        ELSE
+                crystal_c = Crystal_GetCrystal_C(material_C, C_NULL_PTR)
+        ENDIF
+
+
+        IF (C_ASSOCIATED(crystal_C) .EQV. .FALSE.) THEN
+                rv%name='none'
+                rv%a=0_C_FLOAT
+                rv%b=0_C_FLOAT
+                rv%c=0_C_FLOAT
+                rv%alpha=0_C_FLOAT
+                rv%beta=0_C_FLOAT
+                rv%gamma=0_C_FLOAT
+                rv%volume=0_C_FLOAT
+                rv%n_atom = 0_C_INT
+                NULLIFY(rv%atom)
+        ELSE
+                CALL C_F_POINTER(crystal_c,c_struct_c)
+                rv%name=material
+                rv%a=c_struct_c%a
+                rv%b=c_struct_c%b
+                rv%c=c_struct_c%c
+                rv%alpha=c_struct_c%alpha
+                rv%beta=c_struct_c%beta
+                rv%gamma=c_struct_c%gamma
+                rv%volume=c_struct_c%volume
+                rv%n_atom =c_struct_c%n_atom
+                CALL C_F_POINTER(c_struct_c%atom, rv%atom, [rv%n_atom])
+        ENDIF
+       
+        RETURN
+ENDFUNCTION Crystal_GetCrystal
+
+
+FUNCTION Bragg_angle (crystal, energy, i_miller, j_miller, k_miller)&
+        RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        REAL (C_FLOAT), INTENT(IN) :: energy
+        INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
+        REAL (C_FLOAT) :: rv
+        
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+
+        rv = Bragg_angle_C(crystal_ptr, energy, i_miller, j_miller, k_miller)
+
+        RETURN
+ENDFUNCTION Bragg_angle
+
+FUNCTION Q_scattering_amplitude(crystal, energy, i_miller, j_miller,&
+        k_miller, rel_angle)&
+        RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        REAL (C_FLOAT), INTENT(IN) :: energy, rel_angle
+        INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
+        REAL (C_FLOAT) :: rv
+        
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+
+        rv = Q_scattering_amplitude_C(crystal_ptr, energy, i_miller,&
+        j_miller, k_miller,rel_angle)
+
+        RETURN
+ENDFUNCTION Q_scattering_amplitude
+
+FUNCTION Crystal_F_H_StructureFactor(crystal, energy, i_miller,&
+        j_miller, k_miller, debye_factor, rel_angle) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        REAL (C_FLOAT), INTENT(IN) :: energy, rel_angle, debye_factor
+        INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
+        TYPE (Complex_C) :: temp
+        COMPLEX (C_FLOAT) :: rv
+
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+        temp = Crystal_F_H_StructureFactor_C(crystal_ptr, energy, i_miller,&
+        j_miller, k_miller, debye_factor, rel_angle)
+
+        rv = CMPLX(temp%re, temp%im, C_FLOAT)
+
+
+        RETURN
+ENDFUNCTION Crystal_F_H_StructureFactor
+
+FUNCTION Crystal_F_H_StructureFactor_Partial(crystal, &
+        energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, &
+        f0_flag, f_prime_flag, f_prime2_flag) RESULT(rv)
+
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        REAL (C_FLOAT), INTENT(IN) :: energy, rel_angle, debye_factor
+        INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller, &
+        f0_flag, f_prime_flag, f_prime2_flag
+        TYPE (Complex_C) :: temp
+        COMPLEX (C_FLOAT) :: rv
+
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+        temp = Crystal_F_H_StructureFactor_Partial_C(crystal_ptr,&
+        energy, i_miller, j_miller, k_miller, debye_factor, &
+        rel_angle, f0_flag, f_prime_flag, f_prime2_flag)
+
+        rv = CMPLX(temp%re, temp%im, C_FLOAT)
+
+
+        RETURN
+ENDFUNCTION Crystal_F_H_StructureFactor_Partial
+
+FUNCTION Crystal_UnitCellVolume(crystal) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        REAL (C_FLOAT) :: rv
+
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+
+        rv = Crystal_UnitCellVolume_C(crystal_ptr)
+        RETURN
+ENDFUNCTION Crystal_UnitCellVolume
+
+FUNCTION Crystal_dSpacing(crystal, i_miller, j_miller, k_miller)&
+        RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
+        REAL (C_FLOAT) :: rv
+
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+
+        rv = Crystal_dSpacing_C(crystal_ptr, i_miller, j_miller, k_miller)
+        RETURN
+ENDFUNCTION Crystal_dSpacing
+
+FUNCTION Crystal_AddCrystal (crystal, c_array) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE (Crystal_Array), INTENT(INOUT), OPTIONAL, TARGET :: c_array
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        INTEGER (C_INT) :: rv
+
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+
+        crystal_c%a = crystal%a
+        crystal_c%b = crystal%b
+        crystal_c%c = crystal%c
+        crystal_c%alpha = crystal%alpha
+        crystal_c%beta = crystal%beta
+        crystal_c%gamma = crystal%gamma
+        crystal_c%volume = crystal%volume
+        crystal_c%n_atom = crystal%n_atom
+        crystal_c%atom = C_LOC(crystal%atom(1))
+
+        crystal_ptr = C_LOC(crystal_c)
+
+        IF (PRESENT(c_array)) THEN
+                rv = Crystal_AddCrystal_C(crystal_ptr, C_LOC(c_array))
+        ELSE
+                rv = Crystal_AddCrystal_C(crystal_ptr, C_NULL_PTR)
+        ENDIF
+        RETURN
+ENDFUNCTION Crystal_AddCrystal
 ENDMODULE

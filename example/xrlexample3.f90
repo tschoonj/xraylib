@@ -1,4 +1,4 @@
-!Copyright (c) 2009, 2010, 2011 Tom Schoonjans
+!Copyright (c) 2009, 2010, 2011, 2012 Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -23,6 +23,11 @@ TYPE (compoundData_F) :: cd_F
 CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'// C_NULL_CHAR
 CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
 INTEGER :: i
+TYPE (Crystal_Struct) :: cryst
+REAL (C_FLOAT) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
+rel_angle, dw
+COMPLEX (C_FLOAT) :: F_H, F_0, F_Hbar
+REAL (C_FLOAT), PARAMETER :: PI = 4.D0*DATAN(1.D0)
 
 CALL XRayInit()
 !CALL SetHardExit(1)
@@ -94,7 +99,148 @@ CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
+
+cryst = Crystal_GetCrystal('Si')
+IF (cryst%name .EQ. 'none') CALL EXIT(1)
+
+WRITE (6,'(A,3F12.3)') 'Si unit cell dimensions are ',cryst%a,cryst%b,cryst%c
+WRITE (6,'(A,3F12.3)') 'Si unit cell angles are ',&
+cryst%alpha,cryst%beta,cryst%gamma
+WRITE (6,'(A,F12.3)') 'Si unit cell volume is ',cryst%volume
+WRITE (6,'(A)') 'Si atoms at '
+WRITE (6,'(A)') ' Z  fraction    X        Y        Z'
+DO i=1,cryst%n_atom
+        WRITE (6, '(I3,4F9.3)') cryst%atom(i)%Zatom, cryst%atom(i)%fraction,&
+        cryst%atom(i)%x, cryst%atom(i)%y, cryst%atom(i)%z
+ENDDO
+
+WRITE (6,'(A)') ''
+
+!Si diffraction parameters
+WRITE (6, '(A)') 'Si111 at 8 KeV. Incidence at the Bragg angle:'
+bragg = Bragg_angle(cryst, 8.0, 1, 1, 1)
+WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
+bragg*180.0/PI
+q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0)
+WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
+energy = 8.0
+debye_temp_factor = 1.0
+CALL Atomic_Factors (14, energy, q, debye_temp_factor, f0, fp, fpp)
+
+WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
+'  Atomic factors (Z=14) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
+
+rel_angle = 1.0
+
+F_H = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  FH(1,1,1) structure factor: (',&
+REAL(F_H),', ',AIMAG(F_H),')'
+
+F_0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
+REAL(F_0),', ',AIMAG(F_0),')'
+
+WRITE (6,'(A)') ''
+
+! Diamond diffraction parameters
+cryst = Crystal_GetCrystal('Diamond')
+IF (cryst%name .EQ. 'none') CALL EXIT(1)
+WRITE (6,'(A)') 'Diamond 111 at 8 KeV. Incidence at the Bragg angle:'
+
+bragg = Bragg_angle (cryst, energy, 1, 1, 1)
+WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
+bragg*180.0/PI
+
+q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, rel_angle)
+WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
+energy = 8.0
+debye_temp_factor = 1.0
+CALL Atomic_Factors (6, energy, q, debye_temp_factor, f0, fp, fpp)
+
+WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
+'  Atomic factors (Z=6) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
+
+F_H = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  FH(1,1,1) structure factor: (',&
+REAL(F_H),', ',AIMAG(F_H),')'
+
+F_0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
+REAL(F_0),', ',AIMAG(F_0),')'
+
+F_Hbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor,&
+rel_angle)
  
+dw = 1e10 * 2 * (R_E / cryst%volume) * &
+(KEV2ANGST * KEV2ANGST/ (energy *energy)) * &
+SQRT(ABS(F_H * F_Hbar)) / PI / SIN(2*bragg)
+
+WRITE (6, '(A,F12.6,A)') '  Darwin width: ',1.0E6*dw,' micro-radians'
+
+WRITE (6,'(A)') ''
+
+! Alpha Quartz diffraction parameters
+
+cryst = Crystal_GetCrystal('AlphaQuartz')
+IF (cryst%name .EQ. 'none') CALL EXIT(1)
+WRITE (6, '(A)') 'Alpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:' 
+
+bragg = Bragg_angle (cryst, energy, 0, 2, 0)
+WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
+bragg*180.0/PI
+
+q = Q_scattering_amplitude (cryst, 8.0, 0, 2, 0, rel_angle)
+WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
+CALL Atomic_Factors (8, energy, q, debye_temp_factor, f0, fp, fpp)
+
+WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
+'  Atomic factors (Z=8) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
+
+F_H = Crystal_F_H_StructureFactor (cryst, energy, 0, 2, 0, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  FH(0,2,0) structure factor: (',&
+REAL(F_H),', ',AIMAG(F_H),')'
+
+F_0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
+REAL(F_0),', ',AIMAG(F_0),')'
+
+WRITE (6,'(A)') ''
+
+! Muscovite diffraction parameters
+
+cryst = Crystal_GetCrystal('Muscovite')
+IF (cryst%name .EQ. 'none') CALL EXIT(1)
+WRITE (6, '(A)') 'Muscovite 331 at 8 KeV. Incidence at the Bragg angle:'
+
+bragg = Bragg_angle (cryst, energy, 3, 3, 1)
+WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
+bragg*180.0/PI
+
+q = Q_scattering_amplitude (cryst, 8.0, 3, 3, 1, rel_angle)
+WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
+CALL Atomic_Factors (19, energy, q, debye_temp_factor, f0, fp, fpp)
+
+WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
+'  Atomic factors (Z=19) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
+
+F_H = Crystal_F_H_StructureFactor (cryst, energy, 3, 3, 1, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  FH(3,3,1) structure factor: (',&
+REAL(F_H),', ',AIMAG(F_H),')'
+
+F_0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor,&
+rel_angle)
+WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
+REAL(F_0),', ',AIMAG(F_0),')'
+
+
+
 WRITE (6,'(A)') ''
 WRITE (6,'(A)') '--------------------------- END OF XRLEXAMPLE3 -------------------------------'
 WRITE (6,'(A)') ''
