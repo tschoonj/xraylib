@@ -1,6 +1,5 @@
 Write bindings for Matlab and Octave
 Add database for structure effects
-Improve support on Windows platforms
 Resonant Raman effect
-M-shell Coster-Kronig factors
+Rewrite error handling completely: needs to be thread-safe
 ...

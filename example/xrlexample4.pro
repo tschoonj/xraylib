@@ -58,6 +58,113 @@ PRINT,'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
 PRINT,'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
+;Si crystal structure
+cryst = Crystal_GetCrystal('Si')
+PRINT,'Si unit cell dimensions are ',cryst.a,cryst.b,cryst.c 
+PRINT,'Si unit cell angle are ',cryst.alpha,cryst.beta,cryst.gamma
+PRINT,'Si unit cell volume is ',cryst.volume
+PRINT,'Si atoms at:'
+PRINT,'   Z  fraction      X         Y         Z' 
+FOR i=0,7 DO $ 
+	PRINT,FORMAT='(%"%4i  %f  %f  %f  %f")',$
+		cryst.atom[i].Zatom,$
+		cryst.atom[i].fraction,$
+		cryst.atom[i].x,$
+		cryst.atom[i].y,$
+		cryst.atom[i].z
+
+PRINT,''
+PRINT,'Si111 at 8 KeV. Incidence at the Bragg angle:'
+energy = 8
+debye_temp_factor = 1.0
+rel_angle = 1.0
+
+bragg = Bragg_angle (cryst, energy, 1, 1, 1)
+PRINT, FORMAT='(%"  Bragg angle: Rad: %f  Deg: %f")',bragg, bragg*180/!PI
+
+q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle)
+PRINT, FORMAT='(%"  Q Scattering amplitude: %f")',q
+
+Atomic_Factors, 14, energy, q, debye_temp_factor, f0, fp, fpp
+PRINT, FORMAT='(%"  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f")', f0, fp, fpp
+
+FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  FH(1,1,1) structure factor: (%f, %f)")', REAL_PART(FH), IMAGINARY(FH)
+
+F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
+
+; Diamond diffraction parameters
+cryst = Crystal_GetCrystal('Diamond')
+
+PRINT, ''
+PRINT, 'Diamond 111 at 8 KeV. Incidence at the Bragg angle:'
+bragg = Bragg_angle (cryst, energy, 1, 1, 1);
+PRINT, FORMAT='(%"  Bragg angle: Rad: %f  Deg: %f")',bragg, bragg*180/!PI
+
+q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle)
+PRINT, FORMAT='(%"  Q Scattering amplitude: %f")',q
+
+Atomic_Factors, 6, energy, q, debye_temp_factor, f0, fp, fpp
+PRINT, FORMAT='(%"  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f")', f0, fp, fpp
+
+FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  FH(1,1,1) structure factor: (%f, %f)")', REAL_PART(FH), IMAGINARY(FH)
+
+F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
+
+FHBar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
+
+dw = 1E10 * 2 * (R_E / cryst.volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * SQRT(ABS(FH * FHbar)) / !PI / SIN(2*bragg);
+PRINT, FORMAT='(%"  Darwin width: %f micro-radians")', 1e6*dw
+
+; Alpha Quartz diffraction parameters
+cryst = Crystal_GetCrystal('AlphaQuartz')
+
+PRINT, ''
+PRINT,'Alpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:'
+
+bragg = Bragg_angle (cryst, energy, 0, 2, 0);
+PRINT, FORMAT='(%"  Bragg angle: Rad: %f  Deg: %f")',bragg, bragg*180/!PI
+
+q = Q_scattering_amplitude (cryst, energy, 0, 2, 0, rel_angle)
+PRINT, FORMAT='(%"  Q Scattering amplitude: %f")',q
+
+Atomic_Factors, 8, energy, q, debye_temp_factor, f0, fp, fpp
+PRINT, FORMAT='(%"  Atomic factors (Z = 8) f0, fp, fpp: %f, %f, i*%f")', f0, fp, fpp
+
+FH = Crystal_F_H_StructureFactor (cryst, energy, 0, 2, 0, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  FH(0,2,0) structure factor: (%f, %f)")', REAL_PART(FH), IMAGINARY(FH)
+
+F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
+
+; Muscovite diffraction parameters
+cryst = Crystal_GetCrystal('Muscovite')
+
+PRINT, ''
+PRINT, 'Muscovite 331 at 8 KeV. Incidence at the Bragg angle:'
+
+bragg = Bragg_angle (cryst, energy, 3, 3, 1);
+PRINT, FORMAT='(%"  Bragg angle: Rad: %f  Deg: %f")',bragg, bragg*180/!PI
+
+q = Q_scattering_amplitude (cryst, energy, 3, 3, 1, rel_angle)
+PRINT, FORMAT='(%"  Q Scattering amplitude: %f")',q
+
+Atomic_Factors, 19, energy, q, debye_temp_factor, f0, fp, fpp
+PRINT, FORMAT='(%"  Atomic factors (Z = 19) f0, fp, fpp: %f, %f, i*%f")', f0, fp, fpp
+
+FH = Crystal_F_H_StructureFactor (cryst, energy, 3, 3, 1, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  FH(3,3,1) structure factor: (%f, %f)")', REAL_PART(FH), IMAGINARY(FH)
+
+F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
+
+
+
+
+
 PRINT,''
 PRINT,'--------------------------- END OF XRLEXAMPLE4 -------------------------------'
 PRINT,''

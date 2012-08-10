@@ -1,6 +1,11 @@
-xraylib v2.15.0 revised May 2011 
-Authors: A. Brunetti, M. S. del Rio, T. Schoonjans, T. Ikonen , B. Golosio,
-         A. Simionovici, A. Somogyi, Matthew Wormington
-         ESRF, Grenoble, France, Univ. di Sassari, Italy, Ghent University,
-Belgium and EMBL, Hamburg, Germany
+xraylib v2.16.0 revised August 2012 
+Authors: A. Brunetti (Universita di Sassari, Italy),
+	 M. S. del Rio (ESRF, Grenoble, France),
+	 T. Schoonjans (Ghent University, Belgium),
+	 T. Ikonen (EMBL, Hamburg, Germany),
+	 B. Golosio (Universita di Sassari, Italy),
+	 A. Simionovici (Universite Joseph Fourier, Grenoble, France),
+	 A. Somogyi (ESRF, Grenoble, France),
+	 Matthew Wormington (Jordan Valley Semiconductors, Austin, TX, USA),
+	 David Sagan (Cornell University, Ithaca, NY, USA)
     

@@ -159,6 +159,16 @@ extern IDL_VPTR IDL_CDECL IDL_PM5_full_cascade_kissel(int argc, IDL_VPTR argv[])
 
 extern IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]);
 
+extern IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Bragg_angle(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Q_scattering_amplitude(int argc, IDL_VPTR argv[]);
+extern void IDL_CDECL IDL_Atomic_Factors(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Crystal_UnitCellVolume(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Crystal_dSpacing(int argc, IDL_VPTR argv[]);
+
+
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_GetExitStatus},"GETEXITSTATUS", 0 , 0 , 0 , 0},
 	{{IDL_GetExitStatus},"GETERRORMESSAGES", 0 , 0 , 0 , 0},
@@ -284,12 +294,21 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_PM5_auger_cascade_kissel},"PM5_AUGER_CASCADE_KISSEL", 10 , 10, 0 , 0},
 	{{IDL_PM5_full_cascade_kissel},"PM5_FULL_CASCADE_KISSEL", 10, 10, 0 , 0},
 
+	{{IDL_Crystal_GetCrystal}, "CRYSTAL_GETCRYSTAL", 1, 1, 0, 0},
+	{{IDL_Bragg_angle}, "BRAGG_ANGLE", 5, 5, 0, 0},
+	{{IDL_Q_scattering_amplitude}, "Q_SCATTERING_AMPLITUDE", 6, 6, 0, 0},
+	{{IDL_Crystal_F_H_StructureFactor}, "CRYSTAL_F_H_STRUCTUREFACTOR", 7, 7, 0, 0},
+	{{IDL_Crystal_F_H_StructureFactor_Partial}, "CRYSTAL_F_H_STRUCTUREFACTOR_PARTIAL", 10, 10, 0, 0},
+	{{IDL_Crystal_UnitCellVolume}, "CRYSTAL_UNITCELLVOLUME", 1, 1, 0, 0},
+	{{IDL_Crystal_dSpacing}, "CRYSTAL_DSPACING", 4, 4, 0, 0},
+
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
 	{{(IDL_SYSRTN_GENERIC) IDL_XRayInit},"XRAYINIT", 0 , 0 , 0 , 0},
 	{{(IDL_SYSRTN_GENERIC) IDL_SetHardExit},"SETHARDEXIT", 1 , 1 , 0 , 0},
 	{{(IDL_SYSRTN_GENERIC) IDL_SetExitStatus},"SETEXITSTATUS", 1 , 1 , 0 , 0},
 	{{(IDL_SYSRTN_GENERIC) IDL_SetErrorMessages},"SETERRORMESSAGES", 1 , 1 , 0 , 0},
+	{{(IDL_SYSRTN_GENERIC) IDL_Atomic_Factors},"ATOMIC_FACTORS", 7 , 7 , 0 , 0},
 };
 
 
@@ -1000,7 +1019,6 @@ void release(UCHAR *memPtr) {
 	free(memPtr);
 }
 
-
 IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	struct compoundData cd;	
 	IDL_VPTR rv;
@@ -1073,7 +1091,251 @@ IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]) {
 }
 
 
+IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 
+	IDL_ENSURE_SCALAR(argv[0]);
+	IDL_ENSURE_STRING(argv[0]);
+
+	Crystal_Struct *cryst = Crystal_GetCrystal(IDL_VarGetString(argv[0]), NULL);
+
+	if (cryst == NULL) {
+		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
+	}
+
+
+	// First create the CrystalAtom struct array	
+	IDL_MEMINT array_dims_atom[] = {1, cryst->n_atom};
+	void *sdef_atom;
+
+	IDL_STRUCT_TAG_DEF s_tags_atom[] = {
+		{"ZATOM", 0, (void *) IDL_TYP_LONG},
+		{"FRACTION", 0, (void *) IDL_TYP_FLOAT},
+		{"X", 0 , (void *) IDL_TYP_FLOAT},
+		{"Y", 0 , (void *) IDL_TYP_FLOAT},
+		{"Z", 0 , (void *) IDL_TYP_FLOAT},
+		{0}
+	};
+
+	sdef_atom = IDL_MakeStruct(NULL,s_tags_atom);
+	IDL_MEMINT dims_atom[IDL_MAX_ARRAY_DIM];
+	dims_atom[0] = cryst->n_atom;
+
+	IDL_STRUCT_TAG_DEF s_tags_struct[] = {
+		{"NAME", 0, (void *) IDL_TYP_STRING},
+		{"A", 0, (void *) IDL_TYP_FLOAT},
+		{"B", 0, (void *) IDL_TYP_FLOAT},
+		{"C", 0, (void *) IDL_TYP_FLOAT},
+		{"ALPHA", 0 , (void *) IDL_TYP_FLOAT},
+		{"BETA", 0 , (void *) IDL_TYP_FLOAT},
+		{"GAMMA", 0 , (void *) IDL_TYP_FLOAT},
+		{"VOLUME", 0 , (void *) IDL_TYP_FLOAT},
+		{"N_ATOM", 0 , (void *) IDL_TYP_LONG},
+		{"ATOM", array_dims_atom , sdef_atom},
+		{0}
+	};
+
+	void *sdef_struct = IDL_MakeStruct(NULL, s_tags_struct);
+	struct Crystal_Struct_IDL {
+		IDL_STRING name;
+		float a;
+		float b;
+		float c;
+		float alpha;
+		float beta;
+		float gamma;
+		float volume;
+		IDL_LONG n_atom;
+		Crystal_Atom atom[cryst->n_atom];
+	};
+
+	struct Crystal_Struct_IDL *csi = (struct Crystal_Struct_IDL *) malloc(sizeof(struct Crystal_Struct_IDL));
+	IDL_StrStore(&(csi->name),cryst->name);
+	csi->a = cryst->a;
+	csi->b = cryst->b;
+	csi->c = cryst->c;
+	csi->alpha = cryst->alpha;
+	csi->beta = cryst->beta;
+	csi->gamma = cryst->gamma;
+	csi->volume = cryst->volume;
+	csi->n_atom = cryst->n_atom;
+	memcpy(csi->atom,cryst->atom, cryst->n_atom*sizeof(Crystal_Atom));
+
+	IDL_MEMINT dims_cryst[IDL_MAX_ARRAY_DIM];
+	dims_cryst[0] = 1;
+	IDL_VPTR rv = IDL_ImportArray(1, dims_cryst, IDL_TYP_STRUCT, (UCHAR *) csi, release, sdef_struct);
+	
+	return rv;
+}
+
+static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
+	IDL_MEMINT offset = IDL_StructTagInfoByName(arg->value.s.sdef,"N_ATOM",IDL_MSG_LONGJMP, NULL);
+	IDL_MEMINT n;
+	char *data;
+	IDL_VarGetData(arg,&n, (char **) &data, FALSE);
+	char *n_atom_data = data+offset;
+	int n_atom = *((int *) n_atom_data);
+
+	Crystal_Struct *cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+	
+	struct Crystal_Struct_IDL {
+		IDL_STRING name;
+		float a;
+		float b;
+		float c;
+		float alpha;
+		float beta;
+		float gamma;
+		float volume;
+		IDL_LONG n_atom;
+		Crystal_Atom atom[n_atom];
+	};
+
+	struct Crystal_Struct_IDL *csi = (struct Crystal_Struct_IDL *) data;
+	cs->a = csi->a;
+	cs->b = csi->b;
+	cs->c = csi->c;
+	cs->alpha = csi->alpha;
+	cs->beta= csi->beta;
+	cs->gamma = csi->gamma;
+	cs->volume = csi->volume;
+	cs->n_atom = csi->n_atom;
+	cs->atom = csi->atom;
+
+	return cs;
+}
+
+IDL_VPTR IDL_CDECL IDL_Bragg_angle(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRUCTURE(argv[0]);
+
+	float energy = (float) IDL_DoubleScalar(argv[1]);
+	int i_miller = (int) IDL_LongScalar(argv[2]);
+	int j_miller = (int) IDL_LongScalar(argv[3]);
+	int k_miller = (int) IDL_LongScalar(argv[4]);
+
+	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_FLOAT;
+  	rv->value.f = Bragg_angle(cs, energy, i_miller, j_miller, k_miller);
+
+	free(cs);
+	return rv;
+}
+
+IDL_VPTR IDL_CDECL IDL_Q_scattering_amplitude(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRUCTURE(argv[0]);
+
+	float energy = (float) IDL_DoubleScalar(argv[1]);
+	int i_miller = (int) IDL_LongScalar(argv[2]);
+	int j_miller = (int) IDL_LongScalar(argv[3]);
+	int k_miller = (int) IDL_LongScalar(argv[4]);
+	float rel_angle = (float) IDL_DoubleScalar(argv[5]);
+
+	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_FLOAT;
+  	rv->value.f = Q_scattering_amplitude(cs, energy, i_miller, j_miller, k_miller, rel_angle);
+
+	free(cs);
+	return rv;
+}
+
+void IDL_CDECL IDL_Atomic_Factors(int argc, IDL_VPTR argv[]) {
+	IDL_EXCLUDE_EXPR(argv[4]);
+	IDL_EXCLUDE_EXPR(argv[5]);
+	IDL_EXCLUDE_EXPR(argv[6]);
+	
+	int Z = (int) IDL_LongScalar(argv[0]);
+	float energy = (float) IDL_DoubleScalar(argv[1]);
+	float q = (float) IDL_DoubleScalar(argv[2]);
+	float debye_factor = (float) IDL_DoubleScalar(argv[3]);
+
+	float f0, f_primep, f_prime2;
+
+	Atomic_Factors(Z, energy, q , debye_factor, &f0, &f_primep, &f_prime2);
+
+	IDL_StoreScalar(argv[4], IDL_TYP_FLOAT, (IDL_ALLTYPES *) &f0);
+	IDL_StoreScalar(argv[5], IDL_TYP_FLOAT, (IDL_ALLTYPES *) &f_primep);
+	IDL_StoreScalar(argv[6], IDL_TYP_FLOAT, (IDL_ALLTYPES *) &f_prime2);
+	return;
+}
+
+IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRUCTURE(argv[0]);
+
+	float energy = (float) IDL_DoubleScalar(argv[1]);
+	int i_miller = (int) IDL_LongScalar(argv[2]);
+	int j_miller = (int) IDL_LongScalar(argv[3]);
+	int k_miller = (int) IDL_LongScalar(argv[4]);
+	float debye_factor = (float) IDL_DoubleScalar(argv[5]);
+	float rel_angle = (float) IDL_DoubleScalar(argv[6]);
+
+	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_COMPLEX;
+	Complex F = Crystal_F_H_StructureFactor (cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
+  	rv->value.cmp.r = F.re; 
+  	rv->value.cmp.i = F.im; 
+
+	free(cs);
+	return rv;
+
+
+}
+
+IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRUCTURE(argv[0]);
+
+	float energy = (float) IDL_DoubleScalar(argv[1]);
+	int i_miller = (int) IDL_LongScalar(argv[2]);
+	int j_miller = (int) IDL_LongScalar(argv[3]);
+	int k_miller = (int) IDL_LongScalar(argv[4]);
+	float debye_factor = (float) IDL_DoubleScalar(argv[5]);
+	float rel_angle = (float) IDL_DoubleScalar(argv[6]);
+	int f0_flag = (int) IDL_LongScalar(argv[7]);
+	int f_prime_flag = (int) IDL_LongScalar(argv[8]);
+	int f_prime2_flag = (int) IDL_LongScalar(argv[9]);
+
+	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_COMPLEX;
+	Complex F = Crystal_F_H_StructureFactor_Partial(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+  	rv->value.cmp.r = F.re; 
+  	rv->value.cmp.i = F.im; 
+
+	free(cs);
+	return rv;
+
+
+}
+
+IDL_VPTR IDL_CDECL IDL_Crystal_UnitCellVolume(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRUCTURE(argv[0]);
+
+
+	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_FLOAT;
+  	rv->value.f = Crystal_UnitCellVolume(cs);
+
+	free(cs);
+	return rv;
+}
+
+IDL_VPTR IDL_CDECL IDL_Crystal_dSpacing(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRUCTURE(argv[0]);
+
+	int i_miller = (int) IDL_LongScalar(argv[1]);
+	int j_miller = (int) IDL_LongScalar(argv[2]);
+	int k_miller = (int) IDL_LongScalar(argv[3]);
+
+	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_FLOAT;
+  	rv->value.f = Crystal_dSpacing(cs, i_miller, j_miller, k_miller);
+
+	free(cs);
+	return rv;
+}
 int IDL_Load (void) 
 {
 	return IDL_SysRtnAdd(xrl_functions, TRUE, IDL_CARRAY_ELTS(xrl_functions)) &&

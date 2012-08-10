@@ -236,7 +236,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 	if test -z "$RSIIDL_BINDIR" ; then
 		#no location was presented as an option -> search the usual suspects...
-		IDL_PATH=/usr/local/itt/idl/bin:/usr/local/rsi/idl/bin:/usr/local/pkg/graphics/rsi/idl/bin:/Applications/rsi/idl/bin:/Applications/itt/idl/bin:/usr/local/idl/bin:/Applications/itt/idl/idl/bin:/usr/local/itt/idl/idl/bin
+		IDL_PATH=/usr/local/itt/idl/bin:/usr/local/rsi/idl/bin:/usr/local/pkg/graphics/rsi/idl/bin:/Applications/exelis/idl/bin:/usr/local/exelis/idl/bin:/Applications/itt/idl/bin:/usr/local/idl/bin:/Applications/itt/idl/idl/bin:/usr/local/itt/idl/idl/bin:/Applications/rsi/idl/bin
 		AC_PATH_PROGS([RSIIDL_BIN], [idl],[],[$IDL_PATH])
 		if test -z "$RSIIDL_BIN" && test "x$enable_idl" = xyes ; then
 			#binaries not found while they were required through the enable-idl option

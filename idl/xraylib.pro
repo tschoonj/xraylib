@@ -28,6 +28,7 @@ COMMON XRAYLIB,AVOGNUM,$
 	KEV2ANGST,$
 	MEC2,$
 	RE2,$
+	R_E,$
 	KA_LINE,$
 	KB_LINE,$
 	LA_LINE,$
@@ -712,6 +713,7 @@ AVOGNUM = 0.602252        ; Avogadro number (mol-1 * barn-1 * cm2)
 KEV2ANGST = 12.398520     ; keV to angstrom-1 conversion factor 
 MEC2 = 511.0034           ; electron rest mass (keV) 
 RE2 = 0.07940775          ; square of classical electron radius (barn)
+R_E = 2.8179403267e-15    ; Classical electron radius (m)
 
 KA_LINE = 0
 KB_LINE = 1
