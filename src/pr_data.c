@@ -221,11 +221,11 @@ int main(void)
   print_mendelvec(MENDEL_MAX, MendelArraySorted);
 
   Crystal_Struct* crystal;
-  struct CrystalAtom* atom;
+  Crystal_Atom* atom;
 
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "struct CrystalAtom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
+    fprintf(f, "Crystal_Atom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
     for (j = 0; j < crystal->n_atom; j++) {
       if (j % 2 == 0) fprintf(f, "\n  ");
       atom = &crystal->atom[j];

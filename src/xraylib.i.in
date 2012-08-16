@@ -12,17 +12,351 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 %module xraylib
+%include "typemaps.i"
+%include "exception.i"
+
+%apply float *OUTPUT { float* f0, float* f_primep, float* f_prime2 }
+
+
+
 
 %{
 #include "@abs_top_srcdir@/include/xraylib.h"
 %}
 
+#ifdef SWIGPYTHON
+%typemap(in,numinputs=0) struct compoundData* (struct compoundData temp) {
+        temp.nElements=0;
+        temp.nAtomsAll=0;
+        temp.Elements=NULL;
+        temp.massFractions=NULL;
+        $1 = &temp;
+}
+%typemap(argout) struct compoundData * cd {
+        PyObject *dict = PyDict_New();
+        int i;
+        struct compoundData *cd = $1;
+        if (cd->nElements > 0) {
+                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cd->nElements)); 
+                PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((int) cd->nAtomsAll)); 
+                PyObject *elements=PyList_New(cd->nElements);
+                PyObject *massfractions=PyList_New(cd->nElements);
+                for (i=0 ; i < cd->nElements ; i++) {
+                        PyObject *o = PyFloat_FromDouble((double) cd->Elements[i]);
+                        PyList_SetItem(elements, i, o);
+                        o = PyFloat_FromDouble((double) cd->massFractions[i]);
+                        PyList_SetItem(massfractions, i, o);
+                }
+                PyDict_SetItemString(dict, "Elements", elements); 
+                PyDict_SetItemString(dict, "massFractions", massfractions); 
+                free(cd->Elements);
+                free(cd->massFractions);
+                $result=dict;
+        }
+        else {
+                PyErr_WarnEx(NULL, "CompoundParser Error",1);
+                $result=Py_None;
+        }
+
+}
+
+
+%typemap(in, numinputs=0) Crystal_Array* c_array {
+   /* do not use crystal_array argument for now... */
+   $1 = NULL;
+}
+
+%typemap(out) Complex {
+        Complex c = $1;
+        PyObject *cp = PyComplex_FromDoubles((double) c.re, (double) c.im);
+
+        $result = cp;
+}
+
+
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+        int i;
+        if (cs == NULL) {
+                PyErr_WarnEx(NULL, "Crystal_GetCrystal Error: crystal not found",1);
+                $result = Py_None;
+        }
+        else {
+             PyObject *dict = PyDict_New();   
+             PyDict_SetItemString(dict, "name",PyString_FromString(cs->name)); 
+             PyDict_SetItemString(dict, "a",PyFloat_FromDouble((double) cs->a)); 
+             PyDict_SetItemString(dict, "b",PyFloat_FromDouble((double) cs->b)); 
+             PyDict_SetItemString(dict, "c",PyFloat_FromDouble((double) cs->c)); 
+             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble((double) cs->alpha)); 
+             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble((double) cs->beta)); 
+             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble((double) cs->gamma)); 
+             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble((double) cs->volume)); 
+             PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom)); 
+             PyObject *atom = PyList_New(cs->n_atom);
+             PyDict_SetItemString(dict, "atom", atom); 
+             for (i = 0 ; i < cs->n_atom ; i++) {
+                PyObject *dict_temp = PyDict_New();
+                PyDict_SetItemString(dict_temp, "Zatom",PyInt_FromLong((int) cs->atom[i].Zatom)); 
+                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble((double) cs->atom[i].fraction)); 
+                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble((double) cs->atom[i].x)); 
+                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble((double) cs->atom[i].y)); 
+                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble((double) cs->atom[i].z)); 
+                PyList_SetItem(atom, i, dict_temp);
+             }
+             /* store cpointer in dictionary */
+             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long) cs)); 
+
+             $result = dict;
+        }
+}
+%typemap(in) Crystal_Struct * {
+        /* cpointer should be used if present and valid */
+        PyObject *dict = $input;
+        PyObject *cpointer = NULL;
+        PyObject *temp = NULL;
+        Crystal_Struct *cs = NULL;
+
+        if (PyDict_Check(dict) == 0) {
+               PyErr_SetString(PyExc_TypeError,"Expected dictionary argument"); 
+               $1 = NULL;
+               goto fail;
+        }
+        else {
+                /* look for cpointer */
+                cpointer = PyDict_GetItemString(dict,"cpointer");
+                if (cpointer != NULL) {
+                        /* convert to long */
+                        long cpointer_l = PyInt_AsLong(cpointer); 
+                        if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"Invalid cpointer value");
+                                $1 = NULL;
+                                goto fail;
+                        }
+                        else {
+                                $1 = (Crystal_Struct *) cpointer_l;
+                        }
+                }
+                /* no cpointer found -> read from structure */
+                else {
+                        /* name */ 
+                         cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+                         temp = PyDict_GetItemString(dict,"name");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"Name key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->name = PyString_AsString(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"Name key not a string");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* a */ 
+                         temp = PyDict_GetItemString(dict,"a");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"a key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->a = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"a key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* b */ 
+                         temp = PyDict_GetItemString(dict,"b");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"b key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->b = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"b key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* c */ 
+                         temp = PyDict_GetItemString(dict,"c");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"c key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->c = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"c key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* alpha */ 
+                         temp = PyDict_GetItemString(dict,"alpha");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"alpha key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->alpha = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"alpha key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* beta */ 
+                         temp = PyDict_GetItemString(dict,"beta");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"beta key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->beta = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"beta key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* gamma */ 
+                         temp = PyDict_GetItemString(dict,"gamma");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"gamma key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->gamma = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"gamma key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* volume */ 
+                         temp = PyDict_GetItemString(dict,"volume");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"volume key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->volume = PyFloat_AsDouble(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"volume key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                        /* n_atom */ 
+                         temp = PyDict_GetItemString(dict,"n_atom");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"n_atom key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         cs->n_atom = PyInt_AsLong(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"n_atom key not a number");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         if (cs->n_atom < 1) {
+                                PyErr_SetString(PyExc_RuntimeError,"n_atom value must be greater than zero");
+                                $1 = NULL;
+                                goto fail;
+                                
+                         }
+                         /* atom */
+                         cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                         temp = PyDict_GetItemString(dict,"atom");
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"atom key not present");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         Py_ssize_t n_atom = PyList_Size(temp);
+                         if (PyErr_Occurred() != NULL) {
+                                PyErr_SetString(PyErr_Occurred(),"atom key not a list");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         if (n_atom != cs->n_atom) {
+                                PyErr_SetString(PyExc_RuntimeError,"n_atom value differs from number of elements");
+                                $1 = NULL;
+                                goto fail;
+                         }
+                         int i;
+                         PyObject *atom;
+                         for (i=0 ; i < n_atom ; i++) {
+                                atom = PyList_GetItem(temp,i); 
+                                PyObject *temp2;
+                                temp2 = PyDict_GetItemString(atom,"Zatom");
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"Zatom key not present");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                cs->atom[i].Zatom = PyInt_AsLong(temp2);
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"Zatom key not a number");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                temp2 = PyDict_GetItemString(atom,"fraction");
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"fraction key not present");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                cs->atom[i].fraction = PyFloat_AsDouble(temp2);
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"fraction key not a number");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                temp2 = PyDict_GetItemString(atom,"x");
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"x key not present");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                cs->atom[i].x = PyFloat_AsDouble(temp2);
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"x key not a number");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                temp2 = PyDict_GetItemString(atom,"y");
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"y key not present");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                cs->atom[i].y = PyFloat_AsDouble(temp2);
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"y key not a number");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                temp2 = PyDict_GetItemString(atom,"z");
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"z key not present");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                                cs->atom[i].z = PyFloat_AsDouble(temp2);
+                                if (PyErr_Occurred() != NULL) {
+                                        PyErr_SetString(PyErr_Occurred(),"z key not a number");
+                                        $1 = NULL;
+                                        goto fail;
+                                }
+                         }
+                         $1=cs;
+                }
+        }
+}
+#endif
+
+
+
+
 %include "@abs_top_srcdir@/include/xraylib.h"
-%include "@abs_top_srcdir@/include/shells.h"
-%include "@abs_top_srcdir@/include/lines.h"
-
-
-
 
 
 

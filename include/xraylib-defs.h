@@ -51,32 +51,32 @@ struct MendelElement {
 
 /* Struct for an atom in a crystal. */
 
-struct CrystalAtom {
+typedef struct {
   int Zatom;              /* Atomic number of atom. */
   float fraction;         /* Fractional contribution. Normally 1.0. */
   float x, y, z;          /* Atom position in fractions of the unit cell lengths. */
-};
-typedef struct CrystalAtom Crystal_Atom;
+} Crystal_Atom;
+/*typedef struct CrystalAtom Crystal_Atom;*/
 
 /* Struct for a crystal. */
 
-struct CrystalStruct {
+typedef struct {
   char* name;                 /* Name of crystal. */
   float a, b, c;              /* Unit cell size in Angstroms. */
   float alpha, beta, gamma;   /* Unit cell angles in degrees. */
   float volume;               /* Unit cell volume in Angstroms^3. */
   int n_atom;                 /* Number of atoms. */
-  struct CrystalAtom* atom;   /* Array of atoms in unit cell. */
-};
-typedef struct CrystalStruct Crystal_Struct;
+  Crystal_Atom* atom;   /* Array of atoms in unit cell. */
+} Crystal_Struct;
+/*typedef struct CrystalStruct Crystal_Struct;*/
 
 /* Container struct to hold an array of CrystalStructs */
 
-struct CrystalArray {
+typedef struct {
   int n_crystal;          /* Number of defined crystals. */
   int n_alloc;            /* Size of .crystal array malloc'd */
   Crystal_Struct* crystal;
-};
+} Crystal_Array;
 
-typedef struct CrystalArray Crystal_Array;
+/*typedef struct CrystalArray Crystal_Array;*/
 #endif
