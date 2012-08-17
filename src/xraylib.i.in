@@ -24,7 +24,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "@abs_top_srcdir@/include/xraylib.h"
 %}
 
-#ifdef SWIGPYTHON
 %typemap(in,numinputs=0) struct compoundData* (struct compoundData temp) {
         temp.nElements=0;
         temp.nAtomsAll=0;
@@ -32,17 +31,23 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         temp.massFractions=NULL;
         $1 = &temp;
 }
+%typemap(in, numinputs=0) Crystal_Array* c_array {
+   /* do not use crystal_array argument for now... */
+   $1 = NULL;
+}
+
+#ifdef SWIGPYTHON
 %typemap(argout) struct compoundData * cd {
         PyObject *dict = PyDict_New();
         int i;
         struct compoundData *cd = $1;
         if (cd->nElements > 0) {
-                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cd->nElements)); 
-                PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((int) cd->nAtomsAll)); 
+                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements)); 
+                PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((long) cd->nAtomsAll)); 
                 PyObject *elements=PyList_New(cd->nElements);
                 PyObject *massfractions=PyList_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
-                        PyObject *o = PyFloat_FromDouble((double) cd->Elements[i]);
+                        PyObject *o = PyInt_FromLong((long) cd->Elements[i]);
                         PyList_SetItem(elements, i, o);
                         o = PyFloat_FromDouble((double) cd->massFractions[i]);
                         PyList_SetItem(massfractions, i, o);
@@ -56,15 +61,12 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         else {
                 PyErr_WarnEx(NULL, "CompoundParser Error",1);
                 $result=Py_None;
+                goto fail;
         }
 
 }
 
 
-%typemap(in, numinputs=0) Crystal_Array* c_array {
-   /* do not use crystal_array argument for now... */
-   $1 = NULL;
-}
 
 %typemap(out) Complex {
         Complex c = $1;
@@ -350,6 +352,130 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                          $1=cs;
                 }
         }
+}
+#elif defined(SWIGPERL)
+
+#define STORE_HASH(key,value,hv) if (hv_store(hv,key,strlen(key),value,0) == NULL) {\
+        goto fail;\
+        }
+
+
+
+%typemap(argout) struct compoundData * cd {
+        int i;
+        struct compoundData *cd = $1;
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+        if (cd->nElements > 0) {
+                HV *hash = newHV();
+                STORE_HASH("nElements", newSViv(cd->nElements),hash)
+                STORE_HASH("nAtomsAll", newSViv(cd->nAtomsAll),hash)
+                AV *Elements = newAV();
+                AV *massFractions = newAV();
+                STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
+                STORE_HASH("massFractions", newRV_noinc((SV*) massFractions),hash)
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        av_push(Elements, newSViv(cd->Elements[i]));
+                        av_push(massFractions, newSVnv(cd->massFractions[i]));
+                }
+
+                $result = sv_2mortal(newRV_noinc((SV*) hash));
+        }
+        else {
+                $result = &PL_sv_undef;
+        }
+        
+        argvi++;
+
+}
+
+%typemap(out) Complex {
+        Complex c = $1;
+        int count;
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+        dSP;
+        ENTER;
+        SAVETMPS;
+        PUSHMARK(SP);
+        XPUSHs(sv_2mortal(newSVnv(c.re)));
+        XPUSHs(sv_2mortal(newSVnv(c.im)));
+        PUTBACK;
+        count = call_pv("Math::Complex::cplx",G_SCALAR);
+        SPAGAIN;
+        if (count != 1)
+                croak("Big Perl trouble\n");
+        SV *perl_result = newSVsv(POPs);
+        PUTBACK;
+        FREETMPS;
+        LEAVE;
+        
+        $result = sv_2mortal(perl_result);
+        argvi++;
+}
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+        int i;
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+        if (cs == NULL) {
+                fprintf(stdout,"Crystal_GetCrystal Error: crystal not found");
+                $result = &PL_sv_undef;
+        }
+        else {
+                HV *rv = newHV();
+                hv_store(rv, "name", 4, newSVpvn(cs->name,strlen(cs->name)),0);
+                hv_store(rv, "a", 1, newSVnv(cs->a),0);
+                hv_store(rv, "b", 1, newSVnv(cs->b),0);
+                hv_store(rv, "c", 1, newSVnv(cs->c),0);
+                hv_store(rv, "alpha", 5, newSVnv(cs->alpha),0);
+                hv_store(rv, "beta", 4, newSVnv(cs->beta),0);
+                hv_store(rv, "gamma", 5, newSVnv(cs->gamma),0);
+                hv_store(rv, "volume", 6, newSVnv(cs->volume),0);
+                hv_store(rv, "n_atom", 6, newSViv(cs->n_atom),0);
+                AV *atoms = newAV();
+                hv_store(rv, "atom", 4, newRV_noinc((SV*) atoms),0);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        HV *atom = newHV();
+                        hv_store(atom, "Zatom", 5, newSViv(cs->atom[i].Zatom),0);
+                        hv_store(atom, "fraction", 5, newSVnv(cs->atom[i].fraction),0);
+                        hv_store(atom, "x", 1, newSVnv(cs->atom[i].x),0);
+                        hv_store(atom, "y", 1, newSVnv(cs->atom[i].y),0);
+                        hv_store(atom, "z", 1, newSVnv(cs->atom[i].z),0);
+                        av_push(atoms, newRV_noinc((SV*) atom));
+                }
+                hv_store(rv, "cpointer", 8, newSViv((IV) cs),0);
+                $result = sv_2mortal(newRV_noinc((SV*) rv));
+                
+        }
+
+        argvi++;
+
+}
+
+%typemap(in) Crystal_Struct * {
+        /* unref to obtain the hash */
+        SV *ref = $input;
+        Crystal_Struct *cs;
+        if (SvROK(ref) && SvTYPE(SvRV(ref)) == SVt_PVHV) {
+                HV* hash = (HV*) SvRV(ref);
+                /* get cpointer */
+                SV **cpointerPtr = hv_fetch(hash, "cpointer", 8, FALSE);
+                cs = (Crystal_Struct *) SvIV(*cpointerPtr); 
+                $1 = cs;
+        
+                 
+        }
+        else {
+                SWIG_exception(SWIG_TypeError,"Argument must be reference to hash");
+        }
+
+
+
+
 }
 #endif
 
