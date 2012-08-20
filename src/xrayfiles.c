@@ -52,7 +52,7 @@ void XRayInit(void)
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
     if ((path = getenv("HOME")) == NULL) {
-      ErrorExit("Environmetal variables XRAYLIB_DIR and HOME not defined");
+      ErrorExit("Environment variables XRAYLIB_DIR and HOME not defined");
       return;
     }
     strcpy(XRayLibDir, path);
@@ -64,21 +64,6 @@ void XRayInit(void)
   }
 
   ArrayInit();
-
-  /*-------------------------------------------------------------------------- */
-  /*
-   * Parse Crystals.dat
-   */
-
-  strcpy(file_name, XRayLibDir);
-  strcat(file_name, "Crystals.dat");
-
-  Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX);
-  stat = Crystal_ReadFile (file_name, NULL);
-  if (stat == 0) {
-    ErrorExit("Could not read Crystals.dat");
-    return;
-  } 
 
   /*-------------------------------------------------------------------------- */
   /*
@@ -99,6 +84,22 @@ void XRayInit(void)
     /* printf("%d\t%f\n", Z, AtomicWeight_arr[Z]);*/
   }
   fclose(fp);
+
+  /*-------------------------------------------------------------------------- */
+  /*
+   * Parse Crystals.dat
+   */
+
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name, "Crystals.dat");
+
+  Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX);
+  stat = Crystal_ReadFile (file_name, NULL);
+  if (stat == 0) {
+    ErrorExit("Could not read Crystals.dat");
+    return;
+  } 
+
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "CS_Photo.dat");
