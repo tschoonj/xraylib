@@ -39,8 +39,9 @@ typedef struct {
   float re;               /* Real part */
   float im;               /* Imaginary part */
 } Complex;
-float cmplx_abs(Complex x);
-Complex cmplx_mul(Complex x, Complex y);
+
+float c_abs(Complex x);
+Complex c_mul(Complex x, Complex y);
 
 /* Struct to hold info on a particular type of atom */
 

@@ -21,9 +21,14 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 %{
+#undef c_abs
 #include "@abs_top_srcdir@/include/xraylib.h"
 %}
 
+%ignore c_abs;
+%ignore c_mul;
+
+#ifndef SWIGJAVA
 %typemap(in,numinputs=0) struct compoundData* (struct compoundData temp) {
         temp.nElements=0;
         temp.nAtomsAll=0;
@@ -35,6 +40,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
    /* do not use crystal_array argument for now... */
    $1 = NULL;
 }
+#endif
 
 #ifdef SWIGPYTHON
 %typemap(argout) struct compoundData * cd {
@@ -441,7 +447,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 for (i = 0 ; i < cs->n_atom ; i++) {
                         HV *atom = newHV();
                         hv_store(atom, "Zatom", 5, newSViv(cs->atom[i].Zatom),0);
-                        hv_store(atom, "fraction", 5, newSVnv(cs->atom[i].fraction),0);
+                        hv_store(atom, "fraction", 8, newSVnv(cs->atom[i].fraction),0);
                         hv_store(atom, "x", 1, newSVnv(cs->atom[i].x),0);
                         hv_store(atom, "y", 1, newSVnv(cs->atom[i].y),0);
                         hv_store(atom, "z", 1, newSVnv(cs->atom[i].z),0);
@@ -460,22 +466,208 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         /* unref to obtain the hash */
         SV *ref = $input;
         Crystal_Struct *cs;
+        SV **temp;
         if (SvROK(ref) && SvTYPE(SvRV(ref)) == SVt_PVHV) {
                 HV* hash = (HV*) SvRV(ref);
                 /* get cpointer */
                 SV **cpointerPtr = hv_fetch(hash, "cpointer", 8, FALSE);
-                cs = (Crystal_Struct *) SvIV(*cpointerPtr); 
+                if (cpointerPtr != NULL) {
+                        cs = (Crystal_Struct *) SvIV(*cpointerPtr); 
+                }
+                else {
+                        /* no cpointer found -> read from hash */
+                         cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+                         temp = hv_fetch(hash, "name", strlen("name"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"name hash key not present");
+                         }
+                         if (SvPOK(*temp)) {
+                                cs->name = SvPVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"name hash value not a string");
+                         }
+                         /* a */
+                         temp = hv_fetch(hash, "a", strlen("a"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"a hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->a = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"a hash value not a float");
+                         }
+                         /* b */
+                         temp = hv_fetch(hash, "b", strlen("b"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"b hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->b = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"b hash value not a float");
+                         }
+                         /* c */
+                         temp = hv_fetch(hash, "c", strlen("c"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"c hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->c = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"c hash value not a float");
+                         }
+                         /* alpha */
+                         temp = hv_fetch(hash, "alpha", strlen("alpha"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"alpha hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->alpha = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"alpha hash value not a float");
+                         }
+                         /* beta */
+                         temp = hv_fetch(hash, "beta", strlen("beta"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"beta hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->beta = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"beta hash value not a float");
+                         }
+                         /* gamma */
+                         temp = hv_fetch(hash, "gamma", strlen("gamma"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"gamma hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->gamma = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"gamma hash value not a float");
+                         }
+                         /* volume */
+                         temp = hv_fetch(hash, "volume", strlen("volume"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"volume hash key not present");
+                         }
+                         if (SvNOK(*temp)) {
+                                cs->volume = SvNVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"volume hash value not a float");
+                         }
+                         /* n_atom */
+                         temp = hv_fetch(hash, "n_atom", strlen("n_atom"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present");
+                         }
+                         if (SvIOK(*temp)) {
+                                cs->n_atom = SvIVX(*temp);
+                         }
+                         else {
+                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value not an integer");
+                         }
+                         if (cs->n_atom < 1) {
+                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+                         }
+                         /* atom */
+                         cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                         temp = hv_fetch(hash, "atom", strlen("atom"), FALSE);
+                         if (temp == NULL) {
+                                SWIG_exception(SWIG_RuntimeError,"atom hash key not present");
+                         }
+                         else if (!SvROK(*temp)) {
+                                SWIG_exception(SWIG_RuntimeError,"atom hash value not a reference");
+                         }
+                         else if (SvTYPE(SvRV(*temp)) != SVt_PVAV) {
+                                SWIG_exception(SWIG_RuntimeError,"atom hash value not an array");
+                         }
+                         AV *atom = (AV*) SvRV(*temp);
+                         if (av_len(atom)+1 != cs->n_atom) {
+                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+                         }
+                         int i;
+                         for (i = 0 ; i < cs->n_atom ; i++) {
+                                SV ** atomel = av_fetch(atom, 0, false);
+                                /* chech if it is a reference */
+                                if (!SvROK(*atomel)) {
+                                        SWIG_exception(SWIG_TypeError,"elements of atom array must be references");
+                                }
+                                else if (SvTYPE(SvRV(*atomel)) != SVt_PVHV) {
+                                        SWIG_exception(SWIG_TypeError,"elements of atom array must be references to hash");
+                                }
+                                HV *atomHash = (HV*) SvRV(*atomel);
+                                /* Zatom */
+                                temp = hv_fetch(atomHash, "Zatom", 5, FALSE);
+                                if (temp == NULL) {
+                                        SWIG_exception(SWIG_RuntimeError, "Zatom hash key not present");
+                                }
+                                if (SvIOK(*temp)) {
+                                        cs->atom[i].Zatom = SvIVX(*temp);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"Zatom hash key not an integer");
+                                }
+                                /* fraction */
+                                temp = hv_fetch(atomHash, "fraction", 8, FALSE);
+                                if (temp == NULL) {
+                                        SWIG_exception(SWIG_RuntimeError, "fraction hash key not present");
+                                }
+                                if (SvNOK(*temp)) {
+                                        cs->atom[i].fraction = SvNVX(*temp);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"fraction hash key not a real number");
+                                }
+                                /* x */
+                                temp = hv_fetch(atomHash, "x", 1, FALSE);
+                                if (temp == NULL) {
+                                        SWIG_exception(SWIG_RuntimeError, "x hash key not present");
+                                }
+                                if (SvNOK(*temp)) {
+                                        cs->atom[i].x = SvNVX(*temp);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"x hash key not a real number");
+                                }
+                                /* y */
+                                temp = hv_fetch(atomHash, "y", 1, FALSE);
+                                if (temp == NULL) {
+                                        SWIG_exception(SWIG_RuntimeError, "y hash key not present");
+                                }
+                                if (SvNOK(*temp)) {
+                                        cs->atom[i].y = SvNVX(*temp);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"y hash key not a real number");
+                                }
+                                /* z */
+                                temp = hv_fetch(atomHash, "z", 1, FALSE);
+                                if (temp == NULL) {
+                                        SWIG_exception(SWIG_RuntimeError, "z hash key not present");
+                                }
+                                if (SvNOK(*temp)) {
+                                        cs->atom[i].z = SvNVX(*temp);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"z hash key not a real number");
+                                }
+                         }
+                }
                 $1 = cs;
-        
-                 
+                argvi++;
         }
         else {
                 SWIG_exception(SWIG_TypeError,"Argument must be reference to hash");
         }
-
-
-
-
 }
 #endif
 
