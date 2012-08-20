@@ -84,7 +84,7 @@ xrlexample2.sh:
 	echo "Testing perl bindings"
 #	echo "unset PERL5LIB" > xrlexample2.sh
 #	echo "unset PERLLIB" >> xrlexample2.sh
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/src/perl/blib/lib:${top_builddir}/src/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/blib/lib:${top_builddir}/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
 	chmod +x xrlexample2.sh
 
 #test the python bindings

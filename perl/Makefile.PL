@@ -23,4 +23,5 @@ use ExtUtils::MakeMaker 6.31;
 WriteMakefile(
 	'NAME'=> 'xraylib',
 	'OBJECT'=> 'xraylib_wrap.o',
+	'FIRST_MAKEFILE'=> 'Makefile2'
 );
