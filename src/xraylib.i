@@ -24,7 +24,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #ifdef SWIGPYTHON
 #undef c_abs
 #endif
-#include "@abs_top_srcdir@/include/xraylib.h"
+#include "xraylib.h"
 %}
 
 #ifndef SWIGLUA
@@ -1058,7 +1058,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 
-%include "@abs_top_srcdir@/include/xraylib.h"
+%include "xraylib.h"
 
 
 

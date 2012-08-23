@@ -15,9 +15,9 @@ all:
 
 
 
-luaxrl: ${top_builddir}/src/xraylib.i
-	$(SWIG) -includeall -o xraylib_wrap.c -lua ${top_builddir}/src/xraylib.i
-	$(CC) -Wall $(LUA_INCLUDE) -c xraylib_wrap.c -o xraylib_wrap.o
+luaxrl: ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -lua ${top_srcdir}/src/xraylib.i
+	$(CC) -I${top_srcdir}/include -Wall $(LUA_INCLUDE) -c xraylib_wrap.c -o xraylib_wrap.o
 	$(CC) -Wall $(LUA_LD_FLAGS) -o xraylib.so xraylib_wrap.o -L../src/.libs -lxrl $(LUA_LIB) 
 
 

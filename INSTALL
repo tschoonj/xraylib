@@ -13,7 +13,7 @@ required in addition to the C compiler.
 After unpacking the distribution, if the "configure" file is missing, this file
 is generated using the command:
 
-	autoconf -i
+	autoreconf -i
 
 If errors are generated, make sure you have a relatively up-to-date version of autoconf.
 Makefiles can be prepared using the configure command:

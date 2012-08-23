@@ -15,8 +15,8 @@ all:
 	$(MAKE) perlxrl
 
 
-perlxrl: ${top_builddir}/src/xraylib.i
-	$(SWIG) -includeall -o xraylib_wrap.c -perl ${top_builddir}/src/xraylib.i
+perlxrl: ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -perl ${top_srcdir}/src/xraylib.i
 	rm -rf Makefile2 blib pm_to_blib Makefile.PL
 	@echo "#!/usr/bin/perl -w" > Makefile.PL
 	@echo "use ExtUtils::MakeMaker 6.31;" >> Makefile.PL
@@ -25,7 +25,7 @@ perlxrl: ${top_builddir}/src/xraylib.i
 	@echo "'OBJECT'=> 'xraylib_wrap.o'," >> Makefile.PL
 	@echo "'FIRST_MAKEFILE'=> 'Makefile2'" >> Makefile.PL
 	@echo ");" >> Makefile.PL
-	$(PERL) Makefile.PL CCDLFLAGS="$(ARCHFLAGS)" LDDLFLAGS="$(ARCHFLAGS)" CCFLAGS="$(ARCHFLAGS)" INSTALL_BASE=$(DESTDIR)/${prefix} VERSION=$(VERSION) LIBS="-L../.libs -lxrl"
+	$(PERL) Makefile.PL CCDLFLAGS="$(ARCHFLAGS)" LDDLFLAGS="$(ARCHFLAGS)" INC="-I${top_srcdir}/include" CCFLAGS="$(ARCHFLAGS)" INSTALL_BASE=$(DESTDIR)/${prefix} VERSION=$(VERSION) LIBS="-L../.libs -lxrl"
 	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(DESTDIR)/$(prefix) VERSION=$(VERSION) -f Makefile2
 
 
