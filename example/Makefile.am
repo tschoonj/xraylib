@@ -48,8 +48,8 @@ xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
   xrlexample3_SOURCES = xrlexample3.f90
-  xrlexample3_LDADD = ../src/libxrlf03.la
-  xrlexample3_CPPFLAGS = -I../src
+  xrlexample3_LDADD = ../fortran/libxrlf03.la
+  xrlexample3_CPPFLAGS = -I../fortran
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
   xrlexample3_FCFLAGS = ${xrlexample3_CPPFLAGS}
 endif
@@ -75,9 +75,9 @@ xrlexample4.sh:
 	echo "Testing IDL bindings"
 	echo "unset IDL_STARTUP" > xrlexample4.sh
 if !ABS_SRC_BUILD_EQUAL
-	echo "ln -s ${top_srcdir}/src/libxrlidl.dlm ${top_builddir}/src/libxrlidl.dlm" >> xrlexample4.sh
+	echo "ln -s ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
 endif
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/src:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
 if !ABS_SRC_BUILD_EQUAL
 	echo "rm -f ${top_builddir}/src/libxrlidl.dlm" >> xrlexample4.sh
 endif

@@ -32,6 +32,12 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %ignore c_mul;
 #endif
 
+%ignore Crystal_AddCrystal;
+%ignore Crystal_ReadFile;
+%ignore Crystal_Array;
+
+
+
 #ifndef SWIGJAVA
 %typemap(in,numinputs=0) struct compoundData* (struct compoundData temp) {
         temp.nElements=0;

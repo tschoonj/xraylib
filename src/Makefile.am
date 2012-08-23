@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, 2010, 2011, Tom Schoonjans, David Sagan
+#Copyright (c) 2009, 2010, 2011, 2012, Tom Schoonjans, David Sagan
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -26,9 +25,6 @@ prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
 
 
-if ENABLE_FORTRAN
-  lib_LTLIBRARIES+=libxrlf03.la
-endif
 libxrl_la_SOURCES = xrayvars.c cross_sections.c \
 scattering.c atomicweight.c edges.c fluor_lines.c fluor_yield.c jump.c \
 coskron.c radrate.c cs_line.c polarized.c splint.c cs_barns.c fi.c fii.c \
@@ -37,26 +33,16 @@ xraylib-aux.c xraylib-aux.h xraylib-parser.c cs_cp.c refractive_indices.c compto
 atomiclevelwidth.c auger_trans.c xrf_cross_sections_aux.h xrf_cross_sections_aux.c \
 crystal_diffraction.c
 libxrl_la_CFLAGS = $(ARCHFLAGS)
-if ENABLE_FORTRAN
- libxrlf03_la_SOURCES = xraylib_wrap.f90
- libxrlf03_la_LIBADD = libxrl.la
- libxrlf03_la_FCFLAGS = $(ARCHFLAGS)
- libxrlf03_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
- nodist_xraylibinclude_HEADERS = xraylib.mod
-endif
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
 libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ $(LDFLAGS_LIBXRL)
 
-EXTRA_DIST = xraylib_idl.c libxrlidl.dlm xraylib.i
+EXTRA_DIST = xraylib.i
 
 
 
 all: 
-if ENABLE_IDL
-	$(MAKE) idlxrl
-endif
 
 #$(EXEEXT) is necessary to allow compilation in cygwin
 #wine is necessary when cross-compiling
@@ -64,29 +50,11 @@ xrayglob_inline.c: prdata$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
 
-#I'm not sure how portable this .libs link location is...
-#Maybe this could be rewritten using libtool...
-idlxrl:	xraylib_idl.c libxrl.la
-	$(CC) -c $(AM_CPPFLAGS) -I@RSIIDL_DIR@/external/include $(CFLAGS) @IDL_CFLAGS@ ${top_srcdir}/src/xraylib_idl.c
-	gcc @IDL_LD_FLAGS@ -o libxrlidl.so xraylib_idl.o -L${top_builddir}/src/.libs -lxrl
 
 
 
-install-exec-local:
-if ENABLE_IDL
-	$(MKDIR_P) $(DESTDIR)$(prefix)/dlm
-	$(INSTALL) libxrlidl.so ${srcdir}/libxrlidl.dlm $(DESTDIR)$(prefix)/dlm
-endif
 
 
-
-uninstall-local:
-if ENABLE_IDL
-	rm -f $(DESTDIR)$(prefix)/dlm/libxrlidl.so $(DESTDIR)$(prefix)/dlm/libxrlidl.dlm
-endif
 
 clean-local:
 	rm -f xrayglob_inline.c xraylib.mod 
-	rm -f libxrlidl.so 
-	rm -f xraylib_idl.o 
-	rm -rf libxrlidl.so.dSYM

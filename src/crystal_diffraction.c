@@ -45,20 +45,20 @@ Complex c_mul(Complex x, Complex y) {
 /*-------------------------------------------------------------------------------------------------- */
 /* Private function to extend the crystal array size. */
 
-static void Crystal_ExtendArray (Crystal_Array* c_array, int n_new) {
+static void Crystal_ExtendArray (Crystal_Array** c_array, int n_new) {
 
   /* Special case */
 
   /* Transfer data to a temp. */
 
   Crystal_Array* temp_array = malloc(sizeof(Crystal_Array));
-  temp_array->n_crystal = c_array->n_crystal;
-  temp_array->n_alloc = c_array->n_alloc + n_new;
+  temp_array->n_crystal = (*c_array)->n_crystal;
+  temp_array->n_alloc = (*c_array)->n_alloc + n_new;
   temp_array->crystal = malloc(temp_array->n_alloc * sizeof(Crystal_Array));
 
   int i;
-  for (i = 0; i < c_array->n_crystal; i++) {
-    temp_array->crystal[i] = c_array->crystal[i];
+  for (i = 0; i < (*c_array)->n_crystal; i++) {
+    temp_array->crystal[i] = (*c_array)->crystal[i];
   }
 
   /* Free memory but we do reuse c_array->crystal[i].atom and c_array->crystal[i].name memory.
@@ -66,7 +66,10 @@ static void Crystal_ExtendArray (Crystal_Array* c_array, int n_new) {
    * then we cannot free memory.
    */
 
-  if (c_array->crystal != Crystal_arr.crystal) free(c_array->crystal);    
+
+  if ((*c_array)->crystal != Crystal_arr.crystal) free((*c_array)->crystal);    
+
+  *c_array = temp_array;
 
   return;
 
@@ -338,7 +341,7 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
   a_cryst = bsearch(crystal->name, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
   
   if (a_cryst == NULL) {
-    if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(c_array, N_NEW_CRYSTAL);
+    if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL);
     c_array->crystal[c_array->n_crystal++] = *Crystal_MakeCopy(crystal);
     a_cryst = &c_array->crystal[c_array->n_crystal];
   } else {
@@ -391,7 +394,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
       return 0;
     }
 
-    if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(c_array, N_NEW_CRYSTAL);
+    if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL);
     crystal = &(c_array->crystal[c_array->n_crystal++]);
 
     crystal->name = strdup(compound);
