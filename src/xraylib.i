@@ -980,7 +980,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                          }
                          int i;
                          for (i = 0 ; i < cs->n_atom ; i++) {
-                                SV ** atomel = av_fetch(atom, 0, false);
+                                SV ** atomel = av_fetch(atom, 0, FALSE);
                                 /* chech if it is a reference */
                                 if (!SvROK(*atomel)) {
                                         SWIG_exception(SWIG_TypeError,"elements of atom array must be references");

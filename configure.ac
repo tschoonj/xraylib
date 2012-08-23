@@ -610,15 +610,19 @@ elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BIND
 		case "$host" in
 			*-linux*)
 				LUA_LD_FLAGS="-shared"
+				LUA_CFLAGS="-fPIC"
 				;;
 			*-darwin*)
 				LUA_LD_FLAGS="-bundle -undefined dynamic_lookup -all_load"
+				LUA_CFLAGS=""
 				;;
 			*)
 				LUA_LD_FLAGS="-shared"
+				LUA_CFLAGS="-fPIC"
 				;;
 		esac
 		AC_SUBST(LUA_LD_FLAGS)
+		AC_SUBST(LUA_CFLAGS)
 	fi
 	
 

@@ -17,16 +17,16 @@ all:
 
 luaxrl: ${top_srcdir}/src/xraylib.i
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -lua ${top_srcdir}/src/xraylib.i
-	$(CC) -I${top_srcdir}/include -Wall $(LUA_INCLUDE) -c xraylib_wrap.c -o xraylib_wrap.o
+	$(CC) $(LUA_CFLAGS) -I${top_srcdir}/include -Wall $(LUA_INCLUDE) -c xraylib_wrap.c -o xraylib_wrap.o
 	$(CC) -Wall $(LUA_LD_FLAGS) -o xraylib.so xraylib_wrap.o -L../src/.libs -lxrl $(LUA_LIB) 
 
 
 install-exec-local: xraylib.so
-	$(MKDIR_P) $(DESTDIR)$(libdir)/lua/xraylib
-	$(INSTALL) xraylib.so $(DESTDIR)$(libdir)/lua/xraylib
+	$(MKDIR_P) $(DESTDIR)$(libdir)/lua/5.1
+	$(INSTALL) xraylib.so $(DESTDIR)$(libdir)/lua/5.1/
 
 uninstall-local:
-	rm -f $(DESTDIR)$(libdir)/lua/xraylib/xraylib.so
+	rm -f $(DESTDIR)$(libdir)/lua/5.1/xraylib.so
 
 clean-local:
 	rm -f xraylib.so xraylib_wrap.c xraylib_wrap.o
