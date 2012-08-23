@@ -36,6 +36,10 @@ endif
 if ENABLE_JAVA
   check_SCRIPTS += xrlexample7.sh
 endif
+if ENABLE_LUA
+  check_SCRIPTS += xrlexample9.sh
+endif
+
 
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
@@ -63,7 +67,7 @@ endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua
 
 
 #test the idl bindings using this script
@@ -100,7 +104,12 @@ xrlexample7.sh:
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
 	chmod +x xrlexample7.sh
 
-
+#test the lua bindings
+xrlexample9.sh:
+	echo "Testing lua bindings"
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
+	chmod +x xrlexample9.sh
+	
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh

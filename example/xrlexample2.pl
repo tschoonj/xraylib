@@ -77,7 +77,6 @@ printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xr
 
 $cryst = xraylib::Crystal_GetCrystal("Si");
 if ($cryst == undef) {
-	printf("should not get here\n");
   	exit 1;
 }
 

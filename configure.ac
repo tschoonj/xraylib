@@ -579,13 +579,54 @@ fi
 AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
 
 
+#
+#Lua bindings
+#
+AC_ARG_ENABLE([lua],[AS_HELP_STRING([--disable-lua],[build without the lua bindings])],[enable_lua=$enableval],[enable_lua=check])
+
+VALID_LUA=
 
 
+if test "x$SWIG" = xnoswig && test "x$enable_lua" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
+	#don't even bother when swig is not found
+	AC_MSG_ERROR([--enable-lua was given as an option but swig was not found on the system])
+elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
+	#search for lua interpreter
+	AX_WITH_LUA
+	if test "x$LUA" != x ; then
+		AX_LUA_HEADERS
+		AX_LUA_LIBS
+	fi
+	if test "x$LUA" = x || test "x$HAVE_LUA_H" = x || test "x$HAVE_LUALIB_H" = x || test "x$LUA_LIB" = x ; then
+		if test "x$enable_lua" = xyes ; then
+			AC_MSG_ERROR([Cannot build lua bindings])
+		else
+			AC_MSG_WARN([Cannot build lua bindings])
+			VALID_LUA=no
+		fi
+	else
+		VALID_LUA=yes
+		AC_MSG_NOTICE([Building with lua bindings])
+		case "$host" in
+			*-linux*)
+				LUA_LD_FLAGS="-shared"
+				;;
+			*-darwin*)
+				LUA_LD_FLAGS="-bundle -undefined dynamic_lookup -all_load"
+				;;
+			*)
+				LUA_LD_FLAGS="-shared"
+				;;
+		esac
+		AC_SUBST(LUA_LD_FLAGS)
+	fi
+	
 
+fi
 
+AM_CONDITIONAL([ENABLE_LUA],[test x$VALID_LUA = xyes])
 
-
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py nsis/idl/Makefile perl/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile src/xraylib.i python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py nsis/idl/Makefile perl/Makefile lua/Makefile])
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

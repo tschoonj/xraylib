@@ -21,12 +21,16 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 %{
+#ifdef SWIGPYTHON
 #undef c_abs
+#endif
 #include "@abs_top_srcdir@/include/xraylib.h"
 %}
 
+#ifndef SWIGLUA
 %ignore c_abs;
 %ignore c_mul;
+#endif
 
 #ifndef SWIGJAVA
 %typemap(in,numinputs=0) struct compoundData* (struct compoundData temp) {
@@ -41,6 +45,380 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
    $1 = NULL;
 }
 #endif
+
+#ifdef SWIGLUA
+%typemap(argout) struct compoundData * cd {
+        int i;
+        struct compoundData *cd = $1;
+
+        if (cd->nElements == 0) {
+                lua_pushnil(L);
+                SWIG_arg++;
+        }
+        else {
+                lua_newtable(L);
+
+                lua_pushstring(L, "nElements");
+                lua_pushinteger(L, cd->nElements);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "nAtomsAll");
+                lua_pushinteger(L, cd->nAtomsAll);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "Elements");
+                lua_createtable(L, cd->nElements, 0);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushinteger(L,cd->Elements[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "massFractions");
+                lua_createtable(L, cd->nElements, 0);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushnumber(L,cd->massFractions[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushvalue(L, -1);
+
+                SWIG_arg++;
+        }
+}
+
+%typemap(out) Complex {
+        Complex c = $1;
+
+        lua_newtable(L);
+
+        lua_pushstring(L, "re");
+        lua_pushnumber(L, c.re);
+        lua_settable(L,-3);
+
+        lua_pushstring(L, "im");
+        lua_pushnumber(L, c.im);
+        lua_settable(L,-3);
+
+        SWIG_arg++;
+}
+
+
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+        int i;
+
+        if (cs == NULL) {
+                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
+                lua_pushnil(L);
+                SWIG_arg++;
+        }
+        else {
+                lua_newtable(L);
+
+                lua_pushstring(L, "name");
+                lua_pushstring(L, cs->name);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "a");
+                lua_pushnumber(L, cs->a);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "b");
+                lua_pushnumber(L, cs->b);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "c");
+                lua_pushnumber(L, cs->c);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "alpha");
+                lua_pushnumber(L, cs->alpha);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "beta");
+                lua_pushnumber(L, cs->beta);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "gamma");
+                lua_pushnumber(L, cs->gamma);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "volume");
+                lua_pushnumber(L, cs->volume);
+                lua_settable(L,-3);
+                
+                lua_pushstring(L, "n_atom");
+                lua_pushinteger(L, cs->n_atom);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "atom");
+                lua_createtable(L, cs->n_atom, 0);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        lua_pushinteger(L, i+1);
+                        lua_createtable(L,0,5);
+                        lua_pushstring(L,"Zatom");
+                        lua_pushinteger(L, cs->atom[i].Zatom);
+                        lua_settable(L,-3);
+
+                        lua_pushstring(L,"fraction");
+                        lua_pushnumber(L, cs->atom[i].fraction);
+                        lua_settable(L,-3);
+
+                        lua_pushstring(L,"x");
+                        lua_pushnumber(L, cs->atom[i].x);
+                        lua_settable(L,-3);
+
+                        lua_pushstring(L,"y");
+                        lua_pushnumber(L, cs->atom[i].y);
+                        lua_settable(L,-3);
+
+                        lua_pushstring(L,"z");
+                        lua_pushnumber(L, cs->atom[i].z);
+                        lua_settable(L,-3);
+
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "cpointer");
+                lua_pushlightuserdata(L, (void*) cs);
+                lua_settable(L, -3);
+
+                lua_pushvalue(L, -1);
+
+                SWIG_arg++;
+
+        }
+
+
+
+}
+
+%typemap(in) Complex {
+        Complex c;
+       if (!lua_istable(L, $input)) {
+                SWIG_exception(SWIG_TypeError,"Argument must be a table");
+       } 
+       
+       lua_pushstring(L, "re");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+                c.re = lua_tonumber(L,-1);
+                lua_pop(L,1);
+       }
+       else {
+                SWIG_exception(SWIG_RuntimeError,"re hash key not present or value not a float");
+       }
+
+       lua_pushstring(L, "im");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+                c.im = lua_tonumber(L,-1);
+                lua_pop(L,1);
+       }
+       else {
+                SWIG_exception(SWIG_RuntimeError,"im hash key not present or value not a float");
+       }
+
+       $1 = c;
+}
+
+
+%typemap(in) Crystal_Struct * {
+       Crystal_Struct *cs;
+       int i;
+
+       if (!lua_istable(L, $input)) {
+                SWIG_exception(SWIG_TypeError,"Argument must be a table");
+       } 
+       
+       lua_pushstring(L, "cpointer");
+       lua_gettable(L, $input);
+       if (lua_islightuserdata(L,-1)) {
+                cs = (Crystal_Struct*) lua_topointer(L,-1);
+                lua_pop(L,1);
+       }
+       else {
+                /* name */
+                cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct)); 
+                lua_pushstring(L, "name");
+                lua_gettable(L, $input);
+                if (lua_isstring(L,-1)) {
+                        cs->name = strdup(lua_tostring(L,-1));
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"name hash key not present or value not a string");
+                }
+                /* a */
+                lua_pushstring(L, "a");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->a = lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"a hash key not present or value not a float");
+                }
+                /* b */
+                lua_pushstring(L, "b");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->b = lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"b hash key not present or value not a float");
+                }
+                /* c */
+                lua_pushstring(L, "c");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->c = lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"c hash key not present or value not a float");
+                }
+                /* alpha */
+                lua_pushstring(L, "alpha");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->alpha = lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or value not a float");
+                }
+                /* beta */
+                lua_pushstring(L, "beta");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->beta= lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"beta hash key not present or value not a float");
+                }
+                /* gamma */
+                lua_pushstring(L, "gamma");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->gamma= lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or value not a float");
+                }
+                /* volume */
+                lua_pushstring(L, "volume");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->volume = lua_tonumber(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"volume hash key not present or value not a float");
+                }
+                /* n_atom */
+                lua_pushstring(L, "n_atom");
+                lua_gettable(L, $input);
+                if (lua_isnumber(L,-1)) {
+                        cs->n_atom = lua_tointeger(L,-1);
+                        lua_pop(L,1);
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or value not a float");
+                }
+                if (cs->n_atom < 1) {
+                        SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+                }
+                /* atom */
+                lua_getfield(L, $input,"atom");
+                if (lua_istable(L,-1)) {
+                        /* count number of elements */
+                        size_t n_atom = lua_objlen(L, -1);
+                        if (n_atom != cs->n_atom) {
+                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+                        }
+                        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                        for (i = 0 ; i < cs->n_atom ; i++) {
+                                lua_rawgeti(L, -1, i+1);
+                                if (!lua_istable(L, -1)) {
+                                        SWIG_exception(SWIG_RuntimeError,"atom hash value element must be an array (table)");
+                                }
+                                /* Zatom */
+                                lua_getfield(L, -1, "Zatom");
+                                if (lua_isnumber(L,-1)) {
+                                        cs->atom[i].Zatom = lua_tointeger(L,-1);
+                                        lua_pop(L,1);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"Zatom hash value element must be an integer");
+                                }
+
+                                /* fraction */
+                                lua_getfield(L, -1, "fraction");
+                                if (lua_isnumber(L,-1)) {
+                                        cs->atom[i].fraction = lua_tonumber(L,-1);
+                                        lua_pop(L,1);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"fraction hash value element must be a float");
+                                }
+
+                                /* x */
+                                lua_getfield(L, -1, "x");
+                                if (lua_isnumber(L,-1)) {
+                                        cs->atom[i].x = lua_tonumber(L,-1);
+                                        lua_pop(L,1);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"x hash value element must be a float");
+                                }
+
+                                /* y */
+                                lua_getfield(L, -1, "y");
+                                if (lua_isnumber(L,-1)) {
+                                        cs->atom[i].y = lua_tonumber(L,-1);
+                                        lua_pop(L,1);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"y hash value element must be a float");
+                                }
+
+                                /* z */
+                                lua_getfield(L, -1, "z");
+                                if (lua_isnumber(L,-1)) {
+                                        cs->atom[i].z = lua_tonumber(L,-1);
+                                        lua_pop(L,1);
+                                }
+                                else {
+                                        SWIG_exception(SWIG_RuntimeError,"z hash value element must be a float");
+                                }
+
+                                lua_pop(L, 1);
+                        }
+                }
+                else {
+                        SWIG_exception(SWIG_RuntimeError,"atom hash value must be an array (table)");
+                }
+       }
+
+
+
+
+       $1 = cs;
+
+
+}
+#endif
+
+
 
 #ifdef SWIGPYTHON
 %typemap(argout) struct compoundData * cd {
