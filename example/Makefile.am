@@ -79,7 +79,7 @@ if !ABS_SRC_BUILD_EQUAL
 endif
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
 if !ABS_SRC_BUILD_EQUAL
-	echo "rm -f ${top_builddir}/src/libxrlidl.dlm" >> xrlexample4.sh
+	echo "rm -f ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
 endif
 	chmod +x xrlexample4.sh	
 
