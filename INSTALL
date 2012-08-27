@@ -59,13 +59,14 @@ Platforms known to compile and run xraylib
 Not all bindings have been tested on each of these platforms. The
 following table summarizes the current status.
 
-         | Linux | Mac OS X | Solaris | Cygwin | FreeBSD |
-----------------------------------------------------------
- Fortran |   x   |     x    |    x    |    x   |    x    |
-  Perl   |   x   |     x    |    x    |    x   |    x    |
- Python  |   x   |     x    |         |    x   |         |
-   IDL   |   x   |     x    |         |        |         |
-  Java   |   x   |     x    |    ?    |    ?   |         |
+         | Linux | Mac OS X | Solaris | Cygwin | FreeBSD | MinGW |
+------------------------------------------------------------------
+ Fortran |   x   |     x    |    x    |    x   |    x    |   x   |
+  Perl   |   x   |     x    |    x    |    x   |    x    |       |
+ Python  |   x   |     x    |         |    x   |         |   x   |
+   IDL   |   x   |     x    |         |        |         |       |
+  Java   |   x   |     x    |    ?    |    ?   |         |       |
+   Lua   |   x   |     x    |         |        |         |       |
 
 
     -----------------------------------------------

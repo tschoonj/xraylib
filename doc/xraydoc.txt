@@ -162,6 +162,13 @@ Non-radiative (Auger) rates
 ===========================
 
 Taken from the EADL97 database. Originally published by Chen and Crasemann in their papers "Relativistic radiationless tranqition probabilities for atomic K- and L-shells", Atomic Data and Nulear Data Tables (1979) and "Relativistic M-shell radiationless transitions", Physical Review A (1980)
+
+Crystal structures
+==================
+
+Taken from XOP with kind permissions from Manuel Sanchez del Rio.
+
+
 ====================
 
 

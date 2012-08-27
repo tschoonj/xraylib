@@ -22,7 +22,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
  * added to the official array. In this case, locking will have to be used.
  *
  * Note on memory usage:
- * Crystal_FreeMemory needs to be used to free memeory.
+ * Crystal_FreeMemory needs to be used to free memory.
  *
  * Parameters:
  * energy    -- KeV
@@ -55,7 +55,7 @@ Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal);
 void Crystal_Free (Crystal_Struct* crystal);
 
 /*--------------------------------------------------------------------------------
- * Get a to a CrystalStruct of a given material from the crystal_array.
+ * Get a pointer to a CrystalStruct of a given material from the crystal_array.
  *
  * If c_array is NULL then the official array of crystals is searched.
  * If not found, NULL is returned.
@@ -133,7 +133,7 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array);
  * Read in a set of crystal structs to crystal_array.
  * If a material already exists in the array then the existing material data is overwitten. 
  * If crystal_array is NULL then the crystals are added to the official array of crystals.
- * Return: EXIT_SUCCESS or EXIT_FAILURE.
+ * Return: 1 on success and 0 on error.
  */
 
 int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array);

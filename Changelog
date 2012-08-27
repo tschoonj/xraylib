@@ -1,3 +1,18 @@
+Version 2.16.0 Tom Schoonjans
+
+-Crystal diffraction functions added (David Sagan):
+	-Bragg angle
+	-Q scattering amplitude
+	-Atomic factors
+	-Crystal F_H structure factor
+	-Unit cell volume
+	-d spacing
+-Perl and Python bindings updated to provide support for non-trivial arguments
+and return values
+-Lua bindings added
+-Codebase restructured: separate directory for each binding
+
+
 Version 2.15.0 Tom Schoonjans
 
 -Auger probabilities (AugerRate) and its macros

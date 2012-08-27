@@ -1052,4 +1052,171 @@ CSb_FluorLine_Kissel_no_Cascade
 //////////////////////////////////////////////////////////////////////
 >>> float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E)
 
+Crystal_ArrayInit
+//////////////////////////////////////////////////////////////////////
+//								    //
+//			Initialize a new crystal array		    //
+//								    //
+//		c_array : pointer to a Crystal_Array variable	    //
+//		n_crystal : number of crystals c_array can hold	    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc)
 
+Crystal_ArrayFree
+//////////////////////////////////////////////////////////////////////
+//								    //
+//			Free memory from a crystal array	    //
+//								    //
+//		c_array : pointer to a Crystal_Array variable	    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> void Crystal_ArrayFree (Crystal_Array* c_array)
+
+Crystal_MakeCopy
+//////////////////////////////////////////////////////////////////////
+//								    //
+//			Copy a Crystal_Struct			    //
+//								    //
+//		crystal : Crystal_Struct to be copied		    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal)
+
+Crystal_Free
+//////////////////////////////////////////////////////////////////////
+//								    //
+//			Free malloc'd memory in a CrystalStruct.    //
+//								    //
+//		crystal : Crystal_Struct to be freed		    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> void Crystal_Free (Crystal_Struct* crystal)
+
+Crystal_GetCrystal
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Get a pointer to a Crystal_Struct of a given        //
+//		material from a Crystal_Array c_array		    //
+//		IF c_array is NULL then the official array	    //
+//		is searched					    //
+//		IF not found, NULL is returned			    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array)
+
+Bragg_angle
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Computes the Bragg angle in radians of a crystal    //
+//		at a given energy and Miller indices		    //
+//								    //
+//		crystal : Crystal_Struct			    //
+//		energy : incidence energy			    //
+//		x_miller : Miller indices			    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller)
+
+Q_scattering_amplitude
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Computes the Q scattering factor = 		    //
+//		sin(theta)/lambda of a crystal    		    //
+//		at a given energy and Miller indices		    //
+//								    //
+//		crystal : Crystal_Struct			    //
+//		energy : incidence energy			    //
+//		x_miller : Miller indices			    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> float Q_scattering_amplitude(Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float rel_angle)
+
+Atomic_factors
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Computes the atomic factors f0, f' and f''	    //
+//		for a given element Z, incidence energy		    //
+//		and Debye factor				    //
+//								    //
+//		f0, f_primep and f_prime2 : pointers to floats in C //
+//		fortran and IDL BUT return values in Perl, Python   //
+//		and Lua!!!					    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> Atomic_Factors (int Z, float energy, float q, float debye_factor, float* f0, float* f_primep, float* f_prime2)
+
+Crystal_F_H_StructureFactor
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Computes the F_H Structure factor for a given	    //
+//		crystal and parameters				    //
+//		The return value is a complex number		    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle)
+
+Crystal_F_H_StructureFactor_Partial
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		See also Crystal_F_H_StructureFactor		    //
+//		The Atomic structure factor has three terms: 	    //
+//			F = f0 + f' + f''			    //
+//		For each of these three terms, there is		    //
+//		a corresponding *_flag argument which controls	    //
+//		the numerical value used in computing F_H:	    //
+//		*_flag = 0 --> Set this term to 0.		    //
+//		*_flag = 1 --> Set this term to 1. Only used for f0.//
+//		*_flag = 2 --> Set this term to the value given	    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag)
+
+Crystal_UnitCellVolume
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Computes the unit cell volume for a given	    //
+//		crystal. Structures obtained from the		    //
+//		official array will have their volume in .volume    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> float Crystal_UnitCellVolume (Crystal_Struct* crystal)
+
+Crystal_dSpacing
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Computes the d-spacing for a given		    //
+//		crystal and Miller indices. 			    //
+//		The routine assumes that if crystal.volume is 	    //
+//		nonzero then it holds a valid value.		    //
+//		If (i,j,k) = (0,0,0) then zero is returned	    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller)
+
+Crystal_AddCrystal
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Add a new CrystalStruct to crystal_array.	    //
+//		The data is copied to crystal_array.		    //
+//		If the material already exists in the array then    //
+//		the existing material data is overwitten.	    //
+//		If crystal_array is NULL then the crystals are 	    //
+//		added to the official array of crystals.	    //
+//		Return: 1 on success and 0 on error.		    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array)
+
+Crystal_ReadFile
+//////////////////////////////////////////////////////////////////////
+//								    //
+//		Read in a set of crystal structs to crystal_array.  //
+//		If a material already exists in the array then 	    //
+//		the existing material data is overwitten.	    //
+//		If crystal_array is NULL then the crystals are      //
+//		added to the official array of crystals.	    //
+//		Return: 1 on success and 0 on error.		    //
+//								    //
+//////////////////////////////////////////////////////////////////////
+>>> int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array)

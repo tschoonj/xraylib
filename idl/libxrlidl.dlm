@@ -1,5 +1,5 @@
 
-#Copyright (c) 2009, 2010, 2011, Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011, 2012, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without

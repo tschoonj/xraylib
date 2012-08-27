@@ -6,6 +6,6 @@ Authors: A. Brunetti (Universita di Sassari, Italy),
 	 B. Golosio (Universita di Sassari, Italy),
 	 A. Simionovici (Universite Joseph Fourier, Grenoble, France),
 	 A. Somogyi (ESRF, Grenoble, France),
-	 Matthew Wormington (Jordan Valley Semiconductors, Austin, TX, USA),
-	 David Sagan (Cornell University, Ithaca, NY, USA)
+	 M. Wormington (Jordan Valley Semiconductors, Austin, TX, USA),
+	 D. Sagan (Cornell University, Ithaca, NY, USA)
     

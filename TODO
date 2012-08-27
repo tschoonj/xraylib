@@ -1,5 +1,4 @@
 Write bindings for Matlab and Octave
-Add database for structure effects
 Resonant Raman effect
 Rewrite error handling completely: needs to be thread-safe
 ...
