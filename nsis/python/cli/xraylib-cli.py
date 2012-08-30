@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#Copyright (c) 2009, 2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+#Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -20,6 +20,8 @@ from _xraylib import *
 import getopt, sys, string, traceback
 from xraymessages import *
 from xrayhelp import *
+from pprint import pprint
+
 
 if __name__ == '__main__' :
     if len(sys.argv) == 1:
@@ -45,7 +47,13 @@ if __name__ == '__main__' :
 	    sys.exit(0)
     try:    
         XRayInit()
-        print "%.5g" % eval(sys.argv[1])
+	res = eval(sys.argv[1])
+	if type(res) == dict or type(res) == list:
+		pprint(res)
+	elif res == None:
+		print "No result available. Check the arguments"
+	else:
+        	print "%.5g" % res
     except:
         traceback.print_exc()
         display_usage()

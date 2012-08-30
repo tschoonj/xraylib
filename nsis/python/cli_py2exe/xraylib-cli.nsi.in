@@ -18,8 +18,8 @@
 !define PRODUCT_DIR_REGKEY "Software\xraylib-cli"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
-!define abs_top_srcdir_win @abs_top_srcdir_win@ 
-!define abs_top_builddir_win @abs_top_builddir_win@ 
+!define abs_top_srcdir_win "C:\MinGW\msys\1.0\@abs_top_srcdir_win@"
+!define abs_top_builddir_win "C:\MinGW\msys\1.0\@abs_top_builddir_win@"
 !define DLLTOOL "i686-pc-mingw32-dlltool"
 
 !addincludedir "${abs_top_srcdir_win}\nsis"
@@ -72,45 +72,45 @@ CRCCheck on
 Section "-xraylib core files" SecDummy
 	SetOutPath "$INSTDIR"
 	;Readme etc
-	File @abs_top_srcdir_win@\README
+	File ${abs_top_srcdir_win}\README
 	Push "$INSTDIR\README"
 	Push "$INSTDIR\README.txt"
 	Call unix2dos
-	File @abs_top_srcdir_win@\AUTHORS
+	File ${abs_top_srcdir_win}\AUTHORS
 	Push "$INSTDIR\AUTHORS"
 	Push "$INSTDIR\AUTHORS.txt"
 	Call unix2dos
-	File @abs_top_srcdir_win@\BUGS
+	File ${abs_top_srcdir_win}\BUGS
 	Push "$INSTDIR\BUGS"
 	Push "$INSTDIR\BUGS.txt"
 	Call unix2dos
-	File @abs_top_srcdir_win@\Changelog
+	File ${abs_top_srcdir_win}\Changelog
 	Push "$INSTDIR\Changelog"
 	Push "$INSTDIR\Changelog.txt"
 	Call unix2dos
-	File @abs_top_srcdir_win@\TODO
+	File ${abs_top_srcdir_win}\TODO
 	Push "$INSTDIR\TODO"
 	Push "$INSTDIR\TODO.txt"
 	Call unix2dos
 
 	;Documentation
 	SetOutPath "$INSTDIR\Doc"
-	File @abs_top_srcdir_win@\doc\xraybanner.txt
+	File ${abs_top_srcdir_win}\doc\xraybanner.txt
 	Push "$INSTDIR\Doc\xraybanner.txt"
 	Push "$INSTDIR\Doc\xraybanner.txt.fix"
 	Call unix2dos
 	Rename xraybanner.txt.fix xraybanner.txt
-	File @abs_top_srcdir_win@\doc\xraydoc.txt
+	File ${abs_top_srcdir_win}\doc\xraydoc.txt
 	Push "$INSTDIR\Doc\xraydoc.txt"
 	Push "$INSTDIR\Doc\xraydoc.txt.fix"
 	Call unix2dos
 	Rename xraydoc.txt.fix xraydoc.txt
-	File @abs_top_srcdir_win@\doc\xrayfunc.txt
+	File ${abs_top_srcdir_win}\doc\xrayfunc.txt
 	Push "$INSTDIR\Doc\xrayfunc.txt"
 	Push "$INSTDIR\Doc\xrayfunc.txt.fix"
 	Call unix2dos
 	Rename xrayfunc.txt.fix xrayfunc.txt
-	File @abs_top_srcdir_win@\doc\xrayhelp.txt
+	File ${abs_top_srcdir_win}\doc\xrayhelp.txt
 	Push "$INSTDIR\Doc\xrayhelp.txt"
 	Push "$INSTDIR\Doc\xrayhelp.txt.fix"
 	Call unix2dos
@@ -120,9 +120,9 @@ Section "-xraylib core files" SecDummy
 
 	
 	SetOutPath "$INSTDIR\Bin"
-	File @abs_top_srcdir_win@\nsis\python\cli_py2exe\dist\xraylib.exe
+	File ${abs_top_srcdir_win}\nsis\python\cli_py2exe\dist\xraylib.exe
 	SetOutPath "$INSTDIR\temp"
-	File "${abs_top_srcdir_win}\nsis\msvcrt\vcredist_x86_90.exe"
+	File "${abs_top_srcdir_win}\..\vcredist_x86_90.exe"
 	ExecWait "$INSTDIR\temp\vcredist_x86_90.exe /q"
 	SetOutPath "$INSTDIR"
 	RMDir /r "$INSTDIR\temp"

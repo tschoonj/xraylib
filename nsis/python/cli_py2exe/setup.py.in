@@ -3,10 +3,10 @@ import py2exe
 
 setup(
 	name="xraylib",
-	version=@VERSION@,
+	version='@VERSION@',
 	author="Tom Schoonjans",
 	console=['xraylib.py'],
-	data_files=[('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xraybanner.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xraydoc.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xrayfunc.txt']),('Doc',['C:\\Program Files (x86)\\xraylib\\Doc\\xrayhelp.txt'])],
+	data_files=[('Doc',['..\\..\\..\\doc\\xraybanner.txt']),('Doc',['..\\..\\..\\doc\\xraydoc.txt']),('Doc',['..\\..\\..\\doc\\xrayfunc.txt']),('Doc',['..\\..\\..\\doc\\xrayhelp.txt'])],
 	options={
 		"py2exe":{
 			"unbuffered": True,

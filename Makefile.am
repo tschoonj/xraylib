@@ -20,7 +20,10 @@ if ENABLE_FORTRAN
   pkgconfig_DATA += libxrlf03.pc
 endif
 
+nsis:
+	$(MAKE) -C nsis nsis
+
 
 EXTRA_DIST = idl doc xraylib.spec.in BUGS Changelog 
 
-
+.PHONY: nsis

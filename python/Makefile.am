@@ -48,7 +48,7 @@ uninstall-local:
 	rm -f $(DESTDIR)$(bindir)/xraylib
 
 clean-local:
-	rm -rf xraylib_wrap.c build _xraylib.* xraylib.py
+	rm -rf xraylib_wrap.c build _xraylib.* xraylib.py xraylib.pyc
 
 
 

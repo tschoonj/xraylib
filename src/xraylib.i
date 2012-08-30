@@ -39,12 +39,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 #ifndef SWIGJAVA
-%typemap(in,numinputs=0) struct compoundData* (struct compoundData temp) {
-        temp.nElements=0;
-        temp.nAtomsAll=0;
-        temp.Elements=NULL;
-        temp.massFractions=NULL;
-        $1 = &temp;
+%typemap(in,numinputs=0) struct compoundData* (struct compoundData *temp) {
+        temp = (struct compoundData *) malloc(sizeof(struct compoundData));
+        temp->nElements=0;
+        temp->nAtomsAll=0;
+        temp->Elements=NULL;
+        temp->massFractions=NULL;
+        $1 = temp;
 }
 %typemap(in, numinputs=0) Crystal_Array* c_array {
    /* do not use crystal_array argument for now... */
@@ -91,6 +92,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_settable(L, -3);
 
                 lua_pushvalue(L, -1);
+                xrlFree(cd->Elements);
+                xrlFree(cd->massFractions);
+                free(cd);
 
                 SWIG_arg++;
         }
@@ -444,8 +448,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 PyDict_SetItemString(dict, "Elements", elements); 
                 PyDict_SetItemString(dict, "massFractions", massfractions); 
-                free(cd->Elements);
-                free(cd->massFractions);
+                xrlFree(cd->Elements);
+                xrlFree(cd->massFractions);
+                free(cd);
                 $result=dict;
         }
         else {
@@ -769,6 +774,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         av_push(Elements, newSViv(cd->Elements[i]));
                         av_push(massFractions, newSVnv(cd->massFractions[i]));
                 }
+                xrlFree(cd->Elements);
+                xrlFree(cd->massFractions);
+                free(cd);
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
         }

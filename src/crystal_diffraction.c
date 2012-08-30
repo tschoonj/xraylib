@@ -371,8 +371,12 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
   long floc;
 
   if (c_array == NULL) c_array = &Crystal_arr;
-
+#ifdef _WIN32
+  /* necesarry to avoid line-ending issues in windows, as pointed out by Matthew Wormington */
+  if ((fp = fopen(file_name, "rb")) == NULL) {
+#else
   if ((fp = fopen(file_name, "r")) == NULL) {
+#endif
     sprintf (buffer, "Crystal file: %s not found\n", file_name);
     ErrorExit(buffer);
     return 0;
