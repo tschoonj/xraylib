@@ -1,7 +1,7 @@
 /*
 	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
 	
-	File: XrfLibNET.h
+	File: XrayLib.NET.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
 	Compiler: Microsoft Visual Studio 2010
@@ -113,10 +113,11 @@ namespace Science {
 		literal double PI = 3.14159265359;
 
 		// Values taken from physics.nist.gov
-		literal double AVOGNUM = 0.602214179;    // Avogadro number (mol-1 * barn-1 * cm2) 
-		literal double KEV2ANGST = 12.39841875;  // keV to Angstrom-1 conversion factor 
-		literal double MEC2 = 510.998910;        // Electron rest mass (keV) 
+		literal double AVOGNUM = 0.602214129;    // Avogadro number (mol-1 * barn-1 * cm2) 
+		literal double KEV2ANGST = 12.39841930;  // keV to Angstrom-1 conversion factor 
+		literal double MEC2 = 510.998928;        // Electron rest mass (keV) 
 		literal double RE2 = 0.079407877;        // Square of classical electron radius (barn)
+		literal double R_E = 2.8179403267e-15;   // Classical electron radius (m)
 
 		// IUPAC lines
 		literal int KL1_LINE = -1;

@@ -53,7 +53,7 @@
 	OF SUCH DAMAGE.
 */
 
-#include "..\XrayLib\xraylib-parser.h"
+#include "xraylib.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -64,7 +64,7 @@ using namespace System::Text;
 /// A namespace that contains scientific classes.
 /// </summary>
 namespace Science {
-
+	
 	/// <summary>
 	/// A simple class that gives information on the composition of a compound. 
 	/// </summary>
@@ -306,4 +306,4 @@ namespace Science {
 }
 
 
-// Update help
+

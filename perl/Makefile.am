@@ -25,7 +25,7 @@ perlxrl: ${top_srcdir}/src/xraylib.i
 	@echo "'OBJECT'=> 'xraylib_wrap.o'," >> Makefile.PL
 	@echo "'FIRST_MAKEFILE'=> 'Makefile2'" >> Makefile.PL
 	@echo ");" >> Makefile.PL
-	$(PERL) Makefile.PL CCDLFLAGS="$(ARCHFLAGS)" LDDLFLAGS="$(ARCHFLAGS)" INC="-I${top_srcdir}/include" CCFLAGS="$(ARCHFLAGS)" INSTALL_BASE=$(DESTDIR)/${prefix} VERSION=$(VERSION) LIBS="-L../.libs -lxrl"
+	$(PERL) Makefile.PL CCDLFLAGS="$(ARCHFLAGS)" LDDLFLAGS="$(ARCHFLAGS)" INC="-I${top_srcdir}/include" CCFLAGS="$(ARCHFLAGS)" INSTALL_BASE=$(DESTDIR)/${prefix} VERSION=$(VERSION) LIBS="-L../src/.libs -lxrl"
 	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(DESTDIR)/$(prefix) VERSION=$(VERSION) -f Makefile2
 
 

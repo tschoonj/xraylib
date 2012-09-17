@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XrayLib.NET", "XrayLib.NET\XrayLib.NET.vcproj", "{21137C51-79FE-41B1-A5AD-7D4A3FE57BBC}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XrayLib.NET", "XrayLib.NET\XrayLib.NET.vcxproj", "{21137C51-79FE-41B1-A5AD-7D4A3FE57BBC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{771B6567-0D55-46E6-BC5B-A4EF540E7FF2}"
 EndProject
