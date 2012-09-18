@@ -425,6 +425,7 @@ AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
 
 
 AC_ARG_ENABLE([python],[AS_HELP_STRING([--disable-python],[build without the python bindings])],[enable_python=$enableval],[enable_python=check])
+AC_ARG_ENABLE([python-integration],[AS_HELP_STRING([--enable-python-integration],[install the python bindings in the interpreters site-packages folder])],[enable_python_integration=$enableval],[enable_python_integration=check])
 
 VALID_PYTHON=
 
@@ -440,9 +441,9 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno && test "x$DISABLE_B
 		AX_PYTHON_DEVEL
 		if test "x$PYTHON" = x ; then
 			if test "x$enable_python" = xyes ; then
-				AC_MSG_ERROR([Could not determine the Python.h location])
+				AC_MSG_ERROR([Incomplete python development package])
 			else
-				AC_MSG_WARN([Could not determine the Python.h location])
+				AC_MSG_WARN([Incomplete python development package])
 			fi
 			VALID_PYTHON=no
 		else
@@ -462,6 +463,11 @@ PYTHON_INCLUDE_FIXED="'`echo $PYTHON_CPPFLAGS | sed -e "s/ \{1,\}/','/g" -e  "s/
 PYTHON_LIBS_FIXED="'`echo $PYTHON_LDFLAGS | sed -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
 #echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
 #echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
+
+if test "x$enable_python_integration" = xyes ; then
+	pythondir=$PYTHON_SITE_PKG
+	pyexecdir=$PYTHON_SITE_PKG_EXEC
+fi
 
 AC_SUBST(PYTHON_INCLUDE_FIXED)
 AC_SUBST(PYTHON_LIBS_FIXED)
