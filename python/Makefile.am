@@ -27,7 +27,7 @@ all:
 
 pythonxrl: ${top_srcdir}/src/xraylib.i
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
-	CC="$(CC)" CPPFLAGS="-I${top_srcdir}/include" CFLAGS="$(ARCHFLAGS)" $(PYTHON) xrlsetup.py build_ext --inplace
+	CC="$(CC)" CPPFLAGS="-I${top_srcdir}/include" LDFLAGS="$(PYTHON_LDFLAGS)" CFLAGS="$(ARCHFLAGS)" $(PYTHON) xrlsetup.py build_ext --inplace
 
 
 
