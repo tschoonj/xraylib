@@ -44,6 +44,6 @@ clean-local:
 	rm -rf libxrlidl.so.dSYM
 endif
 
-EXTRA_DIST = xraylib_idl.c libxrlidl.dlm 
+EXTRA_DIST = xraylib_idl.c libxrlidl.dlm xraylib_auger.pro xraylib_shells.pro xraylib_help.pro xraylib_lines.pro xraylib.pro
 
 

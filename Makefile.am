@@ -24,6 +24,6 @@ nsis:
 	$(MAKE) -C nsis nsis
 
 
-EXTRA_DIST = idl doc xraylib.spec.in BUGS Changelog 
+EXTRA_DIST = xraylib.spec.in BUGS Changelog 
 
 .PHONY: nsis
