@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2012, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -10,20 +9,9 @@
 
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-SUBDIRS = include src example idl python doc data java nsis perl lua fortran ruby
-ACLOCAL_AMFLAGS = -I m4
-
-pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA=libxrl.pc
-if ENABLE_FORTRAN
-  pkgconfig_DATA += libxrlf03.pc
-endif
-
-nsis:
-	$(MAKE) -C nsis nsis
+require 'xraylib'
 
 
-EXTRA_DIST = idl doc xraylib.spec.in BUGS Changelog 
-
-.PHONY: nsis
+printf("Example of C program using xraylib\n");
+printf("Ca K-alpha Fluorescence Line Energy: %f\n",
+	 Xraylib.LineEnergy(20,Xraylib::KA_LINE))

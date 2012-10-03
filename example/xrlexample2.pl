@@ -1,5 +1,3 @@
-#!/usr/bin/perl 
-
 #Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
