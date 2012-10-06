@@ -85,7 +85,10 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_INC, [Directory to include ruby headers from])
                 AC_MSG_CHECKING([for Ruby headers include path])
                 if test -z "$RUBY_EXT_INC" ; then
-                        [RUBY_EXT_INC=`$RUBY -rrbconfig -e 'puts Config::CONFIG["archdir"]'`];
+                        [RUBY_EXT_INC=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyhdrdir"]'`];
+			if test "$RUBY_EXT_INC" = "nil" ; then
+                        	[RUBY_EXT_INC=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["archdir"]'`];
+			fi
                 fi
                 AC_MSG_RESULT([$RUBY_EXT_INC])
                 AC_SUBST(RUBY_EXT_INC)
@@ -96,7 +99,7 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_LIB, [Directory to install ruby extensions into])
                 AC_MSG_CHECKING([for Ruby extensions target directory])
                 if test -z "$RUBY_EXT_LIB" ; then
-                        [RUBY_EXT_LIB=`$RUBY -rrbconfig -e 'puts Config::CONFIG["sitearchdir"]'`];
+                        [RUBY_EXT_LIB=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["sitearchdir"]'`];
                 fi
                 AC_MSG_RESULT([$RUBY_EXT_LIB])
                 AC_SUBST(RUBY_EXT_LIB)
@@ -107,7 +110,7 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_CPPFLAGS, [CPPFLAGS to compile Ruby extensions])
                 AC_MSG_CHECKING([for Ruby extensions C preprocessor flags])
                 if test -z "$RUBY_EXT_CPPFLAGS" ; then
-                        [RUBY_EXT_CPPFLAGS=`$RUBY -rrbconfig -e 'puts Config::CONFIG["CPPFLAGS"]'`];
+                        [RUBY_EXT_CPPFLAGS=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["CPPFLAGS"]'`];
                 fi
                 AC_MSG_RESULT([$RUBY_EXT_CPPFLAGS])
                 AC_SUBST(RUBY_EXT_CPPFLAGS)
@@ -118,7 +121,7 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_LDFLAGS, [LDFLAGS to build Ruby extensions])
                 AC_MSG_CHECKING([for Ruby extensions linker flags])
                 if test -z "$RUBY_EXT_LDFLAGS" ; then
-                        [RUBY_EXT_LDFLAGS=`$RUBY -rrbconfig -e 'puts Config::CONFIG["LDFLAGS"]'`];
+                        [RUBY_EXT_LDFLAGS=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["LDFLAGS"]'`];
                 fi
                 # Fix LDFLAGS for OS X.  We don't want any -arch flags here, otherwise
                 # linking might fail.  We also including the proper flags to create a bundle.
@@ -137,7 +140,7 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_DLEXT, [Ruby dynamic library extension])
                 AC_MSG_CHECKING([for Ruby dynamic library extension])
                 if test -z "$RUBY_EXT_DLEXT" ; then
-                        [RUBY_EXT_DLEXT=`$RUBY -rrbconfig -e 'puts Config::CONFIG["DLEXT"]'`];
+                        [RUBY_EXT_DLEXT=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["DLEXT"]'`];
                         RUBY_EXT_DLEXT=".${RUBY_EXT_DLEXT}"
                 fi
                 AC_MSG_RESULT([$RUBY_EXT_DLEXT])

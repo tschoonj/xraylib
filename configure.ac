@@ -678,6 +678,7 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 			ac_save_CPPFLAGS="$CPPFLAGS"
 			CPPFLAGS="$ac_save_CPPFLAGS $RUBY_EXT_CPPFLAGS -I$RUBY_EXT_INC"
 			AC_TRY_LINK([
+			#define HAVE_STRUCT_TIMESPEC
 			#include <ruby.h>
 			],[
 			ruby_init();
@@ -719,12 +720,12 @@ RUBY_EXT_ARCH=`AS_BASENAME([$RUBY_EXT_LIB])`
 RUBY_EXT_VERSION=`AS_BASENAME([$RUBY_EXT_ARCH])`
 
 if test "x$enable_ruby_integration" = xyes ; then
-	rubydir=$RUBY_EXT_LIB
+	RUBYDIR=$RUBY_EXT_LIB
 else
-	rubydir=${libdir}/ruby/site_ruby/$RUBY_EXT_VERSION/$RUBY_EXT_ARCH
+	RUBYDIR=${libdir}/ruby/site_ruby/$RUBY_EXT_VERSION/$RUBY_EXT_ARCH
 fi
 
-AC_SUBST(rubydir)
+AC_SUBST(RUBYDIR)
 
 fi
 
@@ -749,3 +750,32 @@ AC_SUBST(abs_top_srcdir_win)
 AM_CONDITIONAL([ABS_SRC_BUILD_EQUAL],[test x$abs_top_builddir = x$abs_top_srcdir])
 
 AC_OUTPUT
+
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([])
+if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes ; then
+	AC_MSG_NOTICE([Building xraylib with bindings for:])
+	if test "$VALID_FORTRAN" = "yes" ; then
+		AC_MSG_NOTICE([Fortran 2003])
+	fi
+	if test "$VALID_IDL" = yes ; then
+		AC_MSG_NOTICE([IDL])
+	fi
+	if test "$VALID_PERL" = yes ; then
+		AC_MSG_NOTICE([Perl])
+	fi
+	if test "$VALID_PYTHON" = yes ; then
+		AC_MSG_NOTICE([Python])
+	fi
+	if test "$VALID_JAVA" = yes ; then
+		AC_MSG_NOTICE([Java])
+	fi
+	if test "$VALID_LUA" = yes ; then
+		AC_MSG_NOTICE([Lua])
+	fi
+	if test "$VALID_RUBY" = yes ; then
+		AC_MSG_NOTICE([Ruby])
+	fi
+else
+	AC_MSG_NOTICE([Building without bindings])
+fi

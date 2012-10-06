@@ -51,6 +51,16 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
    /* do not use crystal_array argument for now... */
    $1 = NULL;
 }
+/*
+%typemap(freearg) Crystal_Struct * {
+        if (!cpointer_found) {
+                free($1->name);
+                free($1->atom);
+                free($1);
+        }
+}
+*/
+
 #endif
 
 #ifdef SWIGLUA
@@ -241,6 +251,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %typemap(in) Crystal_Struct * {
        Crystal_Struct *cs;
        int i;
+        int cpointer_found = 0;
 
        if (!lua_istable(L, $input)) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a table");
@@ -251,6 +262,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
        if (lua_islightuserdata(L,-1)) {
                 cs = (Crystal_Struct*) lua_topointer(L,-1);
                 lua_pop(L,1);
+                cpointer_found = 1;
        }
        else {
                 /* name */
@@ -432,10 +444,10 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #ifdef SWIGPYTHON
 %typemap(argout) struct compoundData * cd {
-        PyObject *dict = PyDict_New();
         int i;
         struct compoundData *cd = $1;
         if (cd->nElements > 0) {
+                PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements)); 
                 PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((long) cd->nAtomsAll)); 
                 PyObject *elements=PyList_New(cd->nElements);
@@ -512,6 +524,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         PyObject *cpointer = NULL;
         PyObject *temp = NULL;
         Crystal_Struct *cs = NULL;
+        int cpointer_found = 0;
 
         if (PyDict_Check(dict) == 0) {
                PyErr_SetString(PyExc_TypeError,"Expected dictionary argument"); 
@@ -531,6 +544,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         }
                         else {
                                 $1 = (Crystal_Struct *) cpointer_l;
+                                cpointer_found = 1;
                         }
                 }
                 /* no cpointer found -> read from structure */
@@ -859,12 +873,15 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         SV *ref = $input;
         Crystal_Struct *cs;
         SV **temp;
+        int cpointer_found = 0;
+
         if (SvROK(ref) && SvTYPE(SvRV(ref)) == SVt_PVHV) {
                 HV* hash = (HV*) SvRV(ref);
                 /* get cpointer */
                 SV **cpointerPtr = hv_fetch(hash, "cpointer", 8, FALSE);
                 if (cpointerPtr != NULL) {
                         cs = (Crystal_Struct *) SvIV(*cpointerPtr); 
+                        cpointer_found = 1;
                 }
                 else {
                         /* no cpointer found -> read from hash */
@@ -1063,7 +1080,222 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 #endif
 
+#ifdef SWIGRUBY
+%typemap(argout) struct compoundData *cd {
+        int i;
+        struct compoundData *cd = $1; 
 
+        if (cd->nElements == 0) {
+               $result = Qnil; 
+        }
+        else {
+                VALUE rv;
+                rv = rb_hash_new(); 
+                rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
+                rb_hash_aset(rv, rb_str_new2("nAtomsAll"), INT2FIX(cd->nAtomsAll));
+                VALUE elements, massFractions;
+                elements = rb_ary_new2(cd->nElements);
+                massFractions = rb_ary_new2(cd->nElements);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        rb_ary_store(elements, (long) i , INT2FIX(cd->Elements[i]));
+                        rb_ary_store(massFractions, (long) i , rb_float_new(cd->massFractions[i]));
+                }
+                rb_hash_aset(rv, rb_str_new2("Elements"), elements);
+                rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
+                xrlFree(cd->Elements); 
+                xrlFree(cd->massFractions); 
+                free(cd);
+                $result = rv;
+        }
+
+}
+
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+
+        if (cs == NULL) {
+                fprintf(stdout,"Crystal_GetCrystal Error: crystal not found");
+                $result = Qnil;
+        }
+        else {
+                VALUE rv;
+                rv = rb_hash_new();
+                rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cs->name));
+                rb_hash_aset(rv, rb_str_new2("a"), rb_float_new(cs->a));
+                rb_hash_aset(rv, rb_str_new2("b"), rb_float_new(cs->b));
+                rb_hash_aset(rv, rb_str_new2("c"), rb_float_new(cs->c));
+                rb_hash_aset(rv, rb_str_new2("alpha"), rb_float_new(cs->alpha));
+                rb_hash_aset(rv, rb_str_new2("beta"), rb_float_new(cs->beta));
+                rb_hash_aset(rv, rb_str_new2("gamma"), rb_float_new(cs->gamma));
+                rb_hash_aset(rv, rb_str_new2("volume"), rb_float_new(cs->volume));
+                rb_hash_aset(rv, rb_str_new2("n_atom"), INT2FIX(cs->n_atom));
+                VALUE atoms = rb_ary_new2(cs->n_atom);
+                rb_hash_aset(rv, rb_str_new2("atom"), atoms);
+                int i;
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        VALUE atom = rb_hash_new();
+                        rb_hash_aset(atom, rb_str_new2("Zatom"), INT2FIX(cs->atom[i].Zatom));
+                        rb_hash_aset(atom, rb_str_new2("fraction"), rb_float_new(cs->atom[i].fraction));
+                        rb_hash_aset(atom, rb_str_new2("x"), rb_float_new(cs->atom[i].x));
+                        rb_hash_aset(atom, rb_str_new2("y"), rb_float_new(cs->atom[i].y));
+                        rb_hash_aset(atom, rb_str_new2("z"), rb_float_new(cs->atom[i].z));
+                        rb_ary_store(atoms, (long) i, atom);
+                }
+                rb_hash_aset(rv, rb_str_new2("cpointer"), INT2FIX((long) cs));
+                $result = rv;
+        }
+}
+
+%typemap(in) Crystal_Struct * {
+        VALUE input = $input;
+        Crystal_Struct *cs;
+        int cpointer_found = 0;
+        
+        if (TYPE(input) != T_HASH) {
+                SWIG_exception(SWIG_TypeError,"Argument must be a hash");
+        }
+
+        /* get cpointer if available */
+        VALUE cpointer;
+        if ((cpointer = rb_hash_aref(input, rb_str_new2("cpointer"))) != Qnil ) {
+                /* cpointer found */
+                cs = (Crystal_Struct *) FIX2LONG(cpointer);
+                cpointer_found = 1;
+        }
+        else {
+                /* not a cpointer -> we'll have to analyze the complete hash then :-( */
+                VALUE temp;
+                cs = (Crystal_Struct *)  malloc(sizeof(Crystal_Struct));
+
+                /* name */
+                temp = rb_hash_aref(input, rb_str_new2("name"));
+                if (temp == Qnil || TYPE(temp) != T_STRING) {
+                        SWIG_exception(SWIG_RuntimeError,"name hash key not present or not a string");
+                }
+                cs->name = strdup(StringValuePtr(temp));
+                /* a */
+                temp = rb_hash_aref(input, rb_str_new2("a"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"a hash key not present or not a float");
+                }
+                cs->a = (float) NUM2DBL(temp);
+                /* b */
+                temp = rb_hash_aref(input, rb_str_new2("b"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"b hash key not present or not a float");
+                }
+                cs->b = (float) NUM2DBL(temp);
+                /* c */
+                temp = rb_hash_aref(input, rb_str_new2("c"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"c hash key not present or not a float");
+                }
+                cs->c = (float) NUM2DBL(temp);
+                /* alpha */
+                temp = rb_hash_aref(input, rb_str_new2("alpha"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or not a float");
+                }
+                cs->alpha = (float) NUM2DBL(temp);
+                /* beta */
+                temp = rb_hash_aref(input, rb_str_new2("beta"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"beta hash key not present or not a float");
+                }
+                cs->beta = (float) NUM2DBL(temp);
+                /* gamma */
+                temp = rb_hash_aref(input, rb_str_new2("gamma"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or not a float");
+                }
+                cs->gamma = (float) NUM2DBL(temp);
+                /* volume */
+                temp = rb_hash_aref(input, rb_str_new2("volume"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"volume hash key not present or not a float");
+                }
+                cs->volume = (float) NUM2DBL(temp);
+                /* n_atom */
+                temp = rb_hash_aref(input, rb_str_new2("n_atom"));
+                if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
+                        SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or not an integer");
+                }
+                cs->n_atom = FIX2INT(temp);
+                if (cs->n_atom < 1) {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+                }
+                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+
+                /* atom */
+                VALUE atoms = rb_hash_aref(input, rb_str_new2("atom"));
+                if (atoms == Qnil || TYPE(atoms) != T_ARRAY) {
+                        SWIG_exception(SWIG_RuntimeError,"atom hash key not present or not an array");
+                }
+                if (RARRAY_LEN(atoms) != cs->n_atom) {
+                        SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+                }
+                long i;
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        VALUE atom = rb_ary_entry(atoms, i);
+                        if (atom == Qnil || TYPE(atom) != T_HASH) {
+                                SWIG_exception(SWIG_RuntimeError,"elements of atom array must be hashes");
+                        }
+                        /* Zatom */
+                        temp = rb_hash_aref(atom, rb_str_new2("Zatom"));
+                        if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
+                                SWIG_exception(SWIG_RuntimeError,"Zatom hash key missing or not an integer");
+                        }
+                        cs->atom[i].Zatom = FIX2INT(temp);
+                        /* fraction */
+                        temp = rb_hash_aref(atom, rb_str_new2("fraction"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"fraction hash key missing or not a float");
+                        }
+                        cs->atom[i].fraction = NUM2DBL(temp);
+                        /* x */
+                        temp = rb_hash_aref(atom, rb_str_new2("x"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"x hash key missing or not a float");
+                        }
+                        cs->atom[i].x = NUM2DBL(temp);
+                        /* y */
+                        temp = rb_hash_aref(atom, rb_str_new2("y"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"y hash key missing or not a float");
+                        }
+                        cs->atom[i].y = NUM2DBL(temp);
+                        /* z */
+                        temp = rb_hash_aref(atom, rb_str_new2("z"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"z hash key missing or not a float");
+                        }
+                        cs->atom[i].z = NUM2DBL(temp);
+
+                }
+
+
+        }
+
+        $1 = cs;        
+
+}
+
+%typemap(out) Complex {
+        Complex c = $1;
+%#ifdef T_COMPLEX
+        /* Ruby 1.9 */
+        VALUE cp = rb_Complex2(rb_float_new(c.re),rb_float_new(c.im));
+%#else
+        /* Ruby 1.8 */
+        VALUE *args = (VALUE *) malloc(sizeof(VALUE)*2);
+        args[0] = rb_float_new(c.re);
+        args[1] = rb_float_new(c.im);
+        VALUE cp = rb_class_new_instance(2, args, rb_path2class("Complex"));
+%#endif
+        $result = cp;
+}
+
+#endif
 
 
 %include "xraylib.h"
