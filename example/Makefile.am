@@ -41,6 +41,12 @@ if ENABLE_LUA
 endif
 
 
+
+
+if ENABLE_CUDA
+  check_PROGRAMS += xrlexample11
+endif
+
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
 xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
@@ -60,6 +66,13 @@ if ENABLE_CXX
 endif
 
 
+if ENABLE_CUDA
+xrlexample11_SOURCES = xrlexample11.c
+xrlexample11_LDADD = ../src/libxrl.la ../cuda/libxrlcuda.la
+xrlexample11_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/cuda
+xrlexample11_CFLAGS = $(ARCHFLAGS)
+TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH="$(CUDA_LIBDIR)"
+endif
 
 if ENABLE_CROSS
 TESTS_ENVIRONMENT = path="${top_builddir}/src/.libs" $(WINE)

@@ -636,7 +636,25 @@ fi
 
 AM_CONDITIONAL([ENABLE_LUA],[test x$VALID_LUA = xyes])
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py perl/Makefile lua/Makefile fortran/Makefile] nsis/python/python2.6/xrlsetup.py nsis/python/python2.7/xrlsetup.py nsis/python/python3.1/xrlsetup.py nsis/dotNet/Makefile nsis/python/python3.2/Makefile nsis/python/python3.2/xrlsetup.py)
+
+
+
+
+
+#CUDA support
+AC_ARG_ENABLE([cuda],[AS_HELP_STRING([--enable-cuda],[build with the cuda bindings])],[enable_cuda=$enableval],[enable_cuda=check])
+
+VALID_CUDA=
+if test "x$enable_cuda" = "xyes" ; then
+AX_CHECK_CUDA
+fi
+
+AM_CONDITIONAL([ENABLE_CUDA],[test x$VALID_CUDA = xyes])
+
+
+
+
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py perl/Makefile lua/Makefile fortran/Makefile] nsis/python/python2.6/xrlsetup.py nsis/python/python2.7/xrlsetup.py nsis/python/python3.1/xrlsetup.py nsis/dotNet/Makefile nsis/python/python3.2/Makefile nsis/python/python3.2/xrlsetup.py cuda/Makefile)
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`
