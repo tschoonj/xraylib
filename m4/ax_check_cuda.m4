@@ -51,6 +51,8 @@ if test -x "$cuda_prefix/bin/nvcc"; then
 	AC_DEFINE_UNQUOTED([NVCC_PATH], ["$cuda_prefix/bin/nvcc"], [Path to nvcc binary])
 	# We need to add the CUDA search directories for header and lib searches
 
+	CUDA_CFLAGS=""
+
 	# Saving the current flags
 	ax_save_CFLAGS="${CFLAGS}"
 	ax_save_LDFLAGS="${LDFLAGS}"
@@ -59,11 +61,26 @@ if test -x "$cuda_prefix/bin/nvcc"; then
 	AC_SUBST([CUDA_CFLAGS])
 	AC_SUBST([CUDA_LDFLAGS])
 	AC_SUBST([NVCC],[$cuda_prefix/bin/nvcc])
-	AC_SUBST([CUDA_LIBDIR],[$cuda_prefix/lib])
+	AC_CHECK_FILE([$cuda_prefix/lib64],[lib64_found=yes],[lib64_found=no])
+	if test "x$lib64_found" = xno ; then
+		AC_SUBST([CUDA_LIBDIR],[$cuda_prefix/lib])
+	else
+		AC_CHECK_SIZEOF([long])
+		if test "x$ac_cv_sizeof_long" = "x8" ; then
+			AC_SUBST([CUDA_LIBDIR],[$cuda_prefix/lib64])
+			CUDA_CFLAGS+=" -m64"
+		elif test "x$ac_cv_sizeof_long" = "x4" ; then
+			AC_SUBST([CUDA_LIBDIR],[$cuda_prefix/lib])
+			CUDA_CFLAGS+=" -m32"
+		else
+			AC_MSG_ERROR([Could not determine size of long variable type])
+		fi
+	fi
 
-	CUDA_CFLAGS="-I$cuda_prefix/include"
+
+	CUDA_CFLAGS+=" -I$cuda_prefix/include"
 	CFLAGS="$CUDA_CFLAGS $CFLAGS"
-	CUDA_LDFLAGS="-L$cuda_prefix/lib"
+	CUDA_LDFLAGS="-L$CUDA_LIBDIR"
 	LDFLAGS="$CUDA_LDFLAGS $LDFLAGS"
 
 	# And the header and the lib

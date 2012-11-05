@@ -66,7 +66,7 @@ extern "C" void CudaXRayInit(int  num_block,int num_threads){
    		dimP+=NE_Photo[i];
    		dimC+=NE_Compt[i];
    		dimR+=NE_Rayl[i];
-   		dimQC+=Nq_Compton[i];
+   		//dimQC+=Nq_Compton[i];
 	}
 
 	InitVects(num_block,num_threads);
@@ -98,7 +98,7 @@ extern "C" void CudaXRayInit(int  num_block,int num_threads){
 		tmpP+=NE_Photo[i];
 		tmpC+=NE_Compt[i];
 		tmpR+=NE_Rayl[i];
-		tmpQC+=Nq_Compton[i];
+		//tmpQC+=Nq_Compton[i];
      
    //  printf("%d  %d  %d\n",NE_Photo[i],NE_Compt[i],NE_Rayl[i]);
 }  

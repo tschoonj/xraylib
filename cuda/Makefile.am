@@ -9,14 +9,14 @@ libxrlcuda_la_LIBADD = $(CUDA_LDFLAGS) -lcudart
 
 
 .cu.o:
-	$(NVCC) -m64 -o $@ -c $<
+	$(NVCC) -o $@ -c $<
 
 .cu.lo:
 	$(srcdir)/cudalt.py $@ $(NVCC) \
 	--compiler-options=\"$(CFLAGS) \
 	$(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(libxrlcuda_la_CFLAGS)\" -m64 -c $<
+	$(libxrlcuda_la_CFLAGS)\" $(CUDA_CFLAGS) -c $<
 	
 
 

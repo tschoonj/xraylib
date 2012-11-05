@@ -37,7 +37,7 @@ AC_CHECK_FUNCS([strndup strdup])
 
 
 
-AM_PROG_AR
+#AM_PROG_AR
 #at least version 2.0 of libtool is required for creating the fortran bindings
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
