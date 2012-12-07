@@ -68,7 +68,8 @@ endif
 
 if ENABLE_CUDA
 xrlexample11_SOURCES = xrlexample11.cu
-xrlexample11_LDADD = ../src/libxrl.la  ../cuda/libxrlcuda.la
+xrlexample11_LDADD = ../src/libxrl.la  $(CUDA_LDFLAGS) -lcudart
+#../cuda/libxrlcuda.la
 xrlexample11_CFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/cuda -I${top_srcdir}/src
 TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH="$(CUDA_LIBDIR)"
 endif
