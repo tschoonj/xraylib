@@ -2,35 +2,62 @@
 #ifndef XRAYLIB_CUDA_H
 #define XRAYLIB_CUDA_H
 
-void cuda_splint(float *xa, float *ya, float *y2a, int n, float x, float *y);
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 
 
+//host functions
 
-void CudaXRayInit(int  num_block,int num_threads);
-
-
-
-void CS_Photo_cuda(int num_data,int *Z, int *NE_Photons, float *E,float *cuda_E_array);
-void CS_Compton_cuda(int num_data, int *Z, int *NE_Compton, float *E, float *cuda_E_array);
-void CS_Rayleigh_cuda(int num_data, int *Z, int *NE_Rayleigh, float *E, float *cuda_E_array);
-//void Cuda_CS_Total(int num_data, int *Z, int *NE_Photons, int *NE_Rayleigh,int *NE_Compton, float *cuda_E_array);
-//void   Cuda_CS_Total(int num_block,int num_threads, int **Z_Total,  float ***CS_Total_Vect,  int *NElem_Total,int NPhases,num_xsection_data NE_Photo,num_xsection_data NE_Compt,num_xsection_data NE_Rayl);
-
-
-//void  Cuda_CS_Total(num_xsection_data NE_Photo, num_xsection_data NE_Compt, num_xsection_data NE_Rayl, int  num_block,int num_threads, int **Z_Total, float ***CS_Total_Vect,  int *NElem_Total,int NPhases, float **CS_Total_Photo,float **CS_Total_Compt,float **CS_Total_Rayl );
+/*
+ *
+ * Initializes cuda xraylib
+ * Copies all the relevant datasets to the GPU device memory
+ *
+ */
+int CudaXRayInit();
 
 
-
-//float CS_FluorLineGPU(int Z, int line, float E, int index);
-
+int CudaXRayFree();
 
 
-void InitVects(int num_block,int num_threads); 
-void EndXrayLib(void);
+//device functions
+extern __device__ float *FluorYield_arr_d;
 
-//void call_cuda_DCS_Compt(int *Z,float *E, float *theta,int num_blocks,int num_threads, float *DCS_Compt_results);
-//
-//
+__device__ float  FluorYield_cu(int Z, int shell) {
+  float fluor_yield;
+
+  printf("Z: %i shell: %i ZMAX: %i  SHELLNUM: %i\n", Z, shell, ZMAX, SHELLNUM);
+
+  if (Z<1 || Z>ZMAX) {
+    printf("Should not get here\n");
+    return 0;
+  }
+
+  if (shell<0 || shell>=SHELLNUM) {
+    printf("Should not get here2\n");
+    return 0;
+  }
+
+  printf("offset: %i\n",Z*SHELLNUM+shell);
+  fluor_yield = FluorYield_arr_d[Z*SHELLNUM+shell];
+  //printf("yield: %f\n",fluor_yield);
+  //fluor_yield = 0.0;
+  if (fluor_yield < 0.) {
+    return 0;
+  }
+
+  return fluor_yield;
+}
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

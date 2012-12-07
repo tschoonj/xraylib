@@ -67,10 +67,9 @@ endif
 
 
 if ENABLE_CUDA
-xrlexample11_SOURCES = xrlexample11.c
-xrlexample11_LDADD = ../src/libxrl.la ../cuda/libxrlcuda.la
-xrlexample11_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/cuda
-xrlexample11_CFLAGS = $(ARCHFLAGS)
+xrlexample11_SOURCES = xrlexample11.cu
+xrlexample11_LDADD = ../src/libxrl.la  ../cuda/libxrlcuda.la
+xrlexample11_CFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/cuda -I${top_srcdir}/src
 TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH="$(CUDA_LIBDIR)"
 endif
 
@@ -123,6 +122,23 @@ xrlexample9.sh:
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
 	chmod +x xrlexample9.sh
 	
+
+.cu.o:
+	$(NVCC) -g -G -O0 -arch=sm_20 --compiler-options="$(CFLAGS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(xrlexample11_CFLAGS)" $(CUDA_CFLAGS) -o $@ -c $<
+
+.cu.lo:
+	$(srcdir)/cudalt.py $@ $(NVCC) \
+	-g -G -O0 -arch=sm_20 --compiler-options=\"$(CFLAGS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(xrlexample11_CFLAGS)\" $(CUDA_CFLAGS) -c $<
+
+
+
+
 
 clean-local:
 	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh
