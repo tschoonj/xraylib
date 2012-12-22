@@ -41,6 +41,6 @@ uninstall-local:
 	find $(DESTDIR)$(prefix) -name 'perllocal.pod' | xargs rm -fv
 
 clean-local:
-	rm -rf blib Makefile.PL Makefile2 pm_to_blib xraylib.bs xraylib.pm xraylib_wrap.*
+	rm -rf blib Makefile.PL Makefile2 pm_to_blib xraylib.bs xraylib.pm xraylib_wrap.* MYMETA*
 
 endif
