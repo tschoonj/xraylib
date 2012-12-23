@@ -189,6 +189,10 @@ ENDIF
 !next line should produce a compile-time error when using g95
 CALL C_F_POINTER(tester_C%cpointer,tester_F%fpointer,[tester_C%arrayLen])
 
+!use c_loc
+tester_C%cpointer = C_LOC(tester_F%fpointer(1))
+
+
 ENDPROGRAM f2003_main
 	]],[VALID_FORTRAN=yes],[VALID_FORTRAN=no] )
 		AC_LANG_POP(Fortran)
