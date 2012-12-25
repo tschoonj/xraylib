@@ -166,6 +166,13 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\Example\xrlexample5.py.fix"
 	Call unix2dos
 	Rename xrlexample5.py.fix xrlexample5.py
+	File ${abs_top_srcdir_win}\example\xrlexample5_3.py
+	Push "$INSTDIR\Example\xrlexample5_3.py"
+	Push "$INSTDIR\Example\xrlexample5_3.py.fix"
+	Call unix2dos
+	Rename xrlexample5_3.py.fix xrlexample5_3.py
+
+
 	File ${abs_top_srcdir_win}\example\xrlexample8.cs
 	Push "$INSTDIR\Example\xrlexample8.cs"
 	Push "$INSTDIR\Example\xrlexample8.cs.fix"
@@ -226,6 +233,9 @@ Section "-xraylib core files" SecDummy
 
 	SetOutPath "$INSTDIR\Python3.2"
 	File ${abs_top_srcdir_win}\nsis\python\python3.2\_xraylib.pyd
+
+	SetOutPath "$INSTDIR\Python3.3"
+	File ${abs_top_srcdir_win}\nsis\python\python3.3\_xraylib.pyd
 
 
 	;python executable
@@ -341,6 +351,8 @@ Section "Uninstall"
 	Delete "$INSTDIR\Example\xrlexample6.cpp"
 	Delete "$INSTDIR\Example\xrlexample5.py"
 	Delete "$INSTDIR\Example\xrlexample5.pyc"
+	Delete "$INSTDIR\Example\xrlexample5_3.py"
+	Delete "$INSTDIR\Example\xrlexample5_3.pyc"
 	Delete "$INSTDIR\Example\xrlexample4.pro"
 	Delete "$INSTDIR\Example\xrlexample8.cs"
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
@@ -354,6 +366,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\Python2.7\_xraylib.pyd"
 	Delete "$INSTDIR\Python3.1\_xraylib.pyd"
 	Delete "$INSTDIR\Python3.2\_xraylib.pyd"
+	Delete "$INSTDIR\Python3.3\_xraylib.pyd"
 	Delete "$INSTDIR\Python\xraymessages.py"
 	Delete "$INSTDIR\Python\xrayhelp.py"
 	Delete "$INSTDIR\Python\xraylib.py"
@@ -378,7 +391,8 @@ Section "Uninstall"
 	RMDir "$INSTDIR\Python2.7"
 	RMDir "$INSTDIR\Python3.1"
 	RMDir "$INSTDIR\Python3.2"
-	RMDir "$INSTDIR\Python"
+	RMDir "$INSTDIR\Python3.3"
+	RMDir /r "$INSTDIR\Python"
 	RMDir "$INSTDIR\Bin"
 	RMDir "$INSTDIR\pro"
 	RMDir "$INSTDIR\dlm"

@@ -1,4 +1,4 @@
-#Copyright (c) 2009, 2010, 2011 Tom Schoonjans
+#Copyright (c) 2009, 2010, 2011, 2012, 2013 Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
 
 
 
-AC_INIT([xraylib],[2.16.0],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[2.16.1],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -21,7 +21,7 @@ AC_CANONICAL_HOST
 
 
 LIB_CURRENT=6
-LIB_REVISION=0
+LIB_REVISION=1
 LIB_AGE=3
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
@@ -640,7 +640,7 @@ fi
 
 AM_CONDITIONAL([ENABLE_LUA],[test x$VALID_LUA = xyes])
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py perl/Makefile lua/Makefile fortran/Makefile] nsis/python/python2.6/xrlsetup.py nsis/python/python2.7/xrlsetup.py nsis/python/python3.1/xrlsetup.py nsis/dotNet/Makefile nsis/python/python3.2/Makefile nsis/python/python3.2/xrlsetup.py)
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py perl/Makefile lua/Makefile fortran/Makefile] nsis/python/python2.6/xrlsetup.py nsis/python/python2.7/xrlsetup.py nsis/python/python3.1/xrlsetup.py nsis/dotNet/Makefile nsis/python/python3.2/Makefile nsis/python/python3.2/xrlsetup.py nsis/python/python3.3/Makefile nsis/python/python3.3/xrlsetup.py)
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`

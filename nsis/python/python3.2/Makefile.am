@@ -12,4 +12,4 @@
 python:
 	python32 xrlsetup.py build_ext --inplace --compiler=mingw32
 
-EXTRA_DIST = xrlsetup.py.in xrlexample5_31.py
+EXTRA_DIST = xrlsetup.py.in
