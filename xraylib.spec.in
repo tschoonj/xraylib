@@ -16,7 +16,7 @@
 %define _pkgpythondir %{_prefix}/lib/python@PYTHON_VERSION@/site-packages
 %define _pkgpyexecdir %{_libdir}/python@PYTHON_VERSION@/site-packages
 
-%define luaver 5.1
+%define luaver @LUA_VERSION@
 %define lualibdir %{_libdir}/lua/%{luaver}
 
 

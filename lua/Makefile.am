@@ -22,11 +22,11 @@ luaxrl: ${top_srcdir}/src/xraylib.i
 
 
 install-exec-local: xraylib.so
-	$(MKDIR_P) $(DESTDIR)$(libdir)/lua/5.1
-	$(INSTALL) xraylib.so $(DESTDIR)$(libdir)/lua/5.1/
+	$(MKDIR_P) $(DESTDIR)$(libdir)/lua/$(LUA_VERSION)
+	$(INSTALL) xraylib.so $(DESTDIR)$(libdir)/lua/$(LUA_VERSION)/
 
 uninstall-local:
-	rm -f $(DESTDIR)$(libdir)/lua/5.1/xraylib.so
+	rm -f $(DESTDIR)$(libdir)/lua/$(LUA_VERSION)/xraylib.so
 
 clean-local:
 	rm -f xraylib.so xraylib_wrap.c xraylib_wrap.o
