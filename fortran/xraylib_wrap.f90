@@ -1217,6 +1217,14 @@ INTERFACE
                 REAL (KIND=C_FLOAT) :: CS_Compt_CP
         ENDFUNCTION CS_Compt_CP
 
+        PURE FUNCTION CS_Energy_CP(compound,E) BIND(C,NAME='CS_Energy_CP')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT) :: CS_Energy_CP
+        ENDFUNCTION CS_Energy_CP
+
         PURE FUNCTION CSb_Total_CP(compound,E) BIND(C,NAME='CSb_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE

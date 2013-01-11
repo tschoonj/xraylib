@@ -1220,3 +1220,25 @@ Crystal_ReadFile
 //								    //
 //////////////////////////////////////////////////////////////////////
 >>> int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array)
+
+CS_Energy
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Mass energy-absorption coefficient (cm2/g)            //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Energy(int Z, float E)
+
+CS_Energy_CP
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Photoelectric absorption cross section  (cm2/g)          //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float CS_Energy_CP(const char compound[], float E);

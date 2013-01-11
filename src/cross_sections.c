@@ -139,7 +139,7 @@ float CS_Compt(int Z, float E)
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
-//            Mass energy-absorption coefficient (cm2/g)             //
+//            Mass energy-absorption coefficient (cm2/g)            //
 //                                                                  //
 //          Z : atomic number                                       //
 //          E : energy (keV)                                        //

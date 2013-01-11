@@ -60,6 +60,7 @@ PRINT,'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',CS_Fluo
 
 PRINT,'Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0)
 PRINT,'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0)
+PRINT,'CdTe mass energy-absorption cs at 40.0 keV: ', CS_Energy_CP('CdTe', 40.0)
 
 ;Si crystal structure
 cryst = Crystal_GetCrystal('Si')
