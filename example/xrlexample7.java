@@ -45,6 +45,10 @@ public class xrlexample7 {
 		System.out.println("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
 	System.out.println("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
 		System.out.println("Pb Malpha XRF production cs at 20.0 keV without cascade effect: "+xraylib.CS_FluorLine_Kissel_no_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
+
+	System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ xraylib.CS_Energy(13, (float) 20.0));
+	System.out.println("Pb mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy(82, (float) 40.0));
+
 		System.out.println("");
 		System.out.println("--------------------------- END OF XRLEXAMPLE7 -------------------------------");
 		System.out.println("");

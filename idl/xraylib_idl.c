@@ -35,6 +35,7 @@ extern IDL_VPTR IDL_CDECL IDL_CS_Total(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Photo(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Rayl(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Compt(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_CS_Energy(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Photo(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Rayl(int argc, IDL_VPTR argv[]);
@@ -177,6 +178,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_CS_Photo},"CS_PHOTO", 2 , 2 , 0 , 0},
 	{{IDL_CS_Rayl},"CS_RAYL", 2 , 2 , 0 , 0},
 	{{IDL_CS_Compt},"CS_COMPT", 2 , 2 , 0 , 0},
+	{{IDL_CS_Energy},"CS_ENERGY", 2 , 2 , 0 , 0},
 	{{IDL_CSb_Total},"CSB_TOTAL", 2 , 2 , 0 , 0},
 	{{IDL_CSb_Photo},"CSB_PHOTO", 2 , 2 , 0 , 0},
 	{{IDL_CSb_Rayl},"CSB_RAYL", 2 , 2 , 0 , 0},
@@ -908,6 +910,7 @@ XRL_2IF(CS_Total)
 XRL_2IF(CS_Photo)
 XRL_2IF(CS_Rayl)
 XRL_2IF(CS_Compt)
+XRL_2IF(CS_Energy)
 XRL_2IF(CSb_Total)
 XRL_2IF(CSb_Photo)
 XRL_2IF(CSb_Rayl)

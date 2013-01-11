@@ -106,6 +106,8 @@ namespace Test
                 xl.CS_FluorLine_Kissel_Nonradiative_Cascade(82, XrayLib.MA1_LINE, 20.0));
             Console.WriteLine("Pb Malpha XRF production cs at 20.0 keV without cascade effect: {0}", 
                 xl.CS_FluorLine_Kissel_No_Cascade(82, XrayLib.MA1_LINE, 20.0));
+	    Console.WriteLine("Al mass energy-absorption cs at 20.0 keV: {0}", XrayLib.CS_Energy(13, 20.0));
+            Console.WriteLine("Pb mass energy-absorption cs at 40.0 keV: {0}", XrayLib.CS_Energy(82, 40.0));
 
             double energy = 8.0;
             double debyeFactor = 1.0;

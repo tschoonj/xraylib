@@ -867,6 +867,14 @@ INTERFACE
                 REAL (KIND=C_FLOAT),INTENT(IN),VALUE :: E
         END FUNCTION CS_Compt
 
+        PURE FUNCTION CS_Energy(Z,E) BIND(C,NAME='CS_Energy')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_Energy
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT),INTENT(IN),VALUE :: E
+        END FUNCTION CS_Energy
+
         PURE FUNCTION CS_KN(E) BIND(C,NAME='CS_KN')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
