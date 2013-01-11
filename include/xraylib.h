@@ -154,6 +154,8 @@ float CSb_Photo(int Z, float E);
 float CSb_Rayl(int Z, float E);
 float CSb_Compt(int Z, float E); 
 float CS_KN(float E);
+float CS_Energy(int Z, float E);
+
 
 /* Unpolarized differential scattering cross sections */
 float DCS_Thoms(float theta);

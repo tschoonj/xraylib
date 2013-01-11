@@ -665,9 +665,26 @@ void XRayInit(void)
   }
   fclose(fp);
 
-
-
-
+  /* read mass energy-absorption coefficients */
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name,"CS_Energy.dat");
+  if ((fp = fopen(file_name,"r")) == NULL) {
+    ErrorExit("File CS_Energy.dat not found");
+    return;
+  }
+  
+  int NZ;
+  ex = fscanf(fp, "%i", &NZ);
+  for (Z = 1 ; Z <= NZ ; Z++) {
+    ex = fscanf(fp, "%i", &NE_Energy[Z]);
+    E_Energy_arr[Z] = (float*)malloc(NE_Energy[Z]*sizeof(float));
+    CS_Energy_arr[Z] = (float*)malloc(NE_Energy[Z]*sizeof(float));
+    CS_Energy_arr2[Z] = (float*)malloc(NE_Energy[Z]*sizeof(float));
+    for (iE=0 ; iE < NE_Energy[Z] ; iE++) {
+    	fscanf(fp, "%f %f %f", &E_Energy_arr[Z][iE], &CS_Energy_arr[Z][iE], &CS_Energy_arr2[Z][iE]);
+    }	
+  }
+  fclose(fp);
 }
 
 void ArrayInit()
@@ -686,6 +703,7 @@ void ArrayInit()
     NE_Photo_Total_Kissel[Z] = OUTD;
     NShells_ComptonProfiles[Z] = OUTD;
     Npz_ComptonProfiles[Z] = OUTD;
+    NE_Energy[Z] = OUTD;
    
     for (shell=0; shell<SHELLNUM; shell++) {
       EdgeEnergy_arr[Z][shell] = OUTD;

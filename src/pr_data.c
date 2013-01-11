@@ -285,6 +285,11 @@ int main(void)
   PR_DYNMATF(NE_Compt, CS_Compt_arr, "CS_Compt_arr");
   PR_DYNMATF(NE_Compt, CS_Compt_arr2, "CS_Compt_arr2");
 
+  PR_NUMVEC1D(NE_Energy, "NE_Energy");
+  PR_DYNMATF(NE_Energy, E_Energy_arr, "E_Energy_arr");
+  PR_DYNMATF(NE_Energy, CS_Energy_arr, "CS_Energy_arr");
+  PR_DYNMATF(NE_Energy, CS_Energy_arr2, "CS_Energy_arr2");
+
   PR_NUMVEC1D(Nq_Rayl, "Nq_Rayl");
   PR_DYNMATF(Nq_Rayl, q_Rayl_arr, "q_Rayl_arr");
   PR_DYNMATF(Nq_Rayl, FF_Rayl_arr, "FF_Rayl_arr");

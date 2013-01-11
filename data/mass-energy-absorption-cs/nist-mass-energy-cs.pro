@@ -30,7 +30,7 @@ ENDFOR
 
 FREE_LUN,lun
 
-OPENW,lun,'../energy_cs.dat', /GET_LUN
+OPENW,lun,'../CS_Energy.dat', /GET_LUN
 PRINTF, lun, nElements
 FOR i=0, nElements-1 DO BEGIN
 	PRINTF, lun, (*all_data[i]).nEnergies
