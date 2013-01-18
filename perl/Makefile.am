@@ -11,11 +11,10 @@
 
 
 if ENABLE_PERL
-all:
-	$(MAKE) perlxrl
+all: xraylib.pm ../src/libxrl.la
 
 
-perlxrl: ${top_srcdir}/src/xraylib.i
+xraylib.pm: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/lines.h ${top_srcdir}/include/shells.h ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -perl ${top_srcdir}/src/xraylib.i
 	rm -rf Makefile2 blib pm_to_blib Makefile.PL
 	@echo "#!/usr/bin/perl -w" > Makefile.PL

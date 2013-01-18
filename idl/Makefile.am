@@ -15,13 +15,12 @@ xraylibincludedir=${includedir}/xraylib
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I.. -I${top_srcdir}/src
 
 if ENABLE_IDL
-all:
-	$(MAKE) idlxrl
+all: libxrlidl.so ../src/libxrl.la
 
 
 #I'm not sure how portable this .libs link location is...
 #Maybe this could be rewritten using libtool...
-idlxrl:	xraylib_idl.c ../src/libxrl.la
+libxrlidl.so:	xraylib_idl.c ../src/libxrl.la
 	$(CC) -c $(AM_CPPFLAGS) -I@RSIIDL_DIR@/external/include $(CFLAGS) @IDL_CFLAGS@ ${srcdir}/xraylib_idl.c
 	gcc @IDL_LD_FLAGS@ -o libxrlidl.so xraylib_idl.o -L${top_builddir}/src/.libs -lxrl
 
