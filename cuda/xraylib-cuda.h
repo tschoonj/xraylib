@@ -102,131 +102,131 @@ __device__ float EdgeEnergy_cu(int Z, int shell) {
   return edge_energy;
 }
 
-__device__ float LineEnergy_cu(int Z, int line) {
-  float line_energy;
-  float lE[50],rr[50];
-  float tmp=0.0,tmp1=0.0,tmp2=0.0;
-  int i;
-  int temp_line;
-  
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function LineEnergy");
-    return 0;
-  }
-  
-  if (line>=KA_LINE && line<LA_LINE) {
-    if (line == KA_LINE) {
-	for (i = KL1; i <= KL3 ; i++) {
-	 lE[i] = LineEnergy_arr_d[Z*LINENUM+i];
-	 rr[i] = RadRate_arr_d[Z*LINENUM+i];
-	 tmp1+=rr[i];
-	 tmp+=lE[i]*rr[i];
+//__device__ float LineEnergy_cu(int Z, int line) {
+//  float line_energy;
+//  float lE[50],rr[50];
+//  float tmp=0.0,tmp1=0.0,tmp2=0.0;
+//  int i;
+//  int temp_line;
+//  
+//  if (Z<1 || Z>ZMAX) {
+//    ErrorExit("Z out of range in function LineEnergy");
+//    return 0;
+//  }
+//  
+//  if (line>=KA_LINE && line<LA_LINE) {
+//    if (line == KA_LINE) {
+//	for (i = KL1; i <= KL3 ; i++) {
+//	 lE[i] = LineEnergy_arr_d[Z*LINENUM+i];
+//	 rr[i] = RadRate_arr_d[Z*LINENUM+i];
+//	 tmp1+=rr[i];
+//	 tmp+=lE[i]*rr[i];
 
-	 if (lE[i]<0.0 || rr[i]<0.0) {
-	  ErrorExit("Line not available in function LineEnergy");
-	  return 0;
-	 }
-	}
-    }
-    else if (line == KB_LINE) {
-    	for (i = KM1; i < KP5; i++) {
-	 lE[i] = LineEnergy_arr_d[Z*LINENUM+i];
-	 rr[i] = RadRate_arr_d[Z*LINENUM+i];
-	 tmp1+=rr[i];
-	 tmp+=lE[i]*rr[i];
-	 if (lE[i]<0.0 || rr[i]<0.0) {
-	  ErrorExit("Line not available in function LineEnergy");
-	  return 0;
-	 }
-	}
-    }
-   if (tmp1>0)   return tmp/tmp1;  else return 0.0;
-  }
-  
-  if (line == LA_LINE) {
-	temp_line = L3M5_LINE;
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-	tmp2=tmp1;
-	tmp=LineEnergy_cu(Z,temp_line)*tmp1;
-	temp_line = L3M4_LINE;
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
-  }
-  else if (line == LB_LINE) {
-	temp_line = L2M4_LINE;     /* b1 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L2_SHELL)+0.1);
-	tmp2=tmp1;
-	tmp=LineEnergy_cu(Z,temp_line)*tmp1;
+//	 if (lE[i]<0.0 || rr[i]<0.0) {
+//	  ErrorExit("Line not available in function LineEnergy");
+//	  return 0;
+//	 }
+//	}
+//    }
+//    else if (line == KB_LINE) {
+//    	for (i = KM1; i < KP5; i++) {
+//	 lE[i] = LineEnergy_arr_d[Z*LINENUM+i];
+//	 rr[i] = RadRate_arr_d[Z*LINENUM+i];
+//	 tmp1+=rr[i];
+//	 tmp+=lE[i]*rr[i];
+//	 if (lE[i]<0.0 || rr[i]<0.0) {
+//	  ErrorExit("Line not available in function LineEnergy");
+//	  return 0;
+//	 }
+//	}
+//    }
+//   if (tmp1>0)   return tmp/tmp1;  else return 0.0;
+//  }
+//  
+//  if (line == LA_LINE) {
+//	temp_line = L3M5_LINE;
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
+//	tmp2=tmp1;
+//	tmp=LineEnergy_cu(Z,temp_line)*tmp1;
+//	temp_line = L3M4_LINE;
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
+//  }
+//  else if (line == LB_LINE) {
+//	temp_line = L2M4_LINE;     /* b1 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L2_SHELL)+0.1);
+//	tmp2=tmp1;
+//	tmp=LineEnergy_cu(Z,temp_line)*tmp1;
 
-	temp_line = L3N5_LINE;     /* b2 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//	temp_line = L3N5_LINE;     /* b2 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
 
-	temp_line = L1M3_LINE;     /* b3 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L1_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//	temp_line = L1M3_LINE;     /* b3 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L1_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
 
-	temp_line = L1M2_LINE;     /* b4 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L1_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//	temp_line = L1M2_LINE;     /* b4 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L1_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
 
-	temp_line = L3O3_LINE;     /* b5 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//	temp_line = L3O3_LINE;     /* b5 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
 
-	temp_line = L3O4_LINE;     /* b5 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//	temp_line = L3O4_LINE;     /* b5 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
 
-	temp_line = L3N1_LINE;     /* b6 */
-	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
-  }
-  /*
-   * special cases for composed lines
-   */
-  else if (line == L1N67_LINE) {
- 	return (LineEnergy_cu(Z, L1N6_LINE)+LineEnergy_cu(Z,L1N7_LINE))/2.0; 
-  }
-  else if (line == L1O45_LINE) {
- 	return (LineEnergy_cu(Z, L1O4_LINE)+LineEnergy_cu(Z,L1O5_LINE))/2.0; 
-  }
-  else if (line == L1P23_LINE) {
- 	return (LineEnergy_cu(Z, L1P2_LINE)+LineEnergy_cu(Z,L1P3_LINE))/2.0; 
-  }
-  else if (line == L2P23_LINE) {
- 	return (LineEnergy_cu(Z, L2P2_LINE)+LineEnergy_cu(Z,L2P3_LINE))/2.0; 
-  }
-  else if (line == L3O45_LINE) {
- 	return (LineEnergy_cu(Z, L3O4_LINE)+LineEnergy_cu(Z,L3O5_LINE))/2.0; 
-  }
-  else if (line == L3P23_LINE) {
- 	return (LineEnergy_cu(Z, L3P2_LINE)+LineEnergy_cu(Z,L3P3_LINE))/2.0; 
-  }
-  else if (line == L3P45_LINE) {
- 	return (LineEnergy_cu(Z, L3P4_LINE)+LineEnergy_cu(Z,L3P5_LINE))/2.0; 
-  }
-  
-  line = -line - 1;
-  if (line<0 || line>=LINENUM) {
-    return 0;
-  }
-  
-  line_energy = LineEnergy_arr_d[Z*LINENUM+line];
-  if (line_energy < 0.) {
-    return 0;
-  }
-  return line_energy;
-}
+//	temp_line = L3N1_LINE;     /* b6 */
+//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
+//	tmp2+=tmp1;
+//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
+//  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
+//  }
+//  /*
+//   * special cases for composed lines
+//   */
+//  else if (line == L1N67_LINE) {
+// 	return (LineEnergy_cu(Z, L1N6_LINE)+LineEnergy_cu(Z,L1N7_LINE))/2.0; 
+//  }
+//  else if (line == L1O45_LINE) {
+// 	return (LineEnergy_cu(Z, L1O4_LINE)+LineEnergy_cu(Z,L1O5_LINE))/2.0; 
+//  }
+//  else if (line == L1P23_LINE) {
+// 	return (LineEnergy_cu(Z, L1P2_LINE)+LineEnergy_cu(Z,L1P3_LINE))/2.0; 
+//  }
+//  else if (line == L2P23_LINE) {
+// 	return (LineEnergy_cu(Z, L2P2_LINE)+LineEnergy_cu(Z,L2P3_LINE))/2.0; 
+//  }
+//  else if (line == L3O45_LINE) {
+// 	return (LineEnergy_cu(Z, L3O4_LINE)+LineEnergy_cu(Z,L3O5_LINE))/2.0; 
+//  }
+//  else if (line == L3P23_LINE) {
+// 	return (LineEnergy_cu(Z, L3P2_LINE)+LineEnergy_cu(Z,L3P3_LINE))/2.0; 
+//  }
+//  else if (line == L3P45_LINE) {
+// 	return (LineEnergy_cu(Z, L3P4_LINE)+LineEnergy_cu(Z,L3P5_LINE))/2.0; 
+//  }
+//  
+//  line = -line - 1;
+//  if (line<0 || line>=LINENUM) {
+//    return 0;
+//  }
+//  
+//  line_energy = LineEnergy_arr_d[Z*LINENUM+line];
+//  if (line_energy < 0.) {
+//    return 0;
+//  }
+//  return line_energy;
+//}
 
 
 __device__ float JumpFactor_cu(int Z, int shell) {
@@ -248,7 +248,7 @@ __device__ float JumpFactor_cu(int Z, int shell) {
   return jump_factor;
 }
 
-__device__ float CosKronTransProb_d(int Z, int trans) {
+__device__ float CosKronTransProb_cu(int Z, int trans) {
   float trans_prob;
 
   if (Z<1 || Z>ZMAX){
