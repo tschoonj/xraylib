@@ -25,6 +25,13 @@ __device__ float CosKron_arr_d[(ZMAX+1)*TRANSNUM];
 __device__ float RadRate_arr_d[(ZMAX+1)*LINENUM];
 __device__ float AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 
+__device__ int NE_Photo_d[ZMAX+1];
+__device__ float E_Photo_arr_d[(ZMAX+1)*91];
+__device__ float CS_Photo_arr_d[(ZMAX+1)*91];
+__device__ float CS_Photo_arr2_d[(ZMAX+1)*91];
+
+
+
 //__device__ float *FluorYield_arr_d;
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +55,65 @@ int CudaXRayFree();
 
 
 //device functions
+
+__device__ float splint_cu(float *xa, float *ya, float *y2a, int n, float x)
+{
+	int klo, khi, k;
+	float h, b, a, y;
+
+	if (x >= xa[n]) {
+	  y = ya[n];
+	  return y;
+	}
+
+	if (x <= xa[1]) {
+	  y = ya[1];
+	  return y;
+	}
+
+	klo = 1;
+	khi = n;
+	while (khi-klo > 1) {
+		k = (khi + klo) >> 1;
+		if (xa[k] > x) khi = k;
+		else klo = k;
+	}
+
+	h = xa[khi] - xa[klo];
+	if (h == 0.0) {
+	  y = (ya[klo] + ya[khi])/2.0;
+	  return y;
+	}
+	a = (xa[khi] - x) / h;
+	b = (x - xa[klo]) / h;
+	y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
+	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
+	return y;
+}
+
+__device__ float CS_Photo_cu(int Z, float E)
+{
+  float ln_E, ln_sigma, sigma;
+
+
+  if (Z<1 || Z>ZMAX || NE_Photo_d[Z]<0) {
+    return 0;
+  }
+
+  if (E <= 0.) {
+    return 0;
+  }
+
+  ln_E = log(E * 1000.0);
+
+
+  ln_sigma = splint_cu(E_Photo_arr_d+(Z*91)-1, CS_Photo_arr_d+(Z*91)-1, CS_Photo_arr2_d+(Z*91)-1,
+	 NE_Photo_d[Z], ln_E);
+
+  sigma = exp(ln_sigma);
+
+  return sigma;
+}
 
 __device__ float  FluorYield_cu(int Z, int shell) {
   float fluor_yield;
@@ -396,6 +462,7 @@ int CudaXRayInit() {
 	int gpuDeviceCount = 0;
 	cudaDeviceProp properties;
 	cudaError_t cudaResultCode = cudaGetDeviceCount(&deviceCount);
+	int Z;
 	if (cudaResultCode != cudaSuccess) 
         	deviceCount = 0;
    	/* machines with no GPUs can still report one emulation device */
@@ -423,6 +490,15 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol( CosKron_arr_d, CosKron_arr, sizeof(float)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol( RadRate_arr_d, RadRate_arr, sizeof(float)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol( AtomicLevelWidth_arr_d, AtomicLevelWidth_arr, sizeof(float)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+	for (Z = 1; Z <= ZMAX; Z++) {
+		if (NE_Photo[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_arr_d, E_Photo_arr[Z], sizeof(float)*NE_Photo[Z], (size_t) Z*91*sizeof(float), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr_d, CS_Photo_arr[Z], sizeof(float)*NE_Photo[Z], (size_t) Z*91*sizeof(float), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr2_d, CS_Photo_arr2[Z], sizeof(float)*NE_Photo[Z], (size_t) Z*91*sizeof(float), cudaMemcpyHostToDevice));
+		}
+	}
+
 	//cudaThreadSynchronize();
 
 	

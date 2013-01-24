@@ -3,6 +3,7 @@
 #include "xraylib-cuda.h"
 #include <stdlib.h>
 #include <cuda_runtime.h>
+#include "xrayglob.h"
 
 //#define CUDA_ERROR_CHECK
 
@@ -77,6 +78,17 @@ __global__ void Widths(int *Z, int *shells, float *widths) {
 	return;
 }
 
+__global__ void CS_Photos(int *Z, float *energies, float *cs) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	cs[tid] = CS_Photo_cu(Z[tid], energies[tid]);
+	
+	__syncthreads();
+	return;
+}
+
+
+
 int main (int argc, char *argv[]) {
 
 	fprintf(stdout,"Entering xrlexample11\n");
@@ -84,10 +96,12 @@ int main (int argc, char *argv[]) {
 	int Z[5] = {10,15,26,79,82};
 	int shells[5] = {K_SHELL, K_SHELL, K_SHELL, L3_SHELL,L1_SHELL};
 	int lines[5] = {KL2_LINE, KL3_LINE, KM3_LINE, L3M5_LINE, L2M4_LINE};
+	float energies[5] = {2.0, 8.0, 9.275, 15.89, 50.23};
 	int Z2[3] = {56, 68, 80};
 	int trans[3] = {FL13_TRANS, FL23_TRANS, FM34_TRANS};
 	int *Zd, *Z2d;
 	int *shellsd, *linesd, *transd;
+	float *energiesd;
 
 	float yields[5], *yieldsd;
 	float weights[5], *weightsd;
@@ -97,6 +111,10 @@ int main (int argc, char *argv[]) {
 	float coskrons[3], *coskronsd;
 	float radrates[5], *radratesd;
 	float widths[5], *widthsd; 
+	float photo_cs[5], *photo_csd;
+
+
+	int i;
 
 	CudaXRayInit();
 
@@ -111,6 +129,8 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(linesd, lines, 5*sizeof(int), cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMalloc((void **) &transd, 3*sizeof(int)));
 	CudaSafeCall(cudaMemcpy(transd, trans, 3*sizeof(int), cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMalloc((void **) &energiesd, 5*sizeof(float)));
+	CudaSafeCall(cudaMemcpy(energiesd, energies, 5*sizeof(float), cudaMemcpyHostToDevice));
 
 
 	//output variables
@@ -122,6 +142,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &coskronsd, 3*sizeof(float)));
 	CudaSafeCall(cudaMalloc((void **) &radratesd, 5*sizeof(float)));
 	CudaSafeCall(cudaMalloc((void **) &widthsd, 5*sizeof(float)));
+	CudaSafeCall(cudaMalloc((void **) &photo_csd, 5*sizeof(float)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -145,6 +166,9 @@ int main (int argc, char *argv[]) {
 	Widths<<<1,5>>>(Zd, shellsd, widthsd);	
 	CudaCheckError();
 	
+	CS_Photos<<<1,5>>>(Zd, energiesd, photo_csd);	
+	CudaCheckError();
+	
 	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(edges, edgesd, 5*sizeof(float), cudaMemcpyDeviceToHost));
@@ -153,6 +177,8 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(coskrons, coskronsd, 3*sizeof(float), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(radrates, radratesd, 5*sizeof(float), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(widths, widthsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(photo_cs, photo_csd, 5*sizeof(float), cudaMemcpyDeviceToHost));
+
 
 	fprintf(stdout,"Fluorescence yields\n");
 	fprintf(stdout,"Shell   Classic   CUDA\n");
@@ -219,5 +245,12 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Fe-K    %8f %f\n",AtomicLevelWidth(26,K_SHELL), widths[2]);
 	fprintf(stdout,"Au-L3   %8f %f\n",AtomicLevelWidth(79,L3_SHELL), widths[3]);
 	fprintf(stdout,"Pb-L1   %8f %f\n",AtomicLevelWidth(82,L1_SHELL), widths[4]);
+
+	fprintf(stdout,"Photo ionization cross sections\n");
+	fprintf(stdout,"Element   Energy(keV)   Classic   Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%i      %6f    %8f %f\n", Z[i], energies[i], CS_Photo(Z[i], energies[i]), photo_cs[i]);
+	}
+
 
 }
