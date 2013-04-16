@@ -39,8 +39,8 @@ install-exec-local:
 	$(MKDIR_P) $(DESTDIR)$(pythondir)
 	$(MKDIR_P) $(DESTDIR)$(pyexecdir)
 	$(MKDIR_P) $(DESTDIR)$(bindir)
-	$(INSTALL) xraylib.py xrayhelp.py xraymessages.py $(DESTDIR)$(pythondir)
-	$(INSTALL) _xraylib.* $(DESTDIR)$(pyexecdir)
+	$(INSTALL) -m 0644 xraylib.py xrayhelp.py xraymessages.py $(DESTDIR)$(pythondir)
+	$(INSTALL) -s _xraylib.* $(DESTDIR)$(pyexecdir)
 	$(INSTALL) ${top_srcdir}/python/xraylib $(DESTDIR)$(bindir)
 
 uninstall-local:
