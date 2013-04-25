@@ -25,7 +25,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan, Bruno Golosio, Antonio Brunetti, Manue
 #define SHELLNUM_C 29
 #define LINENUM 383
 #define TRANSNUM 15
-#define AUGERNUM 204
+#define AUGERNUM 996
 #define SHELLNUM_A 9
 /* Delta for size increase of Crystal_Array.crystal array */
 #define N_NEW_CRYSTAL 10   

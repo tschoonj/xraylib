@@ -18,8 +18,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayvars.h"
 
-extern struct MendelElement Mmmm[10];
-
 extern struct MendelElement MendelArray[MENDEL_MAX];
 extern struct MendelElement MendelArraySorted[MENDEL_MAX];
 
