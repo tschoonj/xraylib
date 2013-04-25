@@ -35,7 +35,7 @@ float AugerRate(int Z, int auger_trans) {
 		ErrorExit("Invalid Z detected in AugerRate");
 		return rv;
 	}
-	else if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5M5_AUGER) {
+	else if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5Q3_AUGER) {
 		ErrorExit("Invalid Auger transition detected in AugerRate");
 		return rv;
 	}
@@ -45,37 +45,37 @@ float AugerRate(int Z, int auger_trans) {
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][K_SHELL];
 	}
-	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER  ) {
+	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER) {
 		if (Auger_Transition_Total[Z][L1_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L1_SHELL];
 	}
-	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER  ) {
+	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER) {
 		if (Auger_Transition_Total[Z][L2_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L2_SHELL];
 	}
-	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER  ) {
+	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER) {
 		if (Auger_Transition_Total[Z][L3_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L3_SHELL];
 	}
-	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER  ) {
+	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER) {
 		if (Auger_Transition_Total[Z][M1_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M1_SHELL];
 	}
-	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER  ) {
+	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER) {
 		if (Auger_Transition_Total[Z][M2_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M2_SHELL];
 	}
-	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER  ) {
+	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER) {
 		if (Auger_Transition_Total[Z][M3_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M3_SHELL];
 	}
-	else if (auger_trans == M4_M5M5_AUGER) {
+	else if (auger_trans >= M4_M5M5_AUGER && auger_trans <= M4_M5Q3_AUGER) {
 		if (Auger_Transition_Total[Z][M4_SHELL] < 10E-8) 
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M4_SHELL];
