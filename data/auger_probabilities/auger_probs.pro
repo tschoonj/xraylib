@@ -45,6 +45,9 @@ WHILE (NOT EOF(lun)) DO BEGIN
 	IF (line EQ '') THEN BREAK
 	IF (STRMID(line,0,1) EQ '#') THEN CONTINUE
 	data_prov = DOUBLE(STRSPLIT(line,/EXTRACT))
+	IF (data_prov[1] GT 0.0 AND N_ELEMENTS(data_prov) GT 2) THEN BEGIN
+		data_prov[2:N_ELEMENTS(data_prov)-1] /= data_prov[1]
+	ENDIF
 	data = [data, data_prov[1:N_ELEMENTS(data_prov)-1] ]
 ENDWHILE
 
