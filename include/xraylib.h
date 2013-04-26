@@ -270,6 +270,8 @@ float AtomicLevelWidth(int Z, int shell);
 /* Auger non-radiative rates */
 float AugerRate(int Z, int auger_trans);
 
+/* Auger yield */
+float AugerYield(int Z, int shell);
 
 #ifdef __cplusplus
 }
