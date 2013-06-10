@@ -15,7 +15,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayvars.h"
 #include "xrayglob.h"
 
-static float AugerYield2(int Z, int shell);
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -43,64 +42,7 @@ float AugerRate(int Z, int auger_trans) {
 		return rv;
 	}
 
-
-	if (auger_trans >= K_L1L1_AUGER && auger_trans < L1_L2L2_AUGER  ) {
-		yield = AugerYield(Z, K_SHELL);
-		yield2 = AugerYield2(Z, K_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER) {
-		yield = AugerYield(Z, L1_SHELL);
-		yield2 = AugerYield2(Z, L1_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER) {
-		yield = AugerYield(Z, L2_SHELL);
-		yield2 = AugerYield2(Z, L2_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER) {
-		yield = AugerYield(Z, L3_SHELL);
-		yield2 = AugerYield2(Z, L3_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER) {
-		yield = AugerYield(Z, M1_SHELL);
-		yield2 = AugerYield2(Z, M1_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER) {
-		yield = AugerYield(Z, M2_SHELL);
-		yield2 = AugerYield2(Z, M2_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER) {
-		yield = AugerYield(Z, M3_SHELL);
-		yield2 = AugerYield2(Z, M3_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-	else if (auger_trans >= M4_M5M5_AUGER && auger_trans <= M4_M5Q3_AUGER) {
-		yield = AugerYield(Z, M4_SHELL);
-		yield2 = AugerYield2(Z, M4_SHELL);
-		if (yield < 1E-8 || yield2 < 1E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]*yield2/yield;
-	}
-
+	rv = Auger_Rates[Z][auger_trans];
 	return rv;
 }
 
@@ -128,77 +70,8 @@ float AugerYield(int Z, int shell) {
 		return rv;
 	}
 	
-	rv = 1.0 - FluorYield(Z, shell);
-	if (shell == L1_SHELL) {
-		rv -= CosKronTransProb(Z, FL12_TRANS);
-		rv -= CosKronTransProb(Z, FL13_TRANS);
-	}
-	else if (shell == L2_SHELL) {
-		rv -= CosKronTransProb(Z, FL23_TRANS);
-	}
-	else if (shell == M1_SHELL) {
-		rv -= CosKronTransProb(Z, FM12_TRANS);
-		rv -= CosKronTransProb(Z, FM13_TRANS);
-		rv -= CosKronTransProb(Z, FM14_TRANS);
-		rv -= CosKronTransProb(Z, FM15_TRANS);
-	}
-	else if (shell == M2_SHELL) {
-		rv -= CosKronTransProb(Z, FM23_TRANS);
-		rv -= CosKronTransProb(Z, FM24_TRANS);
-		rv -= CosKronTransProb(Z, FM25_TRANS);
-	}
-	else if (shell == M3_SHELL) {
-		rv -= CosKronTransProb(Z, FM34_TRANS);
-		rv -= CosKronTransProb(Z, FM35_TRANS);
-	}
-	else if (shell == M4_SHELL) {
-		rv -= CosKronTransProb(Z, FM45_TRANS);
-	}
+	rv = Auger_Yields[Z][shell];
 
 	return rv;
-}
-static float AugerYield2(int Z, int shell) {
-	float rv;
-
-	rv = 0.0;
-
-	if (Z > ZMAX || Z < 1) {
-		ErrorExit("Invalid Z detected in AugerYield2");
-		return rv;
-	}
-	else if (shell < K_SHELL || shell > M5_SHELL) {
-		ErrorExit("Invalid shell number detected in AugerYield2");
-		return rv;
-	}
-	
-	rv = Auger_Transition_Total[Z][shell];
-	if (shell == L1_SHELL) {
-		rv += CosKronTransProb(Z, FL12_TRANS);
-		rv += CosKronTransProb(Z, FL13_TRANS);
-	}
-	else if (shell == L2_SHELL) {
-		rv += CosKronTransProb(Z, FL23_TRANS);
-	}
-	else if (shell == M1_SHELL) {
-		rv += CosKronTransProb(Z, FM12_TRANS);
-		rv += CosKronTransProb(Z, FM13_TRANS);
-		rv += CosKronTransProb(Z, FM14_TRANS);
-		rv += CosKronTransProb(Z, FM15_TRANS);
-	}
-	else if (shell == M2_SHELL) {
-		rv += CosKronTransProb(Z, FM23_TRANS);
-		rv += CosKronTransProb(Z, FM24_TRANS);
-		rv += CosKronTransProb(Z, FM25_TRANS);
-	}
-	else if (shell == M3_SHELL) {
-		rv += CosKronTransProb(Z, FM34_TRANS);
-		rv += CosKronTransProb(Z, FM35_TRANS);
-	}
-	else if (shell == M4_SHELL) {
-		rv += CosKronTransProb(Z, FM45_TRANS);
-	}
-
-	return rv;
-
 }
 

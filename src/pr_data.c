@@ -16,6 +16,9 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 #include "xraylib.h"
 #include "xrayglob.h"
 
+extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
+extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
+
 #define OUTFILE "xrayglob_inline.c"
 #define FLOAT_PER_LINE 4
 #define INT_PER_LINE 10
@@ -143,6 +146,859 @@ fprintf(f, "};\n\n");
   fprintf(f, "int %s[] =\n", NNAME); \
   print_intvec(ZMAX+1, NVAR); \
   fprintf(f, ";\n\n");
+
+static float AugerYield_prdata(int Z, int shell) {
+
+	float rv;
+
+	rv = 0.0;
+
+	if (Z > ZMAX || Z < 1) {
+		return rv;
+	}
+	else if (shell < K_SHELL || shell > M5_SHELL) {
+		return rv;
+	}
+	
+	rv = FluorYield(Z, shell);
+
+	if (rv == 0.0)
+		return 0.0;
+
+	rv = 1.0 - rv;
+
+	if (shell == L1_SHELL) {
+		rv -= CosKronTransProb(Z, FL12_TRANS);
+		rv -= CosKronTransProb(Z, FL13_TRANS);
+	}
+	else if (shell == L2_SHELL) {
+		rv -= CosKronTransProb(Z, FL23_TRANS);
+	}
+	else if (shell == M1_SHELL) {
+		rv -= CosKronTransProb(Z, FM12_TRANS);
+		rv -= CosKronTransProb(Z, FM13_TRANS);
+		rv -= CosKronTransProb(Z, FM14_TRANS);
+		rv -= CosKronTransProb(Z, FM15_TRANS);
+	}
+	else if (shell == M2_SHELL) {
+		rv -= CosKronTransProb(Z, FM23_TRANS);
+		rv -= CosKronTransProb(Z, FM24_TRANS);
+		rv -= CosKronTransProb(Z, FM25_TRANS);
+	}
+	else if (shell == M3_SHELL) {
+		rv -= CosKronTransProb(Z, FM34_TRANS);
+		rv -= CosKronTransProb(Z, FM35_TRANS);
+	}
+	else if (shell == M4_SHELL) {
+		rv -= CosKronTransProb(Z, FM45_TRANS);
+	}
+
+	return rv;
+}
+
+static float AugerYield2_prdata(int Z, int shell) {
+	float rv;
+
+	rv = 0.0;
+
+	if (Z > ZMAX || Z < 1) {
+		return rv;
+	}
+	else if (shell < K_SHELL || shell > M5_SHELL) {
+		return rv;
+	}
+	
+	rv = Auger_Transition_Total[Z][shell];
+	if (shell == L1_SHELL) {
+		rv -= Auger_Transition_Individual[Z][L1_L2L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2M1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L2Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3M1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_L3Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M1L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M1L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M2L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M2L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M3L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M3L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M4L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M4L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M5L2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L1_M5L3_AUGER];
+	}
+	else if (shell == L2_SHELL) {
+		rv -= Auger_Transition_Individual[Z][L2_L3L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3M1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_L3Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_M1L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_M2L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_M3L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_M4L3_AUGER];
+		rv -= Auger_Transition_Individual[Z][L2_M5L3_AUGER];
+	}
+	else if (shell == M1_SHELL) {
+		rv -= Auger_Transition_Individual[Z][M1_M2M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M2Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M3Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M4Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5M2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M1_M5Q3_AUGER];
+	}
+	else if (shell == M2_SHELL) {
+		rv -= Auger_Transition_Individual[Z][M2_M3M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M3Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M4Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5M3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M2_M5Q3_AUGER];
+	}
+	else if (shell == M3_SHELL) {
+		rv -= Auger_Transition_Individual[Z][M3_M4M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M4Q3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5M4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M3_M5Q3_AUGER];
+	}
+	else if (shell == M4_SHELL) {
+		rv -= Auger_Transition_Individual[Z][M4_M5M5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5N7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O6_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5O7_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5P1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5P2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5P3_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5P4_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5P5_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5Q1_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5Q2_AUGER];
+		rv -= Auger_Transition_Individual[Z][M4_M5Q3_AUGER];
+	}
+
+	return rv;
+
+}
+
+static float AugerRate_prdata(int Z, int auger_trans) {
+	float rv;
+	float yield, yield2;
+
+	rv = 0.0;
+
+	if (Z > ZMAX || Z < 1) {
+		return rv;
+	}
+	else if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5Q3_AUGER) {
+		return rv;
+	}
+
+	switch (auger_trans) {
+		case L1_L2L2_AUGER:
+		case L1_L2L3_AUGER:
+		case L1_L2M1_AUGER:
+		case L1_L2M2_AUGER:
+		case L1_L2M3_AUGER:
+		case L1_L2M4_AUGER:
+		case L1_L2M5_AUGER:
+		case L1_L2N1_AUGER:
+		case L1_L2N2_AUGER:
+		case L1_L2N3_AUGER:
+		case L1_L2N4_AUGER:
+		case L1_L2N5_AUGER:
+		case L1_L2N6_AUGER:
+		case L1_L2N7_AUGER:
+		case L1_L2O1_AUGER:
+		case L1_L2O2_AUGER:
+		case L1_L2O3_AUGER:
+		case L1_L2O4_AUGER:
+		case L1_L2O5_AUGER:
+		case L1_L2O6_AUGER:
+		case L1_L2O7_AUGER:
+		case L1_L2P1_AUGER:
+		case L1_L2P2_AUGER:
+		case L1_L2P3_AUGER:
+		case L1_L2P4_AUGER:
+		case L1_L2P5_AUGER:
+		case L1_L2Q1_AUGER:
+		case L1_L2Q2_AUGER:
+		case L1_L2Q3_AUGER:
+		case L1_L3L2_AUGER:
+		case L1_L3L3_AUGER:
+		case L1_L3M1_AUGER:
+		case L1_L3M2_AUGER:
+		case L1_L3M3_AUGER:
+		case L1_L3M4_AUGER:
+		case L1_L3M5_AUGER:
+		case L1_L3N1_AUGER:
+		case L1_L3N2_AUGER:
+		case L1_L3N3_AUGER:
+		case L1_L3N4_AUGER:
+		case L1_L3N5_AUGER:
+		case L1_L3N6_AUGER:
+		case L1_L3N7_AUGER:
+		case L1_L3O1_AUGER:
+		case L1_L3O2_AUGER:
+		case L1_L3O3_AUGER:
+		case L1_L3O4_AUGER:
+		case L1_L3O5_AUGER:
+		case L1_L3O6_AUGER:
+		case L1_L3O7_AUGER:
+		case L1_L3P1_AUGER:
+		case L1_L3P2_AUGER:
+		case L1_L3P3_AUGER:
+		case L1_L3P4_AUGER:
+		case L1_L3P5_AUGER:
+		case L1_L3Q1_AUGER:
+		case L1_L3Q2_AUGER:
+		case L1_L3Q3_AUGER:
+		case L1_M1L2_AUGER:
+		case L1_M1L3_AUGER:
+		case L1_M2L2_AUGER:
+		case L1_M2L3_AUGER:
+		case L1_M3L2_AUGER:
+		case L1_M3L3_AUGER:
+		case L1_M4L2_AUGER:
+		case L1_M4L3_AUGER:
+		case L1_M5L2_AUGER:
+		case L1_M5L3_AUGER:
+		case L2_L3L3_AUGER:
+		case L2_L3M1_AUGER:
+		case L2_L3M2_AUGER:
+		case L2_L3M3_AUGER:
+		case L2_L3M4_AUGER:
+		case L2_L3M5_AUGER:
+		case L2_L3N1_AUGER:
+		case L2_L3N2_AUGER:
+		case L2_L3N3_AUGER:
+		case L2_L3N4_AUGER:
+		case L2_L3N5_AUGER:
+		case L2_L3N6_AUGER:
+		case L2_L3N7_AUGER:
+		case L2_L3O1_AUGER:
+		case L2_L3O2_AUGER:
+		case L2_L3O3_AUGER:
+		case L2_L3O4_AUGER:
+		case L2_L3O5_AUGER:
+		case L2_L3O6_AUGER:
+		case L2_L3O7_AUGER:
+		case L2_L3P1_AUGER:
+		case L2_L3P2_AUGER:
+		case L2_L3P3_AUGER:
+		case L2_L3P4_AUGER:
+		case L2_L3P5_AUGER:
+		case L2_L3Q1_AUGER:
+		case L2_L3Q2_AUGER:
+		case L2_L3Q3_AUGER:
+		case L2_M1L3_AUGER:
+		case L2_M2L3_AUGER:
+		case L2_M3L3_AUGER:
+		case L2_M4L3_AUGER:
+		case L2_M5L3_AUGER:
+		case M1_M2M2_AUGER:
+		case M1_M2M3_AUGER:
+		case M1_M2M4_AUGER:
+		case M1_M2M5_AUGER:
+		case M1_M2N1_AUGER:
+		case M1_M2N2_AUGER:
+		case M1_M2N3_AUGER:
+		case M1_M2N4_AUGER:
+		case M1_M2N5_AUGER:
+		case M1_M2N6_AUGER:
+		case M1_M2N7_AUGER:
+		case M1_M2O1_AUGER:
+		case M1_M2O2_AUGER:
+		case M1_M2O3_AUGER:
+		case M1_M2O4_AUGER:
+		case M1_M2O5_AUGER:
+		case M1_M2O6_AUGER:
+		case M1_M2O7_AUGER:
+		case M1_M2P1_AUGER:
+		case M1_M2P2_AUGER:
+		case M1_M2P3_AUGER:
+		case M1_M2P4_AUGER:
+		case M1_M2P5_AUGER:
+		case M1_M2Q1_AUGER:
+		case M1_M2Q2_AUGER:
+		case M1_M2Q3_AUGER:
+		case M1_M3M2_AUGER:
+		case M1_M3M3_AUGER:
+		case M1_M3M4_AUGER:
+		case M1_M3M5_AUGER:
+		case M1_M3N1_AUGER:
+		case M1_M3N2_AUGER:
+		case M1_M3N3_AUGER:
+		case M1_M3N4_AUGER:
+		case M1_M3N5_AUGER:
+		case M1_M3N6_AUGER:
+		case M1_M3N7_AUGER:
+		case M1_M3O1_AUGER:
+		case M1_M3O2_AUGER:
+		case M1_M3O3_AUGER:
+		case M1_M3O4_AUGER:
+		case M1_M3O5_AUGER:
+		case M1_M3O6_AUGER:
+		case M1_M3O7_AUGER:
+		case M1_M3P1_AUGER:
+		case M1_M3P2_AUGER:
+		case M1_M3P3_AUGER:
+		case M1_M3P4_AUGER:
+		case M1_M3P5_AUGER:
+		case M1_M3Q1_AUGER:
+		case M1_M3Q2_AUGER:
+		case M1_M3Q3_AUGER:
+		case M1_M4M2_AUGER:
+		case M1_M4M3_AUGER:
+		case M1_M4M4_AUGER:
+		case M1_M4M5_AUGER:
+		case M1_M4N1_AUGER:
+		case M1_M4N2_AUGER:
+		case M1_M4N3_AUGER:
+		case M1_M4N4_AUGER:
+		case M1_M4N5_AUGER:
+		case M1_M4N6_AUGER:
+		case M1_M4N7_AUGER:
+		case M1_M4O1_AUGER:
+		case M1_M4O2_AUGER:
+		case M1_M4O3_AUGER:
+		case M1_M4O4_AUGER:
+		case M1_M4O5_AUGER:
+		case M1_M4O6_AUGER:
+		case M1_M4O7_AUGER:
+		case M1_M4P1_AUGER:
+		case M1_M4P2_AUGER:
+		case M1_M4P3_AUGER:
+		case M1_M4P4_AUGER:
+		case M1_M4P5_AUGER:
+		case M1_M4Q1_AUGER:
+		case M1_M4Q2_AUGER:
+		case M1_M4Q3_AUGER:
+		case M1_M5M2_AUGER:
+		case M1_M5M3_AUGER:
+		case M1_M5M4_AUGER:
+		case M1_M5M5_AUGER:
+		case M1_M5N1_AUGER:
+		case M1_M5N2_AUGER:
+		case M1_M5N3_AUGER:
+		case M1_M5N4_AUGER:
+		case M1_M5N5_AUGER:
+		case M1_M5N6_AUGER:
+		case M1_M5N7_AUGER:
+		case M1_M5O1_AUGER:
+		case M1_M5O2_AUGER:
+		case M1_M5O3_AUGER:
+		case M1_M5O4_AUGER:
+		case M1_M5O5_AUGER:
+		case M1_M5O6_AUGER:
+		case M1_M5O7_AUGER:
+		case M1_M5P1_AUGER:
+		case M1_M5P2_AUGER:
+		case M1_M5P3_AUGER:
+		case M1_M5P4_AUGER:
+		case M1_M5P5_AUGER:
+		case M1_M5Q1_AUGER:
+		case M1_M5Q2_AUGER:
+		case M1_M5Q3_AUGER:
+		case M2_M3M3_AUGER:
+		case M2_M3M4_AUGER:
+		case M2_M3M5_AUGER:
+		case M2_M3N1_AUGER:
+		case M2_M3N2_AUGER:
+		case M2_M3N3_AUGER:
+		case M2_M3N4_AUGER:
+		case M2_M3N5_AUGER:
+		case M2_M3N6_AUGER:
+		case M2_M3N7_AUGER:
+		case M2_M3O1_AUGER:
+		case M2_M3O2_AUGER:
+		case M2_M3O3_AUGER:
+		case M2_M3O4_AUGER:
+		case M2_M3O5_AUGER:
+		case M2_M3O6_AUGER:
+		case M2_M3O7_AUGER:
+		case M2_M3P1_AUGER:
+		case M2_M3P2_AUGER:
+		case M2_M3P3_AUGER:
+		case M2_M3P4_AUGER:
+		case M2_M3P5_AUGER:
+		case M2_M3Q1_AUGER:
+		case M2_M3Q2_AUGER:
+		case M2_M3Q3_AUGER:
+		case M2_M4M3_AUGER:
+		case M2_M4M4_AUGER:
+		case M2_M4M5_AUGER:
+		case M2_M4N1_AUGER:
+		case M2_M4N2_AUGER:
+		case M2_M4N3_AUGER:
+		case M2_M4N4_AUGER:
+		case M2_M4N5_AUGER:
+		case M2_M4N6_AUGER:
+		case M2_M4N7_AUGER:
+		case M2_M4O1_AUGER:
+		case M2_M4O2_AUGER:
+		case M2_M4O3_AUGER:
+		case M2_M4O4_AUGER:
+		case M2_M4O5_AUGER:
+		case M2_M4O6_AUGER:
+		case M2_M4O7_AUGER:
+		case M2_M4P1_AUGER:
+		case M2_M4P2_AUGER:
+		case M2_M4P3_AUGER:
+		case M2_M4P4_AUGER:
+		case M2_M4P5_AUGER:
+		case M2_M4Q1_AUGER:
+		case M2_M4Q2_AUGER:
+		case M2_M4Q3_AUGER:
+		case M2_M5M3_AUGER:
+		case M2_M5M4_AUGER:
+		case M2_M5M5_AUGER:
+		case M2_M5N1_AUGER:
+		case M2_M5N2_AUGER:
+		case M2_M5N3_AUGER:
+		case M2_M5N4_AUGER:
+		case M2_M5N5_AUGER:
+		case M2_M5N6_AUGER:
+		case M2_M5N7_AUGER:
+		case M2_M5O1_AUGER:
+		case M2_M5O2_AUGER:
+		case M2_M5O3_AUGER:
+		case M2_M5O4_AUGER:
+		case M2_M5O5_AUGER:
+		case M2_M5O6_AUGER:
+		case M2_M5O7_AUGER:
+		case M2_M5P1_AUGER:
+		case M2_M5P2_AUGER:
+		case M2_M5P3_AUGER:
+		case M2_M5P4_AUGER:
+		case M2_M5P5_AUGER:
+		case M2_M5Q1_AUGER:
+		case M2_M5Q2_AUGER:
+		case M2_M5Q3_AUGER:
+		case M3_M4M4_AUGER:
+		case M3_M4M5_AUGER:
+		case M3_M4N1_AUGER:
+		case M3_M4N2_AUGER:
+		case M3_M4N3_AUGER:
+		case M3_M4N4_AUGER:
+		case M3_M4N5_AUGER:
+		case M3_M4N6_AUGER:
+		case M3_M4N7_AUGER:
+		case M3_M4O1_AUGER:
+		case M3_M4O2_AUGER:
+		case M3_M4O3_AUGER:
+		case M3_M4O4_AUGER:
+		case M3_M4O5_AUGER:
+		case M3_M4O6_AUGER:
+		case M3_M4O7_AUGER:
+		case M3_M4P1_AUGER:
+		case M3_M4P2_AUGER:
+		case M3_M4P3_AUGER:
+		case M3_M4P4_AUGER:
+		case M3_M4P5_AUGER:
+		case M3_M4Q1_AUGER:
+		case M3_M4Q2_AUGER:
+		case M3_M4Q3_AUGER:
+		case M3_M5M4_AUGER:
+		case M3_M5M5_AUGER:
+		case M3_M5N1_AUGER:
+		case M3_M5N2_AUGER:
+		case M3_M5N3_AUGER:
+		case M3_M5N4_AUGER:
+		case M3_M5N5_AUGER:
+		case M3_M5N6_AUGER:
+		case M3_M5N7_AUGER:
+		case M3_M5O1_AUGER:
+		case M3_M5O2_AUGER:
+		case M3_M5O3_AUGER:
+		case M3_M5O4_AUGER:
+		case M3_M5O5_AUGER:
+		case M3_M5O6_AUGER:
+		case M3_M5O7_AUGER:
+		case M3_M5P1_AUGER:
+		case M3_M5P2_AUGER:
+		case M3_M5P3_AUGER:
+		case M3_M5P4_AUGER:
+		case M3_M5P5_AUGER:
+		case M3_M5Q1_AUGER:
+		case M3_M5Q2_AUGER:
+		case M3_M5Q3_AUGER:
+		case M4_M5M5_AUGER:
+		case M4_M5N1_AUGER:
+		case M4_M5N2_AUGER:
+		case M4_M5N3_AUGER:
+		case M4_M5N4_AUGER:
+		case M4_M5N5_AUGER:
+		case M4_M5N6_AUGER:
+		case M4_M5N7_AUGER:
+		case M4_M5O1_AUGER:
+		case M4_M5O2_AUGER:
+		case M4_M5O3_AUGER:
+		case M4_M5O4_AUGER:
+		case M4_M5O5_AUGER:
+		case M4_M5O6_AUGER:
+		case M4_M5O7_AUGER:
+		case M4_M5P1_AUGER:
+		case M4_M5P2_AUGER:
+		case M4_M5P3_AUGER:
+		case M4_M5P4_AUGER:
+		case M4_M5P5_AUGER:
+		case M4_M5Q1_AUGER:
+		case M4_M5Q2_AUGER:
+		case M4_M5Q3_AUGER:
+		return rv;
+	}
+
+	if (Auger_Transition_Individual[Z][auger_trans] == 0.0)
+		return rv;
+
+	if (auger_trans >= K_L1L1_AUGER && auger_trans < L1_L2L2_AUGER  ) {
+		yield2 = AugerYield2_prdata(Z, K_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER) {
+		yield2 = AugerYield2_prdata(Z, L1_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER) {
+		yield2 = AugerYield2_prdata(Z, L2_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER) {
+		yield2 = AugerYield2_prdata(Z, L3_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER) {
+		yield2 = AugerYield2_prdata(Z, M1_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER) {
+		yield2 = AugerYield2_prdata(Z, M2_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER) {
+		yield2 = AugerYield2_prdata(Z, M3_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+	else if (auger_trans >= M4_M5M5_AUGER && auger_trans <= M4_M5Q3_AUGER) {
+		yield2 = AugerYield2_prdata(Z, M4_SHELL);
+		if (yield2 < 1E-8) 
+			return rv;
+		return Auger_Transition_Individual[Z][auger_trans]/yield2;
+	}
+
+	return rv;
+}
 
 /*----------------------------------------------------- */
 
@@ -332,11 +1188,24 @@ int main(void)
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
-  fprintf(f, "double Auger_Transition_Total[ZMAX+1][SHELLNUM_A] = {\n");
-  PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Transition_Total);
-  fprintf(f, "double Auger_Transition_Individual[ZMAX+1][AUGERNUM] = {\n");
-  PR_MATD(ZMAX+1, AUGERNUM, Auger_Transition_Individual);
+  SetHardExit(0);
+  SetErrorMessages(0);
 
+
+  for (i = 1 ; i < ZMAX ; i++) {
+  	for (j = K_L1L1_AUGER ; j <= M4_M5Q3_AUGER ; j++)
+		Auger_Rates[i][j] = AugerRate_prdata(i, j);
+
+	for (j = K_SHELL ; j <= M5_SHELL ; j++)
+		Auger_Yields[i][j] = AugerYield_prdata(i, j);
+  }
+  fprintf(f, "double Auger_Yields[ZMAX+1][SHELLNUM_A] = {\n");
+  PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Yields);
+  fprintf(f, "double Auger_Rates[ZMAX+1][AUGERNUM] = {\n");
+  PR_MATD(ZMAX+1, AUGERNUM, Auger_Rates);
+
+  SetHardExit(1);
+  SetErrorMessages(1);
   fclose(f);
 
   return 0;

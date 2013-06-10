@@ -2180,6 +2180,12 @@ INTERFACE
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, auger_trans
                 REAL (KIND=C_FLOAT) :: AugerRate
         ENDFUNCTION
+        PURE FUNCTION AugerYield(Z,shell) BIND(C,NAME='AugerYield')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, shell 
+                REAL (KIND=C_FLOAT) :: AugerYield
+        ENDFUNCTION
 
         !XRF cross sections using Kissel partial photoelectric cross sections
         PURE FUNCTION CS_FluorLine_Kissel (Z,line, E) &
