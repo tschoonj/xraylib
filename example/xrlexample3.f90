@@ -82,6 +82,9 @@ WRITE (6,'(A,F12.6)') 'K atomic level width for Fe: ',&
         AtomicLevelWidth(26,K_SHELL)
 WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
         AugerRate(86,L2_M5M5_AUGER)
+WRITE (6,'(A,F12.6)') 'Bi L3 Auger yield: ',&
+        AugerYield(86, L3_SHELL)
+
 WRITE (6,'(A,F12.6)') 'M1->M5 Coster-Kronig transition probability for Au : ',CosKronTransProb(79,FM15_TRANS)
 WRITE (6,'(A,F12.6)') 'L1->L3 Coster-Kronig transition probability for Fe : ',CosKronTransProb(26,FL13_TRANS)
 WRITE (6,'(A,F12.6)') 'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0)

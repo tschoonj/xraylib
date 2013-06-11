@@ -52,6 +52,7 @@ PRINT,'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG
 PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 PRINT,'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 PRINT,'Bi L2-M5M5 Auger non-radiative rate: ', AugerRate(86,L2_M5M5_AUGER)
+PRINT,'Bi L3 Auger yield: ', AugerYield(86, L3_SHELL)
 
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with cascade effect: ',CS_FluorLine_Kissel(82,MA1_LINE,20.0)
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)

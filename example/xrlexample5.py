@@ -51,6 +51,7 @@ if __name__ == '__main__' :
 	print "Au Mg XRF production cs at 10.0 keV (Kissel): %f" % xraylib.CS_FluorLine_Kissel(79,xraylib.MG_LINE,10.0)
 	print "K atomic level width for Fe: %g" % xraylib.AtomicLevelWidth(26,xraylib.K_SHELL)
 	print "Bi L2-M5M5 Auger non-radiative rate: %g" % xraylib.AugerRate(86,xraylib.L2_M5M5_AUGER)
+	print "Bi L3 Auger yield: %g" % xraylib.AugerYield(86, xraylib.L3_SHELL)
 	symbol = xraylib.AtomicNumberToSymbol(26)
 	print "Symbol of element 26 is: %s" % symbol
 	print "Number of element Fe is: %i" % xraylib.SymbolToAtomicNumber("Fe")
