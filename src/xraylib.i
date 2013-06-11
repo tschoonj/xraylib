@@ -24,6 +24,15 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #ifdef SWIGPYTHON
 #undef c_abs
 #endif
+
+#ifdef SWIGLUA
+  #if LUA_VERSION_NUM < 502
+    #ifndef lua_rawlen
+      #define lua_rawlen lua_objlen
+    #endif
+  #endif
+#endif
+
 #include "xraylib.h"
 %}
 
@@ -351,7 +360,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_getfield(L, $input,"atom");
                 if (lua_istable(L,-1)) {
                         /* count number of elements */
-                        size_t n_atom = lua_objlen(L, -1);
+                        size_t n_atom = lua_rawlen(L, -1);
                         if (n_atom != cs->n_atom) {
                                 SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
                         }
