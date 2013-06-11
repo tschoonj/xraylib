@@ -14,7 +14,7 @@ all: xraylib.so ../src/libxrl.la
 
 
 
-xraylib.so: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/lines.h ${top_srcdir}/include/shells.h ${top_srcdir}/include/xraylib*h
+xraylib.so: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -lua ${top_srcdir}/src/xraylib.i
 	$(CC) $(LUA_CFLAGS) -I${top_srcdir}/include -Wall $(LUA_INCLUDE) -c xraylib_wrap.c -o xraylib_wrap.o
 	$(CC) -Wall $(LUA_LD_FLAGS) -o xraylib.so xraylib_wrap.o -L../src/.libs -lxrl $(LUA_LIB) 
