@@ -19,6 +19,7 @@ public class xrlexample7 {
 
 	public static void main(String argv[]) {
 		xraylib.XRayInit();
+		xraylib.SetErrorMessages(0);
 //		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
 		System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));

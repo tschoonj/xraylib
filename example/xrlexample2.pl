@@ -21,6 +21,7 @@ use Math::Complex;
 
 xraylib::XRayInit();
 #xraylib::SetHardExit(1);
+xraylib::SetErrorMessages(0);
 
 
 

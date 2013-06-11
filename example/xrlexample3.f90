@@ -31,6 +31,7 @@ REAL (C_FLOAT), PARAMETER :: PI = 4.D0*DATAN(1.D0)
 
 CALL XRayInit()
 !CALL SetHardExit(1)
+CALL SetErrorMessage(0)
 
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
 WRITE (6,'(A,F12.6)') 'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE);
