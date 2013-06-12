@@ -82,6 +82,8 @@ int main()
   for (i = 0 ; i < cdtest3->nElements ; i++)
     printf("Element %i: %lf %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
 
+  FREE_COMPOUND_DATA(cdtest1)
+  FREE_COMPOUND_DATA(cdtest2)
   FREE_COMPOUND_DATA(*cdtest3)
   xrlFree(cdtest3);
 
@@ -206,6 +208,40 @@ int main()
   F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
+
+  /* compoundDataNIST tests */
+  struct compoundDataNIST *cdn;
+  cdn = GetCompoundDataNISTByName("Uranium Monocarbide");
+  printf ("Uranium Monocarbide\n");
+  printf ("  Name: %s\n", cdn->name);
+  printf ("  Density: %lf\n", cdn->density);
+  for (i = 0 ; i < cdn->nElements ; i++) {
+    	printf("  Element %i: %lf %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
+  }
+
+  FreeCompoundDataNIST(cdn);
+  cdn = NULL;
+
+  cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP);
+  printf ("NIST_COMPOUND_BRAIN_ICRP\n");
+  printf ("  Name: %s\n", cdn->name);
+  printf ("  Density: %lf\n", cdn->density);
+  for (i = 0 ; i < cdn->nElements ; i++) {
+    	printf("  Element %i: %lf %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
+  }
+
+  FreeCompoundDataNIST(cdn);
+  cdn = NULL;
+
+  char **nistCompounds = GetCompoundDataNISTList(NULL);
+  printf ("List of available NIST compounds:\n");
+  for (i = 0 ; nistCompounds[i] != NULL ; i++) {
+  	printf ("  Compound %i: %s\n", i, nistCompounds[i]);
+	xrlFree(nistCompounds[i]);
+  }
+  xrlFree(nistCompounds);
+
+  
 
   printf ("\n--------------------------- END OF XRLEXAMPLE1 -------------------------------\n");
   return 0;

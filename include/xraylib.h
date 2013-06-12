@@ -54,6 +54,7 @@ extern "C" {
 #include "xraylib-parser.h"
 #include "xraylib-auger.h"
 #include "xraylib-crystal-diffraction.h"
+#include "xraylib-nist-compounds.h"
 
 /*
  * Siegbahn notation
@@ -142,7 +143,10 @@ int GetErrorMessages(void);
 
 /* Atomic weights */
 float AtomicWeight(int Z);
-                                  
+
+/* Density of pure atomic element */
+//float ElementDensity(int Z);
+
 /* Cross sections (cm2/g) */
 float CS_Total(int Z, float E);
 float CS_Photo(int Z, float E);
