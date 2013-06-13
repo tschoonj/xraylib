@@ -3,6 +3,7 @@
 #include <search.h>
 #include <xraylib-aux.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 static int CompareCompoundDataNIST(const void *a, const void *b) {
 	struct compoundDataNIST *ac = (struct compoundDataNIST *) a;
@@ -40,6 +41,10 @@ struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]) 
 	}
 	else {
 		free(key);
+		char *buffer = malloc(sizeof(char)*(strlen("xraylib-nist-compounds: no match found for ")+strlen(compoundString)+1));
+		sprintf(buffer,"xraylib-nist-compounds: no match found for %s", compoundString);
+		ErrorExit(buffer);
+		free(buffer);
 		key = NULL;
 	}
 	return key;
@@ -49,6 +54,9 @@ struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex) {
 	struct compoundDataNIST *key;
 
 	if (compoundIndex < 0 || compoundIndex >= nCompoundDataNISTList) {
+		char buffer[1000];
+		sprintf(buffer,"xraylib-nist-compounds: no match found for index ", compoundIndex);
+		ErrorExit(buffer);
 		/* compoundIndex out of range */
 		return NULL;
 	}

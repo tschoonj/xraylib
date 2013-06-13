@@ -169,8 +169,29 @@ F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel
 PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
 
 
+PRINT, ''
 
+; compoundDataNIST tests
+cdn = GetCompoundDataNISTByName('Uranium Monocarbide')
+PRINT, 'Uranium Monocarbide'
+PRINT, '  Name: ',cdn.name
+PRINT, '  Density: ',cdn.density
+FOR i=0,cdn.nElements-1 DO $
+	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
+	cdn.massFractions[i]*100.0
 
+cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
+PRINT, 'NIST_COMPOUND_BRAIN_ICRP'
+PRINT, '  Name: ',cdn.name
+PRINT, '  Density: ',cdn.density
+FOR i=0,cdn.nElements-1 DO $ 
+	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
+	cdn.massFractions[i]*100.0
+
+nistCompounds = GetCompoundDataNISTList()
+PRINT, 'List of available NIST compounds'
+FOR i=0,N_ELEMENTS(nistCompounds)-1 DO $
+	PRINT, FORMAT='(%"  Compound %i: %s")', i, nistCompounds[i]
 
 PRINT,''
 PRINT,'--------------------------- END OF XRLEXAMPLE4 -------------------------------'

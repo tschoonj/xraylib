@@ -30,11 +30,11 @@ install-exec-local:
 	$(MKDIR_P) $(DESTDIR)$(prefix)/dlm
 	$(INSTALL) libxrlidl.so ${srcdir}/libxrlidl.dlm $(DESTDIR)$(prefix)/dlm
 	$(MKDIR_P) $(DESTDIR)$(prefix)/pro	
-	$(INSTALL) $(top_srcdir)/idl/xraylib_auger.pro $(top_srcdir)/idl/xraylib_shells.pro $(top_srcdir)/idl/xraylib_help.pro $(top_srcdir)/idl/xraylib_lines.pro $(top_srcdir)/idl/xraylib.pro $(DESTDIR)$(prefix)/pro
+	$(INSTALL) $(top_srcdir)/idl/xraylib_nist_compounds.pro $(top_srcdir)/idl/xraylib_auger.pro $(top_srcdir)/idl/xraylib_shells.pro $(top_srcdir)/idl/xraylib_help.pro $(top_srcdir)/idl/xraylib_lines.pro $(top_srcdir)/idl/xraylib.pro $(DESTDIR)$(prefix)/pro
 
 uninstall-local:
 	rm -f $(DESTDIR)$(prefix)/dlm/libxrlidl.so $(DESTDIR)$(prefix)/dlm/libxrlidl.dlm
-	rm -f $(DESTDIR)$(prefix)/pro/xraylib_auger.pro $(DESTDIR)$(prefix)/pro/xraylib_shells.pro $(DESTDIR)$(prefix)/pro/xraylib_help.pro  $(DESTDIR)$(prefix)/pro/xraylib_lines.pro $(DESTDIR)$(prefix)/pro/xraylib.pro
+	rm -f $(DESTDIR)$(prefix)/pro/xraylib_auger.pro $(DESTDIR)$(prefix)/pro/xraylib_shells.pro $(DESTDIR)$(prefix)/pro/xraylib_help.pro  $(DESTDIR)$(prefix)/pro/xraylib_lines.pro $(DESTDIR)$(prefix)/pro/xraylib.pro $(DESTDIR)$(prefix)/pro/xraylib_nist_compounds.pro
 
 
 clean-local:
@@ -43,6 +43,6 @@ clean-local:
 	rm -rf libxrlidl.so.dSYM
 endif
 
-EXTRA_DIST = xraylib_idl.c libxrlidl.dlm xraylib_auger.pro xraylib_shells.pro xraylib_help.pro xraylib_lines.pro xraylib.pro
+EXTRA_DIST = xraylib_idl.c libxrlidl.dlm xraylib_auger.pro xraylib_shells.pro xraylib_help.pro xraylib_lines.pro xraylib.pro xraylib_nist_compounds.pro
 
 
