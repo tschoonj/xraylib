@@ -28,6 +28,7 @@ int main()
   SetErrorMessages(0);
 
   printf("Example of C program using xraylib\n");
+  printf("Density of pure Al: %f g/cm3\n", ElementDensity(13));
   printf("Ca K-alpha Fluorescence Line Energy: %f\n",
 	 LineEnergy(20,KA_LINE));
   printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",CS_Photo_Partial(26,L3_SHELL,6.0));

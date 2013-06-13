@@ -87,6 +87,26 @@ void XRayInit(void)
 
   /*-------------------------------------------------------------------------- */
   /*
+   * Parse densities.dat
+   */
+
+  strcpy(file_name, XRayLibDir);
+  strcat(file_name, "densities.dat");
+  if ((fp = fopen(file_name,"r")) == NULL) {
+    ErrorExit("File densities.dat not found");
+    return;
+  }
+
+  while ( !feof(fp) ) {
+    ex=fscanf(fp,"%d", &Z);
+    if (ex != 1) break;
+    fscanf(fp, "%f", &ElementDensity_arr[Z]);
+    /* printf("%d\t%f\n", Z, ElementDensity_arr[Z]);*/
+  }
+  fclose(fp);
+
+  /*-------------------------------------------------------------------------- */
+  /*
    * Parse Crystals.dat
    */
 
@@ -686,6 +706,7 @@ void ArrayInit()
     NE_Photo_Total_Kissel[Z] = OUTD;
     NShells_ComptonProfiles[Z] = OUTD;
     Npz_ComptonProfiles[Z] = OUTD;
+    ElementDensity_arr[Z] = OUTD;
    
     for (shell=0; shell<SHELLNUM; shell++) {
       EdgeEnergy_arr[Z][shell] = OUTD;

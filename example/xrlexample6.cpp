@@ -26,6 +26,7 @@ int main()
   //SetHardExit(1);
 
   std::printf("Example of C++ program using xraylib\n");
+  std::printf("Density of pure Al: %f g/cm3\n", ElementDensity(13));
   std::printf("Ca K-alpha Fluorescence Line Energy: %f\n",
 	 LineEnergy(20,KA_LINE));
   std::printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",CS_Photo_Partial(26,L3_SHELL,6.0));

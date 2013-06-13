@@ -20,6 +20,7 @@
 SetErrorMessages,0
 
 PRINT,'Example of IDL program using xraylib'
+PRINT,'Density of pure Al: ', ElementDensity(13), 'g/cm3'
 PRINT,'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE)
 PRINT,'Fe partial photoionization cs of L3 at 6.0 keV: ',CS_Photo_Partial(26,L3_SHELL,6.0)
 PRINT,'Zr L1 edge energy: ',EdgeEnergy(40,L1_SHELL)

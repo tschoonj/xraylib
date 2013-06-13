@@ -834,6 +834,14 @@ INTERFACE
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z
         END FUNCTION AtomicWeight
 
+        !Element densities
+        PURE FUNCTION ElementDensity(Z) BIND(C,NAME='ElementDensity')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: ElementDensity 
+                INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z
+        END FUNCTION ElementDensity 
+
         !Cross sections (cm2/g)
         PURE FUNCTION CS_Total(Z,E) BIND(C,NAME='CS_Total')
                 USE, INTRINSIC :: ISO_C_BINDING

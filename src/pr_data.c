@@ -249,6 +249,10 @@ int main(void)
   print_floatvec(ZMAX+1, AtomicWeight_arr);
   fprintf(f, ";\n\n");
 
+  fprintf(f, "float ElementDensity_arr[ZMAX+1] =\n");
+  print_floatvec(ZMAX+1, ElementDensity_arr);
+  fprintf(f, ";\n\n");
+
   fprintf(f, "float EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
 

@@ -21,6 +21,7 @@ printf = function(s,...)
 xraylib.SetErrorMessages(0);
 
 printf("Example of lua program using xraylib\n")
+printf("Density of pure Al: %f g/cm3\n", xraylib.ElementDensity(13));
 printf("Ca K-alpha Fluorescence Line Energy: %f\n", xraylib.LineEnergy(20,xraylib.KA_LINE));
 printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,6.0));
 printf("Zr L1 edge energy: %f\n",xraylib.EdgeEnergy(40,xraylib.L1_SHELL));

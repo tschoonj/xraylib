@@ -31,6 +31,7 @@ extern void IDL_CDECL IDL_SetErrorMessages(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_GetExitStatus(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_GetErrorMessages(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicWeight(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_ElementDensity(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Photo(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Rayl(int argc, IDL_VPTR argv[]);
@@ -173,6 +174,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_GetExitStatus},"GETEXITSTATUS", 0 , 0 , 0 , 0},
 	{{IDL_GetExitStatus},"GETERRORMESSAGES", 0 , 0 , 0 , 0},
 	{{IDL_AtomicWeight},"ATOMICWEIGHT", 1 , 1 , 0 , 0},
+	{{IDL_ElementDensity},"ELEMENTDENSITY", 1 , 1 , 0 , 0},
 	{{IDL_CS_Total},"CS_TOTAL", 2 , 2 , 0 , 0},
 	{{IDL_CS_Photo},"CS_PHOTO", 2 , 2 , 0 , 0},
 	{{IDL_CS_Rayl},"CS_RAYL", 2 , 2 , 0 , 0},
@@ -902,6 +904,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 
 
 XRL_1I(AtomicWeight)
+XRL_1I(ElementDensity)
 XRL_1F(CS_KN)
 XRL_1F(DCS_Thoms)
 XRL_2IF(CS_Total)

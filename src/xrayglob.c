@@ -104,6 +104,7 @@ double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
 double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 
+float ElementDensity_arr[ZMAX+1];
 
 
 

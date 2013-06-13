@@ -145,7 +145,7 @@ int GetErrorMessages(void);
 float AtomicWeight(int Z);
 
 /* Density of pure atomic element */
-//float ElementDensity(int Z);
+float ElementDensity(int Z);
 
 /* Cross sections (cm2/g) */
 float CS_Total(int Z, float E);

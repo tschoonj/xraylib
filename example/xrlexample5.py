@@ -20,6 +20,7 @@ if __name__ == '__main__' :
 	xraylib.XRayInit()
 	xraylib.SetErrorMessages(0)
 	print ("Example of python program using xraylib")
+	print ("Density of pure Al : %f g/cm3" % xraylib.ElementDensity(13))
 	print ("Ca K-alpha Fluorescence Line Energy: %f" % xraylib.LineEnergy(20,xraylib.KA_LINE))
 	print ("Fe partial photoionization cs of L3 at 6.0 keV: %f" % xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,6.0))
 	print ("Zr L1 edge energy: %f" % xraylib.EdgeEnergy(40,xraylib.L1_SHELL))

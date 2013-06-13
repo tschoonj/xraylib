@@ -22,6 +22,7 @@ public class xrlexample7 {
 		xraylib.SetErrorMessages(0);
 //		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
+		System.out.println("Density of pure Al: "+xraylib.ElementDensity(13)+" g/cm3");
 		System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));
 		System.out.println("Zr L1 edge energy: "+xraylib.EdgeEnergy(40,xraylib.L1_SHELL));

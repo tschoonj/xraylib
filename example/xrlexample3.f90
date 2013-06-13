@@ -31,16 +31,17 @@ REAL (C_FLOAT), PARAMETER :: PI = 4.D0*DATAN(1.D0)
 
 CALL XRayInit()
 !CALL SetHardExit(1)
-CALL SetErrorMessage(0)
+CALL SetErrorMessages(0)
 
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
-WRITE (6,'(A,F12.6)') 'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE);
+WRITE (6,'(A,F12.6,A)') 'Density of pure Al: ',ElementDensity(13),' g/cm3'
+WRITE (6,'(A,F12.6)') 'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE)
 WRITE (6,'(A,F12.6)') 'Fe partial photoionization cs of L3 at 6.0 keV: ',CS_Photo_Partial(26,L3_SHELL,6.0)
 WRITE (6,'(A,F12.6)') 'Zr L1 edge energy: ',EdgeEnergy(40,L1_SHELL)
 WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (jump approx): ',CS_FluorLine(82,LA_LINE,20.0)
 WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (Kissel): ',CS_FluorLine_Kissel(82,LA_LINE,20.0)
 WRITE (6,'(A,F12.6)') 'Bi M1N2 radiative rate: ',RadRate(83,M1N2_LINE)
-WRITE (6,'(A,F12.6)') 'U M3O3 Fluorescence Line Energy: ',LineEnergy(92,M3O3_LINE);
+WRITE (6,'(A,F12.6)') 'U M3O3 Fluorescence Line Energy: ',LineEnergy(92,M3O3_LINE)
 
 !CompoundParser tests
 IF (CompoundParser(compound1,cd_C) == 0) THEN
