@@ -185,6 +185,8 @@ int main()
   F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
+  std::printf ("\n");
+
   /* compoundDataNIST tests */
   struct compoundDataNIST *cdn;
   cdn = GetCompoundDataNISTByName("Uranium Monocarbide");

@@ -182,5 +182,7 @@ printf ("  FH(3,3,1) structure factor: (%f, %f)\n", Re($FH), Im($FH));
 $F0 = xraylib::Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_temp_factor, $rel_angle);
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", Re($F0), Im($F0));
 
+printf ("\n");
+
 printf("\n--------------------------- END OF XRLEXAMPLE2 -------------------------------\n");
 exit 0;

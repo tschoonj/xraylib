@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 require("xraylib")
 
+io.stdout:setvbuf('no')
 
 printf = function(s,...)
 	return io.write(s:format(...))
@@ -175,5 +176,27 @@ printf ("  FH(3,3,1) structure factor: (%f, %f)\n", FH['re'], FH['im'])
 F0 = xraylib.Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle)
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0['re'], F0['im'])
 
+printf ("\n")
+
+-- compoundDataNIST tests
+cdn = xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
+printf ("Uranium Monocarbide\n")
+printf ("  Name: %s\n", cdn['name'])
+printf ("  Density: %f g/cm3\n", cdn['density'])
+for i=1,cdn['nElements'] do
+    	printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+end
+
+cdn = xraylib.GetCompoundDataNISTByIndex(xraylib.NIST_COMPOUND_BRAIN_ICRP)
+printf ("NIST_COMPOUND_BRAIN_ICRP\n")
+printf ("  Name: %s\n", cdn['name'])
+printf ("  Density: %f g/cm3\n", cdn['density'])
+for i=1,cdn['nElements'] do
+    	printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+end
+
+nistCompounds = xraylib.GetCompoundDataNISTList()
+printf ("List of available NIST compounds:\n");
+for i,v in ipairs(nistCompounds) do printf("  Compound %i: %s\n",i,v) end
 
 printf ("\n--------------------------- END OF XRLEXAMPLE9 -------------------------------\n")

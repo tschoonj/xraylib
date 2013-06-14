@@ -44,8 +44,16 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %ignore Crystal_AddCrystal;
 %ignore Crystal_ReadFile;
 %ignore Crystal_Array;
+%ignore xrlFree;
+%ignore _free_compound_data;
+%ignore FreeCompoundDataNIST;
 
+%typemap(newfree) char * {
+        if ($1)
+                xrlFree($1);
+}
 
+%newobject AtomicNumberToSymbol;
 
 #ifndef SWIGJAVA
 %typemap(in,numinputs=0) struct compoundData* (struct compoundData *temp) {
@@ -60,9 +68,81 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
    /* do not use crystal_array argument for now... */
    $1 = NULL;
 }
+%typemap(in, numinputs=0) int* nCompounds {
+   $1 = NULL;
+}
 #endif
 
 #ifdef SWIGLUA
+%typemap(out) char ** {
+        int i=0;
+        char ** list = $1;
+
+        lua_newtable(L);
+        for (i = 0 ; list[i] != NULL ; i++) {
+                lua_pushinteger(L,i+1);
+                lua_pushstring(L, list[i]);
+                lua_settable(L, -3);
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+        lua_pushvalue(L,-1);
+
+        SWIG_arg++;
+}
+
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                fprintf(stderr,"Error: requested NIST compound not found in database\n");
+                lua_pushnil(L);
+                SWIG_arg++;
+        }
+        else {
+                lua_newtable(L);
+
+                lua_pushstring(L, "name");
+                lua_pushstring(L, cdn->name);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "nElements");
+                lua_pushinteger(L, cdn->nElements);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "Elements");
+                lua_createtable(L, cdn->nElements, 0);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushinteger(L,cdn->Elements[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "massFractions");
+                lua_createtable(L, cdn->nElements, 0);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushnumber(L,cdn->massFractions[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "density");
+                lua_pushnumber(L, cdn->density);
+                lua_settable(L,-3);
+
+                lua_pushvalue(L, -1);
+
+                FreeCompoundDataNIST(cdn);
+
+                SWIG_arg++;
+        }
+}
+
+
 %typemap(argout) struct compoundData * cd {
         int i;
         struct compoundData *cd = $1;
@@ -121,6 +201,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         lua_pushstring(L, "im");
         lua_pushnumber(L, c.im);
         lua_settable(L,-3);
+        lua_pushvalue(L,-1);
 
         SWIG_arg++;
 }
