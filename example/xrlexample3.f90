@@ -29,6 +29,10 @@ rel_angle, dw
 COMPLEX (C_FLOAT) :: F_H, F_0, F_Hbar
 REAL (C_FLOAT), PARAMETER :: PI = 4.D0*DATAN(1.D0)
 
+TYPE (compoundDataNIST), POINTER :: cdn
+CHARACTER (KIND=C_CHAR, LEN=NIST_LIST_STRING_LENGTH), POINTER, &
+DIMENSION(:) :: nistCompounds
+
 CALL XRayInit()
 !CALL SetHardExit(1)
 CALL SetErrorMessages(0)
@@ -241,7 +245,37 @@ rel_angle)
 WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
 REAL(F_0),', ',AIMAG(F_0),')'
 
+WRITE (6, '(A)') ''
 
+cdn => GetCompoundDataNISTByName('Uranium Monocarbide')
+WRITE (6, '(A)') 'Uranium Monocarbide'
+WRITE (6, '(A,A)') '  Name: ', TRIM(cdn%name)
+WRITE (6, '(A,F12.6,A)') '  Density: ',cdn%density,' g/cm3' 
+DO i=1,cdn%nElements
+        WRITE (6, '(A,I2,A,F12.6,A)') '  Element ',&
+        cdn%Elements(i),': ', &
+        cdn%massFractions(i)*100.0, ' %'
+ENDDO
+CALL FreeCompoundDataNIST(cdn)
+
+cdn => GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
+WRITE (6, '(A)') 'NIST_COMPOUND_BRAIN_ICRP'
+WRITE (6, '(A,A)') '  Name: ', TRIM(cdn%name)
+WRITE (6, '(A,F12.6,A)') '  Density: ',cdn%density,' g/cm3' 
+DO i=1,cdn%nElements
+        WRITE (6, '(A,I2,A,F12.6,A)') '  Element ',&
+        cdn%Elements(i),': ', &
+        cdn%massFractions(i)*100.0, ' %'
+ENDDO
+CALL FreeCompoundDataNIST(cdn)
+
+nistCompounds => GetCompoundDataNISTList()
+WRITE (6, '(A)') 'List of available NIST compounds'
+DO i=1,SIZE(nistCompounds)
+        WRITE (6, '(A,I3,A,A)') '  Compound ',i,': ',TRIM(nistCompounds(i))
+ENDDO
+
+DEALLOCATE(nistCompounds)
 
 WRITE (6,'(A)') ''
 WRITE (6,'(A)') '--------------------------- END OF XRLEXAMPLE3 -------------------------------'

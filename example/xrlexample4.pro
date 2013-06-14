@@ -175,7 +175,7 @@ PRINT, ''
 cdn = GetCompoundDataNISTByName('Uranium Monocarbide')
 PRINT, 'Uranium Monocarbide'
 PRINT, '  Name: ',cdn.name
-PRINT, '  Density: ',cdn.density
+PRINT, '  Density: ',cdn.density, ' g/cm3'
 FOR i=0,cdn.nElements-1 DO $
 	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
 	cdn.massFractions[i]*100.0
@@ -183,7 +183,7 @@ FOR i=0,cdn.nElements-1 DO $
 cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
 PRINT, 'NIST_COMPOUND_BRAIN_ICRP'
 PRINT, '  Name: ',cdn.name
-PRINT, '  Density: ',cdn.density
+PRINT, '  Density: ',cdn.density, ' g/cm3'
 FOR i=0,cdn.nElements-1 DO $ 
 	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
 	cdn.massFractions[i]*100.0

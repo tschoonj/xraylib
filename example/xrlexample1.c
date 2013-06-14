@@ -215,7 +215,7 @@ int main()
   cdn = GetCompoundDataNISTByName("Uranium Monocarbide");
   printf ("Uranium Monocarbide\n");
   printf ("  Name: %s\n", cdn->name);
-  printf ("  Density: %lf\n", cdn->density);
+  printf ("  Density: %lf g/cm3\n", cdn->density);
   for (i = 0 ; i < cdn->nElements ; i++) {
     	printf("  Element %i: %lf %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
   }
@@ -226,7 +226,7 @@ int main()
   cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP);
   printf ("NIST_COMPOUND_BRAIN_ICRP\n");
   printf ("  Name: %s\n", cdn->name);
-  printf ("  Density: %lf\n", cdn->density);
+  printf ("  Density: %lf g/cm3\n", cdn->density);
   for (i = 0 ; i < cdn->nElements ; i++) {
     	printf("  Element %i: %lf %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
   }

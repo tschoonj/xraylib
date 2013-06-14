@@ -42,7 +42,7 @@ struct compoundDataNIST {
  * its name as argument to the function. For a list of available names,
  * use GetCompoundDataNISTList.
  *
- * The returned struct hould be freed after usage with FreeCompoundDataNIST.
+ * The returned struct should be freed after usage with FreeCompoundDataNIST.
  *
  */
 struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]);
@@ -55,7 +55,7 @@ struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]);
  * its index in the internal table to the function. Typically this would
  * be done using the NIST_COMPOUND_* macros in this file.
  *
- * The returned struct hould be freed after usage with FreeCompoundDataNIST.
+ * The returned struct should be freed after usage with FreeCompoundDataNIST.
  *
  */
 struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex);
