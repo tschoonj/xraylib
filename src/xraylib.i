@@ -521,6 +521,42 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 #ifdef SWIGPYTHON
+%typemap(out) char ** {
+        int i;
+        char **list = $1;
+
+        PyObject *res = PyList_New(0);
+        for (i = 0 ; list[i] != NULL ; i++)
+                PyList_Append(res,PyString_FromString(list[i]));
+
+        $result = res;
+}
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                PyErr_WarnEx(NULL, "Error: requested NIST compound not found in database\n",1);
+                $result = Py_None;
+        }
+        else {
+                PyObject *dict = PyDict_New();
+                PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name)); 
+                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements)); 
+                PyDict_SetItemString(dict, "density",PyFloat_FromDouble(cdn->density)); 
+                PyObject *Elements = PyList_New(cdn->nElements);
+                PyObject *massFractions = PyList_New(cdn->nElements);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                       PyList_SetItem(Elements, i, PyInt_FromLong(cdn->Elements[i])); 
+                       PyList_SetItem(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i])); 
+                }
+                PyDict_SetItemString(dict, "Elements", Elements);
+                PyDict_SetItemString(dict, "massFractions", massFractions);
+                $result = dict;
+        }
+
+}
 %typemap(argout) struct compoundData * cd {
         PyObject *dict = PyDict_New();
         int i;

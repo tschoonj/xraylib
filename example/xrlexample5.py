@@ -169,6 +169,28 @@ if __name__ == '__main__' :
 	print ("  F0=FH(0,0,0) structure factor: (%f, %f)" % (F0.real, F0.imag))
 
 	print ("")
+
+  	cdn = xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
+	print ("Uranium Monocarbide")
+	print ("  Name: %s" % cdn['name'])
+	print ("  Density: %f" % cdn['density'])
+	for i in range(cdn['nElements']):
+		print ("  Element %i: %f %%" % (cdn['Elements'][i], cdn['massFractions'][i]*100.0))
+
+  	cdn = xraylib.GetCompoundDataNISTByIndex(xraylib.NIST_COMPOUND_BRAIN_ICRP)
+	print ("NIST_COMPOUND_BRAIN_ICRP")
+	print ("  Name: %s" % cdn['name'])
+	print ("  Density: %f" % cdn['density'])
+	for i in range(cdn['nElements']):
+		print ("  Element %i: %f %%" % (cdn['Elements'][i], cdn['massFractions'][i]*100.0))
+
+	nistCompounds = xraylib.GetCompoundDataNISTList()
+	print ("List of available NIST compounds:")
+	for i in range(len(nistCompounds)):
+		print ("  Compound %i: %s" % (i,nistCompounds[i]))
+
+
+	print ("")
 	print ("--------------------------- END OF XRLEXAMPLE5 -------------------------------")
 	print ("")
 	sys.exit(0)
