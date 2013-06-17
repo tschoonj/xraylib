@@ -80,6 +80,17 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_SUBST(RUBY_VERSION)
 
                 #
+                # Check for Ruby extensions compiler 
+                #
+                AC_ARG_VAR(RUBY_EXT_CC, [Compiler for ruby extensions])
+                AC_MSG_CHECKING([for Ruby extensions compiler])
+                if test -z "$RUBY_EXT_CC" ; then
+                        [RUBY_EXT_CC=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["CC"]'`];
+                fi
+                AC_MSG_RESULT([$RUBY_EXT_CC])
+                AC_SUBST(RUBY_EXT_CC)
+
+                #
                 # Check for Ruby extensions include path.
                 #
                 AC_ARG_VAR(RUBY_EXT_INC, [Directory to include ruby headers from])

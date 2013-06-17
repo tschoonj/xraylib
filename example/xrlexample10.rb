@@ -14,7 +14,7 @@ if RUBY_VERSION < "1.9"
 require 'complex'
 end
 
-
+Xraylib.SetErrorMessages(0)
 printf("Example of ruby program using xraylib\n")
 printf("Density of pure Al: %f g/cm3\n", Xraylib::ElementDensity(13))
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",
@@ -182,23 +182,24 @@ printf("  F0=FH(0,0,0) structure factor: (%f, %f)\n", f0.real, f0.imag)
 cdn = Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
 printf("Uranium Monocarbide\n")
 printf("  Name: %s\n", cdn['name'])
-printf("  Density: %lf g/cm3\n", cdn['density'])
+printf("  Density: %f g/cm3\n", cdn['density'])
 for i in (0..cdn['nElements']-1)
-    	printf("  Element %i: %lf %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+    	printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
 end
 
 cdn = Xraylib.GetCompoundDataNISTByIndex(Xraylib::NIST_COMPOUND_BRAIN_ICRP)
 printf("NIST_COMPOUND_BRAIN_ICRP\n")
 printf("  Name: %s\n", cdn['name'])
-printf("  Density: %lf g/cm3\n", cdn['density'])
+printf("  Density: %f g/cm3\n", cdn['density'])
 for i in (0..cdn['nElements']-1)
-    	printf("  Element %i: %lf %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+    	printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
 end
 
 nistCompounds = Xraylib.GetCompoundDataNISTList()
 counter = 0
-nistCompounds.each do|nistCompound|
-  	printf("  Compound %i: %s\n", counter,#{nistCompound})
+printf ("List of available NIST compounds:\n")
+nistCompounds.each do |nistCompound|
+	puts "  Compound #{counter}: #{nistCompound}"
 	counter = counter + 1
 end
 

@@ -683,11 +683,15 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 	        	AC_LANG_PUSH([C])
 		    	# save current global flags
 		        ac_save_LIBS="$LIBS"
-			LIBS="$ac_save_LIBS $RUBY_EXT_LDFLAGS"
+			LIBS="$RUBY_EXT_LDFLAGS"
 			ac_save_CPPFLAGS="$CPPFLAGS"
-			CPPFLAGS="$ac_save_CPPFLAGS $RUBY_EXT_CPPFLAGS -I$RUBY_EXT_INC"
+			CPPFLAGS="$RUBY_EXT_CPPFLAGS -I$RUBY_EXT_INC"
+			ac_save_CC="$CC"
+			CC="$RUBY_EXT_CC"
 			AC_TRY_LINK([
 			#define HAVE_STRUCT_TIMESPEC
+			#define HAVE_STRUCT_TIMEVAL
+			#define HAVE_SIGNBIT
 			#include <ruby.h>
 			],[
 			ruby_init();
@@ -695,6 +699,7 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 			AC_MSG_RESULT([$rubyexists])
 			AC_LANG_POP
 			# turn back to default flags
+			CC="$ac_save_CC"
 			CPPFLAGS="$ac_save_CPPFLAGS"
 			LIBS="$ac_save_LIBS"
 			if test "x$rubyexists" = xno ; then

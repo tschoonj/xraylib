@@ -18,8 +18,8 @@ all:
 rubyxrl: ${top_srcdir}/src/xraylib.i
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -ruby ${top_srcdir}/src/xraylib.i
 	perl -pi -e 's!^\/\/.+$$!!' xraylib_wrap.c
-	$(CC) $(RUBY_EXT_CPPFLAGS) -DHAVE_STRUCT_TIMESPEC -I${top_srcdir}/include -I$(RUBY_EXT_INC) -c xraylib_wrap.c -o xraylib_wrap.o
-	$(CC) $(RUBY_EXT_LDFLAGS) -o xraylib$(RUBY_EXT_DLEXT) xraylib_wrap.o -L../src/.libs -lxrl
+	$(RUBY_EXT_CC) $(RUBY_EXT_CPPFLAGS) -DHAVE_SIGNBIT -DHAVE_STRUCT_TIMEVAL -DHAVE_STRUCT_TIMESPEC -I${top_srcdir}/include -I$(RUBY_EXT_INC) -c xraylib_wrap.c -o xraylib_wrap.o
+	$(RUBY_EXT_CC) $(RUBY_EXT_LDFLAGS) -o xraylib$(RUBY_EXT_DLEXT) xraylib_wrap.o -L../src/.libs -lxrl
 
 install-exec-local: xraylib$(RUBY_EXT_DLEXT)
 	$(MKDIR_P) $(DESTDIR)$(RUBYDIR)
