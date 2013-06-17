@@ -645,7 +645,139 @@ fi
 
 AM_CONDITIONAL([ENABLE_LUA],[test x$VALID_LUA = xyes])
 
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile example/Makefile idl/Makefile python/xrlsetup.py python/Makefile python/xrayhelp.py python/xraymessages.py doc/Makefile libxrl.pc libxrlf03.pc xraylib.spec data/Makefile java/Makefile nsis/xraylib.nsi nsis/python/Makefile nsis/Makefile nsis/python/python2.6/Makefile nsis/python/python2.7/Makefile nsis/python/python3.1/Makefile nsis/python/cli/Makefile nsis/python/cli_py2exe/Makefile nsis/python/cli_py2exe/xraylib-cli.nsi nsis/python/cli_py2exe/setup.py perl/Makefile lua/Makefile fortran/Makefile] nsis/python/python2.6/xrlsetup.py nsis/python/python2.7/xrlsetup.py nsis/python/python3.1/xrlsetup.py nsis/dotNet/Makefile nsis/python/python3.2/Makefile nsis/python/python3.2/xrlsetup.py nsis/python/python3.3/Makefile nsis/python/python3.3/xrlsetup.py)
+
+#
+#
+# Ruby bindings
+#
+#
+
+AC_ARG_ENABLE([ruby],[AS_HELP_STRING([--disable-ruby],[build without the ruby bindings])],[enable_ruby=$enableval],[enable_ruby=check])
+
+AC_ARG_ENABLE([ruby-integration],[AS_HELP_STRING([--enable-ruby-integration],[install the ruby bindings in the interpreters sitearch folder])],[enable_ruby_integration=$enableval],[enable_ruby_integration=check])
+VALID_RUBY=
+
+if test "x$SWIG" = xnoswig && test "x$enable_ruby" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
+	#don't even bother when swig is not found
+	AC_MSG_ERROR([--enable-ruby was given as an option but swig was not found on the system])
+elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
+	AX_RUBY_EXT
+	if test "x$RUBY" = x ; then
+		if test "x$enable_ruby" = xyes ; then
+			AC_MSG_ERROR([Cannot build ruby bindings])
+		else
+			AC_MSG_WARN([Cannot build ruby bindings])
+			VALID_RUBY=no
+		fi
+	else
+		#ruby is present, let's check if it can be used to make bindings
+		#borrowed from ax_ruby_devel.m4
+		AC_MSG_CHECKING([for the mkmf Ruby package])
+		ac_mkmf_result=`$RUBY -rmkmf -e ";" 2>&1`
+		if test -z "$ac_mkmf_result"; then
+			AC_MSG_RESULT([yes])
+			#
+    			# final check to see if everything compiles alright
+        		#
+	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
+	        	AC_LANG_PUSH([C])
+		    	# save current global flags
+		        ac_save_LIBS="$LIBS"
+			LIBS="$ac_save_LIBS $RUBY_EXT_LDFLAGS"
+			ac_save_CPPFLAGS="$CPPFLAGS"
+			CPPFLAGS="$ac_save_CPPFLAGS $RUBY_EXT_CPPFLAGS -I$RUBY_EXT_INC"
+			AC_TRY_LINK([
+			#define HAVE_STRUCT_TIMESPEC
+			#include <ruby.h>
+			],[
+			ruby_init();
+			],[rubyexists=yes],[rubyexists=no])
+			AC_MSG_RESULT([$rubyexists])
+			AC_LANG_POP
+			# turn back to default flags
+			CPPFLAGS="$ac_save_CPPFLAGS"
+			LIBS="$ac_save_LIBS"
+			if test "x$rubyexists" = xno ; then
+				if test "x$enable_ruby" = xyes ; then
+					AC_MSG_ERROR([Cannot build ruby bindings])
+				else
+					AC_MSG_WARN([Cannot build ruby bindings])
+					VALID_RUBY=no
+				fi
+			else
+				VALID_RUBY=yes	
+				AC_MSG_NOTICE([Building with ruby bindings])
+			fi
+		else
+			AC_MSG_RESULT([no])
+			if test "x$enable_ruby" = xyes ; then
+				AC_MSG_ERROR([Cannot build ruby bindings])
+			else
+				AC_MSG_WARN([Cannot build ruby bindings])
+				VALID_RUBY=no
+			fi
+		fi
+	fi
+fi
+
+AM_CONDITIONAL([ENABLE_RUBY],[test x$VALID_RUBY = xyes])
+
+if test "x$VALID_RUBY" = xyes ; then
+
+#get some more variables
+RUBY_EXT_ARCH=`AS_BASENAME([$RUBY_EXT_LIB])`
+RUBY_EXT_VERSION=`AS_BASENAME([$RUBY_EXT_ARCH])`
+
+if test "x$enable_ruby_integration" = xyes ; then
+	RUBYDIR=$RUBY_EXT_LIB
+else
+	RUBYDIR=${libdir}/ruby/site_ruby/$RUBY_EXT_VERSION/$RUBY_EXT_ARCH
+fi
+
+AC_SUBST(RUBYDIR)
+
+fi
+
+
+AC_CONFIG_FILES([Makefile
+				 src/Makefile
+				 include/Makefile
+				 example/Makefile
+				 idl/Makefile
+				 python/xrlsetup.py
+				 python/Makefile
+				 python/xrayhelp.py
+				 python/xraymessages.py
+				 doc/Makefile
+				 libxrl.pc
+				 libxrlf03.pc
+				 xraylib.spec
+				 data/Makefile
+				 java/Makefile
+				 nsis/xraylib.nsi
+				 nsis/python/Makefile
+				 nsis/Makefile
+				 nsis/python/python2.6/Makefile
+				 nsis/python/python2.7/Makefile
+				 nsis/python/python3.1/Makefile
+				 nsis/python/cli/Makefile
+				 nsis/python/cli_py2exe/Makefile
+				 nsis/python/cli_py2exe/xraylib-cli.nsi
+				 nsis/python/cli_py2exe/setup.py
+				 perl/Makefile
+				 lua/Makefile fortran/Makefile
+				 nsis/python/python2.6/xrlsetup.py
+				 nsis/python/python2.7/xrlsetup.py
+				 nsis/python/python3.1/xrlsetup.py
+				 nsis/dotNet/Makefile
+				 nsis/python/python3.2/Makefile
+				 nsis/python/python3.2/xrlsetup.py
+				 nsis/python/python3.3/Makefile
+				 nsis/python/python3.3/xrlsetup.py
+				 ruby/Makefile
+])
+
+
 AC_CONFIG_HEADERS([config.h])
 
 abs_top_builddir=`pwd -P`
@@ -665,3 +797,32 @@ AC_SUBST(abs_top_srcdir_win)
 AM_CONDITIONAL([ABS_SRC_BUILD_EQUAL],[test x$abs_top_builddir = x$abs_top_srcdir])
 
 AC_OUTPUT
+
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([])
+if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes ; then
+	AC_MSG_NOTICE([Building xraylib with bindings for:])
+	if test "$VALID_FORTRAN" = "yes" ; then
+		AC_MSG_NOTICE([Fortran 2003])
+	fi
+	if test "$VALID_IDL" = yes ; then
+		AC_MSG_NOTICE([IDL])
+	fi
+	if test "$VALID_PERL" = yes ; then
+		AC_MSG_NOTICE([Perl])
+	fi
+	if test "$VALID_PYTHON" = yes ; then
+		AC_MSG_NOTICE([Python])
+	fi
+	if test "$VALID_JAVA" = yes ; then
+		AC_MSG_NOTICE([Java])
+	fi
+	if test "$VALID_LUA" = yes ; then
+		AC_MSG_NOTICE([Lua])
+	fi
+	if test "$VALID_RUBY" = yes ; then
+		AC_MSG_NOTICE([Ruby])
+	fi
+else
+	AC_MSG_NOTICE([Building without bindings])
+fi

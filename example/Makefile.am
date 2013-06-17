@@ -39,6 +39,9 @@ endif
 if ENABLE_LUA
   check_SCRIPTS += xrlexample9.sh
 endif
+if ENABLE_RUBY
+  check_SCRIPTS += xrlexample10.sh
+endif
 
 
 xrlexample1_SOURCES = xrlexample1.c
@@ -67,7 +70,7 @@ endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb
 
 
 #test the idl bindings using this script
@@ -110,6 +113,13 @@ xrlexample9.sh:
 	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
 	chmod +x xrlexample9.sh
 	
+#test the ruby bindings
+xrlexample10.sh:
+	echo "Testing ruby bindings"
+	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
+	chmod +x xrlexample10.sh
+
+
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh
