@@ -184,5 +184,32 @@ printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", Re($F0), Im($F0));
 
 printf ("\n");
 
+# compoundDataNIST tests
+
+$cdn = xraylib::GetCompoundDataNISTByName("Uranium Monocarbide");
+printf ("Uranium Monocarbide\n");
+printf ("  Name: %s\n", $cdn->{name});
+printf ("  Density: %lf g/cm3\n", $cdn->{density});
+for ($i = 0 ; $i < $cdn->{nElements} ; $i++) {
+	printf("  Element %i: %lf %%\n",$cdn->{Elements}->[$i], $cdn->{massFractions}->[$i]*100.0);
+}
+
+$cdn = xraylib::GetCompoundDataNISTByIndex($xraylib::NIST_COMPOUND_BRAIN_ICRP);
+printf ("NIST_COMPOUND_BRAIN_ICRP\n");
+printf ("  Name: %s\n", $cdn->{name});
+printf ("  Density: %lf g/cm3\n", $cdn->{density});
+for ($i = 0 ; $i < $cdn->{nElements} ; $i++) {
+	printf("  Element %i: %lf %%\n",$cdn->{Elements}->[$i], $cdn->{massFractions}->[$i]*100.0);
+}
+
+#not that GetCompoundDataNISTList returns a REFERENCE to an array of strings...
+my $nistCompounds = xraylib::GetCompoundDataNISTList();
+printf ("List of available NIST compounds:\n");
+my $counter = 0;
+foreach my $nistCompound (@$nistCompounds) {
+	printf ("  Compound %i: %s\n", $counter++, $nistCompound);
+}
+
+
 printf("\n--------------------------- END OF XRLEXAMPLE2 -------------------------------\n");
 exit 0;

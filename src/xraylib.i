@@ -526,8 +526,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         char **list = $1;
 
         PyObject *res = PyList_New(0);
-        for (i = 0 ; list[i] != NULL ; i++)
+        for (i = 0 ; list[i] != NULL ; i++) {
                 PyList_Append(res,PyString_FromString(list[i]));
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
 
         $result = res;
 }
@@ -553,6 +556,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 PyDict_SetItemString(dict, "Elements", Elements);
                 PyDict_SetItemString(dict, "massFractions", massFractions);
+                FreeCompoundDataNIST(cdn);
                 $result = dict;
         }
 
@@ -881,6 +885,57 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
 
 
+%typemap(out) char ** {
+        int i;
+        char **list = $1;
+
+
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+
+        AV *res = newAV();
+
+        for (i = 0 ; list[i] != NULL ; i++) {
+                av_push(res, newSVpvn(list[i], strlen(list[i])));
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+        $result = sv_2mortal(newRV_noinc((SV*) res));
+
+        argvi++;
+}
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+        if (cdn == NULL) {
+                fprintf(stderr,"Error: requested NIST compound not found in database\n");
+                $result = &PL_sv_undef;
+        }
+        else {
+                HV *hash = newHV();
+                STORE_HASH("name", newSVpvn(cdn->name, strlen(cdn->name)),hash) 
+                STORE_HASH("nElements", newSViv(cdn->nElements),hash) 
+                STORE_HASH("density", newSVnv(cdn->density),hash) 
+                AV *Elements = newAV();
+                AV *massFractions = newAV();
+                STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
+                STORE_HASH("massFractions", newRV_noinc((SV*) massFractions),hash)
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        av_push(Elements, newSViv(cdn->Elements[i]));
+                        av_push(massFractions, newSVnv(cdn->massFractions[i]));
+                }
+                FreeCompoundDataNIST(cdn);
+                $result = sv_2mortal(newRV_noinc((SV*) hash));
+        }
+
+        argvi++;
+}
 
 %typemap(argout) struct compoundData * cd {
         int i;
@@ -946,32 +1001,32 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 EXTEND(sp,1);
         }
         if (cs == NULL) {
-                fprintf(stdout,"Crystal_GetCrystal Error: crystal not found");
+                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found\n");
                 $result = &PL_sv_undef;
         }
         else {
                 HV *rv = newHV();
-                hv_store(rv, "name", 4, newSVpvn(cs->name,strlen(cs->name)),0);
-                hv_store(rv, "a", 1, newSVnv(cs->a),0);
-                hv_store(rv, "b", 1, newSVnv(cs->b),0);
-                hv_store(rv, "c", 1, newSVnv(cs->c),0);
-                hv_store(rv, "alpha", 5, newSVnv(cs->alpha),0);
-                hv_store(rv, "beta", 4, newSVnv(cs->beta),0);
-                hv_store(rv, "gamma", 5, newSVnv(cs->gamma),0);
-                hv_store(rv, "volume", 6, newSVnv(cs->volume),0);
-                hv_store(rv, "n_atom", 6, newSViv(cs->n_atom),0);
+                STORE_HASH("name", newSVpvn(cs->name,strlen(cs->name)), rv)
+                STORE_HASH("a", newSVnv(cs->a), rv)
+                STORE_HASH("b", newSVnv(cs->b), rv)
+                STORE_HASH("c", newSVnv(cs->c), rv)
+                STORE_HASH("alpha", newSVnv(cs->alpha), rv)
+                STORE_HASH("beta", newSVnv(cs->beta), rv)
+                STORE_HASH("gamma", newSVnv(cs->gamma), rv)
+                STORE_HASH("volume", newSVnv(cs->volume), rv)
+                STORE_HASH("n_atom", newSViv(cs->n_atom), rv)
                 AV *atoms = newAV();
-                hv_store(rv, "atom", 4, newRV_noinc((SV*) atoms),0);
+                STORE_HASH("atom", newRV_noinc((SV*) atoms), rv)
                 for (i = 0 ; i < cs->n_atom ; i++) {
                         HV *atom = newHV();
-                        hv_store(atom, "Zatom", 5, newSViv(cs->atom[i].Zatom),0);
-                        hv_store(atom, "fraction", 8, newSVnv(cs->atom[i].fraction),0);
-                        hv_store(atom, "x", 1, newSVnv(cs->atom[i].x),0);
-                        hv_store(atom, "y", 1, newSVnv(cs->atom[i].y),0);
-                        hv_store(atom, "z", 1, newSVnv(cs->atom[i].z),0);
+                        STORE_HASH("Zatom", newSViv(cs->atom[i].Zatom), atom)
+                        STORE_HASH("fraction", newSVnv(cs->atom[i].fraction), atom)
+                        STORE_HASH("x", newSVnv(cs->atom[i].x), atom)
+                        STORE_HASH("y", newSVnv(cs->atom[i].y), atom)
+                        STORE_HASH("z", newSVnv(cs->atom[i].z), atom)
                         av_push(atoms, newRV_noinc((SV*) atom));
                 }
-                hv_store(rv, "cpointer", 8, newSViv((IV) cs),0);
+                STORE_HASH("cpointer", newSViv((IV) cs), rv)
                 $result = sv_2mortal(newRV_noinc((SV*) rv));
                 
         }
