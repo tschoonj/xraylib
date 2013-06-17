@@ -1245,6 +1245,45 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #endif
 
 #ifdef SWIGRUBY
+%typemap(out) char ** {
+        int i;
+        char **list = $1;
+
+        VALUE res = rb_ary_new();
+        for (i = 0 ; list[i] != NULL ; i++) {
+                rb_ary_push(res, rb_str_new2(list[i]));
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+        $result = res;
+}
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                fprintf(stderr, "Error: requested NIST compound not found in database\n");
+                $result = Qnil;
+        }
+        else {
+                VALUE rv = rb_hash_new();
+                rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cdn->name));
+                rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cdn->nElements));
+                rb_hash_aset(rv, rb_str_new2("density"), rb_float_new(cdn->density));
+                VALUE elements, massFractions;
+                elements = rb_ary_new2(cdn->nElements);
+                massFractions = rb_ary_new2(cdn->nElements);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        rb_ary_store(elements, (long) i , INT2FIX(cdn->Elements[i]));
+                        rb_ary_store(massFractions, (long) i , rb_float_new(cdn->massFractions[i]));
+                }
+                rb_hash_aset(rv, rb_str_new2("Elements"), elements);
+                rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
+                FreeCompoundDataNIST(cdn);
+                $result = rv;
+        }
+
+}
 %typemap(argout) struct compoundData *cd {
         int i;
         struct compoundData *cd = $1; 
@@ -1278,7 +1317,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         Crystal_Struct *cs = $1;
 
         if (cs == NULL) {
-                fprintf(stdout,"Crystal_GetCrystal Error: crystal not found");
+                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
                 $result = Qnil;
         }
         else {

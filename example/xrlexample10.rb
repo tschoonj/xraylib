@@ -16,6 +16,7 @@ end
 
 
 printf("Example of ruby program using xraylib\n")
+printf("Density of pure Al: %f g/cm3\n", Xraylib::ElementDensity(13))
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",
 	 Xraylib.LineEnergy(20,Xraylib::KA_LINE))
 printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",Xraylib.CS_Photo_Partial(26,Xraylib::L3_SHELL,6.0))
@@ -175,4 +176,30 @@ printf("  FH(3,3,1) structure factor: (%f, %f)\n", fh.real, fh.imag)
 
 f0 = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle)
 printf("  F0=FH(0,0,0) structure factor: (%f, %f)\n", f0.real, f0.imag)
+
+
+# compoundDataNIST tests
+cdn = Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
+printf("Uranium Monocarbide\n")
+printf("  Name: %s\n", cdn['name'])
+printf("  Density: %lf g/cm3\n", cdn['density'])
+for i in (0..cdn['nElements']-1)
+    	printf("  Element %i: %lf %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+end
+
+cdn = Xraylib.GetCompoundDataNISTByIndex(Xraylib::NIST_COMPOUND_BRAIN_ICRP)
+printf("NIST_COMPOUND_BRAIN_ICRP\n")
+printf("  Name: %s\n", cdn['name'])
+printf("  Density: %lf g/cm3\n", cdn['density'])
+for i in (0..cdn['nElements']-1)
+    	printf("  Element %i: %lf %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+end
+
+nistCompounds = Xraylib.GetCompoundDataNISTList()
+counter = 0
+nistCompounds.each do|nistCompound|
+  	printf("  Compound %i: %s\n", counter,#{nistCompound})
+	counter = counter + 1
+end
+
 printf("\n--------------------------- END OF XRLEXAMPLE10 -------------------------------\n")
