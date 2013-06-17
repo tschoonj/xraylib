@@ -28,7 +28,7 @@ extern void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[]);
 extern void IDL_CDECL IDL_SetHardExit(int argc, IDL_VPTR argv[]);
 extern void IDL_CDECL IDL_SetExitStatus(int argc, IDL_VPTR argv[]);
 extern void IDL_CDECL IDL_SetErrorMessages(int argc, IDL_VPTR argv[]);
-extern IDL_VPTR IDL_CDECL IDL_GetExitStatus(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_GetExitStatus_xrl(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_GetErrorMessages(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicWeight(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ElementDensity(int argc, IDL_VPTR argv[]);
@@ -176,8 +176,8 @@ extern IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTList(int argc, IDL_VPTR argv[])
 
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
-	{{IDL_GetExitStatus},"GETEXITSTATUS", 0 , 0 , 0 , 0},
-	{{IDL_GetExitStatus},"GETERRORMESSAGES", 0 , 0 , 0 , 0},
+	{{IDL_GetExitStatus_xrl},"GETEXITSTATUS", 0 , 0 , 0 , 0},
+	{{IDL_GetErrorMessages},"GETERRORMESSAGES", 0 , 0 , 0 , 0},
 	{{IDL_AtomicWeight},"ATOMICWEIGHT", 1 , 1 , 0 , 0},
 	{{IDL_ElementDensity},"ELEMENTDENSITY", 1 , 1 , 0 , 0},
 	{{IDL_CS_Total},"CS_TOTAL", 2 , 2 , 0 , 0},
@@ -333,7 +333,7 @@ void IDL_CDECL IDL_SetExitStatus(int argc, IDL_VPTR argv[])
   SetExitStatus(IDL_LongScalar(argv[0]));
 }
 
-IDL_VPTR IDL_CDECL IDL_GetExitStatus(int argc, IDL_VPTR argv[])
+IDL_VPTR IDL_CDECL IDL_GetExitStatus_xrl(int argc, IDL_VPTR argv[])
 {
   return IDL_GettmpInt((IDL_INT) GetExitStatus());
 }
