@@ -2023,7 +2023,7 @@ INTERFACE
                 INTEGER (KIND=C_INT) :: rv
         ENDFUNCTION SymbolToAtomicNumber_c
 
-        PURE SUBROUTINE xrlFree(xrlPtr)&
+        SUBROUTINE xrlFree(xrlPtr)&
         BIND(C,NAME='xrlFree')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2612,7 +2612,7 @@ FUNCTION GetCompoundDataNISTByIndex(index) RESULT(rv)
         RETURN
 ENDFUNCTION GetCompoundDataNISTByIndex
 
-PURE SUBROUTINE FreeCompoundDataNIST(cdn)
+SUBROUTINE FreeCompoundDataNIST(cdn)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
         TYPE (compoundDataNIST), POINTER, INTENT(INOUT) :: cdn
