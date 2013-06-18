@@ -45,6 +45,8 @@ LT_INIT([dlopen disable-fast-install win32-dll])
 #AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
+AC_PROG_SED
+
 AC_PROG_CC
 AM_PROG_CC_C_O
 #this next line may never be reached...
@@ -463,8 +465,8 @@ fi
 if test "x$VALID_PYTHON" = xyes ; then
 AC_MSG_NOTICE([Building with Python bindings])
 #transform PYTHON_INCDIR and PYTHON_LIBS
-PYTHON_INCLUDE_FIXED="'`echo $PYTHON_CPPFLAGS | sed -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
-PYTHON_LIBS_FIXED="'`echo $PYTHON_LDFLAGS | sed -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
+PYTHON_INCLUDE_FIXED="'`echo $PYTHON_CPPFLAGS | $SED -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
+PYTHON_LIBS_FIXED="'`echo $PYTHON_LDFLAGS | $SED -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
 #echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
 #echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
 
@@ -679,8 +681,20 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 			#
     			# final check to see if everything compiles alright
         		#
-	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
-	        	AC_LANG_PUSH([C])
+			AC_CHECK_HEADERS([sys/time.h],[],[])
+			AC_CHECK_HEADERS([time.h],[],[])
+			AC_CHECK_TYPES([struct timespec],[],[],[
+			#ifdef HAVE_SYS_TIME_H
+			#include <sys/time.h>
+			#endif])
+			AC_CHECK_TYPES([struct timeval],[],[],[
+			#ifdef HAVE_SYS_TIME_H
+			#include <sys/time.h>
+			#endif])
+			AC_CHECK_DECLS([signbit],[AC_DEFINE(HAVE_SIGNBIT)],AC_CHECK_FUNCS([signbit]),[
+			#ifdef HAVE_MATH_H
+			#include <math.h>
+			#endif])			
 		    	# save current global flags
 		        ac_save_LIBS="$LIBS"
 			LIBS="$RUBY_EXT_LDFLAGS"
@@ -688,10 +702,9 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 			CPPFLAGS="$RUBY_EXT_CPPFLAGS -I$RUBY_EXT_INC"
 			ac_save_CC="$CC"
 			CC="$RUBY_EXT_CC"
+	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
+	        	AC_LANG_PUSH([C])
 			AC_TRY_LINK([
-			#define HAVE_STRUCT_TIMESPEC
-			#define HAVE_STRUCT_TIMEVAL
-			#define HAVE_SIGNBIT
 			#include <ruby.h>
 			],[
 			ruby_init();
@@ -794,8 +807,8 @@ cd $abs_top_builddir
 AC_SUBST(abs_top_srcdir)
 
 #windows slashes versions
-abs_top_builddir_win=`echo $abs_top_builddir | sed -e 's/\//\\\/g'`
-abs_top_srcdir_win=`echo $abs_top_srcdir | sed -e 's/\//\\\/g'`
+abs_top_builddir_win=`echo $abs_top_builddir | $SED -e 's/\//\\\/g'`
+abs_top_srcdir_win=`echo $abs_top_srcdir | $SED -e 's/\//\\\/g'`
 AC_SUBST(abs_top_builddir_win)
 AC_SUBST(abs_top_srcdir_win)
 

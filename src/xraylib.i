@@ -17,7 +17,16 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %apply float *OUTPUT { float* f0, float* f_primep, float* f_prime2 }
 
-
+%begin %{
+#ifdef SWIGRUBY_TRICK
+#include <config.h>
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
+#endif
+%}
 
 
 %{
@@ -34,6 +43,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #endif
 
 #include "xraylib.h"
+
+
 %}
 
 #ifndef SWIGLUA

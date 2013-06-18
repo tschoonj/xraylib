@@ -138,8 +138,7 @@ AC_DEFUN([AX_RUBY_EXT],[
                 # linking might fail.  We also including the proper flags to create a bundle.
                 case "$host" in
                 *darwin*)
-                        RUBY_EXT_LDFLAGS=`echo ${RUBY_EXT_LDFLAGS} | sed -e "s,-arch [[^ ]]*,,g"`
-                        RUBY_EXT_LDFLAGS="${RUBY_EXT_LDFLAGS} -bundle -undefined dynamic_lookup"
+                        RUBY_EXT_LDFLAGS="-bundle -undefined dynamic_lookup"
                         ;;
                 esac
                 AC_MSG_RESULT([$RUBY_EXT_LDFLAGS])

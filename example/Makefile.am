@@ -75,49 +75,47 @@ EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrle
 
 #test the idl bindings using this script
 xrlexample4.sh: 
-	echo "Testing IDL bindings"
-	echo "unset IDL_STARTUP" > xrlexample4.sh
+	@echo "Testing IDL bindings"
+	@echo "unset IDL_STARTUP" > xrlexample4.sh
 if !ABS_SRC_BUILD_EQUAL
-	echo "ln -s ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
+	@echo "ln -s ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
 endif
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
 if !ABS_SRC_BUILD_EQUAL
-	echo "rm -f ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
+	@echo "rm -f ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
 endif
-	chmod +x xrlexample4.sh	
+	@chmod +x xrlexample4.sh	
 
 #test the perl bindings
 xrlexample2.sh:
-	echo "Testing perl bindings"
-#	echo "unset PERL5LIB" > xrlexample2.sh
-#	echo "unset PERLLIB" >> xrlexample2.sh
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/blib/lib:${top_builddir}/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
-	chmod +x xrlexample2.sh
+	@echo "Testing perl bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/blib/lib:${top_builddir}/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
+	@chmod +x xrlexample2.sh
 
 #test the python bindings
 xrlexample5.sh:
-	echo "Testing python bindings"
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
-	chmod +x xrlexample5.sh
+	@echo "Testing python bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
+	@chmod +x xrlexample5.sh
 
 #test the java bindings
 xrlexample7.sh:
-	echo "Testing java bindings"
-	echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
-	chmod +x xrlexample7.sh
+	@echo "Testing java bindings"
+	@echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
+	@chmod +x xrlexample7.sh
 
 #test the lua bindings
 xrlexample9.sh:
-	echo "Testing lua bindings"
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
-	chmod +x xrlexample9.sh
+	@echo "Testing lua bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
+	@chmod +x xrlexample9.sh
 	
 #test the ruby bindings
 xrlexample10.sh:
-	echo "Testing ruby bindings"
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
-	chmod +x xrlexample10.sh
+	@echo "Testing ruby bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby/.libs\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
+	@chmod +x xrlexample10.sh
 
 
 
