@@ -133,14 +133,9 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_MSG_CHECKING([for Ruby extensions linker flags])
                 if test -z "$RUBY_EXT_LDFLAGS" ; then
                         [RUBY_EXT_LDFLAGS=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["LDFLAGS"]'`];
+			[RUBY_EXT_LDFLAGS+="  "];
+                        [RUBY_EXT_LDFLAGS+=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["LIBRUBYARG_SHARED"]'`];
                 fi
-                # Fix LDFLAGS for OS X.  We don't want any -arch flags here, otherwise
-                # linking might fail.  We also including the proper flags to create a bundle.
-                case "$host" in
-                *darwin*)
-                        RUBY_EXT_LDFLAGS="-bundle -undefined dynamic_lookup"
-                        ;;
-                esac
                 AC_MSG_RESULT([$RUBY_EXT_LDFLAGS])
                 AC_SUBST(RUBY_EXT_LDFLAGS)
 
