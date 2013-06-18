@@ -238,7 +238,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 #search for header and libraries
 #inspired by the gpulib autoconf macros...
 
-	AC_ARG_WITH([rsiidl-bindir],[AS_HELP_STRING([--with-rsiidl-bindir],[set location of the rsi-idl binary])],[RSIIDL_BINDIR=$withval])
+	AC_ARG_WITH([idl-bindir],[AS_HELP_STRING([--with-idl-bindir],[set location of the idl binary])],[RSIIDL_BINDIR=$withval])
 
 	if test -z "$RSIIDL_BINDIR" ; then
 		#no location was presented as an option -> search the usual suspects...
@@ -246,10 +246,10 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		AC_PATH_PROGS([RSIIDL_BIN], [idl],[],[$IDL_PATH])
 		if test -z "$RSIIDL_BIN" && test "x$enable_idl" = xyes ; then
 			#binaries not found while they were required through the enable-idl option
-			AC_MSG_ERROR([RSI-IDL binaries not found in $IDL_PATH. Use --with-rsiidl-bindir to set the location of the rsi-idl binary])
+			AC_MSG_ERROR([IDL binaries not found in $IDL_PATH. Use --with-idl-bindir to set the location of the idl binary])
 		elif test -z "$RSIIDL_BIN" && test "x$enable_idl" = xcheck ; then
 			#binaries were not found but they were not requested explicitally through an option -> 
-			AC_MSG_WARN([RSI-IDL binaries not found in $IDL_PATH. Use --with-rsiidl-bindir to set the location of the rsi-idl binary])
+			AC_MSG_WARN([IDL binaries not found in $IDL_PATH. Use --with-idl-bindir to set the location of the idl binary])
 			VALID_IDL=no
 		else
 			#binaries were found...
@@ -260,7 +260,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		#test if the user-supplied value contains the idl binary
 		AC_PATH_PROGS([RSIIDL_BIN], [idl],[],[$RSIIDL_BINDIR])
 		if test -z "$RSIIDL_BIN" ; then
-			AC_MSG_ERROR([RSI-IDL binaries not found user-supplied $RSIIDL_BINDIR. Wrong value for --with-rsiidl-bindir])
+			AC_MSG_ERROR([IDL binaries not found user-supplied $RSIIDL_BINDIR. Wrong value for --with-idl-bindir])
 			VALID_IDL=no
 		fi	
 	fi
@@ -277,7 +277,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 			AC_CHECK_FILE(["$RSIIDL_INCDIR/export.h"],[RSIIDL_HASINC=yes],[RSIIDL_HASINC=no])
 		fi
 		if test "x$RSIIDL_HASINC" = xno ; then
-			AC_MSG_WARN([RSI-IDL header file was not found in $RSIIDL_INCDIR. This most likely indicates a problem with the IDL installation.])
+			AC_MSG_WARN([IDL header file was not found in $RSIIDL_INCDIR. This most likely indicates a problem with the IDL installation.])
 			VALID_IDL=no
 		fi
 		#check for path to libidl.so
@@ -286,28 +286,22 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 		    x86_64-*-linux*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.linux.x86_64
-		      IDL_CFLAGS="-fPIC"
-		      IDL_LD_FLAGS="-shared -Xlinker -Bsymbolic -Xlinker --warn-once -Xlinker -noinhibit-exec"
 		      ;;
 
 		    *-linux*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.linux.x86
-	              IDL_CFLAGS="-fPIC"
-                      IDL_LD_FLAGS="-shared -Xlinker -Bsymbolic -Xlinker --warn-once -Xlinker -noinhibit-exec"
 		      ;;
 
 		    *-sgi*)
 #		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.sgi
-		      AC_MSG_WARN([IRIX is currently not supported. Disable the bindings with --disable-idl])
+		      AC_MSG_WARN([IRIX is currently not supported for the IDL bindings])
 			VALID_IDL=no
 		      ;;
 		    x86_64-*-darwin*)
 			if test -d $RSIIDL_BINDIR/bin.darwin.x86_64 ; then
 		      		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.x86_64
-		      		IDL_CFLAGS="-fPIC"
-		      		IDL_LD_FLAGS="-Xlinker -flat_namespace -Xlinker -undefined -Xlinker suppress -Xlinker -bundle"
 			else
-				AC_MSG_WARN([You appear to be running an IDL version on Mac OS X Snow Leopard that does not have the required 64-bit IDL libraries. Please upgrade your IDL installation to at least version 7.1])
+				AC_MSG_WARN([You appear to be running an IDL version on Mac OS X that does not have the required 64-bit IDL libraries. Please upgrade your IDL installation to at least version 7.1 if you would like to create the IDL bindings])
 			VALID_IDL=no
 		        fi
 		      ;;
@@ -316,17 +310,13 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 		    i386-*-darwin*)
 	    		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
-			IDL_CFLAGS="-fPIC"
-		      	IDL_LD_FLAGS="-Xlinker -flat_namespace -Xlinker -undefined -Xlinker suppress -Xlinker -bundle"
 		      ;;
 
 		    ppc*-darwin*)
 		      IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.ppc
-		      IDL_CFLAGS="-fPIC"
-		      IDL_LD_FLAGS="-Xlinker -flat_namespace -Xlinker -undefined -Xlinker suppress -Xlinker -bundle"
 		      ;;
 		   *-solaris-*)
-		      AC_MSG_WARN([Solaris is currently not supported. Disable the bindings with --disable-idl])
+		      AC_MSG_WARN([Solaris is currently not supported for the IDL bindings])
 			VALID_IDL=no
 		      ;;
 
@@ -338,11 +328,11 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		  esac
 
 		if test "x$VALID_IDL" != xno ; then
-		AC_ARG_WITH([rsiidl-libdir],[AS_HELP_STRING([--with-rsiidl-bindir],[set location of the rsi-idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
+		AC_ARG_WITH([idl-libdir],[AS_HELP_STRING([--with-idl-bindir],[set location of the idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])	
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])	
 		if test "x$RSIIDL_HASBIN_SO" = xno && test "x$RSIIDL_HASBIN_DY" = xno  ; then
-			AC_MSG_WARN([libidl.so or libidl.dylib could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-rsiidl-libdir to match the location of the IDL libraries])
+			AC_MSG_WARN([libidl.so or libidl.dylib could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-idl-libdir to match the location of the IDL libraries])
 			VALID_IDL=no
 		fi
 		if test "x$VALID_IDL" != xno ; then

@@ -77,13 +77,9 @@ EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrle
 xrlexample4.sh: 
 	@echo "Testing IDL bindings"
 	@echo "unset IDL_STARTUP" > xrlexample4.sh
-if !ABS_SRC_BUILD_EQUAL
-	@echo "ln -s ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
-endif
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
-if !ABS_SRC_BUILD_EQUAL
-	@echo "rm -f ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
-endif
+	@echo "cp ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl/.libs:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
+	@echo "rm -f ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
 	@chmod +x xrlexample4.sh	
 
 #test the perl bindings
