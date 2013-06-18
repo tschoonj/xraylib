@@ -19,35 +19,13 @@ nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(RUBY_EXT_DLEXT)
 
 
-xraylib_wrap.c: ${top_srcdir}/src/xraylib.i
+xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/lines.h ${top_srcdir}/include/shells.h ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap_temp.c -ruby ${top_srcdir}/src/xraylib.i
 	$(SED) -e 's/^[[:space:]]*\/\/.\{1,\}//' xraylib_wrap_temp.c > xraylib_wrap.c
 	rm xraylib_wrap_temp.c
 
 
 
-#all:
-#	$(MAKE) rubyxrl
-
-
-#perl line is necessary to avoid C++ comments in wrapper... bug in SWIG
-#rubyxrl: ${top_srcdir}/src/xraylib.i
-#	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -ruby ${top_srcdir}/src/xraylib.i
-#	perl -pi -e 's!^\/\/.+$$!!' xraylib_wrap.c
-#	$(RUBY_EXT_CC) $(RUBY_EXT_CPPFLAGS) -DSWIGRUBY_TRICK -I${top_builddir} -I${top_srcdir}/include -I$(RUBY_EXT_INC) -c xraylib_wrap.c -o xraylib_wrap.o
-#	$(RUBY_EXT_CC) $(RUBY_EXT_LDFLAGS) -o xraylib$(RUBY_EXT_DLEXT) xraylib_wrap.o -L../src/.libs -lxrl
-
-#install-exec-local: xraylib$(RUBY_EXT_DLEXT)
-#	$(MKDIR_P) $(DESTDIR)$(RUBYDIR)
-#	$(INSTALL) xraylib$(RUBY_EXT_DLEXT) $(DESTDIR)$(RUBYDIR)/
-
-#uninstall-local:
-#	rm -f $(DESTDIR)$(RUBYDIR)/xraylib$(RUBY_EXT_DLEXT)
- 
-
-
-#clean-local:
-#	rm -rf xraylib_wrap.* xraylib.bundle
 
 
 clean-local:

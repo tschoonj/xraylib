@@ -19,6 +19,7 @@
 %define luaver @LUA_VERSION@
 %define lualibdir %{_libdir}/lua/%{luaver}
 
+%define rubydir @RUBY_EXT_LIB@
 
 Name: xraylib
 Version: @VERSION@	
@@ -30,7 +31,7 @@ Packager: Tom.Schoonjans <Tom.Schoonjans@UGent.be>
 URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig lua-devel
+BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig lua-devel ruby-devel
 
 %description
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available.
@@ -84,13 +85,22 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the lua bindings of xraylib.
 
+%package ruby
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: ruby bindings
+Requires: ruby xraylib
+
+%description ruby
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
+
+This rpm package provides the ruby bindings of xraylib.
+
 
 %prep
 %setup -q
 
 
 %build
-%configure --disable-perl --disable-java --enable-idl --enable-fortran2003 --enable-python --enable-lua FC=gfortran 
+%configure --disable-perl --disable-java --enable-idl --enable-fortran2003 --enable-python --enable-lua --enable-ruby --enable-ruby-integration FC=gfortran 
 #necessary to fix rpath issues during rpmbuild
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -103,6 +113,8 @@ rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
+rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
 cat >$RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/xraylib.sh <<EOF
@@ -171,14 +183,22 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/pro/xraylib_help.pro
 %{_prefix}/pro/xraylib_lines.pro
 %{_prefix}/pro/xraylib_auger.pro
+%{_prefix}/pro/xraylib_nist_compounds.pro
 %{_prefix}/pro/xraylib.pro
 
 %files lua
 %defattr(-,root,root)
 %{lualibdir}/*
 
+%files ruby
+%defattr(-,root,root)
+%{rubydir}/*
+
 
 %changelog
+* Tue Jun 18 2013 Tom Schoonjans
+- Added ruby bindings
+
 * Thu Aug 23 2012 Tom Schoonjans
 - Added lua bindings
 
