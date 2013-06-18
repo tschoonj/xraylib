@@ -108,7 +108,7 @@ xrlexample7.sh:
 #test the lua bindings
 xrlexample9.sh:
 	@echo "Testing lua bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
 	@chmod +x xrlexample9.sh
 	
 #test the ruby bindings

@@ -608,8 +608,28 @@ elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BIND
 	if test "x$LUA" != x ; then
 		AX_LUA_HEADERS
 		AX_LUA_LIBS
+		if test "x$HAVE_LUA_H" != x && test "x$HAVE_LUALIB_H" != x && test "x$LUA_LIB" != x ; then
+	  		AC_MSG_CHECKING([consistency of all components of lua development environment])
+			ac_save_CFLAGS="$CFLAGS"
+			ac_save_LIBS="$LIBS"
+			CFLAGS="$LUA_INCLUDE"
+			LIBS="$LUA_LIB"
+	       		AC_LANG_PUSH([C])
+			AC_TRY_LINK([
+			#include <lua.h>
+			#include "lauxlib.h"
+			],[
+			lua_State *L = luaL_newstate();
+			],[luaexists=yes],[luaexists=no])
+			AC_MSG_RESULT([$luaexists])
+			AC_LANG_POP
+			CFLAGS="$ac_save_CFLAGS"
+			LIBS="$ac_save_LIBS"
+		else
+			luaexists=no
+		fi
 	fi
-	if test "x$LUA" = x || test "x$HAVE_LUA_H" = x || test "x$HAVE_LUALIB_H" = x || test "x$LUA_LIB" = x ; then
+	if test "x$LUA" = x || test "x$HAVE_LUA_H" = x || test "x$HAVE_LUALIB_H" = x || test "x$LUA_LIB" = x || test "x$luaexists" = xno ; then
 		if test "x$enable_lua" = xyes ; then
 			AC_MSG_ERROR([Cannot build lua bindings])
 		else
@@ -624,22 +644,6 @@ elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BIND
 		AC_MSG_RESULT($LUA_VERSION)
 
 		AC_MSG_NOTICE([Building with lua bindings])
-		case "$host" in
-			*-linux*)
-				LUA_LD_FLAGS="-shared"
-				LUA_CFLAGS="-fPIC"
-				;;
-			*-darwin*)
-				LUA_LD_FLAGS="-bundle -undefined dynamic_lookup -all_load"
-				LUA_CFLAGS=""
-				;;
-			*)
-				LUA_LD_FLAGS="-shared"
-				LUA_CFLAGS="-fPIC"
-				;;
-		esac
-		AC_SUBST(LUA_LD_FLAGS)
-		AC_SUBST(LUA_CFLAGS)
 	fi
 	
 
