@@ -33,19 +33,22 @@ float c_abs(Complex x) {
   float ans = x.re * x.re - x.im * x.im; 
   ans = sqrt(ans);
   return ans; 
-};
+}
 
 /*-------------------------------------------------------------------------------------------------- */
 
 Complex c_mul(Complex x, Complex y) { 
-  Complex ans = {x.re * y.re - x.im * y.im, x.re * y.im + x.im * y.re};
+  Complex ans;
+  ans.re = x.re * y.re - x.im * y.im;
+  ans.im = x.re * y.im + x.im * y.re;
   return ans; 
-};
+}
 
 /*-------------------------------------------------------------------------------------------------- */
 /* Private function to extend the crystal array size. */
 
 static void Crystal_ExtendArray (Crystal_Array** c_array, int n_new) {
+  int i;
 
   /* Special case */
 
@@ -56,7 +59,6 @@ static void Crystal_ExtendArray (Crystal_Array** c_array, int n_new) {
   temp_array->n_alloc = (*c_array)->n_alloc + n_new;
   temp_array->crystal = malloc(temp_array->n_alloc * sizeof(Crystal_Array));
 
-  int i;
   for (i = 0; i < (*c_array)->n_crystal; i++) {
     temp_array->crystal[i] = (*c_array)->crystal[i];
   }
@@ -105,11 +107,12 @@ void Crystal_ArrayFree (Crystal_Array* c_array) {
 /*-------------------------------------------------------------------------------------------------- */
 
 Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal) {
+  int n;
 
   Crystal_Struct* crystal_out = malloc(sizeof(Crystal_Struct));
 
   *crystal_out = *crystal;
-  int n = crystal->n_atom * sizeof(Crystal_Atom);
+  n = crystal->n_atom * sizeof(Crystal_Atom);
   crystal_out->atom = malloc(n);
   memcpy (crystal->atom, crystal_out->atom, n);
 
@@ -145,11 +148,12 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
  */
 
 float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller) {
+  float d_spacing, wavelength;
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
 
-  float d_spacing = Crystal_dSpacing (crystal, i_miller, j_miller, k_miller);
-  float wavelength = KEV2ANGST / energy;
+  d_spacing = Crystal_dSpacing (crystal, i_miller, j_miller, k_miller);
+  wavelength = KEV2ANGST / energy;
   return asin(wavelength / (2 * d_spacing));
 
 }
@@ -162,11 +166,12 @@ float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_mi
 
 float Q_scattering_amplitude(Crystal_Struct* crystal, float energy, 
                                     int i_miller, int j_miller, int k_miller, float rel_angle) {
+  float wavelength;
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0)
     return 0;
   else {
-    float wavelength = KEV2ANGST / energy;
+    wavelength = KEV2ANGST / energy;
     return sin(rel_angle * Bragg_angle(crystal, energy, i_miller, j_miller, k_miller)) / wavelength;
   }
 
@@ -308,10 +313,11 @@ float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
  */
 
 float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller) {
+  Crystal_Struct* cc;
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
 
-  Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
+  cc = crystal;  /* Just for an abbreviation. */
 
   return (cc->volume / (cc->a * cc->b * cc->c)) * sqrt(1 / (
    
@@ -329,6 +335,7 @@ float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int
  */
 
 int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
+  Crystal_Struct* a_cryst;
 
   if (c_array == NULL) c_array = &Crystal_arr;
 
@@ -337,7 +344,6 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
    * Otherwise must be a new material...
    */
 
-  Crystal_Struct* a_cryst;
   a_cryst = bsearch(crystal->name, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
   
   if (a_cryst == NULL) {

@@ -31,13 +31,17 @@ void XRayInit(void)
 
   FILE *fp;
   char file_name[MAXFILENAMESIZE];
-  char shell_name[5], line_name[5], trans_name[5], auger_name[10];
+  char shell_name[5], line_name[6], trans_name[5], auger_name[10];
   char *path;
   int Z, iE;
   int i, ex, stat;
   int shell, line, trans, auger;
   float E, prob;
   char buffer[1024];
+  char **error_lines=NULL;
+  int nerror_lines=0;
+  int found_error_line;
+  int read_error=0;
 
   SetHardExit(1);
   SetExitStatus(0);
@@ -258,10 +262,6 @@ void XRayInit(void)
   }
   fclose(fp);
 
-  char **error_lines=NULL;
-  int nerror_lines=0;
-  int found_error_line;
-  int read_error=0;
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fluor_lines.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
@@ -273,6 +273,10 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", line_name);
+    if (strlen(line_name) > 5) {
+    	fprintf(stderr,"line_name too long in fluor_lines.dat: %s\n",line_name);
+	exit(1);
+    }
     fscanf(fp,"%f", &E);  
     E /= 1000.0;
     read_error=1;
@@ -285,7 +289,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+	    	sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 		ErrorExit(buffer);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(line_name);
@@ -299,7 +303,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+	    		sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 			ErrorExit(buffer);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(line_name);
@@ -340,7 +344,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the shellnames database: adjust shells.h and xrayvars.c/h\n",shell_name);
+	    	sprintf(buffer,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
 		ErrorExit(buffer);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(shell_name);
@@ -354,7 +358,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the shellnames database: adjust shells.h and xrayvars.c/h\n",line_name);
+	    		sprintf(buffer,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
 			ErrorExit(buffer);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(shell_name);
@@ -421,6 +425,10 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", trans_name);
+    if (strlen(trans_name) > 4) {
+    	fprintf(stderr,"trans_name too long in coskron: %s\n", line_name);
+	exit(1);
+    }
     fscanf(fp,"%f", &prob);  
     for (trans=0; trans<TRANSNUM; trans++) {
       if (strcmp(trans_name, TransName[trans]) == 0) {
@@ -443,6 +451,10 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", line_name);
+    if (strlen(line_name) > 5) {
+    	fprintf(stderr,"line_name too long in radrate.dat: %s\n", line_name);
+	exit(1);
+    }
     fscanf(fp,"%f", &prob);
     read_error=1;
     for (line=0; line<LINENUM; line++) {
@@ -455,7 +467,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+	    	sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 		ErrorExit(buffer);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(line_name);
@@ -469,7 +481,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the linenames database: adjust lines.h and xrayvars.c/h\n",line_name);
+	    		sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 			ErrorExit(buffer);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(line_name);

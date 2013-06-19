@@ -14,16 +14,22 @@ static int CompareCompoundDataNIST(const void *a, const void *b) {
 struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]) {
 
 	struct compoundDataNIST *key = malloc(sizeof(struct compoundDataNIST));
+	struct compoundDataNIST *rv;
+	char *buffer;
+#ifndef _WIN32
+	size_t nelp;
+#else
+	unsigned int nelp;
+#endif
 	key->name = strdup(compoundString);
 	
-	struct compoundDataNIST *rv;
 
 #ifndef _WIN32
-	size_t nelp = nCompoundDataNISTList;
+	nelp = nCompoundDataNISTList;
 
 	rv = lfind(key, compoundDataNISTList, &nelp, sizeof(struct compoundDataNIST), CompareCompoundDataNIST);
 #else
-	unsigned int nelp = nCompoundDataNISTList;
+	nelp = nCompoundDataNISTList;
 
 	rv = _lfind(key, compoundDataNISTList, &nelp, sizeof(struct compoundDataNIST), CompareCompoundDataNIST);
 #endif
@@ -41,7 +47,7 @@ struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]) 
 	}
 	else {
 		free(key);
-		char *buffer = malloc(sizeof(char)*(strlen("xraylib-nist-compounds: no match found for ")+strlen(compoundString)+1));
+		buffer = malloc(sizeof(char)*(strlen("xraylib-nist-compounds: no match found for ")+strlen(compoundString)+1));
 		sprintf(buffer,"xraylib-nist-compounds: no match found for %s", compoundString);
 		ErrorExit(buffer);
 		free(buffer);
@@ -75,11 +81,12 @@ struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex) {
 
 char **GetCompoundDataNISTList(int *nCompounds) {
 	int i;
+	char **rv;
 
 	if (nCompounds != NULL)
 		*nCompounds = nCompoundDataNISTList;
 
-	char **rv = malloc(sizeof(char *)*(nCompoundDataNISTList+1));
+	rv = malloc(sizeof(char *)*(nCompoundDataNISTList+1));
 
 	for (i = 0 ; i < nCompoundDataNISTList; i++)
 		rv[i] = strdup(compoundDataNISTList[i].name);

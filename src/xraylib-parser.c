@@ -49,6 +49,16 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 	char **brackets_begin_locs=NULL;
 	char **brackets_end_locs=NULL;
 	int nbracket_pairs=0;
+	char *tempElement;
+       	char *tempSubstring;
+       	int tempnAtoms;
+       	struct MendelElement *res;
+       	struct compoundAtom *res2, key2;
+    	struct compoundAtoms *tempBracketAtoms;
+        char *tempBracketString;
+
+
+
 
 	if (islower(compoundString[0]) || isdigit(compoundString[0])) {
 		sprintf(buffer,"xraylib-parser: invalid chemical formula. Found a lowercase character or digit where not allowed");
@@ -107,11 +117,6 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 		return 0;
 	}
 
-	char *tempElement;
-	char *tempSubstring;
-	int tempnAtoms;
-	struct MendelElement *res;
-	struct compoundAtom *res2, key2;
 	/*parse locally*/
 	for (i = 0 ; i < nuppers ; i++) {
 		if (islower(upper_locs[i][1]) && !islower(upper_locs[i][2])) {
@@ -212,9 +217,6 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 		free(upper_locs);
 
 	/*handle the brackets... */
-	struct compoundAtoms *tempBracketAtoms;
-	char *tempBracketString;
-
 	for (i = 0 ; i < nbracket_pairs ; i++) {
 		tempBracketAtoms = (struct compoundAtoms *) malloc(sizeof(struct compoundAtoms));
 		tempBracketString = strndup(brackets_begin_locs[i]+1,(size_t) (brackets_end_locs[i]-brackets_begin_locs[i]-1));

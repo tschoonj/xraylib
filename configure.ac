@@ -118,6 +118,12 @@ AC_SUBST(LDFLAGS_LIBXRL)
 
 AM_CONDITIONAL([ENABLE_CROSS],[test x$CROSS_COMPILING = xyes])
 
+AC_ARG_ENABLE([all-bindings],[AS_HELP_STRING([--disable-all-bindings],[build without bindings])],[enable_bindings=$enableval],[enable_bindings=check])
+
+if test "x$enable_bindings" = xno ; then
+	DISABLE_BINDINGS=yes
+fi
+
 #
 #fortran 2003 bindings
 #

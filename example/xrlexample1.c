@@ -21,6 +21,19 @@ int main()
   struct compoundData *cdtest, *cdtest1, *cdtest2, *cdtest3;
   int i;
   char *symbol;
+  Crystal_Struct* cryst;
+  Crystal_Atom* atom;
+  float energy = 8;
+  float debye_temp_factor = 1.0;
+  float rel_angle = 1.0;
+
+  float bragg, q, dw;
+  float f0, fp, fpp;
+  Complex FH, F0;
+  Complex FHbar;
+  struct compoundDataNIST *cdn;
+  char **nistCompounds;
+
   XRayInit();
   /*if something goes wrong, the test will end with EXIT_FAILURE
   //SetHardExit(1);*/
@@ -42,7 +55,7 @@ int main()
 	return 1;
   printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
   for (i = 0 ; i < cdtest->nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
+    printf("Element %i: %f %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
 
   FreeCompoundData(cdtest);
 
@@ -52,7 +65,7 @@ int main()
 
   printf("SiO2 contains %i atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
   for (i = 0 ; i < cdtest->nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
+    printf("Element %i: %f %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
 
   FreeCompoundData(cdtest);
 
@@ -82,7 +95,7 @@ int main()
 
   cdtest3 = add_compound_data(*cdtest1, 0.4, *cdtest2, 0.6);
   for (i = 0 ; i < cdtest3->nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
+    printf("Element %i: %f %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
 
   FreeCompoundData(cdtest1);
   FreeCompoundData(cdtest2);
@@ -106,14 +119,13 @@ int main()
 
   /* Si Crystal structure */
 
-  Crystal_Struct* cryst = Crystal_GetCrystal("Si", NULL);
+  cryst = Crystal_GetCrystal("Si", NULL);
   if (cryst == NULL) return 1;
   printf ("Si unit cell dimensions are %f %f %f\n", cryst->a, cryst->b, cryst->c);
   printf ("Si unit cell angles are %f %f %f\n", cryst->alpha, cryst->beta, cryst->gamma);
   printf ("Si unit cell volume is %f\n", cryst->volume);
   printf ("Si atoms at:\n");
   printf ("   Z  fraction    X        Y        Z\n");
-  Crystal_Atom* atom;
   for (i = 0; i < cryst->n_atom; i++) {
     atom = &cryst->atom[i];
     printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
@@ -123,21 +135,15 @@ int main()
 
   printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  float energy = 8;
-  float debye_temp_factor = 1.0;
-  float rel_angle = 1.0;
-
-  float bragg = Bragg_angle (cryst, energy, 1, 1, 1);
+  bragg = Bragg_angle (cryst, energy, 1, 1, 1);
   printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  float q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+  q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
   printf ("  Q Scattering amplitude: %f\n", q);
 
-  float f0, fp, fpp;
   Atomic_Factors (14, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   printf ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
-  Complex FH, F0;
   FH = Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
   printf ("  FH(1,1,1) structure factor: (%f, %f)\n", FH.re, FH.im);
 
@@ -167,8 +173,8 @@ int main()
   F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
-  Complex FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
-  float dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
+  FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
+  dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
                                                   sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
   printf ("  Darwin width: %f micro-radians\n", 1e6*dw);
 
@@ -217,13 +223,12 @@ int main()
   printf ("\n");
 
   /* compoundDataNIST tests */
-  struct compoundDataNIST *cdn;
   cdn = GetCompoundDataNISTByName("Uranium Monocarbide");
   printf ("Uranium Monocarbide\n");
   printf ("  Name: %s\n", cdn->name);
-  printf ("  Density: %lf g/cm3\n", cdn->density);
+  printf ("  Density: %f g/cm3\n", cdn->density);
   for (i = 0 ; i < cdn->nElements ; i++) {
-    	printf("  Element %i: %lf %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
+    	printf("  Element %i: %f %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
   }
 
   FreeCompoundDataNIST(cdn);
@@ -232,15 +237,15 @@ int main()
   cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP);
   printf ("NIST_COMPOUND_BRAIN_ICRP\n");
   printf ("  Name: %s\n", cdn->name);
-  printf ("  Density: %lf g/cm3\n", cdn->density);
+  printf ("  Density: %f g/cm3\n", cdn->density);
   for (i = 0 ; i < cdn->nElements ; i++) {
-    	printf("  Element %i: %lf %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
+    	printf("  Element %i: %f %%\n",cdn->Elements[i],cdn->massFractions[i]*100.0);
   }
 
   FreeCompoundDataNIST(cdn);
   cdn = NULL;
 
-  char **nistCompounds = GetCompoundDataNISTList(NULL);
+  nistCompounds = GetCompoundDataNISTList(NULL);
   printf ("List of available NIST compounds:\n");
   for (i = 0 ; nistCompounds[i] != NULL ; i++) {
   	printf ("  Compound %i: %s\n", i, nistCompounds[i]);

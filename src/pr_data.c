@@ -50,8 +50,13 @@ fprintf(f, "};\n\n");
 
 #define PR_DYNMATF(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "static float __%s_%d[] =\n", ENAME, j);\
-    print_floatvec(NVAR[j], EVAR[j]); \
+    if(NVAR[j] > 0) {\
+      fprintf(f, "static float __%s_%d[] =\n", ENAME, j);\
+      print_floatvec(NVAR[j], EVAR[j]); \
+    }\
+    else {\
+      fprintf(f, "static float __%s_%d[1]", ENAME, j);\
+    }\
     fprintf(f, ";\n\n");\
   } \
 \
@@ -66,8 +71,13 @@ fprintf(f, "};\n\n");
 
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
-    print_doublevec(NVAR[j], EVAR[j]); \
+    if(NVAR[j] > 0) {\
+      fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
+      print_doublevec(NVAR[j], EVAR[j]); \
+    }\
+    else {\
+      fprintf(f, "static double __%s_%d[1]", ENAME, j);\
+    }\
     fprintf(f, ";\n\n");\
   } \
 \
@@ -82,8 +92,13 @@ fprintf(f, "};\n\n");
 
 #define PR_DYNMATI(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "static int __%s_%d[] =\n", ENAME, j);\
-    print_intvec(NVAR[j], EVAR[j]); \
+    if(NVAR[j] > 0) {\
+      fprintf(f, "static int __%s_%d[] =\n", ENAME, j);\
+      print_intvec(NVAR[j], EVAR[j]); \
+    }\
+    else {\
+      fprintf(f, "static int __%s_%d[1]", ENAME, j);\
+    }\
     fprintf(f, ";\n\n");\
   } \
 \
@@ -99,8 +114,13 @@ fprintf(f, "};\n\n");
 #define PR_DYNMAT_3DD_K(NVAR2D, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1; i++) { \
     for (j = 0; j < SHELLNUM_K; j++) {\
-      fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
-      print_doublevec(NVAR2D[i][j], EVAR[i][j]);\
+      if(NVAR2D[i][j] > 0) {\
+        fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
+        print_doublevec(NVAR2D[i][j], EVAR[i][j]);\
+      }\
+      else {\
+        fprintf(f, "static double __%s_%i_%i[1]", ENAME, i, j);\
+      }\
       fprintf(f, ";\n\n");\
     }\
   }\
@@ -118,20 +138,25 @@ fprintf(f, "};\n\n");
   fprintf(f,"\n};\n");\
 
 #define PR_DYNMAT_3DD_C(NVAR2D, NVAR2D2, NVAR2D3, EVAR, ENAME) \
-  for (i = 0; i < 102; i++) { \
+  for (i = 1; i < 102; i++) { \
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       if (UOCCUP_ComptonProfiles[i][j] > 0.0) {\
-      	fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
-      	print_doublevec(NVAR2D[i], EVAR[i][j]);\
+        if(NVAR2D[i] > 0) {\
+          fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
+         print_doublevec(NVAR2D[i], EVAR[i][j]);\
+        }\
+        else {\
+          fprintf(f, "static double __%s_%i_%i[1]", ENAME, i, j);\
+        }\
       	fprintf(f, ";\n\n");\
       }\
       else {\
-      	fprintf(f, "static double __%s_%i_%i[] = {};\n", ENAME, i, j);\
+      	fprintf(f, "static double __%s_%i_%i[1];\n", ENAME, i, j);\
       }\
     }\
   }\
   fprintf(f, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
-  for (i = 0; i < 102; i++) {\
+  for (i = 1; i < 102; i++) {\
     fprintf(f,"{\n");\
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
@@ -1021,7 +1046,13 @@ void print_floatvec(int arrmax, float *arr)
   int i;
   fprintf(f, "{\n"); 
   for(i = 0; i < arrmax; i++) {
-    fprintf(f, "%.10E, ", arr[i]);
+    if(i < arrmax - 1) {
+      fprintf(f, "%.10Ef, ", arr[i]);
+    }
+    else {
+      fprintf(f, "%.10Ef ", arr[i]);
+    }
+
     if(i%FLOAT_PER_LINE == (FLOAT_PER_LINE-1))
       fprintf(f, "\n");
   }
@@ -1033,7 +1064,13 @@ void print_doublevec(int arrmax, double *arr)
   int i;
   fprintf(f, "{\n"); 
   for(i = 0; i < arrmax; i++) {
-    fprintf(f, "%.10E, ", arr[i]);
+    if(i < arrmax - 1) {
+      fprintf(f, "%.10E, ", arr[i]);
+    }
+    else {
+      fprintf(f, "%.10E ", arr[i]);
+    }
+
     if(i%FLOAT_PER_LINE == (FLOAT_PER_LINE-1))
       fprintf(f, "\n");
   }
@@ -1045,7 +1082,13 @@ void print_intvec(int arrmax, int *arr)
   int i;
   fprintf(f, "{\n"); 
   for(i = 0; i < arrmax; i++) {
-    fprintf(f, "%d, ", arr[i]);
+    if(i < arrmax - 1) {
+      fprintf(f, "%d, ", arr[i]);
+    }
+    else {
+      fprintf(f, "%d ", arr[i]);
+    }
+
     if(i%INT_PER_LINE == (INT_PER_LINE-1))
       fprintf(f, "\n");
   }
@@ -1057,6 +1100,8 @@ int main(void)
 {
 
   int i,j;
+  Crystal_Struct* crystal;
+  Crystal_Atom* atom;
 
   XRayInit();
 
@@ -1076,8 +1121,6 @@ int main(void)
   fprintf(f, "struct MendelElement MendelArraySorted[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArraySorted);
 
-  Crystal_Struct* crystal;
-  Crystal_Atom* atom;
 
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
@@ -1085,7 +1128,7 @@ int main(void)
     for (j = 0; j < crystal->n_atom; j++) {
       if (j % 2 == 0) fprintf(f, "\n  ");
       atom = &crystal->atom[j];
-      fprintf(f, "{%i, %f, %f, %f, %f}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
+      fprintf(f, "{%i, %ff, %ff, %ff, %ff}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
     }
     fprintf (f, "\n};\n\n");
   }
@@ -1093,7 +1136,7 @@ int main(void)
   fprintf(f, "Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "  {\"%s\", %f, %f, %f, %f, %f, %f, %f, %i, __atoms_%s},\n", crystal->name, 
+    fprintf(f, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name, 
               crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma, 
               crystal->volume, crystal->n_atom, crystal->name);
   }

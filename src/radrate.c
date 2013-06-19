@@ -13,11 +13,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
-#define KL1 -KL1_LINE-1
-#define KL2 -KL2_LINE-1
-#define KL3 -KL3_LINE-1
-#define KM2 -KM2_LINE-1
-#define KM3 -KM3_LINE-1
+#define KL1 -(int)KL1_LINE-1
+#define KL2 -(int)KL2_LINE-1
+#define KL3 -(int)KL3_LINE-1
+#define KM2 -(int)KM2_LINE-1
+#define KM3 -(int)KM3_LINE-1
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
