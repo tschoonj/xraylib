@@ -105,6 +105,10 @@ CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
 WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',&
 CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 
+WRITE (6,'(A,F12.6)') 'Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0)
+WRITE (6,'(A,F12.6)') 'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0)
+WRITE (6,'(A,F12.6)') 'CdTe mass energy-absorption cs at 40.0 keV: ',&
+CS_Energy_CP('CdTe'//C_NULL_CHAR, 40.0)
 
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')

@@ -158,6 +158,8 @@ float CSb_Photo(int Z, float E);
 float CSb_Rayl(int Z, float E);
 float CSb_Compt(int Z, float E); 
 float CS_KN(float E);
+float CS_Energy(int Z, float E);
+
 
 /* Unpolarized differential scattering cross sections */
 float DCS_Thoms(float theta);
@@ -258,6 +260,7 @@ float CS_Photo_Total_CP(const char compound[], float E);
 float CSb_Photo_Total_CP(const char compound[], float E);
 float CS_Total_Kissel_CP(const char compound[], float E); 
 float CSb_Total_Kissel_CP(const char compound[], float E); 
+float CS_Energy_CP(const char compound[], float E);
 
 /* Refractive indices functions */
 float Refractive_Index_Re(const char compound[], float E, float density);

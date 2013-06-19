@@ -69,6 +69,7 @@ TESTS_ENVIRONMENT = path="${top_builddir}/src/.libs" $(WINE)
 endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
+#AM_TESTS_FD_REDIRECT = 9>&2
 
 EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb
 

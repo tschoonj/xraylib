@@ -168,7 +168,9 @@ Crystal structures
 
 Taken from XOP with kind permissions from Manuel Sanchez del Rio.
 
+CS_Energy.dat
+=============
 
-====================
+Mass energy-absorption coefficients. Values are taken from NIST (http://physics.nist.gov/PhysRefData/XrayMassCoef/tab3.html), as calculated by S.M. Seltzer (Radiation Research 136, 147 (1993)).
 
 

@@ -69,6 +69,12 @@ float *q_Compt_arr[ZMAX+1];
 float *SF_Compt_arr[ZMAX+1];
 float *SF_Compt_arr2[ZMAX+1];
 
+int NE_Energy[ZMAX+1];
+float *E_Energy_arr[ZMAX+1];
+float *CS_Energy_arr[ZMAX+1];
+float *CS_Energy_arr2[ZMAX+1];
+
+
 int NE_Fi[ZMAX+1];
 float *E_Fi_arr[ZMAX+1];
 float *Fi_arr[ZMAX+1];

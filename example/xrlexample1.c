@@ -100,6 +100,11 @@ int main()
   printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
   printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
+
+  printf("Al mass energy-absorption cs at 20.0 keV: %f\n", CS_Energy(13, 20.0));
+  printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", CS_Energy(82, 40.0));
+  printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", CS_Energy_CP("CdTe", 40.0));
+
   /* Si Crystal structure */
 
   Crystal_Struct* cryst = Crystal_GetCrystal("Si", NULL);

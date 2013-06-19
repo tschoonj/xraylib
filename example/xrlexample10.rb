@@ -72,7 +72,13 @@ printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",Xrayl
 printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",Xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,Xraylib::MA1_LINE,20.0))
 printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",Xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,Xraylib::MA1_LINE,20.0))
 printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",Xraylib.CS_FluorLine_Kissel_no_Cascade(82,Xraylib::MA1_LINE,20.0))
- 
+
+
+printf("Al mass energy-absorption cs at 20.0 keV: %f\n", Xraylib::CS_Energy(13, 20.0))
+printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::CS_Energy(82, 40.0))
+printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::CS_Energy_CP("CdTe", 40.0))
+
+
 # Si Crystal structure 
 
 cryst = Xraylib.Crystal_GetCrystal("Si")
