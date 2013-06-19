@@ -16,14 +16,13 @@ USE xraylib
 
 IMPLICIT NONE
 
-TYPE (compoundData_C) :: cd_C
-TYPE (compoundData_F) :: cd_F
+TYPE (compoundData), POINTER :: cd
 
 !C_NULL_CHAR needs to be added since these strings will be passed to C functions
-CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'// C_NULL_CHAR
-CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'// C_NULL_CHAR
+CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'
+CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'
 INTEGER :: i
-TYPE (Crystal_Struct) :: cryst
+TYPE (Crystal_Struct), POINTER :: cryst
 REAL (C_FLOAT) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
 rel_angle, dw
 COMPLEX (C_FLOAT) :: F_H, F_0, F_Hbar
@@ -48,29 +47,29 @@ WRITE (6,'(A,F12.6)') 'Bi M1N2 radiative rate: ',RadRate(83,M1N2_LINE)
 WRITE (6,'(A,F12.6)') 'U M3O3 Fluorescence Line Energy: ',LineEnergy(92,M3O3_LINE)
 
 !CompoundParser tests
-IF (CompoundParser(compound1,cd_C) == 0) THEN
+cd => CompoundParser(compound1)
+IF (.NOT. ASSOCIATED(cd)) THEN
         CALL EXIT(1)
 ENDIF
-CALL compoundDataAssoc(cd_C,cd_F)
-WRITE (6,'(A,I4,A,I4,A)') 'Ca(HCO3)2 contains ',cd_F%nAtomsAll,' atoms and ',cd_F%nElements,' elements'
-DO i=1,cd_F%nElements
-        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd_F%Elements(i),' : ',cd_F%massFractions(i)*100.0_C_DOUBLE,' %'
+WRITE (6,'(A,I4,A,I4,A)') 'Ca(HCO3)2 contains ',cd%nAtomsAll,' atoms and ',cd%nElements,' elements'
+DO i=1,cd%nElements
+        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',cd%massFractions(i)*100.0_C_DOUBLE,' %'
 ENDDO
 
 !Free the memory allocated for the arrays
-DEALLOCATE(cd_F%Elements,cd_F%massFractions)
+CALL FreeCompoundData(cd)
 
-
-IF (CompoundParser(compound2,cd_C) == 0) THEN
+cd => CompoundParser(compound2)
+IF (.NOT. ASSOCIATED(cd)) THEN
         CALL EXIT(1)
 ENDIF
-CALL compoundDataAssoc(cd_C,cd_F)
-WRITE (6,'(A,I4,A,I4,A)') 'SiO2 contains ',cd_F%nAtomsAll,' atoms and ',cd_F%nElements,' elements'
-DO i=1,cd_F%nElements
-        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd_F%Elements(i),' : ',cd_F%massFractions(i)*100.0_C_DOUBLE,' %'
+WRITE (6,'(A,I4,A,I4,A)') 'SiO2 contains ',cd%nAtomsAll,' atoms and ',cd%nElements,' elements'
+DO i=1,cd%nElements
+        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',cd%massFractions(i)*100.0_C_DOUBLE,' %'
 ENDDO
 
-DEALLOCATE(cd_F%Elements,cd_F%massFractions)
+!Free the memory allocated for the arrays
+CALL FreeCompoundData(cd)
 
 WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2'//C_NULL_CHAR,10.0)
 
@@ -113,8 +112,8 @@ CS_Energy_CP('CdTe'//C_NULL_CHAR, 40.0)
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 
-cryst = Crystal_GetCrystal('Si')
-IF (cryst%name .EQ. 'none') CALL EXIT(1)
+cryst => Crystal_GetCrystal('Si')
+IF (.NOT.ASSOCIATED(cryst)) CALL EXIT(1)
 
 WRITE (6,'(A,3F12.3)') 'Si unit cell dimensions are ',cryst%a,cryst%b,cryst%c
 WRITE (6,'(A,3F12.3)') 'Si unit cell angles are ',&
@@ -155,11 +154,13 @@ rel_angle)
 WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
 REAL(F_0),', ',AIMAG(F_0),')'
 
+DEALLOCATE(cryst)
+
 WRITE (6,'(A)') ''
 
 ! Diamond diffraction parameters
-cryst = Crystal_GetCrystal('Diamond')
-IF (cryst%name .EQ. 'none') CALL EXIT(1)
+cryst => Crystal_GetCrystal('Diamond')
+IF (.NOT.ASSOCIATED(cryst)) CALL EXIT(1)
 WRITE (6,'(A)') 'Diamond 111 at 8 KeV. Incidence at the Bragg angle:'
 
 bragg = Bragg_angle (cryst, energy, 1, 1, 1)
@@ -194,12 +195,14 @@ SQRT(ABS(F_H * F_Hbar)) / PI / SIN(2*bragg)
 
 WRITE (6, '(A,F12.6,A)') '  Darwin width: ',1.0E6*dw,' micro-radians'
 
+DEALLOCATE(cryst)
+
 WRITE (6,'(A)') ''
 
 ! Alpha Quartz diffraction parameters
 
-cryst = Crystal_GetCrystal('AlphaQuartz')
-IF (cryst%name .EQ. 'none') CALL EXIT(1)
+cryst => Crystal_GetCrystal('AlphaQuartz')
+IF (.NOT.ASSOCIATED(cryst)) CALL EXIT(1)
 WRITE (6, '(A)') 'Alpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:' 
 
 bragg = Bragg_angle (cryst, energy, 0, 2, 0)
@@ -227,8 +230,8 @@ WRITE (6,'(A)') ''
 
 ! Muscovite diffraction parameters
 
-cryst = Crystal_GetCrystal('Muscovite')
-IF (cryst%name .EQ. 'none') CALL EXIT(1)
+cryst => Crystal_GetCrystal('Muscovite')
+IF (.NOT.ASSOCIATED(cryst)) CALL EXIT(1)
 WRITE (6, '(A)') 'Muscovite 331 at 8 KeV. Incidence at the Bragg angle:'
 
 bragg = Bragg_angle (cryst, energy, 3, 3, 1)
@@ -251,6 +254,8 @@ F_0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor,&
 rel_angle)
 WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
 REAL(F_0),', ',AIMAG(F_0),')'
+
+DEALLOCATE(cryst)
 
 WRITE (6, '(A)') ''
 

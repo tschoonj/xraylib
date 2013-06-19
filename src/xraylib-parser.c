@@ -1,4 +1,4 @@
-/*Copyright (c) 2010, 2011, Tom Schoonjans
+/*Copyright (c) 2010, 2011, 2013, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -288,7 +288,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 
 
 
-int CompoundParser(const char compoundString[], struct compoundData *cd) {
+struct compoundData *CompoundParser(const char compoundString[]) {
 	struct compoundAtoms ca = {0,NULL};
 	int rvCPS,i;
 	double sum = 0.0;
@@ -299,6 +299,7 @@ int CompoundParser(const char compoundString[], struct compoundData *cd) {
 	rvCPS=CompoundParserSimple(compoundStringCopy,&ca);
 
 	if (rvCPS) {
+		struct compoundData *cd = (struct compoundData *) malloc(sizeof(struct compoundData));
 		cd->nElements = ca.nElements;
 		cd->nAtomsAll = 0;
 		cd->Elements = (int *) malloc(sizeof(int)*ca.nElements);
@@ -314,17 +315,16 @@ int CompoundParser(const char compoundString[], struct compoundData *cd) {
 		free(ca.singleElements);
 		free(compoundStringCopy);
 
-		return 1;
+		return cd;
 	}
 	else
-		return 0;
+		return NULL;
 }
 
-void _free_compound_data(struct compoundData *cd) {
-	/*function designed to replace FREE_COMPOUND_DATA macro, due to the problems with the Borland compiler... */
-	
+void FreeCompoundData(struct compoundData *cd) {
 	free(cd->Elements);
 	free(cd->massFractions);
+	free(cd);
 }
 
 
@@ -414,6 +414,7 @@ int SymbolToAtomicNumber(char *symbol) {
 			return MendelArray[i].Zatom;
 	}
 
+	ErrorExit("AtomicNumberToSymbol: unknown symbol");
 	return 0;
 }
 

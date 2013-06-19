@@ -18,7 +18,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 int main()
 {
-  struct compoundData cdtest;
+  struct compoundData *cdtest;
   int i;
   XRayInit();
   SetErrorMessages(0);
@@ -36,23 +36,23 @@ int main()
   std::printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
   std::printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
   //parser test for Ca(HCO3)2 (calcium bicarbonate)
-  if (CompoundParser("Ca(HCO3)2",&cdtest) == 0)
+  if ((cdtest = CompoundParser("Ca(HCO3)2")) == NULL)
 	return 1;
-  std::printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
-  for (i = 0 ; i < cdtest.nElements ; i++)
-    std::printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+  std::printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  for (i = 0 ; i < cdtest->nElements ; i++)
+    std::printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
 
-  FREE_COMPOUND_DATA(cdtest)
+  FreeCompoundData(cdtest);
 
   //parser test for SiO2 (quartz)
-  if (CompoundParser("SiO2",&cdtest) == 0)
+  if ((cdtest = CompoundParser("SiO2")) == NULL)
 	return 1;
 
-  std::printf("SiO2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
-  for (i = 0 ; i < cdtest.nElements ; i++)
-    std::printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+  std::printf("SiO2 contains %i atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  for (i = 0 ; i < cdtest->nElements ; i++)
+    std::printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
 
-  FREE_COMPOUND_DATA(cdtest)
+  FreeCompoundData(cdtest);
 
   std::printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0f) );
 

@@ -29,7 +29,7 @@ TYPE, BIND(C) :: compoundData_C
         TYPE (C_PTR) :: massFractions
 ENDTYPE 
 
-TYPE :: compoundData_F
+TYPE :: compoundData
         INTEGER (C_INT) :: nElements
         INTEGER (C_INT) :: nAtomsAll
         INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
@@ -1881,7 +1881,7 @@ INTERFACE
                 REAL (KIND=C_FLOAT),INTENT(IN),VALUE :: E
         END FUNCTION CS_KN
 
-	!Cross sections (barn/atom)
+        !Cross sections (barn/atom)
         PURE FUNCTION CSb_Total(Z,E) BIND(C,NAME='CSb_Total')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -1914,133 +1914,133 @@ INTERFACE
                 REAL (KIND=C_FLOAT),INTENT(IN),VALUE :: E
         END FUNCTION CSb_Compt
 
-	!Unpolarized differential scattering cross sections
-	PURE FUNCTION DCS_Thoms(theta) BIND(C,NAME='DCS_Thoms')
+        !Unpolarized differential scattering cross sections
+        PURE FUNCTION DCS_Thoms(theta) BIND(C,NAME='DCS_Thoms')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCS_Thoms
-		REAL (KIND=C_FLOAT),INTENT(IN),VALUE :: theta
-	ENDFUNCTION DCS_Thoms
+                REAL (KIND=C_FLOAT),INTENT(IN),VALUE :: theta
+        ENDFUNCTION DCS_Thoms
 
-	PURE FUNCTION DCS_KN(E ,theta) BIND(C,NAME='DCS_KN')
+        PURE FUNCTION DCS_KN(E ,theta) BIND(C,NAME='DCS_KN')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCS_KN
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, theta
-	ENDFUNCTION DCS_KN
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, theta
+        ENDFUNCTION DCS_KN
 
-	PURE FUNCTION DCS_Rayl(Z ,E ,theta) BIND(C,NAME='DCS_Rayl')
+        PURE FUNCTION DCS_Rayl(Z ,E ,theta) BIND(C,NAME='DCS_Rayl')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCS_Rayl
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
-	ENDFUNCTION DCS_Rayl
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
+        ENDFUNCTION DCS_Rayl
 
-	PURE FUNCTION DCS_Compt(Z ,E ,theta) BIND(C,NAME='DCS_Compt')
+        PURE FUNCTION DCS_Compt(Z ,E ,theta) BIND(C,NAME='DCS_Compt')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCS_Compt
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
-	ENDFUNCTION DCS_Compt
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
+        ENDFUNCTION DCS_Compt
 
-	PURE FUNCTION DCSb_Rayl(Z ,E ,theta) BIND(C,NAME='DCSb_Rayl')
+        PURE FUNCTION DCSb_Rayl(Z ,E ,theta) BIND(C,NAME='DCSb_Rayl')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSb_Rayl
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
-	ENDFUNCTION DCSb_Rayl
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
+        ENDFUNCTION DCSb_Rayl
 
-	PURE FUNCTION DCSb_Compt(Z ,E ,theta) BIND(C,NAME='DCSb_Compt')
+        PURE FUNCTION DCSb_Compt(Z ,E ,theta) BIND(C,NAME='DCSb_Compt')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSb_Compt
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
-	ENDFUNCTION DCSb_Compt
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E,theta
+        ENDFUNCTION DCSb_Compt
 
-	!Polarized differential scattering cross sections
-	PURE FUNCTION DCSP_Thoms(theta, phi) BIND(C,NAME='DCSP_Thoms')
+        !Polarized differential scattering cross sections
+        PURE FUNCTION DCSP_Thoms(theta, phi) BIND(C,NAME='DCSP_Thoms')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSP_Thoms
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: theta, phi
-	ENDFUNCTION DCSP_Thoms
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: theta, phi
+        ENDFUNCTION DCSP_Thoms
 
-	PURE FUNCTION DCSP_KN(E, theta, phi) BIND(C,NAME='DCSP_KN')
+        PURE FUNCTION DCSP_KN(E, theta, phi) BIND(C,NAME='DCSP_KN')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSP_KN
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
-	ENDFUNCTION DCSP_KN
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
+        ENDFUNCTION DCSP_KN
 
-	PURE FUNCTION DCSP_Rayl(Z, E, theta, phi) BIND(C,NAME='DCSP_Rayl')
+        PURE FUNCTION DCSP_Rayl(Z, E, theta, phi) BIND(C,NAME='DCSP_Rayl')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSP_Rayl
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
-	ENDFUNCTION DCSP_Rayl
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
+        ENDFUNCTION DCSP_Rayl
 
-	PURE FUNCTION DCSP_Compt(Z, E, theta, phi) BIND(C,NAME='DCSP_Compt')
+        PURE FUNCTION DCSP_Compt(Z, E, theta, phi) BIND(C,NAME='DCSP_Compt')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSP_Compt
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
-	ENDFUNCTION DCSP_Compt
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
+        ENDFUNCTION DCSP_Compt
 
-	PURE FUNCTION DCSPb_Rayl(Z, E, theta, phi) BIND(C,NAME='DCSPb_Rayl')
+        PURE FUNCTION DCSPb_Rayl(Z, E, theta, phi) BIND(C,NAME='DCSPb_Rayl')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSPb_Rayl
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
-	ENDFUNCTION DCSPb_Rayl
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
+        ENDFUNCTION DCSPb_Rayl
 
-	PURE FUNCTION DCSPb_Compt(Z, E, theta, phi) BIND(C,NAME='DCSPb_Compt')
+        PURE FUNCTION DCSPb_Compt(Z, E, theta, phi) BIND(C,NAME='DCSPb_Compt')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: DCSPb_Compt
-		INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
-	ENDFUNCTION DCSPb_Compt
-	
-	!Scattering factors
-	PURE FUNCTION FF_Rayl(Z , q) BIND(C,NAME='FF_Rayl')
+                INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E, theta, phi
+        ENDFUNCTION DCSPb_Compt
+        
+        !Scattering factors
+        PURE FUNCTION FF_Rayl(Z , q) BIND(C,NAME='FF_Rayl')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: FF_Rayl
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: q
-	ENDFUNCTION FF_Rayl
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: q
+        ENDFUNCTION FF_Rayl
 
-	PURE FUNCTION SF_Compt(Z , q) BIND(C,NAME='SF_Compt')
+        PURE FUNCTION SF_Compt(Z , q) BIND(C,NAME='SF_Compt')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: SF_Compt
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: q
-	ENDFUNCTION SF_Compt
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: q
+        ENDFUNCTION SF_Compt
 
-	PURE FUNCTION MomentTransf(E , theta) BIND(C,NAME='MomentTransf')
+        PURE FUNCTION MomentTransf(E , theta) BIND(C,NAME='MomentTransf')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: MomentTransf
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E , theta
-	ENDFUNCTION
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E , theta
+        ENDFUNCTION
 
-	!X-ray fluorescent line energy
+        !X-ray fluorescent line energy
         PURE FUNCTION LineEnergy(Z,line) BIND(C,NAME='LineEnergy')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: LineEnergy
+                REAL (KIND=C_FLOAT) :: LineEnergy
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z,line
         END FUNCTION LineEnergy
 
-	!Fluorescence yield
+        !Fluorescence yield
         PURE FUNCTION FluorYield(Z,shell) BIND(C,NAME='FluorYield')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2048,16 +2048,16 @@ INTERFACE
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE ::Z,shell
         END FUNCTION FluorYield
 
-	!Coster-Kronig transition probability
+        !Coster-Kronig transition probability
         PURE FUNCTION CosKronTransProb(Z,trans) &
-		BIND(C,NAME='CosKronTransProb')
+                BIND(C,NAME='CosKronTransProb')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: CosKronTransProb
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE ::Z,trans
         END FUNCTION CosKronTransProb
 
-	!Absorption-edge energies
+        !Absorption-edge energies
         PURE FUNCTION EdgeEnergy(Z,shell) BIND(C,NAME='EdgeEnergy')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2065,7 +2065,7 @@ INTERFACE
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE ::Z,shell
         END FUNCTION EdgeEnergy
 
-	!Jump ratios
+        !Jump ratios
         PURE FUNCTION JumpFactor(Z,shell) BIND(C,NAME='JumpFactor')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2073,122 +2073,121 @@ INTERFACE
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE ::Z,shell
         END FUNCTION JumpFactor
 
-	!Fluorescent-lines cross sections
+        !Fluorescent-lines cross sections
         PURE FUNCTION CS_FluorLine(Z,line,E) BIND(C,NAME='CS_FluorLine')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: CS_FluorLine
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z,line
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E
         END FUNCTION CS_FluorLine
 
         PURE FUNCTION CSb_FluorLine(Z,line,E) &
-		BIND(C,NAME='CSb_FluorLine')
+                BIND(C,NAME='CSb_FluorLine')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 REAL (KIND=C_FLOAT) :: CSb_FluorLine
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z,line
-		REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN),VALUE :: E
         END FUNCTION CSb_FluorLine
 
-	!Fractional radiative rate	
-	PURE FUNCTION RadRate(Z, line) BIND (C,NAME='RadRate')
+        !Fractional radiative rate        
+        PURE FUNCTION RadRate(Z, line) BIND (C,NAME='RadRate')
                 USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: RadRate
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z , line
-	ENDFUNCTION RadRate
-
-	!Photon energy after Compton scattering
-	PURE FUNCTION ComptonEnergy(E0 , theta) BIND(C,NAME='ComptonEnergy')
-                USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: ComptonEnergy
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E0 , theta
-	ENDFUNCTION ComptonEnergy
-
-	!Anomalous Scattering Factors
-	PURE FUNCTION Fi (Z , E) BIND(C, NAME='Fi')
-                USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: Fi
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
-	ENDFUNCTION Fi
-
-	PURE FUNCTION Fii (Z , E) BIND(C, NAME='Fii')
-                USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: Fii
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
-	ENDFUNCTION Fii
-
-	!Kissel photoelectric cross sections
-	PURE FUNCTION CS_Photo_Total (Z, E) BIND(C, NAME='CS_Photo_Total')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CS_Photo_Total
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
-	ENDFUNCTION CS_Photo_Total
-
-	PURE FUNCTION CSb_Photo_Total (Z, E) BIND(C, NAME='CSb_Photo_Total')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CSb_Photo_Total
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
-	ENDFUNCTION CSb_Photo_Total
-
-	PURE FUNCTION CS_Photo_Partial (Z,shell, E) &
-		BIND(C, NAME='CS_Photo_Partial')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CS_Photo_Partial
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: shell, Z
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-	ENDFUNCTION CS_Photo_Partial
-
-	PURE FUNCTION CSb_Photo_Partial (Z,shell, E) &
-		BIND(C, NAME='CSb_Photo_Partial')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CSb_Photo_Partial
-		INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, shell
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-	ENDFUNCTION CSb_Photo_Partial
-
-	PURE FUNCTION CS_Total_Kissel (Z, E) BIND(C, NAME='CS_Total_Kissel')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CS_Total_Kissel
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
-	ENDFUNCTION CS_Total_Kissel
-
-	PURE FUNCTION CSb_Total_Kissel (Z, E) BIND(C, NAME='CSb_Total_Kissel')
-		USE, INTRINSIC :: ISO_C_BINDING
-		IMPLICIT NONE
-		REAL (KIND=C_FLOAT) :: CSb_Total_Kissel
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-		INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
-	ENDFUNCTION CSb_Total_Kissel
-
-        FUNCTION CompoundParser(compoundString, cd) BIND(C,NAME='CompoundParser')
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: compoundData_C
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compoundString
-                TYPE(compoundData_C),INTENT(INOUT) :: cd
-                INTEGER (KIND=C_INT) :: CompoundParser
-        ENDFUNCTION
+                REAL (KIND=C_FLOAT) :: RadRate
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z , line
+        ENDFUNCTION RadRate
+
+        !Photon energy after Compton scattering
+        PURE FUNCTION ComptonEnergy(E0 , theta) BIND(C,NAME='ComptonEnergy')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: ComptonEnergy
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E0 , theta
+        ENDFUNCTION ComptonEnergy
+
+        !Anomalous Scattering Factors
+        PURE FUNCTION Fi (Z , E) BIND(C, NAME='Fi')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: Fi
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+        ENDFUNCTION Fi
+
+        PURE FUNCTION Fii (Z , E) BIND(C, NAME='Fii')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: Fii
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+        ENDFUNCTION Fii
+
+        !Kissel photoelectric cross sections
+        PURE FUNCTION CS_Photo_Total (Z, E) BIND(C, NAME='CS_Photo_Total')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_Photo_Total
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+        ENDFUNCTION CS_Photo_Total
+
+        PURE FUNCTION CSb_Photo_Total (Z, E) BIND(C, NAME='CSb_Photo_Total')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_Photo_Total
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+        ENDFUNCTION CSb_Photo_Total
+
+        PURE FUNCTION CS_Photo_Partial (Z,shell, E) &
+                BIND(C, NAME='CS_Photo_Partial')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_Photo_Partial
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: shell, Z
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CS_Photo_Partial
+
+        PURE FUNCTION CSb_Photo_Partial (Z,shell, E) &
+                BIND(C, NAME='CSb_Photo_Partial')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_Photo_Partial
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, shell
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+        ENDFUNCTION CSb_Photo_Partial
+
+        PURE FUNCTION CS_Total_Kissel (Z, E) BIND(C, NAME='CS_Total_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CS_Total_Kissel
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+        ENDFUNCTION CS_Total_Kissel
+
+        PURE FUNCTION CSb_Total_Kissel (Z, E) BIND(C, NAME='CSb_Total_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                REAL (KIND=C_FLOAT) :: CSb_Total_Kissel
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+        ENDFUNCTION CSb_Total_Kissel
+
+        FUNCTION CompoundParser_C(compoundString) BIND(C,NAME='CompoundParser')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: compoundString
+                TYPE (C_PTR) :: rv
+        ENDFUNCTION CompoundParser_C
         !compound parser based functions                
         PURE FUNCTION CS_Total_CP(compound,E) BIND(C,NAME='CS_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Total_CP
         ENDFUNCTION CS_Total_CP
 
@@ -2196,7 +2195,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Photo_CP
         ENDFUNCTION CS_Photo_CP
 
@@ -2204,7 +2203,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Rayl_CP
         ENDFUNCTION CS_Rayl_CP
 
@@ -2212,7 +2211,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Compt_CP
         ENDFUNCTION CS_Compt_CP
 
@@ -2220,7 +2219,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Energy_CP
         ENDFUNCTION CS_Energy_CP
 
@@ -2228,7 +2227,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CSb_Total_CP
         ENDFUNCTION CSb_Total_CP
 
@@ -2236,7 +2235,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CSb_Photo_CP
         ENDFUNCTION CSb_Photo_CP
 
@@ -2244,7 +2243,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CSb_Rayl_CP
         ENDFUNCTION CSb_Rayl_CP
 
@@ -2252,7 +2251,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CSb_Compt_CP
         ENDFUNCTION CSb_Compt_CP
 
@@ -2260,7 +2259,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
                 REAL (KIND=C_FLOAT) :: DCS_Rayl_CP
         ENDFUNCTION DCS_Rayl_CP
 
@@ -2268,7 +2267,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
                 REAL (KIND=C_FLOAT) :: DCS_Compt_CP
         ENDFUNCTION DCS_Compt_CP
 
@@ -2276,7 +2275,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
                 REAL (KIND=C_FLOAT) :: DCSb_Rayl_CP
         ENDFUNCTION DCSb_Rayl_CP
 
@@ -2284,7 +2283,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
                 REAL (KIND=C_FLOAT) :: DCSb_Compt_CP
         ENDFUNCTION DCSb_Compt_CP
 
@@ -2292,7 +2291,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
                 REAL (KIND=C_FLOAT) :: DCSP_Rayl_CP
         ENDFUNCTION DCSP_Rayl_CP
 
@@ -2300,7 +2299,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
                 REAL (KIND=C_FLOAT) :: DCSP_Compt_CP
         ENDFUNCTION DCSP_Compt_CP
 
@@ -2308,7 +2307,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
                 REAL (KIND=C_FLOAT) :: DCSPb_Rayl_CP
         ENDFUNCTION DCSPb_Rayl_CP
 
@@ -2316,7 +2315,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
                 REAL (KIND=C_FLOAT) :: DCSPb_Compt_CP
         ENDFUNCTION DCSPb_Compt_CP
 
@@ -2324,7 +2323,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Photo_Total_CP
         ENDFUNCTION CS_Photo_Total_CP
 
@@ -2332,7 +2331,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CSb_Photo_Total_CP
         ENDFUNCTION CSb_Photo_Total_CP
 
@@ -2340,7 +2339,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CS_Total_Kissel_CP
         ENDFUNCTION CS_Total_Kissel_CP
 
@@ -2348,7 +2347,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
                 REAL (KIND=C_FLOAT) :: CSb_Total_Kissel_CP
         ENDFUNCTION CSb_Total_Kissel_CP
 
@@ -2356,7 +2355,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, density
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, density
                 REAL (KIND=C_FLOAT) :: Refractive_Index_Re
         ENDFUNCTION Refractive_Index_Re
 
@@ -2364,7 +2363,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-		REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, density
+                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, density
                 REAL (KIND=C_FLOAT) :: Refractive_Index_Im
         ENDFUNCTION Refractive_Index_Im
 
@@ -2972,19 +2971,59 @@ INTERFACE
 ENDINTERFACE
 
 CONTAINS
-!subroutine to associate a C structure with the correspond Fortran structure
-SUBROUTINE compoundDataAssoc(in_C, out_F)
+
+FUNCTION CompoundParser(compoundString) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        TYPE(compoundData_C),INTENT(IN) :: in_C
-        TYPE(compoundData_F),INTENT(INOUT) :: out_F
 
-        out_F%nElements = in_C%nElements
-        out_F%nAtomsAll = in_C%nAtomsAll
-        CALL C_F_POINTER(in_C%Elements,out_F%Elements,[out_F%nElements])
-        CALL C_F_POINTER(in_C%massFractions,out_F%massFractions,[out_F%nElements])
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compoundString
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compoundString_F
+        TYPE (compoundData), POINTER :: rv
+        TYPE (compoundData_C), POINTER :: rv_C
+        TYPE (C_PTR) :: rv_c_ptr
+        INTEGER :: i
 
-ENDSUBROUTINE compoundDataAssoc
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
+        NULLIFY(rv)
+
+        ALLOCATE(compoundString_F(1+LEN_TRIM(compoundString)))
+        DO i=1,LEN_TRIM(compoundString)
+                compoundString_F(i) = compoundString(i:i)
+        ENDDO
+        compoundString_F(1+LEN_TRIM(compoundString)) = C_NULL_CHAR
+        
+        rv_c_ptr = CompoundParser_C(C_LOC(compoundString_F))
+
+        IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
+                ALLOCATE(rv)
+                CALL C_F_POINTER(rv_c_ptr, rv_C)
+                rv%nElements = rv_C%nElements
+                rv%nAtomsAll = rv_C%nAtomsAll
+                CALL C_F_POINTER(rv_C%Elements, rv%Elements, [rv%nElements])
+                CALL C_F_POINTER(rv_C%massFractions, rv%massFractions, [rv%nElements])
+        ENDIF
+
+        RETURN
+ENDFUNCTION CompoundParser
+
+SUBROUTINE FreeCompoundData(cd)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE (compoundData), POINTER, INTENT(INOUT) :: cd
+
+        CALL xrlFree(C_LOC(cd%Elements(1)))
+        CALL xrlFree(C_LOC(cd%massFractions(1)))
+        DEALLOCATE(cd)
+ENDSUBROUTINE
 
 FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
@@ -3061,7 +3100,7 @@ FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
         TYPE (C_PTR) :: material_C, crystal_C
         INTEGER :: i
         TYPE (Crystal_Struct_C), POINTER :: c_struct_c
-        TYPE (Crystal_Struct) :: rv 
+        TYPE (Crystal_Struct), POINTER :: rv 
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_F
         
         INTERFACE
@@ -3073,6 +3112,7 @@ FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
         ENDFUNCTION xrlstrlen
         ENDINTERFACE
 
+        NULLIFY(rv)
         ALLOCATE(material_F(1+LEN_TRIM(material)))
         DO i=1,LEN_TRIM(material)
                 material_F(i) = material(i:i)
@@ -3087,18 +3127,8 @@ FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
         ENDIF
 
 
-        IF (C_ASSOCIATED(crystal_C) .EQV. .FALSE.) THEN
-                rv%name='none'
-                rv%a=0_C_FLOAT
-                rv%b=0_C_FLOAT
-                rv%c=0_C_FLOAT
-                rv%alpha=0_C_FLOAT
-                rv%beta=0_C_FLOAT
-                rv%gamma=0_C_FLOAT
-                rv%volume=0_C_FLOAT
-                rv%n_atom = 0_C_INT
-                NULLIFY(rv%atom)
-        ELSE
+        IF (C_ASSOCIATED(crystal_C) .EQV. .TRUE.) THEN
+                ALLOCATE(rv)
                 CALL C_F_POINTER(crystal_c,c_struct_c)
                 rv%name=material
                 rv%a=c_struct_c%a
@@ -3434,7 +3464,7 @@ SUBROUTINE FreeCompoundDataNIST(cdn)
         CALL xrlFree(C_LOC(cdn%Elements(1)))
         CALL xrlFree(C_LOC(cdn%massFractions(1)))
         DEALLOCATE(cdn)
-ENDSUBROUTINE
+ENDSUBROUTINE FreeCompoundDataNIST
 
 FUNCTION GetCompoundDataNISTList() RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
@@ -3476,4 +3506,5 @@ FUNCTION GetCompoundDataNISTList() RESULT(rv)
         NULLIFY(list_c_ptrs)
         CALL xrlFree(list_c_ptr)
 ENDFUNCTION GetCompoundDataNISTList
+
 ENDMODULE

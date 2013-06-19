@@ -56,7 +56,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %ignore Crystal_ReadFile;
 %ignore Crystal_Array;
 %ignore xrlFree;
-%ignore _free_compound_data;
+%ignore FreeCompoundData;
 %ignore FreeCompoundDataNIST;
 
 %typemap(newfree) char * {
@@ -67,14 +67,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %newobject AtomicNumberToSymbol;
 
 #ifndef SWIGJAVA
-%typemap(in,numinputs=0) struct compoundData* (struct compoundData *temp) {
-        temp = (struct compoundData *) malloc(sizeof(struct compoundData));
-        temp->nElements=0;
-        temp->nAtomsAll=0;
-        temp->Elements=NULL;
-        temp->massFractions=NULL;
-        $1 = temp;
-}
 %typemap(in, numinputs=0) Crystal_Array* c_array {
    /* do not use crystal_array argument for now... */
    $1 = NULL;
@@ -154,11 +146,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 
 
-%typemap(argout) struct compoundData * cd {
+%typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1;
 
-        if (cd->nElements == 0) {
+        if (cd == NULL) {
                 lua_pushnil(L);
                 SWIG_arg++;
         }
@@ -192,10 +184,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_settable(L, -3);
 
                 lua_pushvalue(L, -1);
-                xrlFree(cd->Elements);
-                xrlFree(cd->massFractions);
-                free(cd);
-
+                FreeCompoundData(cd);
                 SWIG_arg++;
         }
 }
@@ -572,10 +561,10 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
 
 }
-%typemap(argout) struct compoundData * cd {
+%typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1;
-        if (cd->nElements > 0) {
+        if (cd) {
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements)); 
                 PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((long) cd->nAtomsAll)); 
@@ -589,9 +578,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 PyDict_SetItemString(dict, "Elements", elements); 
                 PyDict_SetItemString(dict, "massFractions", massfractions); 
-                xrlFree(cd->Elements);
-                xrlFree(cd->massFractions);
-                free(cd);
+                FreeCompoundData(cd);
                 $result=dict;
         }
         else {
@@ -948,13 +935,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         argvi++;
 }
 
-%typemap(argout) struct compoundData * cd {
+%typemap(out) struct compoundData *  {
         int i;
         struct compoundData *cd = $1;
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (cd->nElements > 0) {
+        if (cd != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("nElements", newSViv(cd->nElements),hash)
                 STORE_HASH("nAtomsAll", newSViv(cd->nAtomsAll),hash)
@@ -966,9 +953,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         av_push(Elements, newSViv(cd->Elements[i]));
                         av_push(massFractions, newSVnv(cd->massFractions[i]));
                 }
-                xrlFree(cd->Elements);
-                xrlFree(cd->massFractions);
-                free(cd);
+                FreeCompoundData(cd);
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
         }
@@ -1295,11 +1280,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
 
 }
-%typemap(argout) struct compoundData *cd {
+%typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1; 
 
-        if (cd->nElements == 0) {
+        if (cd == NULL) {
                $result = Qnil; 
         }
         else {
@@ -1316,9 +1301,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 rb_hash_aset(rv, rb_str_new2("Elements"), elements);
                 rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
-                xrlFree(cd->Elements); 
-                xrlFree(cd->massFractions); 
-                free(cd);
+                FreeCompoundData(cd);
                 $result = rv;
         }
 

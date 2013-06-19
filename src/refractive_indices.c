@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010, Tom Schoonjans, Bruno Golosio
+Copyright (c) 2010-2013, Tom Schoonjans, Bruno Golosio
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -18,22 +18,22 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Bruno Golosio''AS IS'' AND ANY E
 #include <math.h>
 
 float Refractive_Index_Re(const char compound[], float E, float density) {
-	struct compoundData cd;
+	struct compoundData *cd;
 	float delta = 0.0;
 	int i;
 
-	if (CompoundParser(compound,&cd) == 0) {
+	if ((cd = CompoundParser(compound)) == NULL) {
 		ErrorExit("Refractive_Index_Re: CompoundParser error");
 		return 0.0;
 	} 
 
 	/* Real part is 1-delta */
-	for (i=0 ; i < cd.nElements ; i++) {
-		delta += cd.massFractions[i]*KD*(cd.Elements[i]+Fi(cd.Elements[i],E))/AtomicWeight(cd.Elements[i])/E/E;
+	for (i=0 ; i < cd->nElements ; i++) {
+		delta += cd->massFractions[i]*KD*(cd->Elements[i]+Fi(cd->Elements[i],E))/AtomicWeight(cd->Elements[i])/E/E;
 	}
 
 
-	FREE_COMPOUND_DATA(cd)
+	FreeCompoundData(cd);
 
 	return 1.0-(delta*density);
 }
@@ -43,7 +43,7 @@ float Refractive_Index_Re(const char compound[], float E, float density) {
 
 float Refractive_Index_Im(const char compound[], float E, float density) {
 
-	/*9.8663479e-9 is calculated by planck's constant * speed of light / 4Pi */
+	/*9.8663479e-9 is calculated as planck's constant * speed of light / 4Pi */
 	return CS_Total_CP(compound,E)*density*9.8663479e-9/E;	
 
 }

@@ -56,23 +56,22 @@ struct compoundData {
 };
 
 /* 
- * Consider using the following macro to free the allocated memory 
- * in a compoundData structure
+ * FreeCompoundData is used to free the memory allocated
+ * by CompoundParser in a compoundData struct. It is recommended
+ * to set the value of the struct to NULL after calling this function.
  */
 
-void _free_compound_data(struct compoundData *);
-
-#define FREE_COMPOUND_DATA(cd) _free_compound_data(&cd); 
+void FreeCompoundData(struct compoundData *);
 
 
 /*
- * The CompoundParser function will parse a string and will put the results in
- * a compoundData structure pointed to by cd. If successful, the function
- * returns 1, otherwise 0. The cd structure must point to a valid location in memory.
+ * The CompoundParser function will parse a string and will return 
+ * a pointer to a compoundData structure if successful, otherwise it will return a
+ * NULL pointer. After usage, the struct can be freed with FreeCompoundData
  */
 
 
-int CompoundParser(const char compoundString[], struct compoundData *cd);
+struct compoundData *CompoundParser(const char compoundString[]);
 
 
 /*

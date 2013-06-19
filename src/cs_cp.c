@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, Tom Schoonjans
+Copyright (c) 2009, 2010, 2013, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -16,38 +16,38 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <stdlib.h>
 
 float CS_Total_CP(const char compound[], float E) {
-	struct compoundData cd;
+	struct compoundData *cd;
 	int i;
 	double rv = 0.0;
 
-	if (CompoundParser(compound,&cd) == 0) {
+	if ((cd = CompoundParser(compound)) == NULL) {
 		ErrorExit("CS_Total_CP: CompoundParser error");
 		return 0.0;
 	} 
 	
-	for (i = 0 ; i < cd.nElements ; i++) 
-		rv += CS_Total(cd.Elements[i], E)*cd.massFractions[i];
+	for (i = 0 ; i < cd->nElements ; i++) 
+		rv += CS_Total(cd->Elements[i], E)*cd->massFractions[i];
 
-	FREE_COMPOUND_DATA(cd);
+	FreeCompoundData(cd);
 
 	return rv;
 }
 
 #define CS_CP_F(function) \
 	float function ## _CP(const char compound[], float E) {\
-		struct compoundData cd;\
+		struct compoundData *cd;\
 		int i;\
 		double rv = 0.0;\
 		\
-		if (CompoundParser(compound,&cd) == 0) {\
+		if ((cd = CompoundParser(compound)) == NULL) {\
 			ErrorExit(#function ": CompoundParser error");\
 			return 0.0;\
 		} \
 		\
-		for (i = 0 ; i < cd.nElements ; i++)\
-			rv += function(cd.Elements[i], E)*cd.massFractions[i];\
+		for (i = 0 ; i < cd->nElements ; i++)\
+			rv += function(cd->Elements[i], E)*cd->massFractions[i];\
 		\
-		FREE_COMPOUND_DATA(cd);\
+		FreeCompoundData(cd);\
 		\
 		return rv;\
 	}
@@ -55,19 +55,19 @@ float CS_Total_CP(const char compound[], float E) {
 
 #define CS_CP_FF(function) \
 	float function ## _CP(const char compound[], float E, float theta) {\
-		struct compoundData cd;\
+		struct compoundData *cd;\
 		int i;\
 		double rv = 0.0;\
 		\
-		if (CompoundParser(compound,&cd) == 0) {\
+		if ((cd = CompoundParser(compound)) == NULL) {\
 			ErrorExit(#function ": CompoundParser error");\
 			return 0.0;\
 		} \
 		\
-		for (i = 0 ; i < cd.nElements ; i++)\
-			rv += function(cd.Elements[i], E, theta)*cd.massFractions[i];\
+		for (i = 0 ; i < cd->nElements ; i++)\
+			rv += function(cd->Elements[i], E, theta)*cd->massFractions[i];\
 		\
-		FREE_COMPOUND_DATA(cd);\
+		FreeCompoundData(cd);\
 		\
 		return rv;\
 	}
@@ -75,19 +75,19 @@ float CS_Total_CP(const char compound[], float E) {
 
 #define CS_CP_FFF(function) \
 	float function ## _CP(const char compound[], float E, float theta, float phi) {\
-		struct compoundData cd;\
+		struct compoundData *cd;\
 		int i;\
 		double rv = 0.0;\
 		\
-		if (CompoundParser(compound,&cd) == 0) {\
+		if ((cd = CompoundParser(compound)) == NULL) {\
 			ErrorExit(#function ": CompoundParser error");\
 			return 0.0;\
 		} \
 		\
-		for (i = 0 ; i < cd.nElements ; i++)\
-			rv += function(cd.Elements[i], E, theta, phi)*cd.massFractions[i];\
+		for (i = 0 ; i < cd->nElements ; i++)\
+			rv += function(cd->Elements[i], E, theta, phi)*cd->massFractions[i];\
 		\
-		FREE_COMPOUND_DATA(cd);\
+		FreeCompoundData(cd);\
 		\
 		return rv;\
 	}
@@ -95,19 +95,19 @@ float CS_Total_CP(const char compound[], float E) {
 
 #define CS_CP_IF(function) \
 	float function ## _CP(const char compound[], int line, float E) {\
-		struct compoundData cd;\
+		struct compoundData *cd;\
 		int i;\
 		double rv = 0.0;\
 		\
-		if (CompoundParser(compound,&cd) == 0) {\
+		if ((cd = CompoundParser(compound)) == NULL) {\
 			ErrorExit(#function ": CompoundParser error");\
 			return 0.0;\
 		} \
 		\
-		for (i = 0 ; i < cd.nElements ; i++)\
-			rv += function(cd.Elements[i], line, E)*cd.massFractions[i];\
+		for (i = 0 ; i < cd->nElements ; i++)\
+			rv += function(cd->Elements[i], line, E)*cd->massFractions[i];\
 		\
-		FREE_COMPOUND_DATA(cd);\
+		FreeCompoundData(cd);\
 		\
 		return rv;\
 	}

@@ -1114,24 +1114,24 @@ void release(UCHAR *memPtr) {
 }
 
 IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
-	struct compoundData cd;	
+	struct compoundData *cd;	
 	IDL_VPTR rv;
 
 	IDL_ENSURE_STRING(argv[0]);
 	IDL_ENSURE_SCALAR(argv[0]);
 
-	if (CompoundParser(IDL_VarGetString(argv[0]),&cd) == 0) {
+	if ((cd = CompoundParser(IDL_VarGetString(argv[0]))) == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 	
-	IDL_MEMINT array_dims[] = {1,cd.nElements};
+	IDL_MEMINT array_dims[] = {1,cd->nElements};
 	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
 	void *sdef;
 	struct compoundData_IDL {
 		IDL_LONG nElements;
 		IDL_LONG nAtomsAll;
-		IDL_LONG Elements[cd.nElements];
-		double massFractions[cd.nElements];
+		IDL_LONG Elements[cd->nElements];
+		double massFractions[cd->nElements];
 	};
 	struct compoundData_IDL *cdi;
 	IDL_STRUCT_TAG_DEF s_tags[] = {
@@ -1142,12 +1142,11 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 		{0}
 	};
 	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL));
-	cdi->nElements = cd.nElements;
-	cdi->nAtomsAll = cd.nAtomsAll;
-	memcpy(cdi->Elements,cd.Elements,sizeof(int)*cd.nElements);
-	memcpy(cdi->massFractions,cd.massFractions,sizeof(double)*cd.nElements);
-	free(cd.massFractions);
-	free(cd.Elements);
+	cdi->nElements = cd->nElements;
+	cdi->nAtomsAll = cd->nAtomsAll;
+	memcpy(cdi->Elements,cd->Elements,sizeof(int)*cd->nElements);
+	memcpy(cdi->massFractions,cd->massFractions,sizeof(double)*cd->nElements);
+	FreeCompoundData(cd);
 	sdef = IDL_MakeStruct(NULL,s_tags);
 	ilDims[0] = 1;
 	rv=IDL_ImportArray(1,ilDims, IDL_TYP_STRUCT,(UCHAR *) cdi, release,sdef);

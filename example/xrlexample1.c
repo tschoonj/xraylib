@@ -18,7 +18,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 int main()
 {
-  struct compoundData cdtest, cdtest1, cdtest2, *cdtest3;
+  struct compoundData *cdtest, *cdtest1, *cdtest2, *cdtest3;
   int i;
   char *symbol;
   XRayInit();
@@ -38,23 +38,23 @@ int main()
   printf("Bi M1N2 radiative rate: %f\n",RadRate(83,M1N2_LINE));
   printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
   /*parser test for Ca(HCO3)2 (calcium bicarbonate)*/
-  if (CompoundParser("Ca(HCO3)2",&cdtest) == 0)
+  if ((cdtest = CompoundParser("Ca(HCO3)2")) == NULL)
 	return 1;
-  printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
-  for (i = 0 ; i < cdtest.nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+  printf("Ca(HCO3)2 contains %i atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  for (i = 0 ; i < cdtest->nElements ; i++)
+    printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
 
-  FREE_COMPOUND_DATA(cdtest)
+  FreeCompoundData(cdtest);
 
   /*parser test for SiO2 (quartz)*/
-  if (CompoundParser("SiO2",&cdtest) == 0)
+  if ((cdtest = CompoundParser("SiO2")) == NULL)
 	return 1;
 
-  printf("SiO2 contains %i atoms and %i elements\n",cdtest.nAtomsAll,cdtest.nElements);
-  for (i = 0 ; i < cdtest.nElements ; i++)
-    printf("Element %i: %lf %%\n",cdtest.Elements[i],cdtest.massFractions[i]*100.0);
+  printf("SiO2 contains %i atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  for (i = 0 ; i < cdtest->nElements ; i++)
+    printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
 
-  FREE_COMPOUND_DATA(cdtest)
+  FreeCompoundData(cdtest);
 
   printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0f) );
 
@@ -74,20 +74,19 @@ int main()
   printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
   printf("Bi L3 Auger yield: %f\n", AugerYield(86, L3_SHELL));
 
-  if (CompoundParser("SiO2",&cdtest1) == 0)
+  if ((cdtest1 = CompoundParser("SiO2")) == NULL)
 	return 1;
 
-  if (CompoundParser("Ca(HCO3)2",&cdtest2) == 0)
+  if ((cdtest2 = CompoundParser("Ca(HCO3)2")) == NULL)
 	return 1;
 
-  cdtest3 = add_compound_data(cdtest1, 0.4, cdtest2, 0.6);
+  cdtest3 = add_compound_data(*cdtest1, 0.4, *cdtest2, 0.6);
   for (i = 0 ; i < cdtest3->nElements ; i++)
     printf("Element %i: %lf %%\n",cdtest3->Elements[i],cdtest3->massFractions[i]*100.0);
 
-  FREE_COMPOUND_DATA(cdtest1)
-  FREE_COMPOUND_DATA(cdtest2)
-  FREE_COMPOUND_DATA(*cdtest3)
-  xrlFree(cdtest3);
+  FreeCompoundData(cdtest1);
+  FreeCompoundData(cdtest2);
+  FreeCompoundData(cdtest3);
 
   symbol = AtomicNumberToSymbol(26);
   printf("Symbol of element 26 is: %s\n",symbol);
