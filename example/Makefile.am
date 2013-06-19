@@ -50,7 +50,7 @@ xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
-  xrlexample3_SOURCES = xrlexample3.f90
+  xrlexample3_SOURCES = ../fortran/xraylib.mod xrlexample3.f90 
   xrlexample3_LDADD = ../fortran/libxrlf03.la
   xrlexample3_CPPFLAGS = -I../fortran
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
@@ -75,7 +75,7 @@ EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrle
 
 
 #test the idl bindings using this script
-xrlexample4.sh: 
+xrlexample4.sh: ../idl/libxrlidl.la 
 	@echo "Testing IDL bindings"
 	@echo "unset IDL_STARTUP" > xrlexample4.sh
 	@echo "cp ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
@@ -84,37 +84,57 @@ xrlexample4.sh:
 	@chmod +x xrlexample4.sh	
 
 #test the perl bindings
-xrlexample2.sh:
+xrlexample2.sh: ../perl/xraylib.pm
 	@echo "Testing perl bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/blib/lib:${top_builddir}/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
 	@chmod +x xrlexample2.sh
 
 #test the python bindings
-xrlexample5.sh:
+xrlexample5.sh: ../python/xraylib.py
 	@echo "Testing python bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
-xrlexample7.sh:
+xrlexample7.sh: ../java/xraylib.java
 	@echo "Testing java bindings"
 	@echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
 	@chmod +x xrlexample7.sh
 
 #test the lua bindings
-xrlexample9.sh:
+xrlexample9.sh: ../lua/xraylib.la
 	@echo "Testing lua bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
 	@chmod +x xrlexample9.sh
 	
 #test the ruby bindings
-xrlexample10.sh:
+xrlexample10.sh: ../ruby/xraylib.la
 	@echo "Testing ruby bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby/.libs\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
 	@chmod +x xrlexample10.sh
 
 
+../perl/xraylib.pm:
+	$(MAKE) -C ../perl xraylib.pm
+
+../idl/libxrlidl.la:
+	$(MAKE) -C ../idl libxrlidl.la
+
+../python/xraylib.py:
+	$(MAKE) -C ../python xraylib.py
+
+../java/xraylib.java:
+	$(MAKE) -C ../java xraylib.java
+
+../lua/xraylib.la:
+	$(MAKE) -C ../lua xraylib.la
+
+../ruby/xraylib.la:
+	$(MAKE) -C ../ruby xraylib.la
+
+../fortran/xraylib.mod:
+	$(MAKE) -C ../fortran libxrlf03.la
 
 clean-local:
 	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh

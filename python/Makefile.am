@@ -20,11 +20,11 @@ EXTRA_DIST = xraylib
 
 
 if ENABLE_PYTHON
-all: _xraylib.so ../src/libxrl.la
+all: xraylib.py ../src/libxrl.la
 
 
 
-_xraylib.so: ${top_srcdir}/src/xraylib.i  ${top_srcdir}/include/xraylib*h
+xraylib.py: ${top_srcdir}/src/xraylib.i  ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
 	CC="$(CC)" CPPFLAGS="-I${top_srcdir}/include" CFLAGS="$(ARCHFLAGS)" $(PYTHON) xrlsetup.py build_ext --inplace
 
