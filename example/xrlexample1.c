@@ -72,6 +72,7 @@ int main()
 
   printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
   printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
+  printf("Bi L3 Auger yield: %f\n", AugerYield(86, L3_SHELL));
 
   if (CompoundParser("SiO2",&cdtest1) == 0)
 	return 1;

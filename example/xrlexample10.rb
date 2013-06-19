@@ -52,14 +52,15 @@ printf("C16H14O3 Refractive Index at 1 keV : %g - %g i\n",Xraylib.Refractive_Ind
 printf("SiO2 Refractive Index at 5 keV : %g - %g i\n",Xraylib.Refractive_Index_Re("SiO2",5.0,2.65),Xraylib.Refractive_Index_Im("SiO2",5.0,2.65))
 printf("Compton profile for Fe at pz = 1.1 : %g\n",Xraylib.ComptonProfile(26,1.1))
 printf("M5 Compton profile for Fe at pz = 1.1 : %g\n",Xraylib.ComptonProfile_Partial(26,Xraylib::M5_SHELL,1.1))
-printf("K atomic level width for Fe: %g\n", Xraylib.AtomicLevelWidth(26,Xraylib::K_SHELL))
 printf("M1->M5 Coster-Kronig transition probability for Au : %f\n",Xraylib.CosKronTransProb(79,Xraylib::FM15_TRANS))
 printf("L1->L3 Coster-Kronig transition probability for Fe : %f\n",Xraylib.CosKronTransProb(26,Xraylib::FL13_TRANS))
 printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", Xraylib.CS_FluorLine_Kissel(79,Xraylib::MA1_LINE,10.0))
 printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", Xraylib.CS_FluorLine_Kissel(79,Xraylib::MB_LINE,10.0))
 printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", Xraylib.CS_FluorLine_Kissel(79,Xraylib::MG_LINE,10.0))
 
+printf("K atomic level width for Fe: %g\n", Xraylib.AtomicLevelWidth(26,Xraylib::K_SHELL))
 printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",Xraylib.AugerRate(86,Xraylib::L2_M5M5_AUGER))
+printf("Bi L3 Auger yield: %f\n", Xraylib.AugerYield(86, Xraylib::L3_SHELL))
 
 
 symbol = Xraylib.AtomicNumberToSymbol(26)

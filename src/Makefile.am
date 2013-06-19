@@ -16,20 +16,61 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I..
 
 lib_LTLIBRARIES=libxrl.la
 noinst_PROGRAMS=prdata
-prdata_SOURCES = pr_data.c xrayvars.c xrayglob.h xrayvars.h xrayglob.c xrayfiles.c \
-crystal_diffraction.c scattering.c fi.c fii.c splint.c splint.h
+prdata_SOURCES = pr_data.c \
+		 xrayvars.c \
+		 xrayglob.h \
+		 xrayvars.h \
+		 xrayglob.c \
+		 xrayfiles.c \
+		 fluor_yield.c \
+		 coskron.c \
+		 crystal_diffraction.c \
+		 scattering.c \
+		 fi.c \
+		 fii.c \
+		 splint.c \
+		 splint.h
+
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
 
 
-libxrl_la_SOURCES = xrayvars.c cross_sections.c \
-scattering.c atomicweight.c edges.c fluor_lines.c fluor_yield.c jump.c \
-coskron.c radrate.c cs_line.c polarized.c splint.c cs_barns.c fi.c fii.c \
-kissel_pe.c xrayfiles_inline.c splint.h xrayglob.h xrayvars.h \
-xraylib-aux.c xraylib-aux.h xraylib-parser.c cs_cp.c refractive_indices.c comptonprofiles.c \
-atomiclevelwidth.c auger_trans.c xrf_cross_sections_aux.h xrf_cross_sections_aux.c \
-crystal_diffraction.c xraylib-nist-compounds.c xraylib-nist-compounds-internal.h \
-densities.c
+libxrl_la_SOURCES = xrayvars.c \
+	            cross_sections.c \
+		    scattering.c \
+		    atomicweight.c \
+		    edges.c \
+		    fluor_lines.c \
+		    fluor_yield.c \
+		    jump.c \
+		    coskron.c \
+		    radrate.c \
+		    cs_line.c \
+		    polarized.c \
+		    splint.c \
+		    cs_barns.c \
+		    fi.c \
+		    fii.c \
+		    kissel_pe.c \
+		    xrayfiles_inline.c \
+		    splint.h \
+		    xrayglob.h \
+		    xrayvars.h \
+		    xraylib-aux.c \
+		    xraylib-aux.h \
+		    xraylib-parser.c \
+		    cs_cp.c \
+		    refractive_indices.c \
+		    comptonprofiles.c \
+		    atomiclevelwidth.c \
+		    auger_trans.c \
+		    xrf_cross_sections_aux.h \
+		    xrf_cross_sections_aux.c \
+		    crystal_diffraction.c \
+		    xraylib-nist-compounds.c \
+		    xraylib-nist-compounds-internal.h \
+		    densities.c
+
 libxrl_la_CFLAGS = $(ARCHFLAGS)
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c

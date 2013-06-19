@@ -59,7 +59,8 @@ printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorL
 printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MB_LINE,10.0));
 printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MG_LINE,10.0));
 
-printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
+printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
+printf("Bi L3 Auger yield: %f\n", xraylib::AugerYield(86, $xraylib::L3_SHELL));
 
 
 $symbol = xraylib::AtomicNumberToSymbol(26);

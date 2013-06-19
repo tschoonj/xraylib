@@ -194,16 +194,16 @@ Section "-xraylib core files" SecDummy
 	Push "$INSTDIR\Include\xraylib-parser.h.fix"
 	Call unix2dos
 	Rename xraylib-parser.h.fix xraylib-parser.h
-	File ${abs_top_srcdir_win}\include\lines.h
-	Push "$INSTDIR\Include\lines.h"
-	Push "$INSTDIR\Include\lines.h.fix"
+	File ${abs_top_srcdir_win}\include\xraylib-lines.h
+	Push "$INSTDIR\Include\xraylib-lines.h"
+	Push "$INSTDIR\Include\xraylib-lines.h.fix"
 	Call unix2dos
-	Rename lines.h.fix lines.h
-	File ${abs_top_srcdir_win}\include\shells.h
-	Push "$INSTDIR\Include\shells.h"
-	Push "$INSTDIR\Include\shells.h.fix"
+	Rename xraylib-lines.h.fix xraylib-lines.h
+	File ${abs_top_srcdir_win}\include\xraylib-shells.h
+	Push "$INSTDIR\Include\xraylib-shells.h"
+	Push "$INSTDIR\Include\xraylib-shells.h.fix"
 	Call unix2dos
-	Rename shells.h.fix shells.h
+	Rename xraylib-shells.h.fix xraylib-shells.h
 	File ${abs_top_srcdir_win}\include\xraylib-auger.h
 	Push "$INSTDIR\Include\xraylib-auger.h"
 	Push "$INSTDIR\Include\xraylib-auger.h.fix"
@@ -336,8 +336,8 @@ Section "Uninstall"
 	Delete "$INSTDIR\Include\xraylib-auger.h"
 	Delete "$INSTDIR\Include\xraylib-crystal-diffraction.h"
 	Delete "$INSTDIR\Include\xraylib-defs.h"
-	Delete "$INSTDIR\Include\lines.h"
-	Delete "$INSTDIR\Include\shells.h"
+	Delete "$INSTDIR\Include\xraylib-lines.h"
+	Delete "$INSTDIR\Include\xraylib-shells.h"
 ;	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
 ;	Delete "$SYSDIR\libxrl-3.dll"
 	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll

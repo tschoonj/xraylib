@@ -24,7 +24,7 @@ all: _xraylib.so ../src/libxrl.la
 
 
 
-_xraylib.so: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/lines.h ${top_srcdir}/include/shells.h ${top_srcdir}/include/xraylib*h
+_xraylib.so: ${top_srcdir}/src/xraylib.i  ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
 	CC="$(CC)" CPPFLAGS="-I${top_srcdir}/include" CFLAGS="$(ARCHFLAGS)" $(PYTHON) xrlsetup.py build_ext --inplace
 

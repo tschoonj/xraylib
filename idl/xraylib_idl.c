@@ -104,6 +104,7 @@ extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]); 
 extern IDL_VPTR IDL_CDECL IDL_AtomicLevelWidth(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AugerRate(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_AugerYield(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_FluorLine_Kissel(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_FluorLine_Kissel_Cascade(int argc, IDL_VPTR argv[]);
@@ -251,6 +252,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_SymbolToAtomicNumber},"SYMBOLTOATOMICNUMBER", 1, 1, 0, 0},
 	{{IDL_AtomicLevelWidth},"ATOMICLEVELWIDTH", 2, 2, 0, 0},
 	{{IDL_AugerRate},"AUGERRATE", 2, 2, 0, 0},
+	{{IDL_AugerYield},"AUGERYIELD", 2, 2, 0, 0},
 	{{IDL_CS_FluorLine_Kissel},"CS_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
 	{{IDL_CSb_FluorLine_Kissel},"CSB_FLUORLINE_KISSEL", 3 , 3 , 0 , 0},
 	{{IDL_CS_FluorLine_Kissel_Cascade},"CS_FLUORLINE_KISSEL_CASCADE", 3 , 3 , 0 , 0},
@@ -1056,6 +1058,7 @@ XRL_3IIF(ComptonProfile_Partial)
 XRL_2II(ElectronConfig)
 XRL_2II(AtomicLevelWidth)
 XRL_2II(AugerRate)
+XRL_2II(AugerYield)
 XRL_3IIF(CS_FluorLine_Kissel)
 XRL_3IIF(CSb_FluorLine_Kissel)
 XRL_3IIF(CS_FluorLine_Kissel_Cascade)

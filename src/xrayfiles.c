@@ -20,7 +20,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #define OUTD -9999
 
+double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
+double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
+
 void ArrayInit(void);
+
 
 void XRayInit(void)
 {
