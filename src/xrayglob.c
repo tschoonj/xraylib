@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 #include "xraylib-defs.h"
+#include "xrayglob.h"
 
 /*////////////////////////////////////////////////////////////////////
 /////            Variables                                       /////

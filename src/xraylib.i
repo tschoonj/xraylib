@@ -593,7 +593,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) Complex {
         Complex c = $1;
-        PyObject *cp = PyComplex_FromDoubles((double) c.re, (double) c.im);
+        PyObject *cp = PyComplex_FromDoubles(c.re, c.im);
 
         $result = cp;
 }

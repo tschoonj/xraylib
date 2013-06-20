@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include <stdlib.h>
 #include <string.h>
 #include "xraylib-defs.h"
+#include <xrayglob.h>
 
 /*/////////////////////////////////////////////////////////////////////
 /////            Variables                                       /////
@@ -23,7 +24,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 static int HardExit = 0;
 static int ExitStatus = 0;
 static int ErrorMessages = 1;
-char XRayLibDir[MAXFILENAMESIZE];
 
 char ShellName[][5] = {
 "K",    "L1",   "L2",   "L3",   "M1",   "M2",   "M3",   "M4",   "M5",   "N1",

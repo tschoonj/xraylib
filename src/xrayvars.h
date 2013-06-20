@@ -34,9 +34,6 @@ void ErrorExit(char *error_message);
 /////            Variables                                       /////
 /////////////////////////////////////////////////////////////////// */
 
-extern int HardExit;
-extern int ExitStatus;
-extern char XRayLibDir[];
 
 extern char ShellName[][5];
 extern char LineName[][6];

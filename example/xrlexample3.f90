@@ -18,9 +18,8 @@ IMPLICIT NONE
 
 TYPE (compoundData), POINTER :: cd
 
-!C_NULL_CHAR needs to be added since these strings will be passed to C functions
-CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = C_CHAR_'Ca(HCO3)2'
-CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = C_CHAR_'SiO2'
+CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = 'Ca(HCO3)2'
+CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = 'SiO2'
 INTEGER :: i
 TYPE (Crystal_Struct), POINTER :: cryst
 REAL (C_FLOAT) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
@@ -71,14 +70,17 @@ ENDDO
 !Free the memory allocated for the arrays
 CALL FreeCompoundData(cd)
 
-WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2'//C_NULL_CHAR,10.0)
+WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2',10.0)
 
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'CS2 Refractive Index at 10.0 keV : ', &
-        Refractive_Index_Re('CS2'//C_NULL_CHAR,10.0,1.261),' - ',Refractive_Index_Im('CS2'//C_NULL_CHAR,10.0,1.261),' i'  
+        Refractive_Index_Re('CS2',10.0_C_DOUBLE,1.261_C_DOUBLE),' - ',&
+        Refractive_Index_Im('CS2',10.0_C_DOUBLE,1.261_C_DOUBLE),' i'  
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'C16H14O3 Refractive Index at 1 keV : ', &
-        Refractive_Index_Re('C16H14O3'//C_NULL_CHAR,1.0,1.2),' - ',Refractive_Index_Im('C16H14O3'//C_NULL_CHAR,1.0,1.2),' i'  
+        Refractive_Index_Re('C16H14O3',1.0_C_DOUBLE,1.2_C_DOUBLE),' - ',&
+        Refractive_Index_Im('C16H14O3',1.0_C_DOUBLE,1.2_C_DOUBLE),' i'  
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'SiO2 Refractive Index at 5.0 keV : ', &
-        Refractive_Index_Re('SiO2'//C_NULL_CHAR,5.0,2.65),' - ',Refractive_Index_Im('SiO2'//C_NULL_CHAR,5.0,2.65),' i'  
+        Refractive_Index_Re('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' - ',&
+        Refractive_Index_Im('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' i'  
 WRITE (6,'(A,F12.6)') 'Compton profile for Fe at pz = 1.1 : ' ,&
         ComptonProfile(26,1.1) 
 WRITE (6,'(A,F12.6)') 'M5 Compton profile for Fe at pz = 1.1 : ' ,&
@@ -107,7 +109,7 @@ CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
 WRITE (6,'(A,F12.6)') 'Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0)
 WRITE (6,'(A,F12.6)') 'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0)
 WRITE (6,'(A,F12.6)') 'CdTe mass energy-absorption cs at 40.0 keV: ',&
-CS_Energy_CP('CdTe'//C_NULL_CHAR, 40.0)
+CS_Energy_CP('CdTe', 40.0)
 
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')

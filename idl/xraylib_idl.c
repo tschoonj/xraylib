@@ -1367,10 +1367,10 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]) {
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
-  	rv->type = IDL_TYP_COMPLEX;
+  	rv->type = IDL_TYP_DCOMPLEX;
 	Complex F = Crystal_F_H_StructureFactor (cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
-  	rv->value.cmp.r = F.re; 
-  	rv->value.cmp.i = F.im; 
+  	rv->value.dcmp.r = F.re; 
+  	rv->value.dcmp.i = F.im; 
 
 	free(cs);
 	return rv;

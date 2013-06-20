@@ -263,8 +263,9 @@ float CSb_Total_Kissel_CP(const char compound[], float E);
 float CS_Energy_CP(const char compound[], float E);
 
 /* Refractive indices functions */
-float Refractive_Index_Re(const char compound[], float E, float density);
-float Refractive_Index_Im(const char compound[], float E, float density);
+double Refractive_Index_Re(const char compound[], double E, double density);
+double Refractive_Index_Im(const char compound[], double E, double density);
+Complex Refractive_Index(const char compound[], double E, double density);
 
 /* ComptonProfiles */
 float ComptonProfile(int Z, float pz);

@@ -36,19 +36,12 @@ THIS SOFTWARE IS PROVIDED BY David Sagan, Bruno Golosio, Antonio Brunetti, Manue
 /* Complex number */
 
 typedef struct {
-  float re;               /* Real part */
-  float im;               /* Imaginary part */
+  double re;               /* Real part */
+  double im;               /* Imaginary part */
 } Complex;
 
-float c_abs(Complex x);
+double c_abs(Complex x);
 Complex c_mul(Complex x, Complex y);
-
-/* Struct to hold info on a particular type of atom */
-
-struct MendelElement {
-  int Zatom;              /* Atomic number of atom. */
-  char *name;             /* Name of atom. */
-};
 
 /* Struct for an atom in a crystal. */
 
@@ -57,7 +50,6 @@ typedef struct {
   float fraction;         /* Fractional contribution. Normally 1.0. */
   float x, y, z;          /* Atom position in fractions of the unit cell lengths. */
 } Crystal_Atom;
-/*typedef struct CrystalAtom Crystal_Atom;*/
 
 /* Struct for a crystal. */
 
@@ -69,7 +61,6 @@ typedef struct {
   int n_atom;                 /* Number of atoms. */
   Crystal_Atom* atom;   /* Array of atoms in unit cell. */
 } Crystal_Struct;
-/*typedef struct CrystalStruct Crystal_Struct;*/
 
 /* Container struct to hold an array of CrystalStructs */
 
@@ -79,5 +70,4 @@ typedef struct {
   Crystal_Struct* crystal;
 } Crystal_Array;
 
-/*typedef struct CrystalArray Crystal_Array;*/
 #endif

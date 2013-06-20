@@ -1114,6 +1114,7 @@ int main(void)
   fprintf(f, "// Do not directly modify this file.*/\n\n");
 
   fprintf(f, "#include \"xraylib-defs.h\"\n\n");
+  fprintf(f, "#include \"xrayglob.h\"\n\n");
 
   fprintf(f, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArray);

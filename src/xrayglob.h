@@ -18,6 +18,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayvars.h"
 
+/* Struct to hold info on a particular type of atom */
+
+struct MendelElement {
+  int Zatom;              /* Atomic number of atom. */
+  char *name;             /* Name of atom. */
+};
+
 extern struct MendelElement MendelArray[MENDEL_MAX];
 extern struct MendelElement MendelArraySorted[MENDEL_MAX];
 

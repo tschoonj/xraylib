@@ -29,6 +29,7 @@ void ArrayInit(void);
 void XRayInit(void)
 {
 
+  char XRayLibDir[MAXFILENAMESIZE];
   FILE *fp;
   char file_name[MAXFILENAMESIZE];
   char shell_name[5], line_name[6], trans_name[5], auger_name[10];

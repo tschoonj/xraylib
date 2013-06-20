@@ -22,6 +22,8 @@ MODULE xraylib
 USE, INTRINSIC :: ISO_C_BINDING
 IMPLICIT NONE
 
+PRIVATE :: stringF2C
+
 TYPE, BIND(C) :: compoundData_C
         INTEGER (C_INT) :: nElements
         INTEGER (C_INT) :: nAtomsAll
@@ -37,8 +39,8 @@ TYPE :: compoundData
 ENDTYPE 
 
 TYPE, BIND(C) :: Complex_C
-        REAL (C_FLOAT) :: re
-        REAL (C_FLOAT) :: im
+        REAL (C_DOUBLE) :: re
+        REAL (C_DOUBLE) :: im
 ENDTYPE
 
 TYPE, BIND(C) :: Crystal_Atom
@@ -2183,189 +2185,198 @@ INTERFACE
                 TYPE (C_PTR) :: rv
         ENDFUNCTION CompoundParser_C
         !compound parser based functions                
-        PURE FUNCTION CS_Total_CP(compound,E) BIND(C,NAME='CS_Total_CP')
+        PURE FUNCTION CS_Total_CP_C(compound,E) BIND(C,NAME='CS_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Total_CP
-        ENDFUNCTION CS_Total_CP
+                REAL (KIND=C_FLOAT) :: CS_Total_CP_C
+        ENDFUNCTION CS_Total_CP_C
 
-        PURE FUNCTION CS_Photo_CP(compound,E) BIND(C,NAME='CS_Photo_CP')
+        PURE FUNCTION CS_Photo_CP_C(compound,E) BIND(C,NAME='CS_Photo_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Photo_CP
-        ENDFUNCTION CS_Photo_CP
+                REAL (KIND=C_FLOAT) :: CS_Photo_CP_C
+        ENDFUNCTION CS_Photo_CP_C
 
-        PURE FUNCTION CS_Rayl_CP(compound,E) BIND(C,NAME='CS_Rayl_CP')
+        PURE FUNCTION CS_Rayl_CP_C(compound,E) BIND(C,NAME='CS_Rayl_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Rayl_CP
-        ENDFUNCTION CS_Rayl_CP
+                REAL (KIND=C_FLOAT) :: CS_Rayl_CP_C
+        ENDFUNCTION CS_Rayl_CP_C
 
-        PURE FUNCTION CS_Compt_CP(compound,E) BIND(C,NAME='CS_Compt_CP')
+        PURE FUNCTION CS_Compt_CP_C(compound,E) BIND(C,NAME='CS_Compt_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Compt_CP
-        ENDFUNCTION CS_Compt_CP
+                REAL (KIND=C_FLOAT) :: CS_Compt_CP_C
+        ENDFUNCTION CS_Compt_CP_C
 
-        PURE FUNCTION CS_Energy_CP(compound,E) BIND(C,NAME='CS_Energy_CP')
+        PURE FUNCTION CS_Energy_CP_C(compound,E) BIND(C,NAME='CS_Energy_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Energy_CP
-        ENDFUNCTION CS_Energy_CP
+                REAL (KIND=C_FLOAT) :: CS_Energy_CP_C
+        ENDFUNCTION CS_Energy_CP_C
 
-        PURE FUNCTION CSb_Total_CP(compound,E) BIND(C,NAME='CSb_Total_CP')
+        PURE FUNCTION CSb_Total_CP_C(compound,E) BIND(C,NAME='CSb_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CSb_Total_CP
-        ENDFUNCTION CSb_Total_CP
+                REAL (KIND=C_FLOAT) :: CSb_Total_CP_C
+        ENDFUNCTION CSb_Total_CP_C
 
-        PURE FUNCTION CSb_Photo_CP(compound,E) BIND(C,NAME='CSb_Photo_CP')
+        PURE FUNCTION CSb_Photo_CP_C(compound,E) BIND(C,NAME='CSb_Photo_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CSb_Photo_CP
-        ENDFUNCTION CSb_Photo_CP
+                REAL (KIND=C_FLOAT) :: CSb_Photo_CP_C
+        ENDFUNCTION CSb_Photo_CP_C
 
-        PURE FUNCTION CSb_Rayl_CP(compound,E) BIND(C,NAME='CSb_Rayl_CP')
+        PURE FUNCTION CSb_Rayl_CP_C(compound,E) BIND(C,NAME='CSb_Rayl_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CSb_Rayl_CP
-        ENDFUNCTION CSb_Rayl_CP
+                REAL (KIND=C_FLOAT) :: CSb_Rayl_CP_C
+        ENDFUNCTION CSb_Rayl_CP_C
 
-        PURE FUNCTION CSb_Compt_CP(compound,E) BIND(C,NAME='CSb_Compt_CP')
+        PURE FUNCTION CSb_Compt_CP_C(compound,E) BIND(C,NAME='CSb_Compt_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CSb_Compt_CP
-        ENDFUNCTION CSb_Compt_CP
+                REAL (KIND=C_FLOAT) :: CSb_Compt_CP_C
+        ENDFUNCTION CSb_Compt_CP_C
 
-        PURE FUNCTION DCS_Rayl_CP(compound,E,theta) BIND(C,NAME='DCS_Rayl_CP')
+        PURE FUNCTION DCS_Rayl_CP_C(compound,E,theta) BIND(C,NAME='DCS_Rayl_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
-                REAL (KIND=C_FLOAT) :: DCS_Rayl_CP
-        ENDFUNCTION DCS_Rayl_CP
+                REAL (KIND=C_FLOAT) :: DCS_Rayl_CP_C
+        ENDFUNCTION DCS_Rayl_CP_C
 
-        PURE FUNCTION DCS_Compt_CP(compound,E,theta) BIND(C,NAME='DCS_Compt_CP')
+        PURE FUNCTION DCS_Compt_CP_C(compound,E,theta) BIND(C,NAME='DCS_Compt_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
-                REAL (KIND=C_FLOAT) :: DCS_Compt_CP
-        ENDFUNCTION DCS_Compt_CP
+                REAL (KIND=C_FLOAT) :: DCS_Compt_CP_C
+        ENDFUNCTION DCS_Compt_CP_C
 
-        PURE FUNCTION DCSb_Rayl_CP(compound,E,theta) BIND(C,NAME='DCSb_Rayl_CP')
+        PURE FUNCTION DCSb_Rayl_CP_C(compound,E,theta) BIND(C,NAME='DCSb_Rayl_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
-                REAL (KIND=C_FLOAT) :: DCSb_Rayl_CP
-        ENDFUNCTION DCSb_Rayl_CP
+                REAL (KIND=C_FLOAT) :: DCSb_Rayl_CP_C
+        ENDFUNCTION DCSb_Rayl_CP_C
 
-        PURE FUNCTION DCSb_Compt_CP(compound,E,theta) BIND(C,NAME='DCSb_Compt_CP')
+        PURE FUNCTION DCSb_Compt_CP_C(compound,E,theta) BIND(C,NAME='DCSb_Compt_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta
-                REAL (KIND=C_FLOAT) :: DCSb_Compt_CP
-        ENDFUNCTION DCSb_Compt_CP
+                REAL (KIND=C_FLOAT) :: DCSb_Compt_CP_C
+        ENDFUNCTION DCSb_Compt_CP_C
 
-        PURE FUNCTION DCSP_Rayl_CP(compound,E,theta,phi) BIND(C,NAME='DCSP_Rayl_CP')
+        PURE FUNCTION DCSP_Rayl_CP_C(compound,E,theta,phi) BIND(C,NAME='DCSP_Rayl_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
-                REAL (KIND=C_FLOAT) :: DCSP_Rayl_CP
-        ENDFUNCTION DCSP_Rayl_CP
+                REAL (KIND=C_FLOAT) :: DCSP_Rayl_CP_C
+        ENDFUNCTION DCSP_Rayl_CP_C
 
-        PURE FUNCTION DCSP_Compt_CP(compound,E,theta,phi) BIND(C,NAME='DCSP_Compt_CP')
+        PURE FUNCTION DCSP_Compt_CP_C(compound,E,theta,phi) BIND(C,NAME='DCSP_Compt_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
-                REAL (KIND=C_FLOAT) :: DCSP_Compt_CP
-        ENDFUNCTION DCSP_Compt_CP
+                REAL (KIND=C_FLOAT) :: DCSP_Compt_CP_C
+        ENDFUNCTION DCSP_Compt_CP_C
 
-        PURE FUNCTION DCSPb_Rayl_CP(compound,E,theta,phi) BIND(C,NAME='DCSPb_Rayl_CP')
+        PURE FUNCTION DCSPb_Rayl_CP_C(compound,E,theta,phi) BIND(C,NAME='DCSPb_Rayl_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
-                REAL (KIND=C_FLOAT) :: DCSPb_Rayl_CP
-        ENDFUNCTION DCSPb_Rayl_CP
+                REAL (KIND=C_FLOAT) :: DCSPb_Rayl_CP_C
+        ENDFUNCTION DCSPb_Rayl_CP_C
 
-        PURE FUNCTION DCSPb_Compt_CP(compound,E,theta,phi) BIND(C,NAME='DCSPb_Compt_CP')
+        PURE FUNCTION DCSPb_Compt_CP_C(compound,E,theta,phi) BIND(C,NAME='DCSPb_Compt_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E,theta,phi
-                REAL (KIND=C_FLOAT) :: DCSPb_Compt_CP
-        ENDFUNCTION DCSPb_Compt_CP
+                REAL (KIND=C_FLOAT) :: DCSPb_Compt_CP_C
+        ENDFUNCTION DCSPb_Compt_CP_C
 
-        PURE FUNCTION CS_Photo_Total_CP(compound,E) BIND(C,NAME='CS_Photo_Total_CP')
+        PURE FUNCTION CS_Photo_Total_CP_C(compound,E) BIND(C,NAME='CS_Photo_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Photo_Total_CP
-        ENDFUNCTION CS_Photo_Total_CP
+                REAL (KIND=C_FLOAT) :: CS_Photo_Total_CP_C
+        ENDFUNCTION CS_Photo_Total_CP_C
 
-        PURE FUNCTION CSb_Photo_Total_CP(compound,E) BIND(C,NAME='CSb_Photo_Total_CP')
+        PURE FUNCTION CSb_Photo_Total_CP_C(compound,E) BIND(C,NAME='CSb_Photo_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CSb_Photo_Total_CP
-        ENDFUNCTION CSb_Photo_Total_CP
+                REAL (KIND=C_FLOAT) :: CSb_Photo_Total_CP_C
+        ENDFUNCTION CSb_Photo_Total_CP_C
 
-        PURE FUNCTION CS_Total_Kissel_CP(compound,E) BIND(C,NAME='CS_Total_Kissel_CP')
+        PURE FUNCTION CS_Total_Kissel_CP_C(compound,E) BIND(C,NAME='CS_Total_Kissel_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CS_Total_Kissel_CP
-        ENDFUNCTION CS_Total_Kissel_CP
+                REAL (KIND=C_FLOAT) :: CS_Total_Kissel_CP_C
+        ENDFUNCTION CS_Total_Kissel_CP_C
 
-        PURE FUNCTION CSb_Total_Kissel_CP(compound,E) BIND(C,NAME='CSb_Total_Kissel_CP')
+        PURE FUNCTION CSb_Total_Kissel_CP_C(compound,E) BIND(C,NAME='CSb_Total_Kissel_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
+                TYPE (C_PTR), VALUE, INTENT(IN) :: compound
                 REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E
-                REAL (KIND=C_FLOAT) :: CSb_Total_Kissel_CP
-        ENDFUNCTION CSb_Total_Kissel_CP
+                REAL (KIND=C_FLOAT) :: CSb_Total_Kissel_CP_C
+        ENDFUNCTION CSb_Total_Kissel_CP_C
 
-        PURE FUNCTION Refractive_Index_Re(compound,E,density) BIND(C,NAME='Refractive_Index_Re')
+        PURE FUNCTION Refractive_Index_Re_C(compound,E,density) BIND(C,NAME='Refractive_Index_Re')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, density
-                REAL (KIND=C_FLOAT) :: Refractive_Index_Re
-        ENDFUNCTION Refractive_Index_Re
+                TYPE (C_PTR), INTENT(IN), VALUE :: compound
+                REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, density
+                REAL (KIND=C_DOUBLE) :: Refractive_Index_Re_C
+        ENDFUNCTION Refractive_Index_Re_C
 
-        PURE FUNCTION Refractive_Index_Im(compound,E,density) BIND(C,NAME='Refractive_Index_Im')
+        PURE FUNCTION Refractive_Index_Im_C(compound,E,density) BIND(C,NAME='Refractive_Index_Im')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                CHARACTER (KIND=C_CHAR), DIMENSION(*),INTENT(IN) :: compound
-                REAL (KIND=C_FLOAT), INTENT(IN), VALUE :: E, density
-                REAL (KIND=C_FLOAT) :: Refractive_Index_Im
-        ENDFUNCTION Refractive_Index_Im
+                TYPE (C_PTR), INTENT(IN), VALUE :: compound
+                REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, density
+                REAL (KIND=C_DOUBLE) :: Refractive_Index_Im_C
+        ENDFUNCTION Refractive_Index_Im_C
+
+        PURE FUNCTION Refractive_Index_C(compound,E,density) BIND(C,NAME='Refractive_Index')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPORT :: Complex_C
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: compound
+                REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, density
+                TYPE (Complex_C) :: Refractive_Index_C
+        ENDFUNCTION Refractive_Index_C
 
         PURE FUNCTION ComptonProfile(Z, pz) BIND(C,NAME='ComptonProfile')
                 USE, INTRINSIC :: ISO_C_BINDING
@@ -2984,23 +2995,10 @@ FUNCTION CompoundParser(compoundString) RESULT(rv)
         TYPE (C_PTR) :: rv_c_ptr
         INTEGER :: i
 
-        INTERFACE
-        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
-                USE,INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: s
-                INTEGER (C_SIZE_T) :: xrlstrlen
-        ENDFUNCTION xrlstrlen
-        ENDINTERFACE
-
         NULLIFY(rv)
 
-        ALLOCATE(compoundString_F(1+LEN_TRIM(compoundString)))
-        DO i=1,LEN_TRIM(compoundString)
-                compoundString_F(i) = compoundString(i:i)
-        ENDDO
-        compoundString_F(1+LEN_TRIM(compoundString)) = C_NULL_CHAR
-        
+        CALL stringF2C(compoundString, compoundString_F)
+
         rv_c_ptr = CompoundParser_C(C_LOC(compoundString_F))
 
         IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
@@ -3079,11 +3077,8 @@ FUNCTION SymbolToAtomicNumber(symbol) RESULT(rv)
         TYPE (C_PTR) :: symbol_C
         INTEGER :: i
 
-        ALLOCATE(symbol_F(1+LEN_TRIM(symbol)))
-        DO i=1,LEN_TRIM(symbol)
-                symbol_F(i) = symbol(i:i)
-        ENDDO
-        symbol_F(1+LEN_TRIM(symbol)) = C_NULL_CHAR
+        CALL stringF2C(symbol, symbol_F)
+
         symbol_C = C_LOC(symbol_F)
 
         rv = SymbolToAtomicNumber_c(symbol_C)
@@ -3102,22 +3097,11 @@ FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
         TYPE (Crystal_Struct_C), POINTER :: c_struct_c
         TYPE (Crystal_Struct), POINTER :: rv 
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_F
-        
-        INTERFACE
-        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
-                USE,INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: s
-                INTEGER (C_SIZE_T) :: xrlstrlen
-        ENDFUNCTION xrlstrlen
-        ENDINTERFACE
 
         NULLIFY(rv)
-        ALLOCATE(material_F(1+LEN_TRIM(material)))
-        DO i=1,LEN_TRIM(material)
-                material_F(i) = material(i:i)
-        ENDDO
-        material_F(1+LEN_TRIM(material)) = C_NULL_CHAR
+
+        CALL stringF2C(material, material_F)
+        
         material_C = C_LOC(material_F)
 
         IF (PRESENT(c_array)) THEN
@@ -3217,7 +3201,7 @@ FUNCTION Crystal_F_H_StructureFactor(crystal, energy, i_miller,&
         REAL (C_FLOAT), INTENT(IN) :: energy, rel_angle, debye_factor
         INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
         TYPE (Complex_C) :: temp
-        COMPLEX (C_FLOAT) :: rv
+        COMPLEX (C_DOUBLE) :: rv
 
         TYPE (C_PTR) :: crystal_ptr
         TYPE (Crystal_Struct_C), TARGET :: crystal_c
@@ -3236,7 +3220,7 @@ FUNCTION Crystal_F_H_StructureFactor(crystal, energy, i_miller,&
         temp = Crystal_F_H_StructureFactor_C(crystal_ptr, energy, i_miller,&
         j_miller, k_miller, debye_factor, rel_angle)
 
-        rv = CMPLX(temp%re, temp%im, C_FLOAT)
+        rv = CMPLX(temp%re, temp%im, C_DOUBLE)
 
 
         RETURN
@@ -3254,7 +3238,7 @@ FUNCTION Crystal_F_H_StructureFactor_Partial(crystal, &
         INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller, &
         f0_flag, f_prime_flag, f_prime2_flag
         TYPE (Complex_C) :: temp
-        COMPLEX (C_FLOAT) :: rv
+        COMPLEX (C_DOUBLE) :: rv
 
         TYPE (C_PTR) :: crystal_ptr
         TYPE (Crystal_Struct_C), TARGET :: crystal_c
@@ -3274,7 +3258,7 @@ FUNCTION Crystal_F_H_StructureFactor_Partial(crystal, &
         energy, i_miller, j_miller, k_miller, debye_factor, &
         rel_angle, f0_flag, f_prime_flag, f_prime2_flag)
 
-        rv = CMPLX(temp%re, temp%im, C_FLOAT)
+        rv = CMPLX(temp%re, temp%im, C_DOUBLE)
 
 
         RETURN
@@ -3363,6 +3347,56 @@ FUNCTION Crystal_AddCrystal (crystal, c_array) RESULT(rv)
         RETURN
 ENDFUNCTION Crystal_AddCrystal
 
+FUNCTION Refractive_Index_Re(compoundString, E, density) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compoundString
+        REAL (C_DOUBLE), INTENT(IN) :: E, density
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compoundString_F
+        INTEGER :: i
+        REAL (C_DOUBLE) :: rv
+
+        CALL stringF2C(compoundString, compoundString_F)
+
+        rv = Refractive_Index_Re_C(C_LOC(compoundString_F), E, density)
+ENDFUNCTION Refractive_Index_Re 
+
+FUNCTION Refractive_Index_Im(compoundString, E, density) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compoundString
+        REAL (C_DOUBLE), INTENT(IN) :: E, density
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compoundString_F
+        INTEGER :: i
+        REAL (C_DOUBLE) :: rv
+
+        CALL stringF2C(compoundString, compoundString_F)
+        
+        rv = Refractive_Index_Im_C(C_LOC(compoundString_F), E, density)
+ENDFUNCTION Refractive_Index_Im 
+
+FUNCTION Refractive_Index(compoundString, E, density) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compoundString
+        REAL (C_DOUBLE), INTENT(IN) :: E, density
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compoundString_F
+        INTEGER :: i
+        COMPLEX (C_DOUBLE) :: rv
+        TYPE (Complex_C) :: rv_C
+
+        CALL stringF2C(compoundString, compoundString_F)
+
+        rv_C = Refractive_Index_C(C_LOC(compoundString_F), E, density)
+        rv = CMPLX(rv_C%re, rv_C%im, C_DOUBLE)
+ENDFUNCTION Refractive_Index
+
 FUNCTION GetCompoundDataNISTByName(compoundString) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
@@ -3375,22 +3409,9 @@ FUNCTION GetCompoundDataNISTByName(compoundString) RESULT(rv)
         TYPE (C_PTR) :: rv_c_ptr
         INTEGER :: i
 
-        INTERFACE
-        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
-                USE,INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: s
-                INTEGER (C_SIZE_T) :: xrlstrlen
-        ENDFUNCTION xrlstrlen
-        ENDINTERFACE
-
         NULLIFY(rv)
-
-        ALLOCATE(compoundString_F(1+LEN_TRIM(compoundString)))
-        DO i=1,LEN_TRIM(compoundString)
-                compoundString_F(i) = compoundString(i:i)
-        ENDDO
-        compoundString_F(1+LEN_TRIM(compoundString)) = C_NULL_CHAR
+        
+        CALL stringF2C(compoundString, compoundString_F)
         
         rv_c_ptr = GetCompoundDataNISTByName_C(C_LOC(compoundString_F))
 
@@ -3398,7 +3419,7 @@ FUNCTION GetCompoundDataNISTByName(compoundString) RESULT(rv)
                 ALLOCATE(rv)
                 CALL C_F_POINTER(rv_c_ptr, rv_C)
                 rv%name = compoundString
-                DO i=1,LEN_TRIM(compoundString)+1
+                DO i=LEN_TRIM(compoundString)+1,LEN(rv%name)
                         rv%name(i:i) = ' '
                 ENDDO
                 rv%nElements = rv_C%nElements
@@ -3431,7 +3452,6 @@ FUNCTION GetCompoundDataNISTByIndex(index) RESULT(rv)
         ENDINTERFACE
 
         NULLIFY(rv)
-
         
         rv_c_ptr = GetCompoundDataNISTByIndex_C(index)
 
@@ -3506,5 +3526,379 @@ FUNCTION GetCompoundDataNISTList() RESULT(rv)
         NULLIFY(list_c_ptrs)
         CALL xrlFree(list_c_ptr)
 ENDFUNCTION GetCompoundDataNISTList
+
+FUNCTION CS_Total_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Total_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Total_CP
+
+FUNCTION CS_Photo_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Photo_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Photo_CP
+
+FUNCTION CS_Rayl_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Rayl_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Rayl_CP
+
+FUNCTION CS_Compt_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Compt_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Compt_CP
+
+FUNCTION CS_Energy_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Energy_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Energy_CP
+
+FUNCTION CSb_Total_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CSb_Total_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CSb_Total_CP
+
+FUNCTION CSb_Photo_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CSb_Photo_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CSb_Photo_CP
+
+FUNCTION CSb_Rayl_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CSb_Rayl_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CSb_Rayl_CP
+
+FUNCTION CSb_Compt_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CSb_Compt_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CSb_Compt_CP
+
+FUNCTION DCS_Rayl_CP(compound, E, theta) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCS_Rayl_CP_C(C_LOC(compound_F), E, theta)
+
+ENDFUNCTION DCS_Rayl_CP
+
+FUNCTION DCS_Compt_CP(compound, E, theta) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCS_Compt_CP_C(C_LOC(compound_F), E, theta)
+
+ENDFUNCTION DCS_Compt_CP
+
+FUNCTION DCSb_Rayl_CP(compound, E, theta) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCSb_Rayl_CP_C(C_LOC(compound_F), E, theta)
+
+ENDFUNCTION DCSb_Rayl_CP
+
+FUNCTION DCSb_Compt_CP(compound, E, theta) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCSb_Compt_CP_C(C_LOC(compound_F), E, theta)
+
+ENDFUNCTION DCSb_Compt_CP
+
+FUNCTION DCSP_Rayl_CP(compound, E, theta, phi) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta, phi
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCSP_Rayl_CP_C(C_LOC(compound_F), E, theta, phi)
+
+ENDFUNCTION DCSP_Rayl_CP
+
+FUNCTION DCSP_Compt_CP(compound, E, theta, phi) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta, phi
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCSP_Compt_CP_C(C_LOC(compound_F), E, theta, phi)
+
+ENDFUNCTION DCSP_Compt_CP
+
+FUNCTION DCSPb_Rayl_CP(compound, E, theta, phi) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta, phi
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCSPb_Rayl_CP_C(C_LOC(compound_F), E, theta, phi)
+
+ENDFUNCTION DCSPb_Rayl_CP
+
+FUNCTION DCSPb_Compt_CP(compound, E, theta, phi) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E, theta, phi
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = DCSPb_Compt_CP_C(C_LOC(compound_F), E, theta, phi)
+
+ENDFUNCTION DCSPb_Compt_CP
+
+FUNCTION CS_Photo_Total_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Photo_Total_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Photo_Total_CP
+
+FUNCTION CS_Total_Kissel_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CS_Total_Kissel_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CS_Total_Kissel_CP
+
+FUNCTION CSb_Photo_Total_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CSb_Photo_Total_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CSb_Photo_Total_CP
+
+FUNCTION CSb_Total_Kissel_CP(compound, E) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        compound_F
+        REAL (C_FLOAT), INTENT(IN) :: E
+        REAL (C_FLOAT) :: rv
+
+        CALL stringF2C(compound, compound_F)
+
+        rv = CSb_Total_Kissel_CP_C(C_LOC(compound_F), E)
+
+ENDFUNCTION CSb_Total_Kissel_CP
+
+
+
+SUBROUTINE stringF2C(stringF, stringC)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: stringF
+        CHARACTER (KIND=C_CHAR,LEN=512):: stringFcopy
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, INTENT(OUT) :: stringC
+        INTEGER(8) :: i
+
+        !for backwards compatibility
+        IF (LEN(stringF) .GE. 512) THEN
+                WRITE (error_unit, '(A)') 'Internal error: String too long for stringF2C'
+                CALL EXIT(1)
+        ENDIF
+        DO i=1,LEN_TRIM(stringF)
+                stringFcopy(i:i) = stringF(i:i)
+        ENDDO
+        DO i=LEN_TRIM(stringF)+1, LEN(stringFcopy)
+                stringFcopy(i:i) = ' '
+        ENDDO
+        DO i=1,LEN(stringFcopy)
+                IF (stringFcopy(i:i) .EQ. C_NULL_CHAR) THEN
+                        stringFcopy(i:i) = ' '
+                ENDIF
+        ENDDO
+
+        ALLOCATE(stringC(1+LEN_TRIM(stringFcopy)))
+        DO i=1,LEN_TRIM(stringFcopy)
+                stringC(i) = stringFcopy(i:i)
+        ENDDO
+        stringC(1+LEN_TRIM(stringFcopy)) = C_NULL_CHAR
+
+        RETURN
+ENDSUBROUTINE stringF2C
 
 ENDMODULE

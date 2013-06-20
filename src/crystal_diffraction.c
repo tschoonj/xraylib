@@ -29,8 +29,8 @@ THIS SOFTWARE IS PROVIDED BY David Sagan ''AS IS'' AND ANY EXPRESS OR IMPLIED WA
 
 /*-------------------------------------------------------------------------------------------------- */
 
-float c_abs(Complex x) { 
-  float ans = x.re * x.re - x.im * x.im; 
+double c_abs(Complex x) { 
+  double ans = x.re * x.re - x.im * x.im; 
   ans = sqrt(ans);
   return ans; 
 }
