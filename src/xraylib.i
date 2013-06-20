@@ -162,7 +162,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_settable(L,-3);
 
                 lua_pushstring(L, "nAtomsAll");
-                lua_pushinteger(L, cd->nAtomsAll);
+                lua_pushnumber(L, cd->nAtomsAll);
                 lua_settable(L,-3);
 
                 lua_pushstring(L, "Elements");
@@ -567,7 +567,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         if (cd) {
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements)); 
-                PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((long) cd->nAtomsAll)); 
+                PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll)); 
                 PyObject *elements=PyList_New(cd->nElements);
                 PyObject *massfractions=PyList_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
@@ -944,7 +944,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         if (cd != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("nElements", newSViv(cd->nElements),hash)
-                STORE_HASH("nAtomsAll", newSViv(cd->nAtomsAll),hash)
+                STORE_HASH("nAtomsAll", newSVnv(cd->nAtomsAll),hash)
                 AV *Elements = newAV();
                 AV *massFractions = newAV();
                 STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
@@ -1291,7 +1291,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 VALUE rv;
                 rv = rb_hash_new(); 
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
-                rb_hash_aset(rv, rb_str_new2("nAtomsAll"), INT2FIX(cd->nAtomsAll));
+                rb_hash_aset(rv, rb_str_new2("nAtomsAll"), rb_float_new(cd->nAtomsAll));
                 VALUE elements, massFractions;
                 elements = rb_ary_new2(cd->nElements);
                 massFractions = rb_ary_new2(cd->nElements);

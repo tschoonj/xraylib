@@ -50,7 +50,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 struct compoundData {
 	int nElements;
-	int nAtomsAll;
+	double nAtomsAll;
 	int *Elements;
 	double *massFractions;
 };

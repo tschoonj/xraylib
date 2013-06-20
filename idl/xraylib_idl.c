@@ -1129,14 +1129,14 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	void *sdef;
 	struct compoundData_IDL {
 		IDL_LONG nElements;
-		IDL_LONG nAtomsAll;
+		double nAtomsAll;
 		IDL_LONG Elements[cd->nElements];
 		double massFractions[cd->nElements];
 	};
 	struct compoundData_IDL *cdi;
 	IDL_STRUCT_TAG_DEF s_tags[] = {
 		{"NELEMENTS", 0, (void *) IDL_TYP_LONG},
-		{"NATOMSALL", 0, (void *) IDL_TYP_LONG},
+		{"NATOMSALL", 0, (void *) IDL_TYP_DOUBLE},
 		{"ELEMENTS", array_dims, (void *) IDL_TYP_LONG},
 		{"MASSFRACTIONS", array_dims, (void *) IDL_TYP_DOUBLE},
 		{0}

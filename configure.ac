@@ -58,7 +58,7 @@ AC_CANONICAL_HOST
 
 
 #headers check
-AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h])
+AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h])
 
 
 

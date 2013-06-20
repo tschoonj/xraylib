@@ -26,14 +26,14 @@ PRIVATE :: stringF2C
 
 TYPE, BIND(C) :: compoundData_C
         INTEGER (C_INT) :: nElements
-        INTEGER (C_INT) :: nAtomsAll
+        REAL (C_DOUBLE) :: nAtomsAll
         TYPE (C_PTR) :: Elements
         TYPE (C_PTR) :: massFractions
 ENDTYPE 
 
 TYPE :: compoundData
         INTEGER (C_INT) :: nElements
-        INTEGER (C_INT) :: nAtomsAll
+        REAL (C_DOUBLE) :: nAtomsAll
         INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
 ENDTYPE 

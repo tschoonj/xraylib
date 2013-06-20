@@ -35,13 +35,13 @@ printf("Bi M1N2 radiative rate: %f\n",xraylib::RadRate(83,$xraylib::M1N2_LINE));
 printf("U M3O3 Fluorescence Line Energy: %f\n",xraylib::LineEnergy(92,$xraylib::M3O3_LINE));
 
 my $cdtest = xraylib::CompoundParser("Ca(HCO3)2");
-printf("Ca(HCO3)2 contains %i atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
+printf("Ca(HCO3)2 contains %g atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
 for ($i = 0 ; $i < $cdtest->{nElements} ; $i++) {
   printf("Element %i: %lf %%\n",$cdtest->{Elements}->[$i],$cdtest->{massFractions}->[$i]*100.0);
 }
 
 $cdtest = xraylib::CompoundParser("SiO2");
-printf("SiO2 contains %i atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
+printf("SiO2 contains %g atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
 for ($i = 0 ; $i < $cdtest->{nElements} ; $i++) {
   printf("Element %i: %lf %%\n",$cdtest->{Elements}->[$i],$cdtest->{massFractions}->[$i]*100.0);
 }
