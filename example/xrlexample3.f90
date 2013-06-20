@@ -23,9 +23,10 @@ CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = 'SiO2'
 INTEGER :: i
 TYPE (Crystal_Struct), POINTER :: cryst
 REAL (C_FLOAT) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
-rel_angle, dw
-COMPLEX (C_FLOAT) :: F_H, F_0, F_Hbar
-REAL (C_FLOAT), PARAMETER :: PI = 4.D0*DATAN(1.D0)
+rel_angle 
+REAL (C_DOUBLE) :: dw
+COMPLEX (C_DOUBLE) :: F_H, F_0, F_Hbar
+REAL (C_DOUBLE), PARAMETER :: PI = 4.D0*DATAN(1.D0)
 
 TYPE (compoundDataNIST), POINTER :: cdn
 CHARACTER (KIND=C_CHAR, LEN=NIST_LIST_STRING_LENGTH), POINTER, &

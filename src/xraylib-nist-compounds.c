@@ -1,3 +1,4 @@
+#include "xrayvars.h"
 #include "xraylib-nist-compounds-internal.h" 
 #include <string.h>
 #include <search.h>
@@ -61,7 +62,7 @@ struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex) {
 
 	if (compoundIndex < 0 || compoundIndex >= nCompoundDataNISTList) {
 		char buffer[1000];
-		sprintf(buffer,"xraylib-nist-compounds: no match found for index ", compoundIndex);
+		sprintf(buffer,"xraylib-nist-compounds: no match found for index %i", compoundIndex);
 		ErrorExit(buffer);
 		/* compoundIndex out of range */
 		return NULL;

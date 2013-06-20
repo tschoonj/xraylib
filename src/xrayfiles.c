@@ -43,6 +43,7 @@ void XRayInit(void)
   int nerror_lines=0;
   int found_error_line;
   int read_error=0;
+  int NZ;
 
   SetHardExit(1);
   SetExitStatus(0);
@@ -710,7 +711,6 @@ void XRayInit(void)
     return;
   }
   
-  int NZ;
   ex = fscanf(fp, "%i", &NZ);
   for (Z = 1 ; Z <= NZ ; Z++) {
     ex = fscanf(fp, "%i", &NE_Energy[Z]);
