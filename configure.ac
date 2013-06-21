@@ -248,7 +248,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 	if test -z "$RSIIDL_BINDIR" ; then
 		#no location was presented as an option -> search the usual suspects...
-		IDL_PATH=/usr/local/itt/idl/bin:/usr/local/rsi/idl/bin:/usr/local/pkg/graphics/rsi/idl/bin:/Applications/exelis/idl/bin:/usr/local/exelis/idl/bin:/Applications/itt/idl/bin:/usr/local/idl/bin:/Applications/itt/idl/idl/bin:/usr/local/itt/idl/idl/bin:/Applications/rsi/idl/bin
+		IDL_PATH="/usr/local/itt/idl/bin:/usr/local/rsi/idl/bin:/usr/local/pkg/graphics/rsi/idl/bin:/Applications/exelis/idl/bin:/usr/local/exelis/idl/bin:/Applications/itt/idl/bin:/usr/local/idl/bin:/Applications/itt/idl/idl/bin:/usr/local/itt/idl/idl/bin:/Applications/rsi/idl/bin:/c/ITT/IDL71/bin/bin.x86"
 		AC_PATH_PROGS([RSIIDL_BIN], [idl],[],[$IDL_PATH])
 		if test -z "$RSIIDL_BIN" && test "x$enable_idl" = xyes ; then
 			#binaries not found while they were required through the enable-idl option
@@ -260,7 +260,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		else
 			#binaries were found...
 		#	AC_MSG_RESULT([yes, in $IDL_PATH])
-			RSIIDL_BINDIR=`AS_DIRNAME([$RSIIDL_BIN])`
+			RSIIDL_BINDIR=`AS_DIRNAME(["$RSIIDL_BIN"])`
 		fi
 	else
 		#test if the user-supplied value contains the idl binary
@@ -273,6 +273,9 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	#moving on...
 	if test -n "$RSIIDL_BINDIR" && test "x$VALID_IDL" != xno ; then
 		RSIIDL_DIR=`AS_DIRNAME([$RSIIDL_BINDIR])`
+		if test `AS_BASENAME([$RSIIDL_DIR])` = "bin" ; then
+			RSIIDL_DIR=`AS_DIRNAME([$RSIIDL_DIR])`
+		fi	
 		#if this test succeeds then using version 5.6 or greater
 		RSIIDL_INCDIR="$RSIIDL_DIR/external/include"
 		AC_CHECK_FILE(["$RSIIDL_INCDIR/idl_export.h"],[RSIIDL_HASINC=yes],[RSIIDL_HASINC=no])
@@ -315,7 +318,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 
 		    i386-*-darwin*)
-	    		IDL_LIBBIN=$RSIIDL_BINDIR/bin.darwin.i386
+	    		IDL_LIBBIN=$RSIIDL_BINDIR
 		      ;;
 
 		    ppc*-darwin*)
@@ -325,7 +328,12 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		      AC_MSG_WARN([Solaris is currently not supported for the IDL bindings])
 			VALID_IDL=no
 		      ;;
-
+		   i686-pc-mingw32)
+			IDL_LIBBIN=$RSIIDL_BINDIR
+			#IDL_LIBADD="$RSIIDL_BINDIR/idl.lib"
+			IDL_LIBADD="-L$RSIIDL_BINDIR -lidl"
+			AC_SUBST(IDL_LIBADD)
+			;;
 		   *)
 		      AC_MSG_WARN([Could not detect platform for IDL.])
 			VALID_IDL=no
@@ -337,8 +345,9 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		AC_ARG_WITH([idl-libdir],[AS_HELP_STRING([--with-idl-bindir],[set location of the idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])	
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])	
-		if test "x$RSIIDL_HASBIN_SO" = xno && test "x$RSIIDL_HASBIN_DY" = xno  ; then
-			AC_MSG_WARN([libidl.so or libidl.dylib could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-idl-libdir to match the location of the IDL libraries])
+		AC_CHECK_FILE([$IDL_LIBBIN/idl.dll],[RSIIDL_HASBIN_DLL=yes],[RSIIDL_HASBIN_DLL=no])	
+		if test "x$RSIIDL_HASBIN_SO" = xno && test "x$RSIIDL_HASBIN_DY" = xno && test "x$RSIIDL_HASBIN_DLL" = xno ; then
+			AC_MSG_WARN([libidl.so, libidl.dylib or idl.dll could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-idl-libdir to match the location of the IDL libraries])
 			VALID_IDL=no
 		fi
 		if test "x$VALID_IDL" != xno ; then

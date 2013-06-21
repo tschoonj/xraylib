@@ -29,7 +29,6 @@
 !include "Sections.nsh"
 !include "WordFunc.nsh"
 !include "FileFunc.nsh"
-!include "RadioButtons.nsh"
 
 !macro unix2dos my_file extension
         ${GetFileName} ${my_file} $R0
@@ -69,6 +68,7 @@ CRCCheck on
 !insertmacro MUI_PAGE_WELCOME
 !define MUI_LICENSEPAGE_CHECKBOX
 !insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
+!insertmacro MUI_PAGE_COMPONENTS
 
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -102,15 +102,13 @@ Section "xraylib core files" SecCore
 	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xraydoc.txt" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xrayfunc.txt" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xrayhelp.txt" ""
-	File ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.chm
 
 
 
-	DetailPrint "Installing libraries..."
+	DetailPrint "Installing core library..."
 	;copy dll to C:\WINDOWS\system32 or something similar
 	SetOutPath "$INSTDIR\Lib"
 	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_builddir_win}\src\.libs\libxrl-@LIB_CURRENT_MINUS_AGE@.dll $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll "$SYSDIR"
-	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.dll $INSTDIR\Lib\XrayLib.NET.dll "$INSTDIR"
 
 		
 
@@ -143,9 +141,9 @@ Section /o "xraylib SDK" SecSDK
 	;copy lib file to Lib for development...
 	DetailPrint "Installing static libraries..."
 	SetOutPath "$INSTDIR\Lib"
-	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
-	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
-	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
+	File ${abs_top_builddir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
+	File ${abs_top_builddir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
+	File ${abs_top_builddir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
 	File ${abs_top_builddir_win}\src\.libs\libxrl.a
 	File ${abs_top_builddir_win}\src\.libs\libxrl.dll.a
 	File ${abs_top_builddir_win}\src\libxrl-@LIB_CURRENT_MINUS_AGE@.def
@@ -167,9 +165,18 @@ Section /o "xraylib SDK" SecSDK
 	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-shells.h" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-auger.h" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-crystal-diffraction.h" ""
-	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-crystal-defs.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-defs.h" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-nist-compounds.h" ""
 
+SectionEnd
+
+Section /o ".NET bindings" SecdotNet
+	SetOutPath "$INSTDIR\Lib"
+	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.dll $INSTDIR\Lib\XrayLib.NET.dll "$INSTDIR"
+	
+	;Documentation
+	SetOutPath "$INSTDIR\Doc"
+	File ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.chm
 SectionEnd
 
 Section /o "IDL bindings" SecIDL
@@ -180,7 +187,7 @@ Section /o "IDL bindings" SecIDL
 
 	DetailPrint "Installing IDL bindings"
 	SetOutPath "$INSTDIR\dlm"
-	File ${abs_top_srcdir_win}\nsis\libxrlidl.dll
+	File ${abs_top_builddir_win}\idl\.libs\libxrlidl.dll
 	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\libxrlidl.dlm" ""
 	${EnvVarUpdate} $0 "IDL_DLM_PATH" "P" "HKLM" "<IDL_DEFAULT>"
 	${EnvVarUpdate} $0 "IDL_DLM_PATH" "A" "HKLM" "$INSTDIR\dlm"
@@ -208,10 +215,10 @@ Section "Python 2.6" SecPython26
 	;python bindings
 	DetailPrint "Installing Python 2.6 bindings"
 	SetOutPath "$INSTDIR\Python"
-	File ${abs_top_srcdir_win}\nsis\python\python2.6\_xraylib.pyd
+	File ${abs_top_builddir_win}\nsis\python\python2.6\_xraylib.pyd
 
 	;python executable
-	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_builddir_win}\nsis\xraylib.py" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
 
@@ -230,10 +237,10 @@ Section /o "Python 2.7" SecPython27
 	;python bindings
 	DetailPrint "Installing Python 2.7 bindings"
 	SetOutPath "$INSTDIR\Python"
-	File ${abs_top_srcdir_win}\nsis\python\python2.7\_xraylib.pyd
+	File ${abs_top_builddir_win}\nsis\python\python2.7\_xraylib.pyd
 
 	;python executable
-	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_builddir_win}\nsis\xraylib.py" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
 
@@ -247,20 +254,20 @@ Section /o "Python 3.1" SecPython31
 
 	DetailPrint "Installing Python example"
 	SetOutPath "$INSTDIR\Example"
-	!insertmacro unix3dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
 
 	;python bindings
 	DetailPrint "Installing Python 3.1 bindings"
 	SetOutPath "$INSTDIR\Python"
-	File ${abs_top_srcdir_win}\nsis\python\python3.1\_xraylib.pyd
+	File ${abs_top_builddir_win}\nsis\python\python3.1\_xraylib.pyd
 
 	;python executable
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+	!insertmacro unix2dos "${abs_top_builddir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
 
 	SetOutPath "$INSTDIR\Bin"
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
 	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
 	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
 SectionEnd
@@ -269,20 +276,20 @@ Section /o "Python 3.2" SecPython32
 
 	DetailPrint "Installing Python example"
 	SetOutPath "$INSTDIR\Example"
-	!insertmacro unix3dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
 
 	;python bindings
 	DetailPrint "Installing Python 3.2 bindings"
 	SetOutPath "$INSTDIR\Python"
-	File ${abs_top_srcdir_win}\nsis\python\python3.2\_xraylib.pyd
+	File ${abs_top_builddir_win}\nsis\python\python3.2\_xraylib.pyd
 
 	;python executable
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+	!insertmacro unix2dos "${abs_top_builddir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
 
 	SetOutPath "$INSTDIR\Bin"
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
 	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
 	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
 SectionEnd
@@ -291,27 +298,40 @@ Section /o "Python 3.3" SecPython33
 
 	DetailPrint "Installing Python example"
 	SetOutPath "$INSTDIR\Example"
-	!insertmacro unix3dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
 
 	;python bindings
 	DetailPrint "Installing Python 3.3 bindings"
 	SetOutPath "$INSTDIR\Python"
-	File ${abs_top_srcdir_win}\nsis\python\python3.3\_xraylib.pyd
+	File ${abs_top_builddir_win}\nsis\python\python3.3\_xraylib.pyd
 
 	;python executable
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+	!insertmacro unix2dos "${abs_top_builddir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
 
 	SetOutPath "$INSTDIR\Bin"
-	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
 	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
 	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
 SectionEnd
 SectionGroupEnd
 
+LangString DESC_SecCore ${LANG_ENGLISH} "Installs the xraylib core dll. Required"
+LangString DESC_SecSDK ${LANG_ENGLISH} "Installs the headers and static libraries for linking against xraylib"
+LangString DESC_SecdotNet ${LANG_ENGLISH} "Installs the xraylib .Net/C# bindings"
+LangString DESC_SecIDL ${LANG_ENGLISH} "Installs the xraylib IDL bindings"
+LangString DESC_SecPython ${LANG_ENGLISH} "Installs the xraylib Python bindings"
 
-SectionEnd
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+!insertmacro MUI_DESCRIPTION_TEXT ${SecCore} $(DESC_SecCore)
+!insertmacro MUI_DESCRIPTION_TEXT ${SecSDK} $(DESC_SecSDK)
+!insertmacro MUI_DESCRIPTION_TEXT ${SecdotNet} $(DESC_SecdotNet)
+!insertmacro MUI_DESCRIPTION_TEXT ${SecIDL} $(DESC_SecIDL)
+!insertmacro MUI_DESCRIPTION_TEXT ${SecPython} $(DESC_SecPython)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+
 
 Section "Uninstall"
 	Delete "$INSTDIR\Include\xraylib.h"
@@ -321,6 +341,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\Include\xraylib-defs.h"
 	Delete "$INSTDIR\Include\xraylib-lines.h"
 	Delete "$INSTDIR\Include\xraylib-shells.h"
+	Delete "$INSTDIR\Include\xraylib-nist-compounds.h"
 ;	Delete "$INSTDIR\Lib\libxrl-3.dll.lnk"
 ;	Delete "$SYSDIR\libxrl-3.dll"
 	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll
@@ -334,8 +355,6 @@ Section "Uninstall"
 	Delete "$INSTDIR\Example\xrlexample6.cpp"
 	Delete "$INSTDIR\Example\xrlexample5.py"
 	Delete "$INSTDIR\Example\xrlexample5.pyc"
-	Delete "$INSTDIR\Example\xrlexample5_3.py"
-	Delete "$INSTDIR\Example\xrlexample5_3.pyc"
 	Delete "$INSTDIR\Example\xrlexample4.pro"
 	Delete "$INSTDIR\Example\xrlexample8.cs"
 	Delete $INSTDIR\Lib\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
@@ -361,6 +380,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\pro\xraylib_shells.pro"
 	Delete "$INSTDIR\pro\xraylib_lines.pro"
 	Delete "$INSTDIR\pro\xraylib_auger.pro"
+	Delete "$INSTDIR\pro\xraylib_nist_compounds.pro"
 
 	RMDir "$INSTDIR\Include"
 	RMDir "$INSTDIR\Lib"
@@ -451,11 +471,19 @@ Function .onInit
 	Exec $INSTDIR\Uninstall.exe
 
 	done:
-	!insertmacro RadioGetChecked "${SecPython26}" "${SecPython26},${SecPython27},${SecPython31},${SecPython32},${SecPython33}"
+	StrCpy $1 ${SecPython26}
+
 FunctionEnd
 
 Function .onSelChange
-	!insertmacro SectionRadioButtons "${SecPython26}" "${SecPython26},${SecPython27},${SecPython31},${SecPython32},${SecPython33}"
+  	!insertmacro StartRadioButtons $1
+ 		!insertmacro RadioButton ${SecPython26}
+ 		!insertmacro RadioButton ${SecPython27}
+ 		!insertmacro RadioButton ${SecPython31}
+ 		!insertmacro RadioButton ${SecPython32}
+ 		!insertmacro RadioButton ${SecPython33}
+  	!insertmacro EndRadioButtons
+
 FunctionEnd
 
 !insertmacro MUI_LANGUAGE "English"
