@@ -23,11 +23,11 @@ nsis:
 	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
 	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Program Files (x86)\ITT\IDL\IDL80\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
 	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\nsis'" >> batch.pro
-	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\src\"',EXTRA_LFLAGS='\"libxrl-3.lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.'" >> batch.pro
+	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.'" >> batch.pro
 	echo "exit" >> batch.pro
 	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\nsis" idl batch
 	makensis xraylib.nsi
 	$(MAKE) -C python/cli_py2exe nsis
 
 
-EXTRA_DIST = xraylib.nsi.in License.rtf  README EnvVarUpdate.nsh
+EXTRA_DIST = xraylib.nsi.in License.rtf  README EnvVarUpdate.nsh RadioButtons.nsh

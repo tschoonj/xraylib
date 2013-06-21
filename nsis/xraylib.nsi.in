@@ -27,6 +27,20 @@
 !include "Library.nsh"
 !include "EnvVarUpdate.nsh"
 !include "Sections.nsh"
+!include "WordFunc.nsh"
+!include "FileFunc.nsh"
+!include "RadioButtons.nsh"
+
+!macro unix2dos my_file extension
+        ${GetFileName} ${my_file} $R0
+        File ${my_file}
+        Push $R0
+        Push "temp.file"
+        Call _unix2dos
+        Rename "temp.file" "$R0${extension}"
+!macroend
+
+
 
 ;!define MUI_LANGDLL_REGISTRY_ROOT "HKLM"
 ;!define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_DIR_REGKEY}"
@@ -70,53 +84,24 @@ CRCCheck on
 !insertmacro MUI_UNPAGE_FINISH
 
 
-Section "-xraylib core files" SecDummy
+Section "xraylib core files" SecCore
+	SectionIn RO
+	SetAutoClose false
 	SetOutPath "$INSTDIR"
 	DetailPrint "Installing documentation"
 	;Readme etc
-	File ${abs_top_srcdir_win}\README
-	Push "$INSTDIR\README"
-	Push "$INSTDIR\README.txt"
-	Call unix2dos
-	File ${abs_top_srcdir_win}\AUTHORS
-	Push "$INSTDIR\AUTHORS"
-	Push "$INSTDIR\AUTHORS.txt"
-	Call unix2dos
-	File ${abs_top_srcdir_win}\BUGS
-	Push "$INSTDIR\BUGS"
-	Push "$INSTDIR\BUGS.txt"
-	Call unix2dos
-	File ${abs_top_srcdir_win}\Changelog
-	Push "$INSTDIR\Changelog"
-	Push "$INSTDIR\Changelog.txt"
-	Call unix2dos
-	File ${abs_top_srcdir_win}\TODO
-	Push "$INSTDIR\TODO"
-	Push "$INSTDIR\TODO.txt"
-	Call unix2dos
+	!insertmacro unix2dos "${abs_top_srcdir_win}\README" ".txt"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\AUTHORS" ".txt"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\BUGS" ".txt"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\Changelog" ".txt"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\TODO" ".txt"
 
 	;Documentation
 	SetOutPath "$INSTDIR\Doc"
-	File ${abs_top_srcdir_win}\doc\xraybanner.txt
-	Push "$INSTDIR\Doc\xraybanner.txt"
-	Push "$INSTDIR\Doc\xraybanner.txt.fix"
-	Call unix2dos
-	Rename xraybanner.txt.fix xraybanner.txt
-	File ${abs_top_srcdir_win}\doc\xraydoc.txt
-	Push "$INSTDIR\Doc\xraydoc.txt"
-	Push "$INSTDIR\Doc\xraydoc.txt.fix"
-	Call unix2dos
-	Rename xraydoc.txt.fix xraydoc.txt
-	File ${abs_top_srcdir_win}\doc\xrayfunc.txt
-	Push "$INSTDIR\Doc\xrayfunc.txt"
-	Push "$INSTDIR\Doc\xrayfunc.txt.fix"
-	Call unix2dos
-	Rename xrayfunc.txt.fix xrayfunc.txt
-	File ${abs_top_srcdir_win}\doc\xrayhelp.txt
-	Push "$INSTDIR\Doc\xrayhelp.txt"
-	Push "$INSTDIR\Doc\xrayhelp.txt.fix"
-	Call unix2dos
-	Rename xrayhelp.txt.fix xrayhelp.txt
+	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xraybanner.txt" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xraydoc.txt" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xrayfunc.txt" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\doc\xrayhelp.txt" ""
 	File ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.chm
 
 
@@ -127,186 +112,7 @@ Section "-xraylib core files" SecDummy
 	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_builddir_win}\src\.libs\libxrl-@LIB_CURRENT_MINUS_AGE@.dll $SYSDIR\libxrl-@LIB_CURRENT_MINUS_AGE@.dll "$SYSDIR"
 	!insertmacro InstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.dll $INSTDIR\Lib\XrayLib.NET.dll "$INSTDIR"
 
-	;copy lib file to Lib for development...
-;	!execute '${DLLTOOL} "-U" "--export-all-symbols" "-l" "libxrl.lib" "@abs_top_builddir@/src/.libs/libxrl.a"'
-	;these files will have to be produced on a windows platform :-(
-	;or maybe there is some slick trick I still have to discover
-	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
-	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
-	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
-	File ${abs_top_builddir_win}\src\.libs\libxrl.a
-	File ${abs_top_builddir_win}\src\.libs\libxrl.dll.a
-	File ${abs_top_builddir_win}\src\libxrl-@LIB_CURRENT_MINUS_AGE@.def
-	File ${abs_top_srcdir_win}\nsis\README
-	Push "$INSTDIR\Lib\README"
-	Push "$INSTDIR\Lib\README.txt"
-	Call unix2dos
 		
-
-	;Examples
-	DetailPrint "Installing examples..."
-	SetOutPath "$INSTDIR\Example"
-	File ${abs_top_srcdir_win}\example\xrlexample1.c
-	Push "$INSTDIR\Example\xrlexample1.c"
-	Push "$INSTDIR\Example\xrlexample1.c.fix"
-	Call unix2dos
-	Rename xrlexample1.c.fix xrlexample1.c
-	File ${abs_top_srcdir_win}\example\xrlexample6.cpp
-	Push "$INSTDIR\Example\xrlexample6.cpp"
-	Push "$INSTDIR\Example\xrlexample6.cpp.fix"
-	Call unix2dos
-	Rename xrlexample6.cpp.fix xrlexample6.cpp
-	File ${abs_top_srcdir_win}\example\xrlexample4.pro
-	Push "$INSTDIR\Example\xrlexample4.pro"
-	Push "$INSTDIR\Example\xrlexample4.pro.fix"
-	Call unix2dos
-	Rename xrlexample4.pro.fix xrlexample4.pro
-	File ${abs_top_srcdir_win}\example\xrlexample5.py
-	Push "$INSTDIR\Example\xrlexample5.py"
-	Push "$INSTDIR\Example\xrlexample5.py.fix"
-	Call unix2dos
-	Rename xrlexample5.py.fix xrlexample5.py
-	File ${abs_top_srcdir_win}\example\xrlexample5_3.py
-	Push "$INSTDIR\Example\xrlexample5_3.py"
-	Push "$INSTDIR\Example\xrlexample5_3.py.fix"
-	Call unix2dos
-	Rename xrlexample5_3.py.fix xrlexample5_3.py
-
-
-	File ${abs_top_srcdir_win}\example\xrlexample8.cs
-	Push "$INSTDIR\Example\xrlexample8.cs"
-	Push "$INSTDIR\Example\xrlexample8.cs.fix"
-	Call unix2dos
-	Rename xrlexample8.cs.fix xrlexample8.cs
-
-
-
-	;Headers
-	DetailPrint "Installing headers..."
-	SetOutPath "$INSTDIR\Include"
-	File ${abs_top_srcdir_win}\include\xraylib.h
-	Push "$INSTDIR\Include\xraylib.h"
-	Push "$INSTDIR\Include\xraylib.h.fix"
-	Call unix2dos
-	Rename xraylib.h.fix xraylib.h
-	File ${abs_top_srcdir_win}\include\xraylib-parser.h
-	Push "$INSTDIR\Include\xraylib-parser.h"
-	Push "$INSTDIR\Include\xraylib-parser.h.fix"
-	Call unix2dos
-	Rename xraylib-parser.h.fix xraylib-parser.h
-	File ${abs_top_srcdir_win}\include\xraylib-lines.h
-	Push "$INSTDIR\Include\xraylib-lines.h"
-	Push "$INSTDIR\Include\xraylib-lines.h.fix"
-	Call unix2dos
-	Rename xraylib-lines.h.fix xraylib-lines.h
-	File ${abs_top_srcdir_win}\include\xraylib-shells.h
-	Push "$INSTDIR\Include\xraylib-shells.h"
-	Push "$INSTDIR\Include\xraylib-shells.h.fix"
-	Call unix2dos
-	Rename xraylib-shells.h.fix xraylib-shells.h
-	File ${abs_top_srcdir_win}\include\xraylib-auger.h
-	Push "$INSTDIR\Include\xraylib-auger.h"
-	Push "$INSTDIR\Include\xraylib-auger.h.fix"
-	Call unix2dos
-	Rename xraylib-auger.h.fix xraylib-auger.h
-	File ${abs_top_srcdir_win}\include\xraylib-crystal-diffraction.h
-	Push "$INSTDIR\Include\xraylib-crystal-diffraction.h"
-	Push "$INSTDIR\Include\xraylib-crystal-diffraction.h.fix"
-	Call unix2dos
-	Rename xraylib-crystal-diffraction.h.fix xraylib-crystal-diffraction.h
-	File ${abs_top_srcdir_win}\include\xraylib-defs.h
-	Push "$INSTDIR\Include\xraylib-defs.h"
-	Push "$INSTDIR\Include\xraylib-defs.h.fix"
-	Call unix2dos
-	Rename xraylib-defs.h.fix xraylib-defs.h
-
-	;python bindings
-	DetailPrint "Installing Python bindings"
-	SetOutPath "$INSTDIR\Python2.6"
-	File ${abs_top_srcdir_win}\nsis\python\python2.6\_xraylib.pyd
-
-	SetOutPath "$INSTDIR\Python2.7"
-	File ${abs_top_srcdir_win}\nsis\python\python2.7\_xraylib.pyd
-
-	SetOutPath "$INSTDIR\Python3.1"
-	File ${abs_top_srcdir_win}\nsis\python\python3.1\_xraylib.pyd
-
-	SetOutPath "$INSTDIR\Python3.2"
-	File ${abs_top_srcdir_win}\nsis\python\python3.2\_xraylib.pyd
-
-	SetOutPath "$INSTDIR\Python3.3"
-	File ${abs_top_srcdir_win}\nsis\python\python3.3\_xraylib.pyd
-
-
-	;python executable
-	SetOutPath "$INSTDIR\Python"
-	File ${abs_top_srcdir_win}\nsis\xraylib.py
-	Push "$INSTDIR\Python\xraylib.py"
-	Push "$INSTDIR\Python\xraylib.py.fix"
-	Call unix2dos
-	Rename xraylib.py.fix xraylib.py
-	File ${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py
-	Push "$INSTDIR\Python\xrayhelp.py"
-	Push "$INSTDIR\Python\xrayhelp.py.fix"
-	Call unix2dos
-	Rename xrayhelp.py.fix xrayhelp.py
-	File ${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py
-	Push "$INSTDIR\Python\xraymessages.py"
-	Push "$INSTDIR\Python\xraymessages.py.fix"
-	Call unix2dos
-	Rename xraymessages.py.fix xraymessages.py
-	;python has to set his own pythonpath variable...
-
-	SetOutPath "$INSTDIR\Bin"
-	File ${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py
-	Push "$INSTDIR\Bin\xraylib-cli.py"
-	Push "$INSTDIR\Bin\xraylib-cli.py.fix"
-	Call unix2dos
-	Rename xraylib-cli.py.fix xraylib-cli.py
-	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
-
-
-	;IDL
-	DetailPrint "Installing IDL bindings"
-	SetOutPath "$INSTDIR\dlm"
-	File ${abs_top_srcdir_win}\nsis\libxrlidl.dll
-	File ${abs_top_srcdir_win}\idl\libxrlidl.dlm
-	Push "$INSTDIR\dlm\libxrlidl.dlm"
-	Push "$INSTDIR\dlm\libxrlidl.dlm.fix"
-	Call unix2dos
-	Rename libxrlidl.dlm.fix libxrlidl.dlm
-	${EnvVarUpdate} $0 "IDL_DLM_PATH" "P" "HKLM" "<IDL_DEFAULT>"
-	${EnvVarUpdate} $0 "IDL_DLM_PATH" "A" "HKLM" "$INSTDIR\dlm"
-
-	SetOutPath "$INSTDIR\pro"
-	File ${abs_top_srcdir_win}\idl\xraylib.pro
-	Push "$INSTDIR\pro\xraylib.pro"
-	Push "$INSTDIR\pro\xraylib.pro.fix"
-	Call unix2dos
-	Rename xraylib.pro.fix xraylib.pro
-	File ${abs_top_srcdir_win}\idl\xraylib_help.pro
-	Push "$INSTDIR\pro\xraylib_help.pro"
-	Push "$INSTDIR\pro\xraylib_help.pro.fix"
-	Call unix2dos
-	Rename xraylib_help.pro.fix xraylib_help.pro
-	File ${abs_top_srcdir_win}\idl\xraylib_lines.pro
-	Push "$INSTDIR\pro\xraylib_lines.pro"
-	Push "$INSTDIR\pro\xraylib_lines.pro.fix"
-	Call unix2dos
-	Rename xraylib_lines.pro.fix xraylib_lines.pro
-	File ${abs_top_srcdir_win}\idl\xraylib_shells.pro
-	Push "$INSTDIR\pro\xraylib_shells.pro"
-	Push "$INSTDIR\pro\xraylib_shells.pro.fix"
-	Call unix2dos
-	Rename xraylib_shells.pro.fix xraylib_shells.pro
-	File ${abs_top_srcdir_win}\idl\xraylib_auger.pro
-	Push "$INSTDIR\pro\xraylib_auger.pro"
-	Push "$INSTDIR\pro\xraylib_auger.pro.fix"
-	Call unix2dos
-	Rename xraylib_auger.pro.fix xraylib_auger.pro
-	${EnvVarUpdate} $0 "IDL_PATH" "P" "HKLM" "<IDL_DEFAULT>"
-	${EnvVarUpdate} $0 "IDL_PATH" "A" "HKLM" "$INSTDIR\pro"
-
 
 	;install the redistributable Visual C++ libraries
 	SetOutPath "$INSTDIR\temp"
@@ -328,6 +134,183 @@ Section "-xraylib core files" SecDummy
 	WriteRegStr HKLM ${PRODUCT_UNINST_KEY} "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
 	WriteRegStr HKLM ${PRODUCT_UNINST_KEY} "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
 	WriteUninstaller "$INSTDIR\Uninstall.exe"
+SectionEnd
+
+Section /o "xraylib SDK" SecSDK
+	SetAutoClose false
+	SetShellVarContext all
+	
+	;copy lib file to Lib for development...
+	DetailPrint "Installing static libraries..."
+	SetOutPath "$INSTDIR\Lib"
+	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.lib
+	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@-bcc.lib
+	File ${abs_top_srcdir_win}\nsis\libxrl-@LIB_CURRENT_MINUS_AGE@.exp
+	File ${abs_top_builddir_win}\src\.libs\libxrl.a
+	File ${abs_top_builddir_win}\src\.libs\libxrl.dll.a
+	File ${abs_top_builddir_win}\src\libxrl-@LIB_CURRENT_MINUS_AGE@.def
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\README" ".txt"
+
+	;Examples
+	DetailPrint "Installing examples..."
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample1.c" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample6.cpp" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample8.cs" ""
+
+	;Headers
+	DetailPrint "Installing headers..."
+	SetOutPath "$INSTDIR\Include"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-parser.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-lines.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-shells.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-auger.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-crystal-diffraction.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-crystal-defs.h" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\include\xraylib-nist-compounds.h" ""
+
+SectionEnd
+
+Section /o "IDL bindings" SecIDL
+
+	DetailPrint "Installing IDL example"
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample4.pro" ""
+
+	DetailPrint "Installing IDL bindings"
+	SetOutPath "$INSTDIR\dlm"
+	File ${abs_top_srcdir_win}\nsis\libxrlidl.dll
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\libxrlidl.dlm" ""
+	${EnvVarUpdate} $0 "IDL_DLM_PATH" "P" "HKLM" "<IDL_DEFAULT>"
+	${EnvVarUpdate} $0 "IDL_DLM_PATH" "A" "HKLM" "$INSTDIR\dlm"
+
+	SetOutPath "$INSTDIR\pro"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\xraylib.pro" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\xraylib_help.pro" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\xraylib_lines.pro" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\xraylib_shells.pro" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\xraylib_auger.pro" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\idl\xraylib_nist_compounds.pro" ""
+	${EnvVarUpdate} $0 "IDL_PATH" "P" "HKLM" "<IDL_DEFAULT>"
+	${EnvVarUpdate} $0 "IDL_PATH" "A" "HKLM" "$INSTDIR\pro"
+
+SectionEnd
+
+SectionGroup /e "Python bindings" SecPython
+
+Section "Python 2.6" SecPython26
+
+	DetailPrint "Installing Python example"
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+
+	;python bindings
+	DetailPrint "Installing Python 2.6 bindings"
+	SetOutPath "$INSTDIR\Python"
+	File ${abs_top_srcdir_win}\nsis\python\python2.6\_xraylib.pyd
+
+	;python executable
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+
+	SetOutPath "$INSTDIR\Bin"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
+	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
+SectionEnd
+
+Section /o "Python 2.7" SecPython27
+
+	DetailPrint "Installing Python example"
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+
+	;python bindings
+	DetailPrint "Installing Python 2.7 bindings"
+	SetOutPath "$INSTDIR\Python"
+	File ${abs_top_srcdir_win}\nsis\python\python2.7\_xraylib.pyd
+
+	;python executable
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+
+	SetOutPath "$INSTDIR\Bin"
+	!insertmacro unix2dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
+	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
+SectionEnd
+
+Section /o "Python 3.1" SecPython31
+
+	DetailPrint "Installing Python example"
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix3dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+
+	;python bindings
+	DetailPrint "Installing Python 3.1 bindings"
+	SetOutPath "$INSTDIR\Python"
+	File ${abs_top_srcdir_win}\nsis\python\python3.1\_xraylib.pyd
+
+	;python executable
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+
+	SetOutPath "$INSTDIR\Bin"
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
+	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
+SectionEnd
+
+Section /o "Python 3.2" SecPython32
+
+	DetailPrint "Installing Python example"
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix3dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+
+	;python bindings
+	DetailPrint "Installing Python 3.2 bindings"
+	SetOutPath "$INSTDIR\Python"
+	File ${abs_top_srcdir_win}\nsis\python\python3.2\_xraylib.pyd
+
+	;python executable
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+
+	SetOutPath "$INSTDIR\Bin"
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
+	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
+SectionEnd
+
+Section /o "Python 3.3" SecPython33
+
+	DetailPrint "Installing Python example"
+	SetOutPath "$INSTDIR\Example"
+	!insertmacro unix3dos "${abs_top_srcdir_win}\example\xrlexample5.py" ""
+
+	;python bindings
+	DetailPrint "Installing Python 3.3 bindings"
+	SetOutPath "$INSTDIR\Python"
+	File ${abs_top_srcdir_win}\nsis\python\python3.3\_xraylib.pyd
+
+	;python executable
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\xraylib.py" ""
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xrayhelp.py" ""
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraymessages.py" ""
+
+	SetOutPath "$INSTDIR\Bin"
+	!insertmacro unix3dos "${abs_top_srcdir_win}\nsis\python\cli\xraylib-cli.py" ""
+	${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\Bin"
+	${EnvVarUpdate} $0 "PYTHONPATH" "A" "HKLM" "$INSTDIR\Python"
+SectionEnd
+SectionGroupEnd
+
+
 SectionEnd
 
 Section "Uninstall"
@@ -362,11 +345,7 @@ Section "Uninstall"
 	Delete "$INSTDIR\Lib\libxrl.dll.a"
 	Delete "$INSTDIR\Lib\libxrl.a"
 	Delete "$INSTDIR\Lib\README.txt"
-	Delete "$INSTDIR\Python2.6\_xraylib.pyd"
-	Delete "$INSTDIR\Python2.7\_xraylib.pyd"
-	Delete "$INSTDIR\Python3.1\_xraylib.pyd"
-	Delete "$INSTDIR\Python3.2\_xraylib.pyd"
-	Delete "$INSTDIR\Python3.3\_xraylib.pyd"
+	Delete "$INSTDIR\Python\_xraylib.pyd"
 	Delete "$INSTDIR\Python\xraymessages.py"
 	Delete "$INSTDIR\Python\xrayhelp.py"
 	Delete "$INSTDIR\Python\xraylib.py"
@@ -387,11 +366,6 @@ Section "Uninstall"
 	RMDir "$INSTDIR\Lib"
 	RMDir "$INSTDIR\Doc"
 	RMDir "$INSTDIR\Example"
-	RMDir "$INSTDIR\Python2.6"
-	RMDir "$INSTDIR\Python2.7"
-	RMDir "$INSTDIR\Python3.1"
-	RMDir "$INSTDIR\Python3.2"
-	RMDir "$INSTDIR\Python3.3"
 	RMDir /r "$INSTDIR\Python"
 	RMDir "$INSTDIR\Bin"
 	RMDir "$INSTDIR\pro"
@@ -405,12 +379,13 @@ Section "Uninstall"
 	RMDir "$INSTDIR"
 
 	${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\Bin"
+	${un.EnvVarUpdate} $0 "PYTHONPATH" "R" "HKLM" "$INSTDIR\Python"
 	${un.EnvVarUpdate} $0 "IDL_DLM_PATH" "R" "HKLM" "$INSTDIR\dlm"
 	${un.EnvVarUpdate} $0 "IDL_PATH" "R" "HKLM" "$INSTDIR\pro"
 	DeleteRegKey /ifempty HKLM "${PRODUCT_DIR_REGKEY}"
 	DeleteRegKey HKLM ${PRODUCT_UNINST_KEY}
 SectionEnd
-Function unix2dos
+Function _unix2dos
     ; strips all CRs
     ;     ; and then converts all LFs into CRLFs
     ;     ; (this is roughly equivalent to "cat file | dos2unix | unix2dos")
@@ -476,9 +451,11 @@ Function .onInit
 	Exec $INSTDIR\Uninstall.exe
 
 	done:
-
+	!insertmacro RadioGetChecked "${SecPython26}" "${SecPython26},${SecPython27},${SecPython31},${SecPython32},${SecPython33}"
 FunctionEnd
 
-
+Function .onSelChange
+	!insertmacro SectionRadioButtons "${SecPython26}" "${SecPython26},${SecPython27},${SecPython31},${SecPython32},${SecPython33}"
+FunctionEnd
 
 !insertmacro MUI_LANGUAGE "English"
