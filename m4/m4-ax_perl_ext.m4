@@ -83,7 +83,7 @@ AC_DEFUN([AX_PERL_EXT],[
                 AC_MSG_CHECKING([for Perl extension target directory])
                 if test -z "$PERL_EXT_LIB" ; then
 			if test "x$enable_perl_integration" = "xyes" ; then
-                        	[PERL_EXT_LIB=`$PERL -MConfig -e 'print $Config{sitearch};'`];
+                        	[PERL_EXT_LIB=`$PERL -MConfig -e 'print $Config{vendorarch};'`];
 			else
 				PERL_EXT_LIB=[${libdir}/perl5/site_perl/`$PERL -MConfig -e 'print $Config{version};'`/`$PERL -MConfig -e 'print $Config{archname};'`]
 			fi
