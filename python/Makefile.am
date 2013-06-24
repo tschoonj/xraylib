@@ -20,34 +20,53 @@ EXTRA_DIST = xraylib
 
 
 if ENABLE_PYTHON
-all: xraylib.py ../src/libxrl.la
+
+pyexec_LTLIBRARIES = _xraylib.la
+_xraylib_la_CFLAGS = $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) 
+_xraylib_la_LIBADD = ../src/libxrl.la
+nodist__xraylib_la_SOURCES = xraylib_wrap.c
+_xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
+
+nodist_bin_SCRIPTS = xraylib
+nodist_python_PYTHON = xraylib.py xrayhelp.py xraymessages.py
 
 
-
-xraylib.py: ${top_srcdir}/src/xraylib.i  ${top_srcdir}/include/xraylib*h
+xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
-	CC="$(CC)" CPPFLAGS="-I${top_srcdir}/include" CFLAGS="$(ARCHFLAGS)" $(PYTHON) xrlsetup.py build_ext --inplace
+
+xraylib.py: xraylib_wrap.c
+
+
+
+
+#all: xraylib.py ../src/libxrl.la
+
+
+
+#xraylib.py: ${top_srcdir}/src/xraylib.i  ${top_srcdir}/include/xraylib*h
+#	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
+#	CC="$(CC)" CPPFLAGS="-I${top_srcdir}/include" CFLAGS="$(ARCHFLAGS)" $(PYTHON) xrlsetup.py build_ext --inplace
 
 
 
 
 #I like to use my own commands for the install: although xrlsetup.py can handle this, I want to do it myself. Libtool would also be a possibility as is detailed in the automake manual.
 #MKDIR_P's are necessary for distcheck
-install-exec-local:
-	$(MKDIR_P) $(DESTDIR)$(pythondir)
-	$(MKDIR_P) $(DESTDIR)$(pyexecdir)
-	$(MKDIR_P) $(DESTDIR)$(bindir)
-	$(INSTALL) -m 0644 xraylib.py xrayhelp.py xraymessages.py $(DESTDIR)$(pythondir)
-	$(INSTALL) _xraylib.* $(DESTDIR)$(pyexecdir)
-	$(INSTALL) ${top_srcdir}/python/xraylib $(DESTDIR)$(bindir)
+#install-exec-local:
+#	$(MKDIR_P) $(DESTDIR)$(pythondir)
+#	$(MKDIR_P) $(DESTDIR)$(pyexecdir)
+#	$(MKDIR_P) $(DESTDIR)$(bindir)
+#	$(INSTALL) -m 0644 xraylib.py xrayhelp.py xraymessages.py $(DESTDIR)$(pythondir)
+#	$(INSTALL) _xraylib.* $(DESTDIR)$(pyexecdir)
+#	$(INSTALL) ${top_srcdir}/python/xraylib $(DESTDIR)$(bindir)
 
-uninstall-local:
-	rm -f $(DESTDIR)$(pythondir)/xraylib.py $(DESTDIR)$(pythondir)/xrayhelp.py $(DESTDIR)$(pythondir)/xraymessages.py
-	rm -f $(DESTDIR)$(pyexecdir)/_xraylib.*
-	rm -f $(DESTDIR)$(bindir)/xraylib
+#uninstall-local:
+#	rm -f $(DESTDIR)$(pythondir)/xraylib.py $(DESTDIR)$(pythondir)/xrayhelp.py $(DESTDIR)$(pythondir)/xraymessages.py
+#	rm -f $(DESTDIR)$(pyexecdir)/_xraylib.*
+#	rm -f $(DESTDIR)$(bindir)/xraylib
 
 clean-local:
-	rm -rf xraylib_wrap.c build _xraylib.* xraylib.py xraylib.pyc
+	rm -rf xraylib_wrap.c xraylib.py xraylib.pyc
 
 
 

@@ -50,7 +50,7 @@ xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
-  xrlexample3_SOURCES = ../fortran/xraylib.mod xrlexample3.f90 
+  xrlexample3_SOURCES = xrlexample3.f90 
   xrlexample3_LDADD = ../fortran/libxrlf03.la
   xrlexample3_CPPFLAGS = -I../fortran
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
@@ -90,9 +90,9 @@ xrlexample2.sh: ../perl/xraylib.pm
 	@chmod +x xrlexample2.sh
 
 #test the python bindings
-xrlexample5.sh: ../python/xraylib.py
+xrlexample5.sh: ../python/_xraylib.la
 	@echo "Testing python bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
@@ -121,8 +121,8 @@ xrlexample10.sh: ../ruby/xraylib.la
 ../idl/libxrlidl.la:
 	$(MAKE) -C ../idl libxrlidl.la
 
-../python/xraylib.py:
-	$(MAKE) -C ../python xraylib.py
+../python/_xraylib.la:
+	$(MAKE) -C ../python _xraylib.la
 
 ../java/xraylib.java:
 	$(MAKE) -C ../java xraylib.java
@@ -133,8 +133,6 @@ xrlexample10.sh: ../ruby/xraylib.la
 ../ruby/xraylib.la:
 	$(MAKE) -C ../ruby xraylib.la
 
-../fortran/xraylib.mod:
-	$(MAKE) -C ../fortran libxrlf03.la
 
 clean-local:
 	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh

@@ -286,6 +286,19 @@ EOD`
 	AC_SUBST([PYTHON_SITE_PKG_EXEC])
 
 	#
+	# Check for package building cflags 
+	#
+	AC_MSG_CHECKING([for Python module cflags])
+	if test -z "$PYTHON_CFLAGS"; then
+		PYTHON_CFLAGS=[`$PYTHON -c "import distutils.sysconfig; \
+		        conf = distutils.sysconfig.get_config_vars(); \
+			print (conf['OPT'])"`]
+	fi
+	AC_MSG_RESULT([$PYTHON_CFLAGS])
+	AC_SUBST([PYTHON_CFLAGS])
+
+
+	#
 	# libraries which must be linked in when embedding
 	#
 	#AC_MSG_CHECKING(python extra libraries)
