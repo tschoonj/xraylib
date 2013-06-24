@@ -11,35 +11,24 @@
 
 
 if ENABLE_PERL
-all: xraylib.pm ../src/libxrl.la
 
+plugindir = $(PERL_EXT_LIB)/auto/xraylib
+plugin_LTLIBRARIES = xraylib.la
+xraylib_la_LIBADD = ../src/libxrl.la
+nodist_xraylib_la_SOURCES = xraylib_wrap.c
+xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(PERL_EXT_DLEXT)
+xraylib_la_CFLAGS = $(PERL_EXT_CPPFLAGS) -I$(PERL_EXT_INC) -I${top_builddir} -I${top_srcdir}/include
 
-xraylib.pm: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
+perldir = $(PERL_EXT_LIB)
+
+nodist_perl_DATA = xraylib.pm
+
+xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -perl ${top_srcdir}/src/xraylib.i
-	rm -rf Makefile2 blib pm_to_blib Makefile.PL
-	@echo "#!/usr/bin/perl -w" > Makefile.PL
-	@echo "use ExtUtils::MakeMaker 6.31;" >> Makefile.PL
-	@echo "WriteMakefile(" >> Makefile.PL
-	@echo "'NAME'=> 'xraylib'," >> Makefile.PL
-	@echo "'OBJECT'=> 'xraylib_wrap.o'," >> Makefile.PL
-	@echo "'FIRST_MAKEFILE'=> 'Makefile2'" >> Makefile.PL
-	@echo ");" >> Makefile.PL
-	$(PERL) Makefile.PL CCDLFLAGS="$(ARCHFLAGS)" LDDLFLAGS="$(ARCHFLAGS)" INC="-I${top_srcdir}/include" CCFLAGS="$(ARCHFLAGS)" INSTALL_BASE=$(DESTDIR)/${prefix} VERSION=$(VERSION) LIBS="-L../src/.libs -lxrl"
-	$(MAKE) $(AM_MAKEFLAGS)	INSTALL_BASE=$(DESTDIR)/$(prefix) VERSION=$(VERSION) -f Makefile2
 
-
-install-exec-local:
-	$(MAKE) $(AM_MAKEFLAGS) -f Makefile2 install
-
-uninstall-local:
-#	perl uninstall doesn't work... it's unsafe according to them.
-#	So we'll have to do it ourselves
-#	let's use the .packlist file for this.
-	find $(DESTDIR)$(prefix) -name '.packlist' | grep xraylib | xargs cat | xargs rm -vf
-	find $(DESTDIR)$(prefix) -name '.packlist' | grep xraylib | xargs rm -fv
-	find $(DESTDIR)$(prefix) -name 'perllocal.pod' | xargs rm -fv
+xraylib.pm: xraylib_wrap.c
 
 clean-local:
-	rm -rf blib Makefile.PL Makefile2 pm_to_blib xraylib.bs xraylib.pm xraylib_wrap.* MYMETA*
+	rm -rf xraylib.pm xraylib_wrap.c 
 
 endif

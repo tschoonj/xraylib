@@ -373,9 +373,6 @@ AM_CONDITIONAL([ENABLE_IDL],[test x$VALID_IDL = xyes])
 
 #search for swig which is necessary for both the perl and python bindings
 AC_CHECK_PROGS([SWIG],[swig],["noswig"])
-#find and xargs are necessary for the uninstallation of the perl bindings
-AC_CHECK_PROGS([FIND],[find],["nofind"])
-AC_CHECK_PROGS([XARGS],[xargs],["noxargs"])
 
 
 #
@@ -389,38 +386,25 @@ VALID_PERL=
 if test "x$SWIG" = xnoswig && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	AC_MSG_ERROR([--enable-perl was given as an option but swig was not found on the system])
 fi
-if test "x$FIND" = xnofind && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
-	AC_MSG_ERROR([--enable-perl was given as an option but find was not found on the system])
-fi
-if test "x$XARGS" = xnoxargs && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
-	AC_MSG_ERROR([--enable-perl was given as an option but xargs was not found on the system])
-fi
 
-MMFOUND=
-if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$FIND" != xnofind && test "x$XARGS" != xnoargs && test "x$DISABLE_BINDINGS" = xno  ;  then
+if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$DISABLE_BINDINGS" = xno  ;  then
 	#search for perl executable (although I can't imagine a modern system without perl...)
 	if test -z $PERL ; then
 		AC_CHECK_PROGS(PERL,[perl perl5],["noperl"])
 	fi
-	if test "x$PERL" != xnoperl ; then
-		#see if the Perl distribution has the MakeMaker module (at least version 6.31)
-		AS_IF([ $PERL -M'ExtUtils::MakeMaker 6.31' -e "exit 0;"],[MMFOUND=true],[MMFOUND=false])
-	fi
-	
 
-	if test "x$PERL" = xnoperl || test "x$MMFOUND" = xfalse ; then
+	if test "x$PERL" = xnoperl  ; then
 		if test "x$enable_perl" = xyes ; then
 			if test "x$PERL" = xnoperl ; then
 				AC_MSG_ERROR([--enable-perl was given as an option but Perl was not found on the system.])
-			elif test "x$MMFOUND" = x$false ; then
-				AC_MSG_ERROR([--enable-perl was given as an option but the ExtUtils::MakeMaker module was not found on the system or did not meet the minimum version requirement.])
 			fi
 		else
-			AC_MSG_WARN([perl was not found on the system or the installation was incomplete (ExtUtils::MakeMaker requirement). The perl bindings will not be built.])
+			AC_MSG_WARN([perl was not found on the system. The perl bindings will not be built.])
 			VALID_PERL=no
 		fi
 	else
 			#everything ok -> let's build those bindings
+			AX_PERL_EXT
 			VALID_PERL=yes
 			AC_MSG_NOTICE([Building with Perl bindings])
 	fi
