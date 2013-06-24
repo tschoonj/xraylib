@@ -38,10 +38,10 @@ THIS SOFTWARE IS PROVIDED BY David Sagan, Bruno Golosio, Antonio Brunetti, Manue
 typedef struct {
   double re;               /* Real part */
   double im;               /* Imaginary part */
-} Complex;
+} xrlComplex;
 
-double c_abs(Complex x);
-Complex c_mul(Complex x, Complex y);
+double c_abs(xrlComplex x);
+xrlComplex c_mul(xrlComplex x, xrlComplex y);
 
 /* Struct for an atom in a crystal. */
 

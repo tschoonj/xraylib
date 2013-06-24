@@ -38,7 +38,7 @@ TYPE :: compoundData
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
 ENDTYPE 
 
-TYPE, BIND(C) :: Complex_C
+TYPE, BIND(C) :: xrlComplex_C
         REAL (C_DOUBLE) :: re
         REAL (C_DOUBLE) :: im
 ENDTYPE
@@ -2371,11 +2371,11 @@ INTERFACE
 
         PURE FUNCTION Refractive_Index_C(compound,E,density) BIND(C,NAME='Refractive_Index')
                 USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: Complex_C
+                IMPORT :: xrlComplex_C
                 IMPLICIT NONE
                 TYPE (C_PTR), INTENT(IN), VALUE :: compound
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, density
-                TYPE (Complex_C) :: Refractive_Index_C
+                TYPE (xrlComplex_C) :: Refractive_Index_C
         ENDFUNCTION Refractive_Index_C
 
         PURE FUNCTION ComptonProfile(Z, pz) BIND(C,NAME='ComptonProfile')
@@ -2909,13 +2909,13 @@ INTERFACE
         j_miller, k_miller, debye_factor, rel_angle) BIND(C,NAME=&
         'Crystal_F_H_StructureFactor') RESULT(rv)
                 USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: Complex_C
+                IMPORT :: xrlComplex_C
                 IMPLICIT NONE
                 TYPE (C_PTR), INTENT(IN), VALUE :: crystal
                 REAL (C_FLOAT), INTENT(IN), VALUE :: energy, rel_angle,&
                 debye_factor
                 INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
-                TYPE(Complex_C) :: rv
+                TYPE(xrlComplex_C) :: rv
         ENDFUNCTION Crystal_F_H_StructureFactor_C
 
         FUNCTION Crystal_F_H_StructureFactor_Partial_C(crystal, &
@@ -2923,14 +2923,14 @@ INTERFACE
         f0_flag, f_prime_flag, f_prime2_flag) BIND(C,NAME=&
         'Crystal_F_H_StructureFactor_Partial') RESULT(rv)
                 USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: Complex_C
+                IMPORT :: xrlComplex_C
                 IMPLICIT NONE
                 TYPE (C_PTR), INTENT(IN), VALUE :: crystal
                 REAL (C_FLOAT), INTENT(IN), VALUE :: energy, rel_angle,&
                 debye_factor
                 INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller,&
                 f0_flag, f_prime_flag, f_prime2_flag
-                TYPE(Complex_C) :: rv
+                TYPE(xrlComplex_C) :: rv
         ENDFUNCTION Crystal_F_H_StructureFactor_Partial_C
 
         FUNCTION Crystal_UnitCellVolume_C(crystal)&
@@ -3200,7 +3200,7 @@ FUNCTION Crystal_F_H_StructureFactor(crystal, energy, i_miller,&
         TYPE (Crystal_Struct), INTENT(IN) :: crystal
         REAL (C_FLOAT), INTENT(IN) :: energy, rel_angle, debye_factor
         INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
-        TYPE (Complex_C) :: temp
+        TYPE (xrlComplex_C) :: temp
         COMPLEX (C_DOUBLE) :: rv
 
         TYPE (C_PTR) :: crystal_ptr
@@ -3237,7 +3237,7 @@ FUNCTION Crystal_F_H_StructureFactor_Partial(crystal, &
         REAL (C_FLOAT), INTENT(IN) :: energy, rel_angle, debye_factor
         INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller, &
         f0_flag, f_prime_flag, f_prime2_flag
-        TYPE (Complex_C) :: temp
+        TYPE (xrlComplex_C) :: temp
         COMPLEX (C_DOUBLE) :: rv
 
         TYPE (C_PTR) :: crystal_ptr
@@ -3389,7 +3389,7 @@ FUNCTION Refractive_Index(compoundString, E, density) RESULT(rv)
         compoundString_F
         INTEGER :: i
         COMPLEX (C_DOUBLE) :: rv
-        TYPE (Complex_C) :: rv_C
+        TYPE (xrlComplex_C) :: rv_C
 
         CALL stringF2C(compoundString, compoundString_F)
 

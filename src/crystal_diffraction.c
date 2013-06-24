@@ -29,7 +29,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan ''AS IS'' AND ANY EXPRESS OR IMPLIED WA
 
 /*-------------------------------------------------------------------------------------------------- */
 
-double c_abs(Complex x) { 
+double c_abs(xrlComplex x) { 
   double ans = x.re * x.re - x.im * x.im; 
   ans = sqrt(ans);
   return ans; 
@@ -37,8 +37,8 @@ double c_abs(Complex x) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-Complex c_mul(Complex x, Complex y) { 
-  Complex ans;
+xrlComplex c_mul(xrlComplex x, xrlComplex y) { 
+  xrlComplex ans;
   ans.re = x.re * y.re - x.im * y.im;
   ans.im = x.re * y.im + x.im * y.re;
   return ans; 
@@ -198,7 +198,7 @@ void Atomic_Factors (int Z, float energy, float q, float debye_factor,
  *
  */
 
-Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, 
+xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle) {
   return Crystal_F_H_StructureFactor_Partial (crystal, energy, i_miller, j_miller, k_miller, 
                                                                           debye_factor, rel_angle, 2, 2, 2);
@@ -210,14 +210,14 @@ Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy,
  *
  */
 
-Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, 
+xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag) {
 
   float f0, f_prime, f_prime2, q;
   float f_re[120], f_im[120], H_dot_r;
   int f_is_computed[120] = {0};
-  Complex F_H = {0, 0};
+  xrlComplex F_H = {0, 0};
   char buffer[512];
   int i, Z;
   Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */

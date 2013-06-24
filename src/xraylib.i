@@ -58,6 +58,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %ignore xrlFree;
 %ignore FreeCompoundData;
 %ignore FreeCompoundDataNIST;
+%ignore compoundData;
+%ignore compoundDataNIST;
+%ignore xrlComplex;
 
 %typemap(newfree) char * {
         if ($1)
@@ -189,8 +192,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
 }
 
-%typemap(out) Complex {
-        Complex c = $1;
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
 
         lua_newtable(L);
 
@@ -298,8 +301,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 }
 
-%typemap(in) Complex {
-        Complex c;
+%typemap(in) xrlComplex {
+        xrlComplex c;
        if (!lua_istable(L, $input)) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a table");
        } 
@@ -591,8 +594,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 
-%typemap(out) Complex {
-        Complex c = $1;
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
         PyObject *cp = PyComplex_FromDoubles(c.re, c.im);
 
         $result = cp;
@@ -965,8 +968,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 }
 
-%typemap(out) Complex {
-        Complex c = $1;
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
         int count;
         if (argvi >= items) {
                 EXTEND(sp,1);
@@ -1477,8 +1480,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 }
 
-%typemap(out) Complex {
-        Complex c = $1;
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
 %#ifdef T_COMPLEX
         /* Ruby 1.9 */
         VALUE cp = rb_Complex2(rb_float_new(c.re),rb_float_new(c.im));

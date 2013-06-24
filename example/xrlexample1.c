@@ -29,8 +29,8 @@ int main()
 
   float bragg, q, dw;
   float f0, fp, fpp;
-  Complex FH, F0;
-  Complex FHbar;
+  xrlComplex FH, F0;
+  xrlComplex FHbar;
   struct compoundDataNIST *cdn;
   char **nistCompounds;
 

@@ -75,10 +75,10 @@ double Refractive_Index_Im(const char compound[], double E, double density) {
 	return rv*density*9.8663479e-9/E;	
 }
 
-Complex Refractive_Index(const char compound[], double E, double density) {
+xrlComplex Refractive_Index(const char compound[], double E, double density) {
 	struct compoundData *cd;
 	int i;
-	Complex rv;
+	xrlComplex rv;
 	double delta = 0.0;
 	double im = 0.0;
 

@@ -87,7 +87,7 @@ void Atomic_Factors (int Z, float energy, float q, float debye_factor, float* f0
  * See also Crystal_F_H_StructureFactor_Partial 
  */
 
-Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, 
+xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle);
 
 /*--------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy,
  *        *_flag = 1 --> Set this term to 1. Only used for f0.
  *        *_flag = 2 --> Set this term to the value given
  */
-Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, 
+xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, 
                       int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag);
 
