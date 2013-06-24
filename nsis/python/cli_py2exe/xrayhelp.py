@@ -1,5 +1,5 @@
 
-#Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+#Copyright (c) 2009, 2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -13,26 +13,23 @@
 
 import string
 from _winreg import *
+from __future__ import print_function
 
 def display_func(func_name):
-    key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib-cli',0,KEY_READ)
-    res = QueryValueEx(key,"")
-    fp = open(res[0]+'\\Doc\\xrayhelp.txt', 'r')
-    file_lines = fp.readlines()
-    fp.close()
-    CloseKey(key)
-    for i in range(len(file_lines)):
-        line = string.strip(file_lines[i])
-        if (line == func_name):
-            while (line != ""):
-                i = i + 1
-                line = string.strip(file_lines[i])
-                print line
-            return
-    print
-    print "Function not recognized"
-    print
-
-
-
-
+	key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib-cli',0,KEY_READ)
+	res = QueryValueEx(key,"")
+	fp = open(res[0]+'\\Doc\\xrayhelp.txt', 'r')
+	file_lines = fp.readlines()
+	fp.close()
+	CloseKey(key)
+	for i in range(len(file_lines)):
+		line = file_lines[i].strip()
+		if (line == func_name):
+			while (line != ""):
+				i = i + 1
+				line = file_lines[i].strip()
+				print (line)
+			return
+	print ()
+	print ("Function not recognized")
+	print ()
