@@ -8,6 +8,17 @@ AtomicWeight
 //////////////////////////////////////////////////////////////////////
 >>> float AtomicWeight(int Z)
 
+ElementDensity
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                       Density of the pure element                //
+//                         under standard conditions                //
+//                                                                  //
+//          Z : atomic number                                       //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float ElementDensity(int Z)
+
 CosKronTransProb
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -833,7 +844,7 @@ Refractive_Index_Re
 //          density : compound density (g/cm3)                      //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float Refractive_Index_Re(const char compound[], float E, float density);
+>>> double Refractive_Index_Re(const char compound[], double E, double density);
 
 Refractive_Index_Im
 //////////////////////////////////////////////////////////////////////
@@ -845,7 +856,19 @@ Refractive_Index_Im
 //          density : compound density (g/cm3)                      //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float Refractive_Index_Im(const char compound[], float E, float density);
+>>> double Refractive_Index_Im(const char compound[], double E, double density);
+
+Refractive_Index
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Refractive Index (as complex number)              //
+//                                                                  //
+//          compound : chemical formula                             //
+//          E : energy (keV)                                        //
+//          density : compound density (g/cm3)                      //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> xrlComplex Refractive_Index(const char compound[], double E, double density);
 
 ComptonProfile
 //////////////////////////////////////////////////////////////////////
@@ -873,12 +896,23 @@ ComptonProfile_Partial
 AugerRate
 //////////////////////////////////////////////////////////////////////
 //                                                                  //
-//                Fractional non Radiative Rate                     //
+//                Fractional Auger Rate                             //
 //                                                                  //
 //          Z : atomic number                                       //
 //          auger_trans: macro identifying initial                  //
-//		ionized shell and two resulting                     //
+//		ionized shell and the origin of the two             //
 //              ejected electrons                                   //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> float AugerRate(int Z, int auger_trans);
+
+AugerYield
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                Auger Yield                                       //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell : shell macro                                     // 
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> float AugerRate(int Z, int auger_trans);
@@ -1154,7 +1188,7 @@ Crystal_F_H_StructureFactor
 //		The return value is a complex number		    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> Complex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle)
+>>> xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle)
 
 Crystal_F_H_StructureFactor_Partial
 //////////////////////////////////////////////////////////////////////
@@ -1170,7 +1204,7 @@ Crystal_F_H_StructureFactor_Partial
 //		*_flag = 2 --> Set this term to the value given	    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> Complex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag)
+>>> xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag)
 
 Crystal_UnitCellVolume
 //////////////////////////////////////////////////////////////////////
@@ -1242,3 +1276,103 @@ CS_Energy_CP
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> float CS_Energy_CP(const char compound[], float E);
+
+CompoundParser
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Compound parser: returns pointer to struct compoundData  //
+//                                                                  //
+//          compound : chemical formula                             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> struct compoundData *CompoundParser(const char compoundString[]);
+
+FreeCompoundData
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Compound parser: frees struct compoundData               //
+//                                                                  //
+//          parsedCompound : pointer to struct compoundData         //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> void FreeCompoundData(struct compoundData *parsedCompound);
+
+xrlFree
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Use to free memory allocated by xraylib if               //
+//           no dedicated function is available                     //
+//                                                                  //
+//          memPtr: pointer to xraylib allocated memory             //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> void xrlFree(void *memPtr);
+
+AtomicNumberToSymbol
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Returns string with chemical symbol for                  //
+//           a given atomic number                                  //
+//                                                                  //
+//          Z: atomic number                                        //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> char * AtomicNumberToSymbol(int Z);
+
+SymbolToAtomicNumber
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Returns atomic number corresponding to                   //
+//           a given chemical element                               //
+//                                                                  //
+//          symbol: chemical symbol                                 //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> int SymbolToAtomicNumber(char *symbol);
+
+GetCompoundDataNISTByName
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Allocates a structure containing the composition         //
+//           and density of a compound from the NIST database       //
+//                                                                  //
+//          compoundString: Full name of the compound               //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]);
+
+GetCompoundDataNISTByIndex
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Allocates a structure containing the composition         //
+//           and density of a compound from the NIST database       //
+//                                                                  //
+//          i: the index of the compound in the NIST database,      //
+//           usually obtained usina a NIST_COMPOUND_* macro         //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> struct compoundDataNIST *GetCompoundDataNISTByIndex(int i);
+
+GetCompoundDataNISTList
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//        Returns a NULL-terminated array of strings of all         //
+//		the compounds in the database. If nCompounds        //
+//		id not NULL, it shall receive the number of 	    //
+//		of compounds.					    //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> char **GetCompoundDataNISTList(int *nCompounds);
+
+FreeCompoundDataNIST
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//        Deallocates a pointer to a struct compoundDataNIST        //
+//         	and its components                                  //
+//                                                                  //
+//              compoundData: pointer to struct compoundDataNIST    //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> void FreeCompoundDataNIST(struct compoundDataNIST *compoundData);
+
+

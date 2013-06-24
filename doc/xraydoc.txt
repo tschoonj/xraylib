@@ -173,4 +173,13 @@ CS_Energy.dat
 
 Mass energy-absorption coefficients. Values are taken from NIST (http://physics.nist.gov/PhysRefData/XrayMassCoef/tab3.html), as calculated by S.M. Seltzer (Radiation Research 136, 147 (1993)).
 
+NIST compound composition database and element densities (densities.dat)
+========================================================================
+
+Taken from http://physics.nist.gov/cgi-bin/Star/compos.pl using the nist-compounds.pl script
+
+Fluorescence yields and Coster-Kronig transition probabilities
+==============================================================
+
+Some of the values have been replaced by those from Campbell's paper "Fluorescence yields and Coster–Kronig probabilities for the atomic L subshells. Part II: The L1 subshell revisited", Atomic Data and Nulear Data Tables (2009)
 
