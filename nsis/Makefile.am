@@ -19,7 +19,39 @@ nsis:
 	rm libxrl-$(LIB_CURRENT_MINUS_AGE).def
 	cp ../src/.libs/libxrl-$(LIB_CURRENT_MINUS_AGE).dll .
 	implib.exe -a -c libxrl-$(LIB_CURRENT_MINUS_AGE)-bcc.lib libxrl-$(LIB_CURRENT_MINUS_AGE).dll
-	makensis xraylib.nsi
+	unix2dos -n ${top_srcdir}/README README.txt
+	unix2dos -n ${top_srcdir}/AUTHORS AUTHORS.txt
+	unix2dos -n ${top_srcdir}/BUGS BUGS.txt
+	unix2dos -n ${top_srcdir}/Changelog Changelog.txt
+	unix2dos -n ${top_srcdir}/doc/xraybanner.txt xraybanner.txt
+	unix2dos -n ${top_srcdir}/doc/xraydoc.txt xraydoc.txt
+	unix2dos -n ${top_srcdir}/doc/xrayfunc.txt xrayfunc.txt
+	unix2dos -n ${top_srcdir}/doc/xrayhelp.txt xrayhelp.txt
+	unix2dos -n ${srcdir}/README README2.txt
+	unix2dos -n ${top_srcdir}/example/xrlexample1.c xrlexample1.c
+	unix2dos -n ${top_srcdir}/example/xrlexample6.cpp xrlexample6.cpp
+	unix2dos -n ${top_srcdir}/include/xraylib.h xraylib.h
+	unix2dos -n ${top_srcdir}/include/xraylib-parser.h xraylib-parser.h
+	unix2dos -n ${top_srcdir}/include/xraylib-lines.h xraylib-lines.h
+	unix2dos -n ${top_srcdir}/include/xraylib-shells.h xraylib-shells.h
+	unix2dos -n ${top_srcdir}/include/xraylib-auger.h xraylib-auger.h
+	unix2dos -n ${top_srcdir}/include/xraylib-crystal-diffraction.h xraylib-crystal-diffraction.h
+	unix2dos -n ${top_srcdir}/include/xraylib-defs.h xraylib-defs.h
+	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
+	unix2dos -n ${top_srcdir}/example/xrlexample8.cs xrlexample8.cs
+	unix2dos -n ${top_srcdir}/example/xrlexample4.pro xrlexample4.pro
+	unix2dos -n ${top_srcdir}/idl/libxrlidl.dlm libxrlidl.dlm 
+	unix2dos -n ${top_srcdir}/idl/xraylib.pro xraylib.pro 
+	unix2dos -n ${top_srcdir}/idl/xraylib_help.pro xraylib_help.pro 
+	unix2dos -n ${top_srcdir}/idl/xraylib_lines.pro xraylib_lines.pro 
+	unix2dos -n ${top_srcdir}/idl/xraylib_shells.pro xraylib_shells.pro 
+	unix2dos -n ${top_srcdir}/idl/xraylib_auger.pro xraylib_auger.pro 
+	unix2dos -n ${top_srcdir}/idl/xraylib_nist_compounds.pro xraylib_nist_compounds.pro 
+	unix2dos -n ${top_srcdir}/example/xrlexample5.py xrlexample5.py
+	unix2dos -n ${srcdir}/python/cli/xraylib-cli.py xraylib-cli.py
+	unix2dos -n ${srcdir}/python/cli/xraymessages.py xraymessages.py
+	unix2dos -n ${srcdir}/python/cli/xrayhelp.py xrayhelp.py
+	iscc.exe /dMyAppVersion=$(VERSION) /dabs_top_srcdir_win=$(abs_top_srcdir_win) /dabs_top_builddir_win=$(abs_top_builddir_win) xraylib.iss
 	$(MAKE) -C python/cli_py2exe nsis
 
 old:
@@ -32,4 +64,4 @@ old:
 	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\nsis" idl batch
 
 
-EXTRA_DIST = xraylib.nsi.in License.rtf  README EnvVarUpdate.nsh RadioButtons.nsh
+EXTRA_DIST = License.rtf  README EnvVarUpdate.nsh xraylib.iss

@@ -154,7 +154,6 @@ Section /o "xraylib SDK" SecSDK
 	SetOutPath "$INSTDIR\Example"
 	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample1.c" ""
 	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample6.cpp" ""
-	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample8.cs" ""
 
 	;Headers
 	DetailPrint "Installing headers..."
@@ -177,6 +176,9 @@ Section /o ".NET bindings" SecdotNet
 	;Documentation
 	SetOutPath "$INSTDIR\Doc"
 	File ${abs_top_srcdir_win}\nsis\dotNet\XrayLib.NET.chm
+	
+	;Example
+	!insertmacro unix2dos "${abs_top_srcdir_win}\example\xrlexample8.cs" ""
 SectionEnd
 
 Section /o "IDL bindings" SecIDL
