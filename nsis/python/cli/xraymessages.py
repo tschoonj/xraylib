@@ -10,9 +10,11 @@
 
 #THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from _winreg import *
 from __future__ import print_function
-
+try:
+	from _winreg import *
+except ImportError:
+	from winreg import *
 
 def display_banner():
 	key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib',0,KEY_READ)
@@ -46,12 +48,12 @@ def display_help():
 	print ()
 	print ("Available X-ray library functions")
 	print ()
-    	fp = open(res[0]+'\\Doc\\xrayfunc.txt', 'r')
-    	for line in fp.readlines():
+	fp = open(res[0]+'\\Doc\\xrayfunc.txt', 'r')
+	for line in fp.readlines():
 		print (line, end="")
 	fp.close()
-    	CloseKey(key)
-    	display_usage()
+	CloseKey(key)
+	display_usage()
 
 def display_doc():
 	key = OpenKey(HKEY_LOCAL_MACHINE,r'Software\xraylib',0,KEY_READ)
@@ -59,10 +61,10 @@ def display_doc():
 	print ()
 	print ("X-ray data documentation")
 	print ()
-    	fp = open(res[0]+'\\Doc\\xraydoc.txt', 'r')
-    	for line in fp.readlines():
+	fp = open(res[0]+'\\Doc\\xraydoc.txt', 'r')
+	for line in fp.readlines():
 		print (line, end="")
 	fp.close()
-    	CloseKey(key)
+	CloseKey(key)
 	print ()
 

@@ -22,6 +22,7 @@ nsis:
 	unix2dos -n ${top_srcdir}/README README.txt
 	unix2dos -n ${top_srcdir}/AUTHORS AUTHORS.txt
 	unix2dos -n ${top_srcdir}/BUGS BUGS.txt
+	unix2dos -n ${top_srcdir}/TODO TODO.txt
 	unix2dos -n ${top_srcdir}/Changelog Changelog.txt
 	unix2dos -n ${top_srcdir}/doc/xraybanner.txt xraybanner.txt
 	unix2dos -n ${top_srcdir}/doc/xraydoc.txt xraydoc.txt
@@ -51,17 +52,18 @@ nsis:
 	unix2dos -n ${srcdir}/python/cli/xraylib-cli.py xraylib-cli.py
 	unix2dos -n ${srcdir}/python/cli/xraymessages.py xraymessages.py
 	unix2dos -n ${srcdir}/python/cli/xrayhelp.py xrayhelp.py
-	iscc.exe /dMyAppVersion=$(VERSION) /dabs_top_srcdir_win=$(abs_top_srcdir_win) /dabs_top_builddir_win=$(abs_top_builddir_win) xraylib.iss
+	$(MAKE) old
+	iscc.exe "-dLIB_CURRENT_MINUS_AGE=$(LIB_CURRENT_MINUS_AGE)" "-dMyAppVersion=$(VERSION)" "-dabs_top_srcdir_win=$(abs_top_srcdir_win)" "-dabs_top_builddir_win=$(abs_top_builddir_win)" "${srcdir}/xraylib.iss"
 	$(MAKE) -C python/cli_py2exe nsis
 
 old:
-	cp ../idl/xraylib_idl.c .
+	cp ${top_srcdir}/idl/xraylib_idl.c .
 	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
-	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Program Files (x86)\ITT\IDL\IDL80\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
-	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\nsis'" >> batch.pro
-	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.'" >> batch.pro
+	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\ITT\IDL71\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
+	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib\build\nsis'" >> batch.pro
+	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE" >> batch.pro
 	echo "exit" >> batch.pro
-	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib-$(VERSION)\nsis" idl batch
+	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib\build\nsis" idl batch
 
 
 EXTRA_DIST = License.rtf  README EnvVarUpdate.nsh xraylib.iss
