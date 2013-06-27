@@ -66,4 +66,4 @@ old:
 	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib\build\nsis" idl batch
 
 
-EXTRA_DIST = License.rtf  README EnvVarUpdate.nsh xraylib.iss
+EXTRA_DIST = License.rtf  README xraylib.iss

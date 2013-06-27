@@ -14,5 +14,5 @@ nsis:
 	makensis xraylib-cli.nsi
 
 
-EXTRA_DIST = README setup.py.in xrayhelp.py xraylib.py xraymessages.py xraylib-cli.nsi.in 
+EXTRA_DIST = README setup.py.in xrayhelp.py xraylib.py xraymessages.py xraylib-cli.nsi.in EnvVarUpdate.nsh
 

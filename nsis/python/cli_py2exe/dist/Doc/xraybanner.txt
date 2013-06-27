@@ -1,6 +1,0 @@
-xraylib v2.14.0 revised October 2010
-Authors: A. Brunetti, M. S. del Rio, T. Schoonjans, T. Ikonen , B. Golosio,
-         A. Simionovici, A. Somogyi, Matthew Wormington
-         ESRF, Grenoble, France, Univ. di Sassari, Italy, Ghent University,
-Belgium and EMBL, Hamburg, Germany
-    

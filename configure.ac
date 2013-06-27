@@ -765,7 +765,6 @@ AC_CONFIG_FILES([Makefile
 				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
-				 nsis/xraylib.nsi
 				 nsis/python/Makefile
 				 nsis/Makefile
 				 nsis/python/python2.6/Makefile
