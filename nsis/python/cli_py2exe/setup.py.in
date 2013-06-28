@@ -12,7 +12,7 @@ setup(
 			"unbuffered": True,
 			"optimize": 2,
 			"bundle_files": 1,
-			"includes":"_xraylib",
+			"includes":["_xraylib", "xraymessages","xrayhelp"],
 			"dll_excludes":['w9xpopen.exe']
 	        }
         },
