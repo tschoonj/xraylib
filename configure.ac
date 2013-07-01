@@ -84,11 +84,17 @@ if test "x$host" != "x$build" ; then
 	#cross compilation detected
 	#if $host is mingw, look for wine
 	case "$host" in 
-		*mingw*)
+		i686-*mingw*)
 			#disable bindings
 			DISABLE_BINDINGS=yes
 			#look for wine
 			AC_CHECK_PROGS([WINE],[wine],["nowine"])
+			;;
+		x86_64-*mingw*)
+			#disable bindings
+			DISABLE_BINDINGS=yes
+			#look for wine
+			AC_CHECK_PROGS([WINE],[wine64],["nowine"])
 			;;
 		*)
 			AC_MSG_ERROR([A platform was detected that is not supported for cross-compilation])
