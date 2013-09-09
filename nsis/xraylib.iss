@@ -117,6 +117,7 @@ Filename: "{tmp}\vcredist_x86_100.exe" ; Parameters: "/q" ; StatusMsg: "Installi
 
 [UninstallDelete]
 Type: filesandordirs ; Name: "{app}\Python\__pycache__"
+Type: dirifempty ; Name: "{app}"
 
 [Registry]
 Root: HKLM; Subkey: "Software\xraylib" ; ValueType: string ; ValueName: "" ; ValueData: "{app}" ; Flags: uninsdeletekey
@@ -137,10 +138,15 @@ var
 begin
   sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\xraylib_is1');
   sUnInstallString := '';
-  if not RegQueryStringValue(HKLM, sUnInstPath, 'QuietUninstallString', sUnInstallString) then
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
     begin
     sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\xraylib');
     RegQueryStringValue(HKLM, sUnInstPath, 'QuietUninstallString', sUnInstallString);
+  end
+  else
+  begin
+	//innosetups QuietUninstallString is not as silent as I would like...
+	sUnInstallString := sUnInstallString + ' /VERYSILENT';
   end;
   Log('QuietUninstallString: '+ sUnInstallString);
   Result := sUnInstallString;
@@ -180,7 +186,7 @@ begin
     Result := 1;
 end;
 
-function InitializeSetup: Boolean
+function InitializeSetup(): Boolean;
 
 begin
   Result := True;
@@ -197,7 +203,7 @@ begin
 	if (MsgBox('A previously installed version of xraylib was found on the system. It has to be uninstalled before the installation can proceed.', mbConfirmation, MB_OKCANCEL)) = IDOK then
 	begin
         	UnInstallOldVersion();
-	end;
+	end
 	else
 	begin
   		Result := False;
