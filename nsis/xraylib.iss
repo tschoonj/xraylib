@@ -180,17 +180,32 @@ begin
     Result := 1;
 end;
 
-/////////////////////////////////////////////////////////////////////
-procedure CurStepChanged(CurStep: TSetupStep);
+function InitializeSetup: Boolean
+
 begin
-  if (CurStep=ssInstall) then
+  Result := True;
+  if (IsUpgrade()) then
   begin
-    if (IsUpgrade()) then
-    begin
-      UnInstallOldVersion();
-    end;
+    //launch dialog when not operating in silent mode
+      if (WizardSilent()) then
+      begin
+        UnInstallOldVersion();
+      end
+      else
+      begin
+	//display msgbox
+	if (MsgBox('A previously installed version of xraylib was found on the system. It has to be uninstalled before the installation can proceed.', mbConfirmation, MB_OKCANCEL)) = IDOK then
+	begin
+        	UnInstallOldVersion();
+	end;
+	else
+	begin
+  		Result := False;
+	end;
+      end;
   end;
 end;
+
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
