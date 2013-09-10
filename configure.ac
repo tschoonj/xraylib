@@ -412,13 +412,45 @@ if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$DISABLE_BI
 	else
 			#everything ok -> let's build those bindings
 			AX_PERL_EXT
-			VALID_PERL=yes
-			AC_MSG_NOTICE([Building with Perl bindings])
+	  		AC_MSG_CHECKING([consistency of all components of perl development environment])
+			ac_save_CFLAGS="$CFLAGS"
+			ac_save_LDFLAGS="$LDFLAGS"
+			ac_save_CPPFLAGS="$CPPFLAGS"
+			ac_save_LIBS="$LIBS"
+			CFLAGS="-I$PERL_EXT_INC $PERL_EXT_CPPFLAGS"
+			LIBS="$PERL_EXT_LDFLAGS"
+	       		AC_LANG_PUSH([C])
+			AC_TRY_LINK([
+				#include <EXTERN.h>
+				#include <perl.h>
+				static PerlInterpreter *my_perl;
+			],[
+        		my_perl = perl_alloc();
+        		perl_construct(my_perl);
+			PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
+        		perl_run(my_perl);
+        		perl_destruct(my_perl);
+        		perl_free(my_perl);
+			],[perlexists=yes],[perlexists=no])
+			AC_MSG_RESULT([$perlexists])
+			AC_LANG_POP
+			CFLAGS="$ac_save_CFLAGS"
+			LDFLAGS="$ac_save_LDFLAGS"
+			CPPFLAGS="$ac_save_CPPFLAGS"
+			LIBS="$ac_save_LIBS"
+			VALID_PERL=$perlexists
 	fi
 else
 VALID_PERL=no
 fi #test enable perl
 
+if test x$VALID_PERL = xyes ; then
+	AC_MSG_NOTICE([Building with Perl bindings])
+elif test x$VALID_PERL = xno && test "x$enable_perl" = xyes ; then
+	AC_MSG_ERROR([Cannot build perl bindings])
+elif test x$VALID_PERL = xno && test "x$enable_perl" = xcheck ; then
+	AC_MSG_WARN([Cannot build perl bindings])
+fi
 AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
 
 #
