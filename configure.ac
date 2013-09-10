@@ -79,7 +79,7 @@ LDFLAGS_LIBXRL=
 #cross_compiling variable is not reliable on modern bash shells due to wine integration... look at the compiler instead
 #check instead of $build and $host differ
 
-
+OS_WINDOWS=0
 if test "x$host" != "x$build" ; then
 	#cross compilation detected
 	#if $host is mingw, look for wine
@@ -113,10 +113,11 @@ else
 			#build dll
 			LDFLAGS+="-no-undefined"
 			LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+			OS_WINDOWS=1
 			;;
 	esac
 fi
-
+AM_CONDITIONAL([OS_WINDOWS],[test x$OS_WINDOWS = x1])
 
 AC_SUBST(LDFLAGS_LIBXRL)
 
@@ -520,7 +521,7 @@ if test "x$VALID_JAVA" = xyes ; then
 	AC_MSG_NOTICE([Building with java bindings])
 	case $host in
 		*-*-darwin*)
-			JAVADYNAMICLINKING="-dynamiclib -framework JavaVM"
+			JAVADYNAMICLINKING="-framework JavaVM"
 			JAVACFLAGS=""
 			JAVALIBRARYPREFIX="lib"
 			JAVASO=".jnilib"
@@ -568,6 +569,9 @@ if test "x$VALID_JAVA" = xyes ; then
 	AC_SUBST(JAVACXXSHARED)
 	AC_SUBST(JAVACFLAGS)
 	AC_SUBST(CCSHARED)
+	XRLJAVALIB=$JAVALIBRARYPREFIX
+	XRLJAVALIB+=xraylib.la
+	AC_SUBST(XRLJAVALIB)
 
 fi
 AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
@@ -761,7 +765,6 @@ AC_CONFIG_FILES([Makefile
 				 include/Makefile
 				 example/Makefile
 				 idl/Makefile
-				 python/xrlsetup.py
 				 python/Makefile
 				 python/xrayhelp.py
 				 python/xraymessages.py
@@ -781,7 +784,8 @@ AC_CONFIG_FILES([Makefile
 				 nsis/python/cli_py2exe/xraylib-cli.nsi
 				 nsis/python/cli_py2exe/setup.py
 				 perl/Makefile
-				 lua/Makefile fortran/Makefile
+				 lua/Makefile
+				 fortran/Makefile
 				 nsis/python/python2.6/xrlsetup.py
 				 nsis/python/python2.7/xrlsetup.py
 				 nsis/python/python3.1/xrlsetup.py

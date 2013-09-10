@@ -15,10 +15,6 @@
 #python bindings for xraylib
 
 
-
-EXTRA_DIST = xraylib
-
-
 if ENABLE_PYTHON
 
 pyexec_LTLIBRARIES = _xraylib.la
@@ -27,7 +23,7 @@ _xraylib_la_LIBADD = ../src/libxrl.la
 nodist__xraylib_la_SOURCES = xraylib_wrap.c
 _xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
 
-nodist_bin_SCRIPTS = xraylib
+dist_bin_SCRIPTS = xraylib
 nodist_python_PYTHON = xraylib.py xrayhelp.py xraymessages.py
 
 
