@@ -461,7 +461,7 @@ char *AtomicNumberToSymbol(int Z) {
 int SymbolToAtomicNumber(char *symbol) {
 	int i;
 
-	for (i=0 ; i <= MENDEL_MAX ; i++) {
+	for (i=0 ; i < MENDEL_MAX ; i++) {
 		if (strcmp(symbol,MendelArray[i].name) == 0) 
 			return MendelArray[i].Zatom;
 	}
