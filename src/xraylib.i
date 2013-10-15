@@ -26,6 +26,10 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #undef PACKAGE_STRING
 #undef PACKAGE_BUGREPORT
 #endif
+#ifdef _WIN64
+  #define MS_WIN64
+  #define Py_InitModule4 Py_InitModule4_64
+#endif
 %}
 
 
@@ -632,7 +636,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 PyList_SetItem(atom, i, dict_temp);
              }
              /* store cpointer in dictionary */
+%#ifdef _WIN64
+             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long long) cs)); 
+%#else
              PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long) cs)); 
+%#endif
 
              $result = dict;
         }
@@ -654,7 +662,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 cpointer = PyDict_GetItemString(dict,"cpointer");
                 if (cpointer != NULL) {
                         /* convert to long */
+%#ifdef _WIN64
+                        long long cpointer_l = PyInt_AsLong(cpointer); 
+%#else
                         long cpointer_l = PyInt_AsLong(cpointer); 
+%#endif
                         if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"Invalid cpointer value");
                                 $1 = NULL;

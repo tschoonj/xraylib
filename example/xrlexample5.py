@@ -174,14 +174,14 @@ if __name__ == '__main__' :
 
 	print ("")
 
-  	cdn = xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
+	cdn = xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
 	print ("Uranium Monocarbide")
 	print ("  Name: %s" % cdn['name'])
 	print ("  Density: %f" % cdn['density'])
 	for i in range(cdn['nElements']):
 		print ("  Element %i: %f %%" % (cdn['Elements'][i], cdn['massFractions'][i]*100.0))
 
-  	cdn = xraylib.GetCompoundDataNISTByIndex(xraylib.NIST_COMPOUND_BRAIN_ICRP)
+	cdn = xraylib.GetCompoundDataNISTByIndex(xraylib.NIST_COMPOUND_BRAIN_ICRP)
 	print ("NIST_COMPOUND_BRAIN_ICRP")
 	print ("  Name: %s" % cdn['name'])
 	print ("  Density: %f" % cdn['density'])

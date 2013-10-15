@@ -79,6 +79,8 @@ LDFLAGS_LIBXRL=
 #cross_compiling variable is not reliable on modern bash shells due to wine integration... look at the compiler instead
 #check instead of $build and $host differ
 
+OS_WINDOWS_32=0
+OS_WINDOWS_64=0
 OS_WINDOWS=0
 if test "x$host" != "x$build" ; then
 	#cross compilation detected
@@ -109,15 +111,29 @@ if test "x$host" != "x$build" ; then
 	LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
 else
 	case "$host" in
-		*mingw*)
+		i686-*mingw*)
 			#build dll
 			LDFLAGS+="-no-undefined"
 			LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+			OS_WINDOWS_32=1
+			OS_WINDOWS=1
+			;;
+		x86_64-*mingw*)
+			#build dll
+			LDFLAGS+="-no-undefined"
+			LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+			OS_WINDOWS_64=1
 			OS_WINDOWS=1
 			;;
 	esac
 fi
+AM_CONDITIONAL([OS_WINDOWS_64],[test x$OS_WINDOWS_64 = x1])
+AM_CONDITIONAL([OS_WINDOWS_32],[test x$OS_WINDOWS_32 = x1])
 AM_CONDITIONAL([OS_WINDOWS],[test x$OS_WINDOWS = x1])
+AC_SUBST(OS_WINDOWS)
+AC_SUBST(OS_WINDOWS_32)
+AC_SUBST(OS_WINDOWS_64)
+
 
 AC_SUBST(LDFLAGS_LIBXRL)
 
