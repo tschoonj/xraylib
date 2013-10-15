@@ -779,7 +779,8 @@ if test "x$VALID_RUBY" = xyes ; then
 
 #get some more variables
 RUBY_EXT_ARCH=`AS_BASENAME([$RUBY_EXT_LIB])`
-RUBY_EXT_VERSION=`AS_BASENAME([$RUBY_EXT_ARCH])`
+RUBY_TEMP=`AS_DIRNAME([$RUBY_EXT_LIB])`
+RUBY_EXT_VERSION=`AS_BASENAME([$RUBY_TEMP])`
 
 if test "x$enable_ruby_integration" = xyes ; then
 	RUBYDIR=$RUBY_EXT_LIB
