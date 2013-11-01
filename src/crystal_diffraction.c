@@ -147,8 +147,8 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
  *
  */
 
-float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller) {
-  float d_spacing, wavelength;
+double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller) {
+  double d_spacing, wavelength;
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
 
@@ -164,9 +164,9 @@ float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_mi
  *
  */
 
-float Q_scattering_amplitude(Crystal_Struct* crystal, float energy, 
-                                    int i_miller, int j_miller, int k_miller, float rel_angle) {
-  float wavelength;
+double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, 
+                                    int i_miller, int j_miller, int k_miller, double rel_angle) {
+  double wavelength;
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0)
     return 0;
@@ -183,8 +183,8 @@ float Q_scattering_amplitude(Crystal_Struct* crystal, float energy,
  *
  */
 
-void Atomic_Factors (int Z, float energy, float q, float debye_factor, 
-                                  float* f0, float* f_prime, float* f_prime2) {
+void Atomic_Factors (int Z, double energy, double q, double debye_factor, 
+                                  double* f0, double* f_prime, double* f_prime2) {
 
   *f0       = FF_Rayl(Z, q) * debye_factor; 
   *f_prime  = Fi(Z, energy) * debye_factor;
@@ -198,8 +198,8 @@ void Atomic_Factors (int Z, float energy, float q, float debye_factor,
  *
  */
 
-xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, 
-                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle) {
+xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
   return Crystal_F_H_StructureFactor_Partial (crystal, energy, i_miller, j_miller, k_miller, 
                                                                           debye_factor, rel_angle, 2, 2, 2);
 }
@@ -210,12 +210,12 @@ xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy,
  *
  */
 
-xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, 
-                      int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle,
+xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, 
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag) {
 
-  float f0, f_prime, f_prime2, q;
-  float f_re[120], f_im[120], H_dot_r;
+  double f0, f_prime, f_prime2, q;
+  double f_re[120], f_im[120], H_dot_r;
   int f_is_computed[120] = {0};
   xrlComplex F_H = {0, 0};
   char buffer[512];
@@ -297,7 +297,7 @@ xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float e
  *
  */
 
-float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
+double Crystal_UnitCellVolume (Crystal_Struct* crystal) {
 
   Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
 
@@ -312,7 +312,7 @@ float Crystal_UnitCellVolume (Crystal_Struct* crystal) {
  *
  */
 
-float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller) {
+double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller) {
   Crystal_Struct* cc;
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
@@ -424,7 +424,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
 
       if (buffer[0] == '#' && buffer[1] == 'U' && buffer[2] == 'C' && 
           buffer[3] == 'E' && buffer[4] == 'L' && buffer[5] == 'L') {
-        ex = sscanf(buffer,"%20s %f %f %f %f %f %f", tag, &crystal->a, &crystal->b, &crystal->c, 
+        ex = sscanf(buffer,"%20s %lf %lf %lf %lf %lf %lf", tag, &crystal->a, &crystal->b, &crystal->c, 
                                                        &crystal->alpha, &crystal->beta, &crystal->gamma);
         if (found_it) {
           sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Multiple #UCELL lines found.", 
@@ -481,7 +481,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
     
     for (i = 0; i < n; i++) {
       atom = &(crystal->atom[i]);
-      ex = fscanf(fp, "%i %f %f %f %f", &atom->Zatom, &atom->fraction, &atom->x, &atom->y, &atom->z);
+      ex = fscanf(fp, "%i %lf %lf %lf %lf", &atom->Zatom, &atom->fraction, &atom->x, &atom->y, &atom->z);
       if (ex != 5) {
         sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Atom position line %d\n  Error parsing atom position.",
                                                                       file_name, crystal->name, i);

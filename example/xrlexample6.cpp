@@ -99,17 +99,17 @@ int main()
 
   std::printf ("\nSi111 at 8 KeV. Incidence at the Bragg angle:\n");
 
-  float energy = 8;
-  float debye_temp_factor = 1.0;
-  float rel_angle = 1.0;
+  double energy = 8;
+  double debye_temp_factor = 1.0;
+  double rel_angle = 1.0;
 
-  float bragg = Bragg_angle (cryst, energy, 1, 1, 1);
+  double bragg = Bragg_angle (cryst, energy, 1, 1, 1);
   std::printf ("  Bragg angle: Rad: %f Deg: %f\n", bragg, bragg*180/PI);
 
-  float q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+  double q = Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
   std::printf ("  Q Scattering amplitude: %f\n", q);
 
-  float f0, fp, fpp;
+  double f0, fp, fpp;
   Atomic_Factors (14, energy, q, debye_temp_factor, &f0, &fp, &fpp);
   std::printf ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f\n", f0, fp, fpp);
 
@@ -144,7 +144,7 @@ int main()
   std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
   xrlComplex FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
-  float dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
+  double dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
                                                   sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
   std::printf ("  Darwin width: %f micro-radians\n", 1e6*dw);
 

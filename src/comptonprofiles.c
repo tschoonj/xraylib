@@ -27,7 +27,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 /////////////////////////////////////////////////////////////////// */
 
 
-float ComptonProfile(int Z, float pz) {
+double ComptonProfile(int Z, double pz) {
 	double q, ln_q;
 	double ln_pz;
 
@@ -47,7 +47,7 @@ float ComptonProfile(int Z, float pz) {
 
 	q = exp(ln_q); 
 
-	return (float) q;
+	return (double) q;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ float ComptonProfile(int Z, float pz) {
 
 
 
-float ComptonProfile_Partial(int Z, int shell, float pz) {
+double ComptonProfile_Partial(int Z, int shell, double pz) {
 	double q, ln_q;
 	double ln_pz;
 
@@ -82,6 +82,6 @@ float ComptonProfile_Partial(int Z, int shell, float pz) {
 
 	q = exp(ln_q); 
 
-	return (float) q;
+	return (double) q;
 }
 

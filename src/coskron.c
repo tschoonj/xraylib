@@ -27,9 +27,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float CosKronTransProb(int Z, int trans)
+double CosKronTransProb(int Z, int trans)
 {
-  float trans_prob;
+  double trans_prob;
 
   if (Z<1 || Z>ZMAX){
     ErrorExit("Z out of range in function CosKronTransProb");

@@ -12,7 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 
-void lininterp(float xa[], float ya[], int n, float x, float *y) {
+void lininterp(double xa[], double ya[], int n, double x, double *y) {
 	int findpos = -1;
 	int i;
 
@@ -65,10 +65,10 @@ void lininterpd(double xa[], double ya[], int n, double x, double *y) {
 }
 
 
-void splint(float xa[], float ya[], float y2a[], int n, float x, float *y)
+void splint(double xa[], double ya[], double y2a[], int n, double x, double *y)
 {
 	int klo, khi, k;
-	float h, b, a;
+	double h, b, a;
 
 	if (x >= xa[n]) {
 	  *y = ya[n];

@@ -24,9 +24,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float Fii(int Z, float E)
+double Fii(int Z, double E)
 {
-  float fii;
+  double fii;
 
   if (Z<1 || Z>ZMAX || NE_Fii[Z]<0) {
     ErrorExit("Z out of range in function Fii");

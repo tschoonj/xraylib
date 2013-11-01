@@ -29,9 +29,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCSP_Rayl(int Z, float E, float theta, float phi)
+double  DCSP_Rayl(int Z, double E, double theta, double phi)
 {
-  float F, q;                                                      
+  double F, q;                                                      
                                                         
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function DCSP_Rayl");
@@ -58,9 +58,9 @@ float  DCSP_Rayl(int Z, float E, float theta, float phi)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCSP_Compt(int Z, float E, float theta, float phi)
+double  DCSP_Compt(int Z, double E, double theta, double phi)
 { 
-  float S, q;                                                      
+  double S, q;                                                      
                                                         
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function DCSP_Compt");
@@ -88,7 +88,7 @@ float  DCSP_Compt(int Z, float E, float theta, float phi)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float DCSP_KN(float E, float theta, float phi)
+double DCSP_KN(double E, double theta, double phi)
 { 
   double k0_k, k_k0, k_k0_2, cos_th, sin_th, cos_phi;
   
@@ -119,9 +119,9 @@ float DCSP_KN(float E, float theta, float phi)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCSP_Thoms(float theta, float phi)
+double  DCSP_Thoms(double theta, double phi)
 { 
-  float sin_th, cos_phi ;
+  double sin_th, cos_phi ;
 
   sin_th = sin(theta) ;
   cos_phi = cos(phi);

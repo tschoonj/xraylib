@@ -21,9 +21,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //          Z : atomic number                                       //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float ElementDensity(int Z)
+double ElementDensity(int Z)
 {
-  float element_density;
+  double element_density;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function ElementDensity");

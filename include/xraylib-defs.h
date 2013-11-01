@@ -47,17 +47,17 @@ xrlComplex c_mul(xrlComplex x, xrlComplex y);
 
 typedef struct {
   int Zatom;              /* Atomic number of atom. */
-  float fraction;         /* Fractional contribution. Normally 1.0. */
-  float x, y, z;          /* Atom position in fractions of the unit cell lengths. */
+  double fraction;         /* Fractional contribution. Normally 1.0. */
+  double x, y, z;          /* Atom position in fractions of the unit cell lengths. */
 } Crystal_Atom;
 
 /* Struct for a crystal. */
 
 typedef struct {
   char* name;                 /* Name of crystal. */
-  float a, b, c;              /* Unit cell size in Angstroms. */
-  float alpha, beta, gamma;   /* Unit cell angles in degrees. */
-  float volume;               /* Unit cell volume in Angstroms^3. */
+  double a, b, c;              /* Unit cell size in Angstroms. */
+  double alpha, beta, gamma;   /* Unit cell angles in degrees. */
+  double volume;               /* Unit cell volume in Angstroms^3. */
   int n_atom;                 /* Number of atoms. */
   Crystal_Atom* atom;   /* Array of atoms in unit cell. */
 } Crystal_Struct;

@@ -30,61 +30,61 @@ extern struct MendelElement MendelArraySorted[MENDEL_MAX];
 
 extern Crystal_Array Crystal_arr;
 
-extern float AtomicWeight_arr[ZMAX+1];
-extern float EdgeEnergy_arr[ZMAX+1][SHELLNUM];
-extern float LineEnergy_arr[ZMAX+1][LINENUM];
-extern float FluorYield_arr[ZMAX+1][SHELLNUM];
-extern float JumpFactor_arr[ZMAX+1][SHELLNUM];
-extern float CosKron_arr[ZMAX+1][TRANSNUM];
-extern float RadRate_arr[ZMAX+1][LINENUM];
-extern float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
+extern double AtomicWeight_arr[ZMAX+1];
+extern double EdgeEnergy_arr[ZMAX+1][SHELLNUM];
+extern double LineEnergy_arr[ZMAX+1][LINENUM];
+extern double FluorYield_arr[ZMAX+1][SHELLNUM];
+extern double JumpFactor_arr[ZMAX+1][SHELLNUM];
+extern double CosKron_arr[ZMAX+1][TRANSNUM];
+extern double RadRate_arr[ZMAX+1][LINENUM];
+extern double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
 
 extern int NE_Photo[ZMAX+1];
-extern float *E_Photo_arr[ZMAX+1];
-extern float *CS_Photo_arr[ZMAX+1];
-extern float *CS_Photo_arr2[ZMAX+1];
+extern double *E_Photo_arr[ZMAX+1];
+extern double *CS_Photo_arr[ZMAX+1];
+extern double *CS_Photo_arr2[ZMAX+1];
 
 extern int NE_Rayl[ZMAX+1];
-extern float *E_Rayl_arr[ZMAX+1];
-extern float *CS_Rayl_arr[ZMAX+1];
-extern float *CS_Rayl_arr2[ZMAX+1];
+extern double *E_Rayl_arr[ZMAX+1];
+extern double *CS_Rayl_arr[ZMAX+1];
+extern double *CS_Rayl_arr2[ZMAX+1];
 
 extern int NE_Compt[ZMAX+1];
-extern float *E_Compt_arr[ZMAX+1];
-extern float *CS_Compt_arr[ZMAX+1];
-extern float *CS_Compt_arr2[ZMAX+1];
+extern double *E_Compt_arr[ZMAX+1];
+extern double *CS_Compt_arr[ZMAX+1];
+extern double *CS_Compt_arr2[ZMAX+1];
 
 extern int Nq_Rayl[ZMAX+1];
-extern float *q_Rayl_arr[ZMAX+1];
-extern float *FF_Rayl_arr[ZMAX+1];
-extern float *FF_Rayl_arr2[ZMAX+1];
+extern double *q_Rayl_arr[ZMAX+1];
+extern double *FF_Rayl_arr[ZMAX+1];
+extern double *FF_Rayl_arr2[ZMAX+1];
 
 extern int Nq_Compt[ZMAX+1];
-extern float *q_Compt_arr[ZMAX+1];
-extern float *SF_Compt_arr[ZMAX+1];
-extern float *SF_Compt_arr2[ZMAX+1];
+extern double *q_Compt_arr[ZMAX+1];
+extern double *SF_Compt_arr[ZMAX+1];
+extern double *SF_Compt_arr2[ZMAX+1];
 
 extern int NE_Energy[ZMAX+1];
-extern float *E_Energy_arr[ZMAX+1];
-extern float *CS_Energy_arr[ZMAX+1];
-extern float *CS_Energy_arr2[ZMAX+1];
+extern double *E_Energy_arr[ZMAX+1];
+extern double *CS_Energy_arr[ZMAX+1];
+extern double *CS_Energy_arr2[ZMAX+1];
 
 extern int NE_Fi[ZMAX+1];
-extern float *E_Fi_arr[ZMAX+1];
-extern float *Fi_arr[ZMAX+1];
-extern float *Fi_arr2[ZMAX+1];
+extern double *E_Fi_arr[ZMAX+1];
+extern double *Fi_arr[ZMAX+1];
+extern double *Fi_arr2[ZMAX+1];
 
 extern int NE_Fii[ZMAX+1];
-extern float *E_Fii_arr[ZMAX+1];
-extern float *Fii_arr[ZMAX+1];
-extern float *Fii_arr2[ZMAX+1];
+extern double *E_Fii_arr[ZMAX+1];
+extern double *Fii_arr[ZMAX+1];
+extern double *Fii_arr2[ZMAX+1];
 
 extern int NE_Photo_Total_Kissel[ZMAX+1];
 extern double *E_Photo_Total_Kissel[ZMAX+1];
 extern double *Photo_Total_Kissel[ZMAX+1];
 extern double *Photo_Total_Kissel2[ZMAX+1];
 
-extern float Electron_Config_Kissel[ZMAX+1][SHELLNUM_K];
+extern double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K];
 extern double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K];
 
 extern int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K];
@@ -104,7 +104,7 @@ extern double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 extern double Auger_Rates[ZMAX+1][AUGERNUM];
 extern double Auger_Yields[ZMAX+1][SHELLNUM_A];
 
-extern float ElementDensity_arr[ZMAX+1];
+extern double ElementDensity_arr[ZMAX+1];
 
 #endif
 

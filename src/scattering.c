@@ -24,9 +24,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          q : momentum transfer                                   //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float FF_Rayl(int Z, float q)
+double FF_Rayl(int Z, double q)
 {
-  float FF;
+  double FF;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function FF_Rayl");
@@ -55,9 +55,9 @@ float FF_Rayl(int Z, float q)
 //          q : momentum transfer                                   //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float SF_Compt(int Z, float q)
+double SF_Compt(int Z, double q)
 {
-  float SF;
+  double SF;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function SF_Compt");
@@ -82,9 +82,9 @@ float SF_Compt(int Z, float q)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCS_Thoms(float theta)
+double  DCS_Thoms(double theta)
 { 
-  float cos_theta;
+  double cos_theta;
 
   cos_theta = cos(theta);
 
@@ -99,9 +99,9 @@ float  DCS_Thoms(float theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCS_KN(float E, float theta)
+double  DCS_KN(double E, double theta)
 { 
-  float cos_theta, t1, t2;
+  double cos_theta, t1, t2;
 
   if (E <= 0.) {
     ErrorExit("Energy <=0 in function DCS_KN");
@@ -124,9 +124,9 @@ float  DCS_KN(float E, float theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCS_Rayl(int Z, float E, float theta)
+double  DCS_Rayl(int Z, double E, double theta)
 { 
-  float F, q ;                                                      
+  double F, q ;                                                      
                                                         
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function DCS_Rayl");
@@ -152,9 +152,9 @@ float  DCS_Rayl(int Z, float E, float theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  DCS_Compt(int Z, float E, float theta)
+double  DCS_Compt(int Z, double E, double theta)
 { 
-  float S, q ;                                                      
+  double S, q ;                                                      
                                                         
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function DCS_Compt");
@@ -179,7 +179,7 @@ float  DCS_Compt(int Z, float E, float theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float  MomentTransf(float E, float theta)
+double  MomentTransf(double E, double theta)
 {
   if (E <= 0.) {
     ErrorExit("Energy <=0 in function MomentTransf");
@@ -196,10 +196,10 @@ float  MomentTransf(float E, float theta)
 //          E : Energy (keV)                                        //   
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float CS_KN(float E)
+double CS_KN(double E)
 { 
-  float a, a3, b, b2, lb;
-  float sigma;
+  double a, a3, b, b2, lb;
+  double sigma;
 
   if (E <= 0.) {
     ErrorExit("Energy <=0 in function CS_KN");
@@ -225,9 +225,9 @@ float CS_KN(float E)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float ComptonEnergy(float E0, float theta)
+double ComptonEnergy(double E0, double theta)
 { 
-  float cos_theta, alpha;
+  double cos_theta, alpha;
 
   if (E0 <= 0.) {
     ErrorExit("Energy <=0 in function ComptonEnergy");

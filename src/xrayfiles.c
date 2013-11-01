@@ -37,7 +37,7 @@ void XRayInit(void)
   int Z, iE;
   int i, ex, stat;
   int shell, line, trans, auger;
-  float E, prob;
+  double E, prob;
   char buffer[1024];
   char **error_lines=NULL;
   int nerror_lines=0;
@@ -90,8 +90,8 @@ void XRayInit(void)
   while ( !feof(fp) ) {
     ex=fscanf(fp,"%d", &Z);
     if (ex != 1) break;
-    fscanf(fp, "%f", &AtomicWeight_arr[Z]);
-    /* printf("%d\t%f\n", Z, AtomicWeight_arr[Z]);*/
+    fscanf(fp, "%lf", &AtomicWeight_arr[Z]);
+    /* printf("%d\t%lf\n", Z, AtomicWeight_arr[Z]);*/
   }
   fclose(fp);
 
@@ -110,8 +110,8 @@ void XRayInit(void)
   while ( !feof(fp) ) {
     ex=fscanf(fp,"%d", &Z);
     if (ex != 1) break;
-    fscanf(fp, "%f", &ElementDensity_arr[Z]);
-    /* printf("%d\t%f\n", Z, ElementDensity_arr[Z]);*/
+    fscanf(fp, "%lf", &ElementDensity_arr[Z]);
+    /* printf("%d\t%lf\n", Z, ElementDensity_arr[Z]);*/
   }
   fclose(fp);
 
@@ -141,11 +141,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &NE_Photo[Z]);
     /* printf("%d\n", NE_Photo[Z]); */
     if (ex != 1) break;
-    E_Photo_arr[Z] = (float*)malloc(NE_Photo[Z]*sizeof(float));
-    CS_Photo_arr[Z] = (float*)malloc(NE_Photo[Z]*sizeof(float));
-    CS_Photo_arr2[Z] = (float*)malloc(NE_Photo[Z]*sizeof(float));
+    E_Photo_arr[Z] = (double*)malloc(NE_Photo[Z]*sizeof(double));
+    CS_Photo_arr[Z] = (double*)malloc(NE_Photo[Z]*sizeof(double));
+    CS_Photo_arr2[Z] = (double*)malloc(NE_Photo[Z]*sizeof(double));
     for (iE=0; iE<NE_Photo[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &E_Photo_arr[Z][iE], &CS_Photo_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &E_Photo_arr[Z][iE], &CS_Photo_arr[Z][iE],
 	     &CS_Photo_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", E_Photo_arr[Z][iE], CS_Photo_arr[Z][iE],
            CS_Photo_arr2[Z][iE]);*/
@@ -163,11 +163,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &NE_Rayl[Z]);
     /* printf("%d\n", NE_Rayl[Z]); */
     if (ex != 1) break;
-    E_Rayl_arr[Z] = (float*)malloc(NE_Rayl[Z]*sizeof(float));
-    CS_Rayl_arr[Z] = (float*)malloc(NE_Rayl[Z]*sizeof(float));
-    CS_Rayl_arr2[Z] = (float*)malloc(NE_Rayl[Z]*sizeof(float));
+    E_Rayl_arr[Z] = (double*)malloc(NE_Rayl[Z]*sizeof(double));
+    CS_Rayl_arr[Z] = (double*)malloc(NE_Rayl[Z]*sizeof(double));
+    CS_Rayl_arr2[Z] = (double*)malloc(NE_Rayl[Z]*sizeof(double));
     for (iE=0; iE<NE_Rayl[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &E_Rayl_arr[Z][iE], &CS_Rayl_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &E_Rayl_arr[Z][iE], &CS_Rayl_arr[Z][iE],
 	     &CS_Rayl_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", E_Rayl_arr[Z][iE], CS_Rayl_arr[Z][iE],
            CS_Rayl_arr2[Z][iE]);*/
@@ -186,11 +186,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &NE_Compt[Z]);
     /* printf("%d\n", NE_Compt[Z]); */
     if (ex != 1) break;
-    E_Compt_arr[Z] = (float*)malloc(NE_Compt[Z]*sizeof(float));
-    CS_Compt_arr[Z] = (float*)malloc(NE_Compt[Z]*sizeof(float));
-    CS_Compt_arr2[Z] = (float*)malloc(NE_Compt[Z]*sizeof(float));
+    E_Compt_arr[Z] = (double*)malloc(NE_Compt[Z]*sizeof(double));
+    CS_Compt_arr[Z] = (double*)malloc(NE_Compt[Z]*sizeof(double));
+    CS_Compt_arr2[Z] = (double*)malloc(NE_Compt[Z]*sizeof(double));
     for (iE=0; iE<NE_Compt[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &E_Compt_arr[Z][iE], &CS_Compt_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &E_Compt_arr[Z][iE], &CS_Compt_arr[Z][iE],
 	     &CS_Compt_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", E_Compt_arr[Z][iE], CS_Compt_arr[Z][iE],
            CS_Compt_arr2[Z][iE]);*/
@@ -208,11 +208,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &Nq_Rayl[Z]);
     /* printf("%d\n", Nq_Rayl[Z]);*/
     if (ex != 1) break;
-    q_Rayl_arr[Z] = (float*)malloc(Nq_Rayl[Z]*sizeof(float));
-    FF_Rayl_arr[Z] = (float*)malloc(Nq_Rayl[Z]*sizeof(float));
-    FF_Rayl_arr2[Z] = (float*)malloc(Nq_Rayl[Z]*sizeof(float));
+    q_Rayl_arr[Z] = (double*)malloc(Nq_Rayl[Z]*sizeof(double));
+    FF_Rayl_arr[Z] = (double*)malloc(Nq_Rayl[Z]*sizeof(double));
+    FF_Rayl_arr2[Z] = (double*)malloc(Nq_Rayl[Z]*sizeof(double));
     for (iE=0; iE<Nq_Rayl[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &q_Rayl_arr[Z][iE], &FF_Rayl_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &q_Rayl_arr[Z][iE], &FF_Rayl_arr[Z][iE],
 	     &FF_Rayl_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", q_Rayl_arr[Z][iE], FF_Rayl_arr[Z][iE],
            FF_Rayl_arr2[Z][iE]);*/
@@ -230,11 +230,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &Nq_Compt[Z]);
     /* printf("%d\n", Nq_Compt[Z]); */
     if (ex != 1) break;
-    q_Compt_arr[Z] = (float*)malloc(Nq_Compt[Z]*sizeof(float));
-    SF_Compt_arr[Z] = (float*)malloc(Nq_Compt[Z]*sizeof(float));
-    SF_Compt_arr2[Z] = (float*)malloc(Nq_Compt[Z]*sizeof(float));
+    q_Compt_arr[Z] = (double*)malloc(Nq_Compt[Z]*sizeof(double));
+    SF_Compt_arr[Z] = (double*)malloc(Nq_Compt[Z]*sizeof(double));
+    SF_Compt_arr2[Z] = (double*)malloc(Nq_Compt[Z]*sizeof(double));
     for (iE=0; iE<Nq_Compt[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &q_Compt_arr[Z][iE], &SF_Compt_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &q_Compt_arr[Z][iE], &SF_Compt_arr[Z][iE],
 	     &SF_Compt_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", q_Compt_arr[Z][iE], SF_Compt_arr[Z][iE],
            SF_Compt_arr2[Z][iE]);*/
@@ -252,7 +252,7 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", shell_name);
-    fscanf(fp,"%f", &E);  
+    fscanf(fp,"%lf", &E);  
     E /= 1000.0;
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
@@ -279,7 +279,7 @@ void XRayInit(void)
     	fprintf(stderr,"line_name too long in fluor_lines.dat: %s\n",line_name);
 	exit(1);
     }
-    fscanf(fp,"%f", &E);  
+    fscanf(fp,"%lf", &E);  
     E /= 1000.0;
     read_error=1;
     for (line=0; line<LINENUM; line++) {
@@ -332,7 +332,7 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", shell_name);
-    fscanf(fp,"%f", &E);  
+    fscanf(fp,"%lf", &E);  
     E /= 1000.0;
     read_error=1;
     nerror_lines=0;
@@ -386,7 +386,7 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", shell_name);
-    fscanf(fp,"%f", &prob);  
+    fscanf(fp,"%lf", &prob);  
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
 	FluorYield_arr[Z][shell] = prob;
@@ -406,7 +406,7 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", shell_name);
-    fscanf(fp,"%f", &prob);  
+    fscanf(fp,"%lf", &prob);  
     for (shell=0; shell<SHELLNUM; shell++) {
       if (strcmp(shell_name, ShellName[shell]) == 0) {
 	JumpFactor_arr[Z][shell] = prob;
@@ -431,7 +431,7 @@ void XRayInit(void)
     	fprintf(stderr,"trans_name too long in coskron: %s\n", line_name);
 	exit(1);
     }
-    fscanf(fp,"%f", &prob);  
+    fscanf(fp,"%lf", &prob);  
     for (trans=0; trans<TRANSNUM; trans++) {
       if (strcmp(trans_name, TransName[trans]) == 0) {
 	CosKron_arr[Z][trans] = prob;
@@ -457,7 +457,7 @@ void XRayInit(void)
     	fprintf(stderr,"line_name too long in radrate.dat: %s\n", line_name);
 	exit(1);
     }
-    fscanf(fp,"%f", &prob);
+    fscanf(fp,"%lf", &prob);
     read_error=1;
     for (line=0; line<LINENUM; line++) {
       if (strcmp(line_name, LineName[line]) == 0) {
@@ -510,7 +510,7 @@ void XRayInit(void)
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
     fscanf(fp,"%s", auger_name);
-    fscanf(fp,"%f", &prob);
+    fscanf(fp,"%lf", &prob);
     read_error=1;
     for (shell=0; shell < SHELLNUM_A; shell++) {
       if (strcmp(auger_name, AugerNameTotal[shell]) == 0) {
@@ -573,11 +573,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &NE_Fi[Z]);
    /* printf("%d\n", NE_Fi[Z]); */
     if (ex != 1) break;
-    E_Fi_arr[Z] = (float*)malloc(NE_Fi[Z]*sizeof(float));
-    Fi_arr[Z] = (float*)malloc(NE_Fi[Z]*sizeof(float));
-    Fi_arr2[Z] = (float*)malloc(NE_Fi[Z]*sizeof(float));
+    E_Fi_arr[Z] = (double*)malloc(NE_Fi[Z]*sizeof(double));
+    Fi_arr[Z] = (double*)malloc(NE_Fi[Z]*sizeof(double));
+    Fi_arr2[Z] = (double*)malloc(NE_Fi[Z]*sizeof(double));
     for (iE=0; iE<NE_Fi[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &E_Fi_arr[Z][iE], &Fi_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &E_Fi_arr[Z][iE], &Fi_arr[Z][iE],
 	     &Fi_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", E_Fi_arr[Z][iE], Fi_arr[Z][iE],
            Fi_arr2[Z][iE]);*/
@@ -596,11 +596,11 @@ void XRayInit(void)
     ex = fscanf(fp, "%d", &NE_Fii[Z]);
     /* printf("%d\n", NE_Fii[Z]); */
     if (ex != 1) break;
-    E_Fii_arr[Z] = (float*)malloc(NE_Fii[Z]*sizeof(float));
-    Fii_arr[Z] = (float*)malloc(NE_Fii[Z]*sizeof(float));
-    Fii_arr2[Z] = (float*)malloc(NE_Fii[Z]*sizeof(float));
+    E_Fii_arr[Z] = (double*)malloc(NE_Fii[Z]*sizeof(double));
+    Fii_arr[Z] = (double*)malloc(NE_Fii[Z]*sizeof(double));
+    Fii_arr2[Z] = (double*)malloc(NE_Fii[Z]*sizeof(double));
     for (iE=0; iE<NE_Fii[Z]; iE++) {
-      fscanf(fp, "%f%f%f", &E_Fii_arr[Z][iE], &Fii_arr[Z][iE],
+      fscanf(fp, "%lf%lf%lf", &E_Fii_arr[Z][iE], &Fii_arr[Z][iE],
 	     &Fii_arr2[Z][iE]);
       /* printf("%e\t%e\t%e\n", E_Fii_arr[Z][iE], Fii_arr[Z][iE],
            Fii_arr2[Z][iE]);*/
@@ -629,7 +629,7 @@ void XRayInit(void)
     }
     /*read the electronic configuration*/
     for (shell = 0 ; shell < SHELLNUM_K ; shell++) {
-      fscanf(fp,"%f",&Electron_Config_Kissel[Z][shell]);
+      fscanf(fp,"%lf",&Electron_Config_Kissel[Z][shell]);
     }
     /*read the partial PE cross sections*/
     for (shell = 0 ; shell < SHELLNUM_K ; shell++) {
@@ -714,11 +714,11 @@ void XRayInit(void)
   ex = fscanf(fp, "%i", &NZ);
   for (Z = 1 ; Z <= NZ ; Z++) {
     ex = fscanf(fp, "%i", &NE_Energy[Z]);
-    E_Energy_arr[Z] = (float*)malloc(NE_Energy[Z]*sizeof(float));
-    CS_Energy_arr[Z] = (float*)malloc(NE_Energy[Z]*sizeof(float));
-    CS_Energy_arr2[Z] = (float*)malloc(NE_Energy[Z]*sizeof(float));
+    E_Energy_arr[Z] = (double*)malloc(NE_Energy[Z]*sizeof(double));
+    CS_Energy_arr[Z] = (double*)malloc(NE_Energy[Z]*sizeof(double));
+    CS_Energy_arr2[Z] = (double*)malloc(NE_Energy[Z]*sizeof(double));
     for (iE=0 ; iE < NE_Energy[Z] ; iE++) {
-    	fscanf(fp, "%f %f %f", &E_Energy_arr[Z][iE], &CS_Energy_arr[Z][iE], &CS_Energy_arr2[Z][iE]);
+    	fscanf(fp, "%lf %lf %lf", &E_Energy_arr[Z][iE], &CS_Energy_arr[Z][iE], &CS_Energy_arr2[Z][iE]);
     }	
   }
   fclose(fp);

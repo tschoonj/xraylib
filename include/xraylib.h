@@ -142,125 +142,125 @@ int GetErrorMessages(void);
 
 
 /* Atomic weights */
-float AtomicWeight(int Z);
+double AtomicWeight(int Z);
 
 /* Density of pure atomic element */
-float ElementDensity(int Z);
+double ElementDensity(int Z);
 
 /* Cross sections (cm2/g) */
-float CS_Total(int Z, float E);
-float CS_Photo(int Z, float E);
-float CS_Rayl(int Z, float E);
-float CS_Compt(int Z, float E); 
+double CS_Total(int Z, double E);
+double CS_Photo(int Z, double E);
+double CS_Rayl(int Z, double E);
+double CS_Compt(int Z, double E); 
 /* barn/atom */
-float CSb_Total(int Z, float E);
-float CSb_Photo(int Z, float E);
-float CSb_Rayl(int Z, float E);
-float CSb_Compt(int Z, float E); 
-float CS_KN(float E);
-float CS_Energy(int Z, float E);
+double CSb_Total(int Z, double E);
+double CSb_Photo(int Z, double E);
+double CSb_Rayl(int Z, double E);
+double CSb_Compt(int Z, double E); 
+double CS_KN(double E);
+double CS_Energy(int Z, double E);
 
 
 /* Unpolarized differential scattering cross sections */
-float DCS_Thoms(float theta);
-float DCS_KN(float E, float theta);
-float DCS_Rayl(int Z, float E, float theta);
-float DCS_Compt(int Z, float E, float theta);
-float DCSb_Rayl(int Z, float E, float theta);
-float DCSb_Compt(int Z, float E, float theta);
+double DCS_Thoms(double theta);
+double DCS_KN(double E, double theta);
+double DCS_Rayl(int Z, double E, double theta);
+double DCS_Compt(int Z, double E, double theta);
+double DCSb_Rayl(int Z, double E, double theta);
+double DCSb_Compt(int Z, double E, double theta);
  
 /* Polarized differential scattering cross sections */
-float DCSP_Thoms(float theta, float phi);
-float DCSP_KN(float E, float theta, float phi);
-float DCSP_Rayl(int Z, float E, float theta, float phi);
-float DCSP_Compt(int Z, float E, float theta, float phi);
-float DCSPb_Rayl(int Z, float E, float theta, float phi);
-float DCSPb_Compt(int Z, float E, float theta, float phi);
+double DCSP_Thoms(double theta, double phi);
+double DCSP_KN(double E, double theta, double phi);
+double DCSP_Rayl(int Z, double E, double theta, double phi);
+double DCSP_Compt(int Z, double E, double theta, double phi);
+double DCSPb_Rayl(int Z, double E, double theta, double phi);
+double DCSPb_Compt(int Z, double E, double theta, double phi);
  
 /* Scattering factors */
-float  FF_Rayl(int Z, float q);
-float  SF_Compt(int Z, float q);
-float  MomentTransf(float E, float theta);
+double  FF_Rayl(int Z, double q);
+double  SF_Compt(int Z, double q);
+double  MomentTransf(double E, double theta);
 
 /* X-ray fluorescent line energy */
-float LineEnergy(int Z, int line);
+double LineEnergy(int Z, int line);
 
 /* Fluorescence yield */
-float  FluorYield(int Z, int shell);
+double  FluorYield(int Z, int shell);
 
 /* Coster-Kronig transition Probability */
-float  CosKronTransProb(int Z, int trans);
+double  CosKronTransProb(int Z, int trans);
 
 /* Absorption-edge energies */
-float EdgeEnergy(int Z, int shell);
+double EdgeEnergy(int Z, int shell);
 
 /* Jump ratio */
-float  JumpFactor(int Z, int shell);
+double  JumpFactor(int Z, int shell);
 
 /* Fluorescent-lines cross sections */
-float CS_FluorLine(int Z, int line, float E);
-float CSb_FluorLine(int Z, int line, float E);
+double CS_FluorLine(int Z, int line, double E);
+double CSb_FluorLine(int Z, int line, double E);
 
 /* Fractional radiative rate */
-float  RadRate(int Z, int line);
+double  RadRate(int Z, int line);
 
 /* Photon energy after Compton scattering */
-float ComptonEnergy(float E0, float theta);
+double ComptonEnergy(double E0, double theta);
 
 /* Anomalous Scattering Factors */
-float Fi(int Z, float E);
-float Fii(int Z, float E);
+double Fi(int Z, double E);
+double Fii(int Z, double E);
 
 /* Kissel Photoelectric cross sections */
-float CS_Photo_Total(int Z, float E);
-float CSb_Photo_Total(int Z, float E);
-float CS_Photo_Partial(int Z, int shell, float E);
-float CSb_Photo_Partial(int Z, int shell, float E);
+double CS_Photo_Total(int Z, double E);
+double CSb_Photo_Total(int Z, double E);
+double CS_Photo_Partial(int Z, int shell, double E);
+double CSb_Photo_Partial(int Z, int shell, double E);
 
 /* XRF cross sections using Kissel partial photoelectric cross sections */
-float CS_FluorLine_Kissel(int Z, int line, float E); 
-float CSb_FluorLine_Kissel(int Z, int line, float E); 
-float CS_FluorLine_Kissel_Cascade(int Z, int line, float E); 
-float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E); 
-float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E); 
-float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E); 
-float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E); 
-float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E); 
-float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E);
-float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E); 
+double CS_FluorLine_Kissel(int Z, int line, double E); 
+double CSb_FluorLine_Kissel(int Z, int line, double E); 
+double CS_FluorLine_Kissel_Cascade(int Z, int line, double E); 
+double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E); 
+double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E); 
+double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E); 
+double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E); 
+double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E); 
+double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E);
+double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E); 
 
 
 
 /* Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections */
-float CS_Total_Kissel(int Z, float E); 
-float CSb_Total_Kissel(int Z, float E); 
+double CS_Total_Kissel(int Z, double E); 
+double CSb_Total_Kissel(int Z, double E); 
 
 /* Electron configuration (according to Kissel) */
-float ElectronConfig(int Z, int shell);
+double ElectronConfig(int Z, int shell);
 
 
 /* Cross Section functions using the compound parser */
-float CS_Total_CP(const char compound[], float E);
-float CS_Photo_CP(const char compound[], float E);
-float CS_Rayl_CP(const char compound[], float E);
-float CS_Compt_CP(const char compound[], float E); 
-float CSb_Total_CP(const char compound[], float E);
-float CSb_Photo_CP(const char compound[], float E);
-float CSb_Rayl_CP(const char compound[], float E);
-float CSb_Compt_CP(const char compound[], float E); 
-float DCS_Rayl_CP(const char compound[], float E, float theta);
-float DCS_Compt_CP(const char compound[], float E, float theta);
-float DCSb_Rayl_CP(const char compound[], float E, float theta);
-float DCSb_Compt_CP(const char compound[], float E, float theta);
-float DCSP_Rayl_CP(const char compound[], float E, float theta, float phi);
-float DCSP_Compt_CP(const char compound[], float E, float theta, float phi);
-float DCSPb_Rayl_CP(const char compound[], float E, float theta, float phi);
-float DCSPb_Compt_CP(const char compound[], float E, float theta, float phi);
-float CS_Photo_Total_CP(const char compound[], float E);
-float CSb_Photo_Total_CP(const char compound[], float E);
-float CS_Total_Kissel_CP(const char compound[], float E); 
-float CSb_Total_Kissel_CP(const char compound[], float E); 
-float CS_Energy_CP(const char compound[], float E);
+double CS_Total_CP(const char compound[], double E);
+double CS_Photo_CP(const char compound[], double E);
+double CS_Rayl_CP(const char compound[], double E);
+double CS_Compt_CP(const char compound[], double E); 
+double CSb_Total_CP(const char compound[], double E);
+double CSb_Photo_CP(const char compound[], double E);
+double CSb_Rayl_CP(const char compound[], double E);
+double CSb_Compt_CP(const char compound[], double E); 
+double DCS_Rayl_CP(const char compound[], double E, double theta);
+double DCS_Compt_CP(const char compound[], double E, double theta);
+double DCSb_Rayl_CP(const char compound[], double E, double theta);
+double DCSb_Compt_CP(const char compound[], double E, double theta);
+double DCSP_Rayl_CP(const char compound[], double E, double theta, double phi);
+double DCSP_Compt_CP(const char compound[], double E, double theta, double phi);
+double DCSPb_Rayl_CP(const char compound[], double E, double theta, double phi);
+double DCSPb_Compt_CP(const char compound[], double E, double theta, double phi);
+double CS_Photo_Total_CP(const char compound[], double E);
+double CSb_Photo_Total_CP(const char compound[], double E);
+double CS_Total_Kissel_CP(const char compound[], double E); 
+double CSb_Total_Kissel_CP(const char compound[], double E); 
+double CS_Energy_CP(const char compound[], double E);
 
 /* Refractive indices functions */
 double Refractive_Index_Re(const char compound[], double E, double density);
@@ -268,18 +268,18 @@ double Refractive_Index_Im(const char compound[], double E, double density);
 xrlComplex Refractive_Index(const char compound[], double E, double density);
 
 /* ComptonProfiles */
-float ComptonProfile(int Z, float pz);
-float ComptonProfile_Partial(int Z, int shell, float pz);
+double ComptonProfile(int Z, double pz);
+double ComptonProfile_Partial(int Z, int shell, double pz);
 
 /* Atomic level widths */
-float AtomicLevelWidth(int Z, int shell);
+double AtomicLevelWidth(int Z, int shell);
 
 
 /* Auger non-radiative rates */
-float AugerRate(int Z, int auger_trans);
+double AugerRate(int Z, int auger_trans);
 
 /* Auger yield */
-float AugerYield(int Z, int shell);
+double AugerYield(int Z, int shell);
 
 #ifdef __cplusplus
 }

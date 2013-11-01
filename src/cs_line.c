@@ -30,9 +30,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 // for K and L X Rays of the Elements", ORNL 53                     //
 /////////////////////////////////////////////////////////////////// */
       
-static float Jump_from_L1(int Z,float E)
+static double Jump_from_L1(int Z,double E)
 {
-  float Factor=1.0,JumpL1,JumpK;
+  double Factor=1.0,JumpL1,JumpK;
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
 	  JumpK = JumpFactor(Z,K_SHELL) ;
 	  if( JumpK <= 0. )
@@ -50,10 +50,10 @@ static float Jump_from_L1(int Z,float E)
 
 }
 
-static float Jump_from_L2(int Z,float E)
+static double Jump_from_L2(int Z,double E)
 {
-  float Factor=1.0,JumpL1,JumpL2,JumpK;
-  float TaoL1=0.0,TaoL2=0.0;
+  double Factor=1.0,JumpL1,JumpL2,JumpK;
+  double TaoL1=0.0,TaoL2=0.0;
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
 	  JumpK = JumpFactor(Z,K_SHELL) ;
 	  if( JumpK <= 0. )
@@ -83,10 +83,10 @@ static float Jump_from_L2(int Z,float E)
 }
 
 
-static float Jump_from_L3(int Z,float E )
+static double Jump_from_L3(int Z,double E )
 {
-  float Factor=1.0,JumpL1,JumpL2,JumpL3,JumpK;
-  float TaoL1=0.0,TaoL2=0.0,TaoL3=0.0;
+  double Factor=1.0,JumpL1,JumpL2,JumpL3,JumpK;
+  double TaoL1=0.0,TaoL2=0.0,TaoL3=0.0;
 
 	if( E > EdgeEnergy(Z,K_SHELL) ) {
 	  JumpK = JumpFactor(Z,K_SHELL) ;
@@ -128,10 +128,10 @@ static float Jump_from_L3(int Z,float E )
 
 }
 
-float CS_FluorLine(int Z, int line, float E)
+double CS_FluorLine(int Z, int line, double E)
 {
-  float JumpK;
-  float cs_line, Factor = 1.;
+  double JumpK;
+  double cs_line, Factor = 1.;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function CS_FluorLine");

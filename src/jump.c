@@ -33,9 +33,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float JumpFactor(int Z, int shell)
+double JumpFactor(int Z, int shell)
 {
-  float jump_factor;
+  double jump_factor;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function JumpFactor");

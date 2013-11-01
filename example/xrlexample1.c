@@ -23,12 +23,12 @@ int main()
   char *symbol;
   Crystal_Struct* cryst;
   Crystal_Atom* atom;
-  float energy = 8;
-  float debye_temp_factor = 1.0;
-  float rel_angle = 1.0;
+  double energy = 8;
+  double debye_temp_factor = 1.0;
+  double rel_angle = 1.0;
 
-  float bragg, q, dw;
-  float f0, fp, fpp;
+  double bragg, q, dw;
+  double f0, fp, fpp;
   xrlComplex FH, F0;
   xrlComplex FHbar;
   struct compoundDataNIST *cdn;

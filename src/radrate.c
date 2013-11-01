@@ -32,9 +32,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float RadRate(int Z, int line)
+double RadRate(int Z, int line)
 {
-  float rad_rate, rr;
+  double rad_rate, rr;
   int i;
 
   if (Z<1 || Z>ZMAX) {

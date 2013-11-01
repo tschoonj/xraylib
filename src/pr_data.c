@@ -29,7 +29,7 @@ FILE *f;
 
 #define PR_MATF(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
-  print_floatvec((COLMAX), ARRNAME[j]); \
+  print_doublevec((COLMAX), ARRNAME[j]); \
   fprintf(f, ",\n"); \
 } \
 fprintf(f, "};\n\n");
@@ -51,16 +51,16 @@ fprintf(f, "};\n\n");
 #define PR_DYNMATF(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
     if(NVAR[j] > 0) {\
-      fprintf(f, "static float __%s_%d[] =\n", ENAME, j);\
-      print_floatvec(NVAR[j], EVAR[j]); \
+      fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
+      print_doublevec(NVAR[j], EVAR[j]); \
     }\
     else {\
-      fprintf(f, "static float __%s_%d[1]", ENAME, j);\
+      fprintf(f, "static double __%s_%d[1]", ENAME, j);\
     }\
     fprintf(f, ";\n\n");\
   } \
 \
-  fprintf(f, "float *%s[] =\n", ENAME);\
+  fprintf(f, "double *%s[] =\n", ENAME);\
   fprintf(f, "{\n"); \
   for(i = 0; i < ZMAX+1; i++) { \
     fprintf(f, "__%s_%d, ", ENAME, i);\
@@ -172,9 +172,9 @@ fprintf(f, "};\n\n");
   print_intvec(ZMAX+1, NVAR); \
   fprintf(f, ";\n\n");
 
-static float AugerYield_prdata(int Z, int shell) {
+static double AugerYield_prdata(int Z, int shell) {
 
-	float rv;
+	double rv;
 
 	rv = 0.0;
 
@@ -221,8 +221,8 @@ static float AugerYield_prdata(int Z, int shell) {
 	return rv;
 }
 
-static float AugerYield2_prdata(int Z, int shell) {
-	float rv;
+static double AugerYield2_prdata(int Z, int shell) {
+	double rv;
 
 	rv = 0.0;
 
@@ -602,9 +602,9 @@ static float AugerYield2_prdata(int Z, int shell) {
 
 }
 
-static float AugerRate_prdata(int Z, int auger_trans) {
-	float rv;
-	float yield, yield2;
+static double AugerRate_prdata(int Z, int auger_trans) {
+	double rv;
+	double yield, yield2;
 
 	rv = 0.0;
 
@@ -1041,24 +1041,6 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
   fprintf(f, ";\n\n");
 }
 
-void print_floatvec(int arrmax, float *arr)
-{
-  int i;
-  fprintf(f, "{\n"); 
-  for(i = 0; i < arrmax; i++) {
-    if(i < arrmax - 1) {
-      fprintf(f, "%.10Ef, ", arr[i]);
-    }
-    else {
-      fprintf(f, "%.10Ef ", arr[i]);
-    }
-
-    if(i%FLOAT_PER_LINE == (FLOAT_PER_LINE-1))
-      fprintf(f, "\n");
-  }
-  fprintf(f, "}");
-}
-
 void print_doublevec(int arrmax, double *arr)
 {
   int i;
@@ -1145,33 +1127,33 @@ int main(void)
 
   fprintf(f, "Crystal_Array Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
 
-  fprintf(f, "float AtomicWeight_arr[ZMAX+1] =\n");
-  print_floatvec(ZMAX+1, AtomicWeight_arr);
+  fprintf(f, "double AtomicWeight_arr[ZMAX+1] =\n");
+  print_doublevec(ZMAX+1, AtomicWeight_arr);
   fprintf(f, ";\n\n");
 
-  fprintf(f, "float ElementDensity_arr[ZMAX+1] =\n");
-  print_floatvec(ZMAX+1, ElementDensity_arr);
+  fprintf(f, "double ElementDensity_arr[ZMAX+1] =\n");
+  print_doublevec(ZMAX+1, ElementDensity_arr);
   fprintf(f, ";\n\n");
 
-  fprintf(f, "float EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(f, "double EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
 
-  fprintf(f, "float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(f, "double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
 
-  fprintf(f, "float LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
+  fprintf(f, "double LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
   PR_MATF(ZMAX+1, LINENUM, LineEnergy_arr);
 
-  fprintf(f, "float FluorYield_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(f, "double FluorYield_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM, FluorYield_arr);
 
-  fprintf(f, "float JumpFactor_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(f, "double JumpFactor_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM, JumpFactor_arr);
 
-  fprintf(f, "float CosKron_arr[ZMAX+1][TRANSNUM] = {\n");
+  fprintf(f, "double CosKron_arr[ZMAX+1][TRANSNUM] = {\n");
   PR_MATF(ZMAX+1, TRANSNUM, CosKron_arr);
 
-  fprintf(f, "float RadRate_arr[ZMAX+1][LINENUM] = {\n");
+  fprintf(f, "double RadRate_arr[ZMAX+1][LINENUM] = {\n");
   PR_MATF(ZMAX+1, LINENUM, RadRate_arr);
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
@@ -1214,7 +1196,7 @@ int main(void)
   PR_DYNMATF(NE_Fii, Fii_arr, "Fii_arr");
   PR_DYNMATF(NE_Fii, Fii_arr2, "Fii_arr2");
 
-  fprintf(f, "float Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
+  fprintf(f, "double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATF(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
 
   fprintf(f, "double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K] = {\n");

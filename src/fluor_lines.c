@@ -34,11 +34,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float LineEnergy(int Z, int line)
+double LineEnergy(int Z, int line)
 {
-  float line_energy;
-  float lE[50],rr[50];
-  float tmp=0.0,tmp1=0.0,tmp2=0.0;
+  double line_energy;
+  double lE[50],rr[50];
+  double tmp=0.0,tmp1=0.0,tmp2=0.0;
   int i;
   int temp_line;
   

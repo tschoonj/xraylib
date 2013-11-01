@@ -27,9 +27,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float AugerRate(int Z, int auger_trans) {
-	float rv;
-	float yield, yield2;
+double AugerRate(int Z, int auger_trans) {
+	double rv;
+	double yield, yield2;
 
 	rv = 0.0;
 
@@ -55,9 +55,9 @@ float AugerRate(int Z, int auger_trans) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float AugerYield(int Z, int shell) {
+double AugerYield(int Z, int shell) {
 
-	float rv;
+	double rv;
 
 	rv = 0.0;
 

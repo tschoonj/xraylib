@@ -14,12 +14,12 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrf_cross_sections_aux.h"
 
 
-float PL1_pure_kissel(int Z, float E) {
+double PL1_pure_kissel(int Z, double E) {
 	return CS_Photo_Partial(Z, L1_SHELL, E);
 }
 
-float PL1_rad_cascade_kissel(int Z, float E, float PK) {
-	float rv;
+double PL1_rad_cascade_kissel(int Z, double E, double PK) {
+	double rv;
 	rv = CS_Photo_Partial(Z,L1_SHELL, E);
 
 	if (PK > 0.0 && RadRate(Z,KL1_LINE) > 0.0)
@@ -28,8 +28,8 @@ float PL1_rad_cascade_kissel(int Z, float E, float PK) {
 	return rv;
 }
 
-float PL1_auger_cascade_kissel(int Z, float E, float PK) {
-	float rv;
+double PL1_auger_cascade_kissel(int Z, double E, double PK) {
+	double rv;
 	
 	rv = CS_Photo_Partial(Z,L1_SHELL, E);
 	if (PK > 0.0)
@@ -76,8 +76,8 @@ float PL1_auger_cascade_kissel(int Z, float E, float PK) {
 	return rv;	
 }
 
-float PL1_full_cascade_kissel(int Z, float E, float PK) {
-	float rv;
+double PL1_full_cascade_kissel(int Z, double E, double PK) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L1_SHELL, E);
 	if (PK > 0.0)
@@ -124,8 +124,8 @@ float PL1_full_cascade_kissel(int Z, float E, float PK) {
 	return rv;
 }
 
-float PL2_pure_kissel(int Z, float E, float PL1) {
-	float rv;
+double PL2_pure_kissel(int Z, double E, double PL1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, L2_SHELL, E);
 	if (PL1 > 0.0)
@@ -133,8 +133,8 @@ float PL2_pure_kissel(int Z, float E, float PL1) {
 	return rv;	
 }
 
-float PL2_rad_cascade_kissel(int Z, float E, float PK, float PL1) {
-	float rv;
+double PL2_rad_cascade_kissel(int Z, double E, double PK, double PL1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L2_SHELL, E);
 	if (PK > 0.0)
@@ -145,8 +145,8 @@ float PL2_rad_cascade_kissel(int Z, float E, float PK, float PL1) {
 	return  rv;
 }
 
-float PL2_auger_cascade_kissel(int Z, float E, float PK, float PL1) {
-	float rv;
+double PL2_auger_cascade_kissel(int Z, double E, double PK, double PL1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L2_SHELL, E);
 
@@ -197,8 +197,8 @@ float PL2_auger_cascade_kissel(int Z, float E, float PK, float PL1) {
 	
 }
 
-float PL2_full_cascade_kissel(int Z, float E, float PK, float PL1) {
-	float rv;
+double PL2_full_cascade_kissel(int Z, double E, double PK, double PL1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L2_SHELL, E);
 
@@ -249,8 +249,8 @@ float PL2_full_cascade_kissel(int Z, float E, float PK, float PL1) {
 	return rv;
 }
 
-float PL3_pure_kissel(int Z, float E, float PL1, float PL2) {
-	float rv;
+double PL3_pure_kissel(int Z, double E, double PL1, double PL2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, L3_SHELL, E);
 
@@ -264,8 +264,8 @@ float PL3_pure_kissel(int Z, float E, float PL1, float PL2) {
 	return rv;
 }
 
-float PL3_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
-	float rv;
+double PL3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L3_SHELL, E);
 
@@ -281,8 +281,8 @@ float PL3_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 	return  rv;
 }
 
-float PL3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
-	float rv;
+double PL3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L3_SHELL, E);
 
@@ -337,8 +337,8 @@ float PL3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 	return  rv;
 }
 
-float PL3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
-	float rv;
+double PL3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z,L3_SHELL, E);
 
@@ -393,12 +393,12 @@ float PL3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2) {
 	return rv;
 }
 
-float PM1_pure_kissel(int Z, float E) {
+double PM1_pure_kissel(int Z, double E) {
 	return CS_Photo_Partial(Z, M1_SHELL, E);
 }
 
-float PM1_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3) {
-	float rv;
+double PM1_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M1_SHELL, E);
 
@@ -414,8 +414,8 @@ float PM1_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 	return rv; 
 }
 
-float PM1_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3) {
-	float rv;
+double PM1_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M1_SHELL, E);
 
@@ -545,8 +545,8 @@ float PM1_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 	return rv;
 }
 
-float PM1_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3) {
-	float rv;
+double PM1_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M1_SHELL, E);
 
@@ -684,8 +684,8 @@ float PM1_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 }
 
 
-float PM2_pure_kissel(int Z, float E, float PM1) {
-	float rv;
+double PM2_pure_kissel(int Z, double E, double PM1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M2_SHELL, E);
 	if (PM1 > 0.0)
@@ -694,8 +694,8 @@ float PM2_pure_kissel(int Z, float E, float PM1) {
 	return rv; 
 }
 
-float PM2_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1) {
-	float rv;
+double PM2_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M2_SHELL, E);
 
@@ -717,8 +717,8 @@ float PM2_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 	return rv;
 }
 
-float PM2_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1) {
-	float rv;
+double PM2_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M2_SHELL, E);
 
@@ -872,8 +872,8 @@ float PM2_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 	return rv;
 }
 
-float PM2_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1) {
-	float rv;
+double PM2_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M2_SHELL, E);
 
@@ -1033,8 +1033,8 @@ float PM2_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 	return rv;
 }
 
-float PM3_pure_kissel(int Z, float E, float PM1, float PM2) {
-	float rv;
+double PM3_pure_kissel(int Z, double E, double PM1, double PM2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M3_SHELL, E);
 
@@ -1047,8 +1047,8 @@ float PM3_pure_kissel(int Z, float E, float PM1, float PM2) {
 	return rv;
 }
 
-float PM3_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2) {
-	float rv;
+double PM3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M3_SHELL, E);
 
@@ -1073,8 +1073,8 @@ float PM3_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 	return rv;
 }
 
-float PM3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2) {
-	float rv;
+double PM3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M3_SHELL, E);
 
@@ -1228,8 +1228,8 @@ float PM3_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 	return rv;
 }
 
-float PM3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2) {
-	float rv;
+double PM3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M3_SHELL, E);
 
@@ -1392,8 +1392,8 @@ float PM3_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 	return rv;
 }
 
-float PM4_pure_kissel(int Z, float E, float PM1, float PM2, float PM3) {
-	float rv;
+double PM4_pure_kissel(int Z, double E, double PM1, double PM2, double PM3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M4_SHELL, E);
 
@@ -1409,8 +1409,8 @@ float PM4_pure_kissel(int Z, float E, float PM1, float PM2, float PM3) {
 	return rv;
 }
 
-float PM4_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2, float PM3) {
-	float rv;
+double PM4_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M4_SHELL, E);
 
@@ -1440,8 +1440,8 @@ float PM4_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 
 }
 
-float PM4_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2, float PM3) {
-	float rv;
+double PM4_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M4_SHELL, E);
 
@@ -1599,8 +1599,8 @@ float PM4_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 	return rv;
 }
 
-float PM4_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2, float PM3) {
-	float rv;
+double PM4_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M4_SHELL, E);
 
@@ -1766,8 +1766,8 @@ float PM4_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, fl
 	return rv;
 }
 
-float PM5_pure_kissel(int Z, float E, float PM1, float PM2, float PM3, float PM4) {
-	float rv;
+double PM5_pure_kissel(int Z, double E, double PM1, double PM2, double PM3, double PM4) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M5_SHELL, E);
 
@@ -1786,8 +1786,8 @@ float PM5_pure_kissel(int Z, float E, float PM1, float PM2, float PM3, float PM4
 	return rv;
 }
 
-float PM5_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2, float PM3, float PM4) {
-	float rv;
+double PM5_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M5_SHELL, E);
 
@@ -1819,8 +1819,8 @@ float PM5_rad_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, flo
 	return rv;
 }
 
-float PM5_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2, float PM3, float PM4) {
-	float rv;
+double PM5_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M5_SHELL, E);
 
@@ -1978,8 +1978,8 @@ float PM5_auger_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, f
 	return rv;
 }
 
-float PM5_full_cascade_kissel(int Z, float E, float PK, float PL1, float PL2, float PL3, float PM1, float PM2, float PM3, float PM4) {
-	float rv;
+double PM5_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4) {
+	double rv;
 
 	rv = CS_Photo_Partial(Z, M5_SHELL, E);
 
