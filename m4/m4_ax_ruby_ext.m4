@@ -96,7 +96,8 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_INC, [Directory to include ruby headers from])
                 AC_MSG_CHECKING([for Ruby headers include path])
                 if test -z "$RUBY_EXT_INC" ; then
-                        [RUBY_EXT_INC=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyhdrdir"]'`];
+                        [RUBY_EXT_INC=-I`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyhdrdir"]'`];
+                        [RUBY_EXT_INC+=" -I`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyarchhdrdir"]'`"];
 			if test "$RUBY_EXT_INC" = "nil" ; then
                         	[RUBY_EXT_INC=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["archdir"]'`];
 			fi

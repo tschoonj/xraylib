@@ -13,7 +13,7 @@ if ENABLE_RUBY
 
 plugindir = $(RUBYDIR)
 plugin_LTLIBRARIES = xraylib.la
-xraylib_la_CFLAGS = $(RUBY_EXT_CPPFLAGS) -DSWIGRUBY_TRICK -I${top_builddir} -I${top_srcdir}/include -I$(RUBY_EXT_INC)
+xraylib_la_CFLAGS = $(RUBY_EXT_CPPFLAGS) -DSWIGRUBY_TRICK -I${top_builddir} -I${top_srcdir}/include $(RUBY_EXT_INC)
 xraylib_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(RUBY_EXT_DLEXT)

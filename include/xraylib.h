@@ -22,8 +22,8 @@ extern "C" {
 
 
 
-#define XRAYLIB_MAJOR 2
-#define XRAYLIB_MINOR 17
+#define XRAYLIB_MAJOR 3
+#define XRAYLIB_MINOR 0
 
 
 #ifndef PI

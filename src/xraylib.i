@@ -15,7 +15,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %include "typemaps.i"
 %include "exception.i"
 
-%apply float *OUTPUT { float* f0, float* f_primep, float* f_prime2 }
+%apply double *OUTPUT { double* f0, double* f_primep, double* f_prime2 }
 
 %begin %{
 #ifdef SWIGRUBY_TRICK
@@ -580,7 +580,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 for (i=0 ; i < cd->nElements ; i++) {
                         PyObject *o = PyInt_FromLong((long) cd->Elements[i]);
                         PyList_SetItem(elements, i, o);
-                        o = PyFloat_FromDouble((double) cd->massFractions[i]);
+                        o = PyFloat_FromDouble(cd->massFractions[i]);
                         PyList_SetItem(massfractions, i, o);
                 }
                 PyDict_SetItemString(dict, "Elements", elements); 
@@ -616,23 +616,23 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         else {
              PyObject *dict = PyDict_New();   
              PyDict_SetItemString(dict, "name",PyString_FromString(cs->name)); 
-             PyDict_SetItemString(dict, "a",PyFloat_FromDouble((double) cs->a)); 
-             PyDict_SetItemString(dict, "b",PyFloat_FromDouble((double) cs->b)); 
-             PyDict_SetItemString(dict, "c",PyFloat_FromDouble((double) cs->c)); 
-             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble((double) cs->alpha)); 
-             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble((double) cs->beta)); 
-             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble((double) cs->gamma)); 
-             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble((double) cs->volume)); 
+             PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a)); 
+             PyDict_SetItemString(dict, "b",PyFloat_FromDouble(cs->b)); 
+             PyDict_SetItemString(dict, "c",PyFloat_FromDouble(cs->c)); 
+             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble(cs->alpha)); 
+             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble(cs->beta)); 
+             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble(cs->gamma)); 
+             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble(cs->volume)); 
              PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom)); 
              PyObject *atom = PyList_New(cs->n_atom);
              PyDict_SetItemString(dict, "atom", atom); 
              for (i = 0 ; i < cs->n_atom ; i++) {
                 PyObject *dict_temp = PyDict_New();
                 PyDict_SetItemString(dict_temp, "Zatom",PyInt_FromLong((int) cs->atom[i].Zatom)); 
-                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble((double) cs->atom[i].fraction)); 
-                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble((double) cs->atom[i].x)); 
-                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble((double) cs->atom[i].y)); 
-                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble((double) cs->atom[i].z)); 
+                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble(cs->atom[i].fraction)); 
+                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble(cs->atom[i].x)); 
+                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble(cs->atom[i].y)); 
+                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble(cs->atom[i].z)); 
                 PyList_SetItem(atom, i, dict_temp);
              }
              /* store cpointer in dictionary */
@@ -1390,43 +1390,43 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"a hash key not present or not a float");
                 }
-                cs->a = (float) NUM2DBL(temp);
+                cs->a = NUM2DBL(temp);
                 /* b */
                 temp = rb_hash_aref(input, rb_str_new2("b"));
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"b hash key not present or not a float");
                 }
-                cs->b = (float) NUM2DBL(temp);
+                cs->b = NUM2DBL(temp);
                 /* c */
                 temp = rb_hash_aref(input, rb_str_new2("c"));
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"c hash key not present or not a float");
                 }
-                cs->c = (float) NUM2DBL(temp);
+                cs->c = NUM2DBL(temp);
                 /* alpha */
                 temp = rb_hash_aref(input, rb_str_new2("alpha"));
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or not a float");
                 }
-                cs->alpha = (float) NUM2DBL(temp);
+                cs->alpha = NUM2DBL(temp);
                 /* beta */
                 temp = rb_hash_aref(input, rb_str_new2("beta"));
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"beta hash key not present or not a float");
                 }
-                cs->beta = (float) NUM2DBL(temp);
+                cs->beta = NUM2DBL(temp);
                 /* gamma */
                 temp = rb_hash_aref(input, rb_str_new2("gamma"));
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or not a float");
                 }
-                cs->gamma = (float) NUM2DBL(temp);
+                cs->gamma = NUM2DBL(temp);
                 /* volume */
                 temp = rb_hash_aref(input, rb_str_new2("volume"));
                 if (temp == Qnil || TYPE(temp) != T_FLOAT) {
                         SWIG_exception(SWIG_RuntimeError,"volume hash key not present or not a float");
                 }
-                cs->volume = (float) NUM2DBL(temp);
+                cs->volume = NUM2DBL(temp);
                 /* n_atom */
                 temp = rb_hash_aref(input, rb_str_new2("n_atom"));
                 if (temp == Qnil || TYPE(temp) != T_FIXNUM) {

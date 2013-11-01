@@ -1,5 +1,6 @@
-Version 2.17.0 Tom Schoonjans
+Version 3.0.0 Tom Schoonjans
 
+- Moved all floats to doubles
 - Added support for Python3 (CLI)
 - NIST compound data included (new API: GetCompoundDataNISTByIndex,
 GetCompoundDataNISTByName, GetCompoundDataNISTList and FreeCompoundData)
@@ -25,6 +26,7 @@ use Fortran strings instead of C-style strings
 - CompoundParser now accepts real numbers as coefficients (requested by
 Olivier Tache)
 - Greatly enhanced documentation at http://github.com/tschoonj/xraylib.wiki
+- Windows 64 bit SDK
 - Many bugfixes and under-the-hood improvements
 
 

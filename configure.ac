@@ -750,7 +750,7 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 		        ac_save_LIBS="$LIBS"
 			LIBS="$RUBY_EXT_LDFLAGS"
 			ac_save_CPPFLAGS="$CPPFLAGS"
-			CPPFLAGS="$RUBY_EXT_CPPFLAGS -I$RUBY_EXT_INC"
+			CPPFLAGS="$RUBY_EXT_CPPFLAGS $RUBY_EXT_INC"
 			ac_save_CC="$CC"
 			CC="$RUBY_EXT_CC"
 	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
