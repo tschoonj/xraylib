@@ -375,36 +375,36 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   Z = IDL_LongScalar(argv[0]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z);\
   \
   return out_var;\
 }
 
-/*1 argument: 1 float */
+/*1 argument: 1 double */
 #define XRL_1F(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
-  float E;\
+  double E;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
   IDL_EXCLUDE_STRING(argv[0]);\
   IDL_ENSURE_SIMPLE(argv[0]);\
-  E = (float) IDL_DoubleScalar(argv[0]);\
+  E = IDL_DoubleScalar(argv[0]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(E);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(E);\
   \
   return out_var;\
 }
 
 
-/*2 arguments: 1 int, 1 float */
+/*2 arguments: 1 int, 1 double */
 #define XRL_2IF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float E;\
+  double E;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -414,11 +414,11 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[1]);\
   IDL_ENSURE_SIMPLE(argv[1]);\
   Z = IDL_LongScalar(argv[0]);\
-  E = (float)IDL_DoubleScalar(argv[1]);\
+  E = (double)IDL_DoubleScalar(argv[1]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, E);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, E);\
   \
   return out_var;\
 }
@@ -440,17 +440,17 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   Z2 = IDL_LongScalar(argv[1]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2);\
   \
   return out_var;\
 }
 
-/*2 arguments: 2 float */
+/*2 arguments: 2 double */
 #define XRL_2FF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
-  float Z;\
-  float Z2;\
+  double Z;\
+  double Z2;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -459,22 +459,22 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_ENSURE_SCALAR(argv[1]);\
   IDL_EXCLUDE_STRING(argv[1]);\
   IDL_ENSURE_SIMPLE(argv[1]);\
-  Z = (float) IDL_DoubleScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
+  Z = IDL_DoubleScalar(argv[0]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2);\
   \
   return out_var;\
 }
 
-/*3 arguments: int, float, float */
+/*3 arguments: int, double, double */
 #define XRL_3IFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
+  double Z2;\
+  double Z3;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -487,22 +487,22 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[2]);\
   IDL_ENSURE_SIMPLE(argv[2]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3);\
   \
   return out_var;\
 }
 
-/*3 arguments: float, float, float */
+/*3 arguments: double, double, double */
 #define XRL_3FFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
-  float Z;\
-  float Z2;\
-  float Z3;\
+  double Z;\
+  double Z2;\
+  double Z3;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -514,23 +514,23 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_ENSURE_SCALAR(argv[2]);\
   IDL_EXCLUDE_STRING(argv[2]);\
   IDL_ENSURE_SIMPLE(argv[2]);\
-  Z = (float) IDL_DoubleScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z = IDL_DoubleScalar(argv[0]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3);\
   \
   return out_var;\
 }
 
-/*3 arguments: int, int, float */
+/*3 arguments: int, int, double */
 #define XRL_3IIF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
   int Z2;\
-  float Z3;\
+  double Z3;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -544,22 +544,22 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_ENSURE_SIMPLE(argv[2]);\
   Z = IDL_LongScalar(argv[0]);\
   Z2 = IDL_LongScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3);\
   \
   return out_var;\
 }
 
-/*4 arguments: int, float, float, float */
+/*4 arguments: int, double, double, double */
 #define XRL_4IFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -575,13 +575,13 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[3]);\
   IDL_ENSURE_SIMPLE(argv[3]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4);\
   \
   return out_var;\
 }
@@ -589,10 +589,10 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 #define XRL_5IFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
-  float Z5;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
+  double Z5;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -611,14 +611,14 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[4]);\
   IDL_ENSURE_SIMPLE(argv[4]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
-  Z5 = (float) IDL_DoubleScalar(argv[4]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
+  Z5 = IDL_DoubleScalar(argv[4]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4, Z5);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5);\
   \
   return out_var;\
 }
@@ -626,11 +626,11 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 #define XRL_6IFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
-  float Z5;\
-  float Z6;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
+  double Z5;\
+  double Z6;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -652,15 +652,15 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[5]);\
   IDL_ENSURE_SIMPLE(argv[5]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
-  Z5 = (float) IDL_DoubleScalar(argv[4]);\
-  Z6 = (float) IDL_DoubleScalar(argv[5]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
+  Z5 = IDL_DoubleScalar(argv[4]);\
+  Z6 = IDL_DoubleScalar(argv[5]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6);\
   \
   return out_var;\
 }
@@ -668,12 +668,12 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 #define XRL_7IFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
-  float Z5;\
-  float Z6;\
-  float Z7;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
+  double Z5;\
+  double Z6;\
+  double Z7;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -698,16 +698,16 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[6]);\
   IDL_ENSURE_SIMPLE(argv[6]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
-  Z5 = (float) IDL_DoubleScalar(argv[4]);\
-  Z6 = (float) IDL_DoubleScalar(argv[5]);\
-  Z7 = (float) IDL_DoubleScalar(argv[6]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
+  Z5 = IDL_DoubleScalar(argv[4]);\
+  Z6 = IDL_DoubleScalar(argv[5]);\
+  Z7 = IDL_DoubleScalar(argv[6]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7);\
   \
   return out_var;\
 }
@@ -715,13 +715,13 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 #define XRL_8IFFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
-  float Z5;\
-  float Z6;\
-  float Z7;\
-  float Z8;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
+  double Z5;\
+  double Z6;\
+  double Z7;\
+  double Z8;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -749,17 +749,17 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[7]);\
   IDL_ENSURE_SIMPLE(argv[7]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
-  Z5 = (float) IDL_DoubleScalar(argv[4]);\
-  Z6 = (float) IDL_DoubleScalar(argv[5]);\
-  Z7 = (float) IDL_DoubleScalar(argv[6]);\
-  Z8 = (float) IDL_DoubleScalar(argv[7]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
+  Z5 = IDL_DoubleScalar(argv[4]);\
+  Z6 = IDL_DoubleScalar(argv[5]);\
+  Z7 = IDL_DoubleScalar(argv[6]);\
+  Z8 = IDL_DoubleScalar(argv[7]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8);\
   \
   return out_var;\
 }
@@ -767,14 +767,14 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
 #define XRL_9IFFFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
-  float Z5;\
-  float Z6;\
-  float Z7;\
-  float Z8;\
-  float Z9;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
+  double Z5;\
+  double Z6;\
+  double Z7;\
+  double Z8;\
+  double Z9;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -805,33 +805,33 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[8]);\
   IDL_ENSURE_SIMPLE(argv[8]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
-  Z5 = (float) IDL_DoubleScalar(argv[4]);\
-  Z6 = (float) IDL_DoubleScalar(argv[5]);\
-  Z7 = (float) IDL_DoubleScalar(argv[6]);\
-  Z8 = (float) IDL_DoubleScalar(argv[7]);\
-  Z9 = (float) IDL_DoubleScalar(argv[8]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
+  Z5 = IDL_DoubleScalar(argv[4]);\
+  Z6 = IDL_DoubleScalar(argv[5]);\
+  Z7 = IDL_DoubleScalar(argv[6]);\
+  Z8 = IDL_DoubleScalar(argv[7]);\
+  Z9 = IDL_DoubleScalar(argv[8]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9);\
   \
   return out_var;\
 }
 #define XRL_10IFFFFFFFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   int Z;\
-  float Z2;\
-  float Z3;\
-  float Z4;\
-  float Z5;\
-  float Z6;\
-  float Z7;\
-  float Z8;\
-  float Z9;\
-  float Z10;\
+  double Z2;\
+  double Z3;\
+  double Z4;\
+  double Z5;\
+  double Z6;\
+  double Z7;\
+  double Z8;\
+  double Z9;\
+  double Z10;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -865,28 +865,28 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[9]);\
   IDL_ENSURE_SIMPLE(argv[9]);\
   Z = IDL_LongScalar(argv[0]);\
-  Z2 = (float) IDL_DoubleScalar(argv[1]);\
-  Z3 = (float) IDL_DoubleScalar(argv[2]);\
-  Z4 = (float) IDL_DoubleScalar(argv[3]);\
-  Z5 = (float) IDL_DoubleScalar(argv[4]);\
-  Z6 = (float) IDL_DoubleScalar(argv[5]);\
-  Z7 = (float) IDL_DoubleScalar(argv[6]);\
-  Z8 = (float) IDL_DoubleScalar(argv[7]);\
-  Z9 = (float) IDL_DoubleScalar(argv[8]);\
-  Z10 = (float) IDL_DoubleScalar(argv[9]);\
+  Z2 = IDL_DoubleScalar(argv[1]);\
+  Z3 = IDL_DoubleScalar(argv[2]);\
+  Z4 = IDL_DoubleScalar(argv[3]);\
+  Z5 = IDL_DoubleScalar(argv[4]);\
+  Z6 = IDL_DoubleScalar(argv[5]);\
+  Z7 = IDL_DoubleScalar(argv[6]);\
+  Z8 = IDL_DoubleScalar(argv[7]);\
+  Z9 = IDL_DoubleScalar(argv[8]);\
+  Z10 = IDL_DoubleScalar(argv[9]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, Z10);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, Z10);\
   \
   return out_var;\
 }
 
-/*2 arguments: 1 string, 1 float */
+/*2 arguments: 1 string, 1 double */
 #define XRL_2SF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
-  float E;\
+  double E;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -895,21 +895,21 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[1]);\
   IDL_ENSURE_SIMPLE(argv[1]);\
   compound = IDL_VarGetString(argv[0]);\
-  E = (float)IDL_DoubleScalar(argv[1]);\
+  E = (double)IDL_DoubleScalar(argv[1]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(compound, E);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(compound, E);\
   \
   return out_var;\
 }
 
-/*3 arguments: 1 string, 2 float */
+/*3 arguments: 1 string, 2 double */
 #define XRL_3SFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
-  float E;\
-  float theta;\
+  double E;\
+  double theta;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -921,23 +921,23 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[2]);\
   IDL_ENSURE_SIMPLE(argv[2]);\
   compound = IDL_VarGetString(argv[0]);\
-  E = (float)IDL_DoubleScalar(argv[1]);\
-  theta = (float)IDL_DoubleScalar(argv[2]);\
+  E = (double)IDL_DoubleScalar(argv[1]);\
+  theta = (double)IDL_DoubleScalar(argv[2]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(compound, E,theta);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(compound, E,theta);\
   \
   return out_var;\
 }
 
-/*4 arguments: 1 string, 3 float */
+/*4 arguments: 1 string, 3 double */
 #define XRL_4SFFF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
-  float E;\
-  float theta;\
-  float phi;\
+  double E;\
+  double theta;\
+  double phi;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -952,23 +952,23 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_EXCLUDE_STRING(argv[3]);\
   IDL_ENSURE_SIMPLE(argv[3]);\
   compound = IDL_VarGetString(argv[0]);\
-  E = (float)IDL_DoubleScalar(argv[1]);\
-  theta = (float)IDL_DoubleScalar(argv[2]);\
-  phi = (float)IDL_DoubleScalar(argv[3]);\
+  E = (double)IDL_DoubleScalar(argv[1]);\
+  theta = (double)IDL_DoubleScalar(argv[2]);\
+  phi = (double)IDL_DoubleScalar(argv[3]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(compound, E,theta,phi);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(compound, E,theta,phi);\
   \
   return out_var;\
 }
 
-/*3 arguments: 1 string, 1 int, 1 float*/
+/*3 arguments: 1 string, 1 int, 1 double*/
 #define XRL_3SIF(name) IDL_VPTR IDL_CDECL IDL_ ## name(int argc, IDL_VPTR argv[])\
 {\
   char *compound;\
   int shell;\
-  float E;\
+  double E;\
   IDL_VPTR out_var;\
   \
   IDL_ENSURE_SCALAR(argv[0]);\
@@ -981,11 +981,11 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   IDL_ENSURE_SIMPLE(argv[2]);\
   compound = IDL_VarGetString(argv[0]);\
   shell = (int)IDL_LongScalar(argv[1]);\
-  E = (float)IDL_DoubleScalar(argv[2]);\
+  E = (double)IDL_DoubleScalar(argv[2]);\
   \
   out_var = IDL_Gettmp();\
-  out_var->type = IDL_TYP_FLOAT;\
-  out_var->value.f = name(compound, shell,E);\
+  out_var->type = IDL_TYP_DOUBLE;\
+  out_var->value.d = name(compound, shell,E);\
   \
   return out_var;\
 }
@@ -1205,10 +1205,10 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 
 	IDL_STRUCT_TAG_DEF s_tags_atom[] = {
 		{"ZATOM", 0, (void *) IDL_TYP_LONG},
-		{"FRACTION", 0, (void *) IDL_TYP_FLOAT},
-		{"X", 0 , (void *) IDL_TYP_FLOAT},
-		{"Y", 0 , (void *) IDL_TYP_FLOAT},
-		{"Z", 0 , (void *) IDL_TYP_FLOAT},
+		{"FRACTION", 0, (void *) IDL_TYP_DOUBLE},
+		{"X", 0 , (void *) IDL_TYP_DOUBLE},
+		{"Y", 0 , (void *) IDL_TYP_DOUBLE},
+		{"Z", 0 , (void *) IDL_TYP_DOUBLE},
 		{0}
 	};
 
@@ -1218,13 +1218,13 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 
 	IDL_STRUCT_TAG_DEF s_tags_struct[] = {
 		{"NAME", 0, (void *) IDL_TYP_STRING},
-		{"A", 0, (void *) IDL_TYP_FLOAT},
-		{"B", 0, (void *) IDL_TYP_FLOAT},
-		{"C", 0, (void *) IDL_TYP_FLOAT},
-		{"ALPHA", 0 , (void *) IDL_TYP_FLOAT},
-		{"BETA", 0 , (void *) IDL_TYP_FLOAT},
-		{"GAMMA", 0 , (void *) IDL_TYP_FLOAT},
-		{"VOLUME", 0 , (void *) IDL_TYP_FLOAT},
+		{"A", 0, (void *) IDL_TYP_DOUBLE},
+		{"B", 0, (void *) IDL_TYP_DOUBLE},
+		{"C", 0, (void *) IDL_TYP_DOUBLE},
+		{"ALPHA", 0 , (void *) IDL_TYP_DOUBLE},
+		{"BETA", 0 , (void *) IDL_TYP_DOUBLE},
+		{"GAMMA", 0 , (void *) IDL_TYP_DOUBLE},
+		{"VOLUME", 0 , (void *) IDL_TYP_DOUBLE},
 		{"N_ATOM", 0 , (void *) IDL_TYP_LONG},
 		{"ATOM", array_dims_atom , sdef_atom},
 		{0}
@@ -1233,13 +1233,13 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 	void *sdef_struct = IDL_MakeStruct(NULL, s_tags_struct);
 	struct Crystal_Struct_IDL {
 		IDL_STRING name;
-		float a;
-		float b;
-		float c;
-		float alpha;
-		float beta;
-		float gamma;
-		float volume;
+		double a;
+		double b;
+		double c;
+		double alpha;
+		double beta;
+		double gamma;
+		double volume;
 		IDL_LONG n_atom;
 		Crystal_Atom atom[cryst->n_atom];
 	};
@@ -1275,13 +1275,13 @@ static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
 	
 	struct Crystal_Struct_IDL {
 		IDL_STRING name;
-		float a;
-		float b;
-		float c;
-		float alpha;
-		float beta;
-		float gamma;
-		float volume;
+		double a;
+		double b;
+		double c;
+		double alpha;
+		double beta;
+		double gamma;
+		double volume;
 		IDL_LONG n_atom;
 		Crystal_Atom atom[n_atom];
 	};
@@ -1303,15 +1303,15 @@ static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
 IDL_VPTR IDL_CDECL IDL_Bragg_angle(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRUCTURE(argv[0]);
 
-	float energy = (float) IDL_DoubleScalar(argv[1]);
+	double energy = IDL_DoubleScalar(argv[1]);
 	int i_miller = (int) IDL_LongScalar(argv[2]);
 	int j_miller = (int) IDL_LongScalar(argv[3]);
 	int k_miller = (int) IDL_LongScalar(argv[4]);
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
-  	rv->type = IDL_TYP_FLOAT;
-  	rv->value.f = Bragg_angle(cs, energy, i_miller, j_miller, k_miller);
+  	rv->type = IDL_TYP_DOUBLE;
+  	rv->value.d = Bragg_angle(cs, energy, i_miller, j_miller, k_miller);
 
 	free(cs);
 	return rv;
@@ -1320,16 +1320,16 @@ IDL_VPTR IDL_CDECL IDL_Bragg_angle(int argc, IDL_VPTR argv[]) {
 IDL_VPTR IDL_CDECL IDL_Q_scattering_amplitude(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRUCTURE(argv[0]);
 
-	float energy = (float) IDL_DoubleScalar(argv[1]);
+	double energy = IDL_DoubleScalar(argv[1]);
 	int i_miller = (int) IDL_LongScalar(argv[2]);
 	int j_miller = (int) IDL_LongScalar(argv[3]);
 	int k_miller = (int) IDL_LongScalar(argv[4]);
-	float rel_angle = (float) IDL_DoubleScalar(argv[5]);
+	double rel_angle = IDL_DoubleScalar(argv[5]);
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
-  	rv->type = IDL_TYP_FLOAT;
-  	rv->value.f = Q_scattering_amplitude(cs, energy, i_miller, j_miller, k_miller, rel_angle);
+  	rv->type = IDL_TYP_DOUBLE;
+  	rv->value.d = Q_scattering_amplitude(cs, energy, i_miller, j_miller, k_miller, rel_angle);
 
 	free(cs);
 	return rv;
@@ -1341,29 +1341,29 @@ void IDL_CDECL IDL_Atomic_Factors(int argc, IDL_VPTR argv[]) {
 	IDL_EXCLUDE_EXPR(argv[6]);
 	
 	int Z = (int) IDL_LongScalar(argv[0]);
-	float energy = (float) IDL_DoubleScalar(argv[1]);
-	float q = (float) IDL_DoubleScalar(argv[2]);
-	float debye_factor = (float) IDL_DoubleScalar(argv[3]);
+	double energy = IDL_DoubleScalar(argv[1]);
+	double q = IDL_DoubleScalar(argv[2]);
+	double debye_factor = IDL_DoubleScalar(argv[3]);
 
-	float f0, f_primep, f_prime2;
+	double f0, f_primep, f_prime2;
 
 	Atomic_Factors(Z, energy, q , debye_factor, &f0, &f_primep, &f_prime2);
 
-	IDL_StoreScalar(argv[4], IDL_TYP_FLOAT, (IDL_ALLTYPES *) &f0);
-	IDL_StoreScalar(argv[5], IDL_TYP_FLOAT, (IDL_ALLTYPES *) &f_primep);
-	IDL_StoreScalar(argv[6], IDL_TYP_FLOAT, (IDL_ALLTYPES *) &f_prime2);
+	IDL_StoreScalar(argv[4], IDL_TYP_DOUBLE, (IDL_ALLTYPES *) &f0);
+	IDL_StoreScalar(argv[5], IDL_TYP_DOUBLE, (IDL_ALLTYPES *) &f_primep);
+	IDL_StoreScalar(argv[6], IDL_TYP_DOUBLE, (IDL_ALLTYPES *) &f_prime2);
 	return;
 }
 
 IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRUCTURE(argv[0]);
 
-	float energy = (float) IDL_DoubleScalar(argv[1]);
+	double energy = IDL_DoubleScalar(argv[1]);
 	int i_miller = (int) IDL_LongScalar(argv[2]);
 	int j_miller = (int) IDL_LongScalar(argv[3]);
 	int k_miller = (int) IDL_LongScalar(argv[4]);
-	float debye_factor = (float) IDL_DoubleScalar(argv[5]);
-	float rel_angle = (float) IDL_DoubleScalar(argv[6]);
+	double debye_factor = IDL_DoubleScalar(argv[5]);
+	double rel_angle = IDL_DoubleScalar(argv[6]);
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
@@ -1381,12 +1381,12 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]) {
 IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRUCTURE(argv[0]);
 
-	float energy = (float) IDL_DoubleScalar(argv[1]);
+	double energy = IDL_DoubleScalar(argv[1]);
 	int i_miller = (int) IDL_LongScalar(argv[2]);
 	int j_miller = (int) IDL_LongScalar(argv[3]);
 	int k_miller = (int) IDL_LongScalar(argv[4]);
-	float debye_factor = (float) IDL_DoubleScalar(argv[5]);
-	float rel_angle = (float) IDL_DoubleScalar(argv[6]);
+	double debye_factor = IDL_DoubleScalar(argv[5]);
+	double rel_angle = IDL_DoubleScalar(argv[6]);
 	int f0_flag = (int) IDL_LongScalar(argv[7]);
 	int f_prime_flag = (int) IDL_LongScalar(argv[8]);
 	int f_prime2_flag = (int) IDL_LongScalar(argv[9]);
@@ -1410,8 +1410,8 @@ IDL_VPTR IDL_CDECL IDL_Crystal_UnitCellVolume(int argc, IDL_VPTR argv[]) {
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
-  	rv->type = IDL_TYP_FLOAT;
-  	rv->value.f = Crystal_UnitCellVolume(cs);
+  	rv->type = IDL_TYP_DOUBLE;
+  	rv->value.d = Crystal_UnitCellVolume(cs);
 
 	free(cs);
 	return rv;
@@ -1426,8 +1426,8 @@ IDL_VPTR IDL_CDECL IDL_Crystal_dSpacing(int argc, IDL_VPTR argv[]) {
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
-  	rv->type = IDL_TYP_FLOAT;
-  	rv->value.f = Crystal_dSpacing(cs, i_miller, j_miller, k_miller);
+  	rv->type = IDL_TYP_DOUBLE;
+  	rv->value.d = Crystal_dSpacing(cs, i_miller, j_miller, k_miller);
 
 	free(cs);
 	return rv;
