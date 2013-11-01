@@ -27,13 +27,6 @@ extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 void XRayInit(void);
 FILE *f;
 
-#define PR_MATF(ROWMAX, COLMAX, ARRNAME) \
-for(j = 0; j < (ROWMAX); j++) { \
-  print_doublevec((COLMAX), ARRNAME[j]); \
-  fprintf(f, ",\n"); \
-} \
-fprintf(f, "};\n\n");
-
 #define PR_MATD(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
   print_doublevec((COLMAX), ARRNAME[j]); \
@@ -47,27 +40,6 @@ for(j = 0; j < (ROWMAX); j++) { \
   fprintf(f, ",\n"); \
 } \
 fprintf(f, "};\n\n");
-
-#define PR_DYNMATF(NVAR, EVAR, ENAME) \
-  for(j = 0; j < ZMAX+1; j++) { \
-    if(NVAR[j] > 0) {\
-      fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
-      print_doublevec(NVAR[j], EVAR[j]); \
-    }\
-    else {\
-      fprintf(f, "static double __%s_%d[1]", ENAME, j);\
-    }\
-    fprintf(f, ";\n\n");\
-  } \
-\
-  fprintf(f, "double *%s[] =\n", ENAME);\
-  fprintf(f, "{\n"); \
-  for(i = 0; i < ZMAX+1; i++) { \
-    fprintf(f, "__%s_%d, ", ENAME, i);\
-    if(i%NAME_PER_LINE == (NAME_PER_LINE-1))\
-      fprintf(f, "\n");\
-  }\
-  fprintf(f, "};\n\n");    
 
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
@@ -1136,68 +1108,68 @@ int main(void)
   fprintf(f, ";\n\n");
 
   fprintf(f, "double EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
-  PR_MATF(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
+  PR_MATD(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
 
   fprintf(f, "double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
-  PR_MATF(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
+  PR_MATD(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
 
   fprintf(f, "double LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
-  PR_MATF(ZMAX+1, LINENUM, LineEnergy_arr);
+  PR_MATD(ZMAX+1, LINENUM, LineEnergy_arr);
 
   fprintf(f, "double FluorYield_arr[ZMAX+1][SHELLNUM] = {\n");
-  PR_MATF(ZMAX+1, SHELLNUM, FluorYield_arr);
+  PR_MATD(ZMAX+1, SHELLNUM, FluorYield_arr);
 
   fprintf(f, "double JumpFactor_arr[ZMAX+1][SHELLNUM] = {\n");
-  PR_MATF(ZMAX+1, SHELLNUM, JumpFactor_arr);
+  PR_MATD(ZMAX+1, SHELLNUM, JumpFactor_arr);
 
   fprintf(f, "double CosKron_arr[ZMAX+1][TRANSNUM] = {\n");
-  PR_MATF(ZMAX+1, TRANSNUM, CosKron_arr);
+  PR_MATD(ZMAX+1, TRANSNUM, CosKron_arr);
 
   fprintf(f, "double RadRate_arr[ZMAX+1][LINENUM] = {\n");
-  PR_MATF(ZMAX+1, LINENUM, RadRate_arr);
+  PR_MATD(ZMAX+1, LINENUM, RadRate_arr);
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
-  PR_DYNMATF(NE_Photo, E_Photo_arr, "E_Photo_arr");
-  PR_DYNMATF(NE_Photo, CS_Photo_arr, "CS_Photo_arr");
-  PR_DYNMATF(NE_Photo, CS_Photo_arr2, "CS_Photo_arr2");
+  PR_DYNMATD(NE_Photo, E_Photo_arr, "E_Photo_arr");
+  PR_DYNMATD(NE_Photo, CS_Photo_arr, "CS_Photo_arr");
+  PR_DYNMATD(NE_Photo, CS_Photo_arr2, "CS_Photo_arr2");
 
   PR_NUMVEC1D(NE_Rayl, "NE_Rayl");
-  PR_DYNMATF(NE_Rayl, E_Rayl_arr, "E_Rayl_arr");
-  PR_DYNMATF(NE_Rayl, CS_Rayl_arr, "CS_Rayl_arr");
-  PR_DYNMATF(NE_Rayl, CS_Rayl_arr2, "CS_Rayl_arr2");
+  PR_DYNMATD(NE_Rayl, E_Rayl_arr, "E_Rayl_arr");
+  PR_DYNMATD(NE_Rayl, CS_Rayl_arr, "CS_Rayl_arr");
+  PR_DYNMATD(NE_Rayl, CS_Rayl_arr2, "CS_Rayl_arr2");
 
   PR_NUMVEC1D(NE_Compt, "NE_Compt");
-  PR_DYNMATF(NE_Compt, E_Compt_arr, "E_Compt_arr");
-  PR_DYNMATF(NE_Compt, CS_Compt_arr, "CS_Compt_arr");
-  PR_DYNMATF(NE_Compt, CS_Compt_arr2, "CS_Compt_arr2");
+  PR_DYNMATD(NE_Compt, E_Compt_arr, "E_Compt_arr");
+  PR_DYNMATD(NE_Compt, CS_Compt_arr, "CS_Compt_arr");
+  PR_DYNMATD(NE_Compt, CS_Compt_arr2, "CS_Compt_arr2");
 
   PR_NUMVEC1D(NE_Energy, "NE_Energy");
-  PR_DYNMATF(NE_Energy, E_Energy_arr, "E_Energy_arr");
-  PR_DYNMATF(NE_Energy, CS_Energy_arr, "CS_Energy_arr");
-  PR_DYNMATF(NE_Energy, CS_Energy_arr2, "CS_Energy_arr2");
+  PR_DYNMATD(NE_Energy, E_Energy_arr, "E_Energy_arr");
+  PR_DYNMATD(NE_Energy, CS_Energy_arr, "CS_Energy_arr");
+  PR_DYNMATD(NE_Energy, CS_Energy_arr2, "CS_Energy_arr2");
 
   PR_NUMVEC1D(Nq_Rayl, "Nq_Rayl");
-  PR_DYNMATF(Nq_Rayl, q_Rayl_arr, "q_Rayl_arr");
-  PR_DYNMATF(Nq_Rayl, FF_Rayl_arr, "FF_Rayl_arr");
-  PR_DYNMATF(Nq_Rayl, FF_Rayl_arr2, "FF_Rayl_arr2");
+  PR_DYNMATD(Nq_Rayl, q_Rayl_arr, "q_Rayl_arr");
+  PR_DYNMATD(Nq_Rayl, FF_Rayl_arr, "FF_Rayl_arr");
+  PR_DYNMATD(Nq_Rayl, FF_Rayl_arr2, "FF_Rayl_arr2");
 
   PR_NUMVEC1D(Nq_Compt, "Nq_Compt");
-  PR_DYNMATF(Nq_Compt, q_Compt_arr, "q_Compt_arr");
-  PR_DYNMATF(Nq_Compt, SF_Compt_arr, "SF_Compt_arr");
-  PR_DYNMATF(Nq_Compt, SF_Compt_arr2, "SF_Compt_arr2");
+  PR_DYNMATD(Nq_Compt, q_Compt_arr, "q_Compt_arr");
+  PR_DYNMATD(Nq_Compt, SF_Compt_arr, "SF_Compt_arr");
+  PR_DYNMATD(Nq_Compt, SF_Compt_arr2, "SF_Compt_arr2");
 
   PR_NUMVEC1D(NE_Fi, "NE_Fi");
-  PR_DYNMATF(NE_Fi, E_Fi_arr, "E_Fi_arr");
-  PR_DYNMATF(NE_Fi, Fi_arr, "Fi_arr");
-  PR_DYNMATF(NE_Fi, Fi_arr2, "Fi_arr2");
+  PR_DYNMATD(NE_Fi, E_Fi_arr, "E_Fi_arr");
+  PR_DYNMATD(NE_Fi, Fi_arr, "Fi_arr");
+  PR_DYNMATD(NE_Fi, Fi_arr2, "Fi_arr2");
 
   PR_NUMVEC1D(NE_Fii, "NE_Fii");
-  PR_DYNMATF(NE_Fii, E_Fii_arr, "E_Fii_arr");
-  PR_DYNMATF(NE_Fii, Fii_arr, "Fii_arr");
-  PR_DYNMATF(NE_Fii, Fii_arr2, "Fii_arr2");
+  PR_DYNMATD(NE_Fii, E_Fii_arr, "E_Fii_arr");
+  PR_DYNMATD(NE_Fii, Fii_arr, "Fii_arr");
+  PR_DYNMATD(NE_Fii, Fii_arr2, "Fii_arr2");
 
   fprintf(f, "double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
-  PR_MATF(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
+  PR_MATD(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
 
   fprintf(f, "double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_K, EdgeEnergy_Kissel);

@@ -38,31 +38,6 @@ void lininterp(double xa[], double ya[], int n, double x, double *y) {
 	return;
 }
 
-void lininterpd(double xa[], double ya[], int n, double x, double *y) {
-	int findpos = -1;
-	int i;
-
-	if (x >= xa[n]) {
-		*y = ya[n];
-		return;
-	}
-
-	if (x < xa[1]) {
-	  *y = ya[1];
-	  return;
-	}
-
-	for (i = 1 ; i <= n ; i++) {
-		if (x < xa[i]) {
-			findpos = i-1;
-			break;
-		}
-	}
-
-	*y = ya[findpos] + (ya[findpos+1]-ya[findpos])*(x-xa[findpos])/(xa[findpos+1]-xa[findpos]);
-
-	return;
-}
 
 
 void splint(double xa[], double ya[], double y2a[], int n, double x, double *y)
@@ -99,41 +74,5 @@ void splint(double xa[], double ya[], double y2a[], int n, double x, double *y)
 	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
 }
 
-void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y)
-{
-	int klo, khi, k;
-	double h, b, a;
- 
-
-
-	if (x >= xa[n]) {
-	  *y = ya[n];
-	  return;
-	}
-
-	if (x <= xa[1]) {
-	  *y = ya[1];
-	  return;
-	}
-
-	klo = 1;
-	khi = n;
-	while (khi-klo > 1) {
-		k = (khi + klo) >> 1;
-		if (xa[k] > x) khi = k;
-		else klo = k;
-	}
-
-	h = xa[khi] - xa[klo];
-	if (h == 0.0) {
-	  *y = (ya[klo] + ya[khi])/2.0;
-	  return;
-	}
-	a = (xa[khi] - x) / h;
-	b = (x - xa[klo]) / h;
-	*y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
-	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
-
-}
 
 

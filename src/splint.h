@@ -12,6 +12,4 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 void splint(double xa[], double ya[], double y2a[], int n, double x, double *y);
-void splintd(double xa[], double ya[], double y2a[], int n, double x, double *y);
 void lininterp(double xa[], double ya[], int n, double x, double *y);
-void lininterpd(double xa[], double ya[], int n, double x, double *y);

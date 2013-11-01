@@ -41,7 +41,7 @@ double CSb_Photo_Total(int Z, double E) {
     return 0.0;
   }
 /*  ln_E = log((double) E);
-  splintd(E_Photo_Total_Kissel[Z]-1, Photo_Total_Kissel[Z]-1, Photo_Total_Kissel2[Z]-1,NE_Photo_Total_Kissel[Z], ln_E, &ln_sigma);
+  splint(E_Photo_Total_Kissel[Z]-1, Photo_Total_Kissel[Z]-1, Photo_Total_Kissel2[Z]-1,NE_Photo_Total_Kissel[Z], ln_E, &ln_sigma);
 
   sigma = exp(ln_sigma);
 
@@ -128,7 +128,7 @@ double CSb_Photo_Partial(int Z, int shell, double E) {
 	ln_sigma = y0+m*(ln_E-x0);
     }
     else {
-    	splintd(E_Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel2[Z][shell]-1,NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
+    	splint(E_Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel2[Z][shell]-1,NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
    }
  sigma = exp(ln_sigma);
 
