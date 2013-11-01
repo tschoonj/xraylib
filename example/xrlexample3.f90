@@ -22,7 +22,7 @@ CHARACTER (KIND=C_CHAR,LEN=10) :: compound1 = 'Ca(HCO3)2'
 CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = 'SiO2'
 INTEGER :: i
 TYPE (Crystal_Struct), POINTER :: cryst
-REAL (C_FLOAT) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
+REAL (C_DOUBLE) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
 rel_angle 
 REAL (C_DOUBLE) :: dw
 COMPLEX (C_DOUBLE) :: F_H, F_0, F_Hbar
@@ -39,10 +39,10 @@ CALL SetErrorMessages(0)
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
 WRITE (6,'(A,F12.6,A)') 'Density of pure Al: ',ElementDensity(13),' g/cm3'
 WRITE (6,'(A,F12.6)') 'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE)
-WRITE (6,'(A,F12.6)') 'Fe partial photoionization cs of L3 at 6.0 keV: ',CS_Photo_Partial(26,L3_SHELL,6.0)
+WRITE (6,'(A,F12.6)') 'Fe partial photoionization cs of L3 at 6.0 keV: ',CS_Photo_Partial(26,L3_SHELL,6.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'Zr L1 edge energy: ',EdgeEnergy(40,L1_SHELL)
-WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (jump approx): ',CS_FluorLine(82,LA_LINE,20.0)
-WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (Kissel): ',CS_FluorLine_Kissel(82,LA_LINE,20.0)
+WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (jump approx): ',CS_FluorLine(82,LA_LINE,20.0_C_DOUBLE)
+WRITE (6,'(A,F12.6)') 'Pb Lalpha XRF production cs at 20.0 keV (Kissel): ',CS_FluorLine_Kissel(82,LA_LINE,20.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'Bi M1N2 radiative rate: ',RadRate(83,M1N2_LINE)
 WRITE (6,'(A,F12.6)') 'U M3O3 Fluorescence Line Energy: ',LineEnergy(92,M3O3_LINE)
 
@@ -71,7 +71,7 @@ ENDDO
 !Free the memory allocated for the arrays
 CALL FreeCompoundData(cd)
 
-WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2',10.0)
+WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2',10.0_C_DOUBLE)
 
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'CS2 Refractive Index at 10.0 keV : ', &
         Refractive_Index_Re('CS2',10.0_C_DOUBLE,1.261_C_DOUBLE),' - ',&
@@ -83,9 +83,9 @@ WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'SiO2 Refractive Index at 5.0 keV : ', &
         Refractive_Index_Re('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' - ',&
         Refractive_Index_Im('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' i'  
 WRITE (6,'(A,F12.6)') 'Compton profile for Fe at pz = 1.1 : ' ,&
-        ComptonProfile(26,1.1) 
+        ComptonProfile(26,1.1_C_DOUBLE) 
 WRITE (6,'(A,F12.6)') 'M5 Compton profile for Fe at pz = 1.1 : ' ,&
-        ComptonProfile_Partial(26,M5_SHELL,1.1) 
+        ComptonProfile_Partial(26,M5_SHELL,1.1_C_DOUBLE) 
 WRITE (6,'(A,F12.6)') 'K atomic level width for Fe: ',&
         AtomicLevelWidth(26,K_SHELL)
 WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
@@ -95,22 +95,22 @@ WRITE (6,'(A,F12.6)') 'Bi L3 Auger yield: ',&
 
 WRITE (6,'(A,F12.6)') 'M1->M5 Coster-Kronig transition probability for Au : ',CosKronTransProb(79,FM15_TRANS)
 WRITE (6,'(A,F12.6)') 'L1->L3 Coster-Kronig transition probability for Fe : ',CosKronTransProb(26,FL13_TRANS)
-WRITE (6,'(A,F12.6)') 'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0)
-WRITE (6,'(A,F12.6)') 'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0)
-WRITE (6,'(A,F12.6)') 'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0)
+WRITE (6,'(A,F12.6)') 'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MA1_LINE,10.0_C_DOUBLE)
+WRITE (6,'(A,F12.6)') 'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0_C_DOUBLE)
+WRITE (6,'(A,F12.6)') 'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with cascade effect: ',&
-CS_FluorLine_Kissel(82,MA1_LINE,20.0)
+CS_FluorLine_Kissel(82,MA1_LINE,20.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',&
-CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
+CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',&
-CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
+CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',&
-CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
+CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0_C_DOUBLE)
 
-WRITE (6,'(A,F12.6)') 'Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0)
-WRITE (6,'(A,F12.6)') 'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0)
+WRITE (6,'(A,F12.6)') 'Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0_C_DOUBLE)
+WRITE (6,'(A,F12.6)') 'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'CdTe mass energy-absorption cs at 40.0 keV: ',&
-CS_Energy_CP('CdTe', 40.0)
+CS_Energy_CP('CdTe', 40.0_C_DOUBLE)
 
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
@@ -133,10 +133,10 @@ WRITE (6,'(A)') ''
 
 !Si diffraction parameters
 WRITE (6, '(A)') 'Si111 at 8 KeV. Incidence at the Bragg angle:'
-bragg = Bragg_angle(cryst, 8.0, 1, 1, 1)
+bragg = Bragg_angle(cryst, 8.0_C_DOUBLE, 1, 1, 1)
 WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
 bragg*180.0/PI
-q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, 1.0)
+q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 1, 1, 1, 1.0_C_DOUBLE)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 energy = 8.0
 debye_temp_factor = 1.0
@@ -170,7 +170,7 @@ bragg = Bragg_angle (cryst, energy, 1, 1, 1)
 WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
 bragg*180.0/PI
 
-q = Q_scattering_amplitude (cryst, 8.0, 1, 1, 1, rel_angle)
+q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 1, 1, 1, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 energy = 8.0
 debye_temp_factor = 1.0
@@ -212,7 +212,7 @@ bragg = Bragg_angle (cryst, energy, 0, 2, 0)
 WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
 bragg*180.0/PI
 
-q = Q_scattering_amplitude (cryst, 8.0, 0, 2, 0, rel_angle)
+q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 0, 2, 0, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 CALL Atomic_Factors (8, energy, q, debye_temp_factor, f0, fp, fpp)
 
@@ -241,7 +241,7 @@ bragg = Bragg_angle (cryst, energy, 3, 3, 1)
 WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
 bragg*180.0/PI
 
-q = Q_scattering_amplitude (cryst, 8.0, 3, 3, 1, rel_angle)
+q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 3, 3, 1, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 CALL Atomic_Factors (19, energy, q, debye_temp_factor, f0, fp, fpp)
 
