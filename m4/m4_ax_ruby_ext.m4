@@ -97,9 +97,14 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_MSG_CHECKING([for Ruby headers include path])
                 if test -z "$RUBY_EXT_INC" ; then
                         [RUBY_EXT_INC=-I`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyhdrdir"]'`];
-                        [RUBY_EXT_INC+=" -I`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyarchhdrdir"]'`"];
-			if test "$RUBY_EXT_INC" = "nil" ; then
-                        	[RUBY_EXT_INC=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["archdir"]'`];
+                        [RUBY_EXT_INC_EXTRA=" -I`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["rubyarchhdrdir"]'`"];
+			if test "$RUBY_EXT_INC_EXTRA" != " -I" ; then
+				RUBY_EXT_INC+=$RUBY_EXT_INC_EXTRA
+			else 
+				[RUBY_EXT_INC+=" -I`$RUBY -rrbconfig -e 'printf("%s/%s",RbConfig::CONFIG["rubyhdrdir"],RbConfig::CONFIG["arch"])'`"]
+			fi
+			if test "$RUBY_EXT_INC" = "-Inil -Inil" ; then
+                        	[RUBY_EXT_INC=-I`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["archdir"]'`];
 			fi
                 fi
                 AC_MSG_RESULT([$RUBY_EXT_INC])

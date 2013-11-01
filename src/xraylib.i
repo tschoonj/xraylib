@@ -1502,7 +1502,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         VALUE *args = (VALUE *) malloc(sizeof(VALUE)*2);
         args[0] = rb_float_new(c.re);
         args[1] = rb_float_new(c.im);
-        VALUE cp = rb_class_new_instance(2, args, rb_path2class("Complex"));
+        /*VALUE cp = rb_class_new_instance(2, args, rb_path2class("Complex"));*/
+        VALUE cp = rb_class_new_instance(2,args,rb_const_get(rb_cObject, rb_intern("Complex")));
 %#endif
         $result = cp;
 }
