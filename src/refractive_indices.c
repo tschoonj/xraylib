@@ -108,3 +108,10 @@ xrlComplex Refractive_Index(const char compound[], double E, double density) {
 
 	return rv;
 }
+
+void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result) {
+	xrlComplex z = Refractive_Index(compound, E, density);
+
+	result->re = z.re;
+	result->im = z.im;
+}
