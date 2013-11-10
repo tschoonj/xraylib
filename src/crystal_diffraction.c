@@ -204,6 +204,15 @@ xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy,
                                                                           debye_factor, rel_angle, 2, 2, 2);
 }
 
+void Crystal_F_H_StructureFactor2 (Crystal_Struct* crystal, double energy,
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrlComplex* result) {
+
+	xrlComplex z = Crystal_F_H_StructureFactor_Partial (crystal, energy, i_miller, j_miller, k_miller, 
+                                                                          debye_factor, rel_angle, 2, 2, 2);
+	result->re = z.re;
+	result->im = z.im;
+}
+ 
 /*-------------------------------------------------------------------------------------------------- */
 /*
  * Compute F_H
@@ -289,6 +298,16 @@ xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double 
 
   return F_H;
 
+}
+
+void Crystal_F_H_StructureFactor_Partial2(Crystal_Struct* crystal, double energy,
+	int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
+	int f0_flag, int f_prime_flag, int f_prime2_flag, xrlComplex* result) {
+
+	xrlComplex z = Crystal_F_H_StructureFactor_Partial(crystal, energy, i_miller, j_miller, k_miller,
+		debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+	result->re = z.re;
+	result->im = z.im;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
