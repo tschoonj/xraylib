@@ -25,5 +25,6 @@ nsis:
 
 
 EXTRA_DIST = xraylib.spec.in BUGS Changelog 
+#DISTCHECK_CONFIGURE_FLAGS = --disable-idl --enable-php
 
 .PHONY: nsis

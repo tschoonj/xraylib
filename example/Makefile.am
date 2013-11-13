@@ -74,7 +74,7 @@ endif
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 #AM_TESTS_FD_REDIRECT = 9>&2
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php
 
 
 #test the idl bindings using this script
@@ -122,6 +122,7 @@ xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
 	@echo "include_path=\"${top_builddir}/php/\"" >> php.ini
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -c ${builddir}  ${top_srcdir}/example/xrlexample12.php" >> xrlexample12.sh
+	@echo "rm -f php.ini" >> xrlexample12.sh
 	@chmod +x xrlexample12.sh
 
 

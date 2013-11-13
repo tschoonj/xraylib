@@ -816,6 +816,8 @@ if test "x$SWIG" = xnoswig && test "x$enable_php" = xyes && test "x$DISABLE_BIND
 	AC_MSG_ERROR([--enable-php was given as an option but swig was not found on the system])
 fi
 
+AC_ARG_ENABLE([php-integration],[AS_HELP_STRING([--enable-php-integration],[install the php bindings in the interpreters sitearch folder])],[enable_php_integration=$enableval],[enable_php_integration=check])
+
 if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BINDINGS" = xno  ;  then
 	#search for php executable
 	AC_CHECK_PROGS(PHP,[php],["nophp"])
@@ -842,6 +844,20 @@ if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BIN
 			AC_MSG_CHECKING([for php extension directory])
 			PHP_DIR=`[$PHP_CONFIG --extension-dir]`
 			AC_MSG_RESULT([$PHP_DIR])
+			AC_MSG_CHECKING([for php prefix])
+			PHP_PREFIX=`[$PHP_CONFIG --prefix]`
+			AC_MSG_RESULT([$PHP_PREFIX])
+			PHP_PREFIX_DIR=${PHP_DIR#$PHP_PREFIX}
+			PHP_PREFIX_DIR=$PHP_PREFIX_DIR
+			if test "x$enable_php_integration" = xyes ; then
+				PHP_DIR=$PHP_DIR
+			else
+				if test "x$prefix" = xNONE ; then
+					PHP_DIR=["/usr/local/$PHP_PREFIX_DIR"]
+				else
+					PHP_DIR=["${prefix}/$PHP_PREFIX_DIR"]
+				fi
+			fi
 			VALID_PHP=yes
 			AC_MSG_NOTICE([Building with php bindings])
 		fi
