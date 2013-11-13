@@ -679,7 +679,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 /* no cpointer found -> read from structure */
                 else {
                         /* name */ 
-                         cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+                         cs = malloc(sizeof(Crystal_Struct));
                          temp = PyDict_GetItemString(dict,"name");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"Name key not present");
@@ -1653,6 +1653,112 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 zval *cpointer;
                 zend_hash_find(Z_ARRVAL_PP($input), "cpointer", sizeof("cpointer"), (void **) &cpointer);
                 $1 = (Crystal_Struct *) Z_ARRVAL_P(cpointer);
+        }
+        else {
+                Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
+                zval *temp1, **temp2;
+                if (zend_hash_find(Z_ARRVAL_PP($input), "name", sizeof("name"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"Name key not present");
+                }
+                cs->name = strdup(Z_STRVAL_PP(temp2));
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "a", sizeof("a"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"a key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->a = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "b", sizeof("b"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"b key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->b = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "c", sizeof("c"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"c key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->c = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "alpha", sizeof("alpha"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"alpha key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->alpha = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "beta", sizeof("beta"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"beta key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->beta= Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "gamma", sizeof("gamma"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"gamma key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->gamma = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "volume", sizeof("volume"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"volume key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->volume = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "n_atom", sizeof("n_atom"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"n_atom key not present");
+                }
+                convert_to_long_ex(temp2);
+                cs->n_atom = (int) Z_LVAL_PP(temp2);
+       
+                zval **atom;
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "atom", sizeof("atom"), (void **) &atom) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"atom key not present");
+                }
+       
+                if (Z_TYPE_PP(atom) != IS_ARRAY) {
+                        SWIG_exception(SWIG_TypeError,"atom must be an array");
+                }
+                int i;
+                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        zval **this_atom;
+                        if (zend_hash_index_find(Z_ARRVAL_PP(atom), i, (void **) &this_atom) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"atom member not found\n");
+                        }
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "Zatom", sizeof("Zatom"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
+                        }
+                        convert_to_long_ex(temp2);
+                        cs->atom[i].Zatom = (int) Z_LVAL_PP(temp2);
+
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "fraction", sizeof("fraction"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"fraction key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].fraction = (double) Z_DVAL_PP(temp2);
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "x", sizeof("x"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"x key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].x = (double) Z_DVAL_PP(temp2);
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "y", sizeof("y"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"y key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].y = (double) Z_DVAL_PP(temp2);
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "z", sizeof("z"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"z key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].z = (double) Z_DVAL_PP(temp2);
+                        
+                }
+                $1 = cs;
         }
 
 }
