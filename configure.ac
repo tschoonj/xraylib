@@ -830,10 +830,18 @@ if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BIN
 			VALID_PHP=no
 		else
 			#for now no test compilation/link	
+			AC_MSG_CHECKING([for php LDFLAGS])
 			PHP_LDFLAGS=`[$PHP_CONFIG --ldflags]`
-			PHP_LIBS=`[$PHP_CONFIG --libs]`
+			AC_MSG_RESULT([$PHP_LDFLAGS])
+			#AC_MSG_CHECKING([for php LIBS])
+			#PHP_LIBS=`[$PHP_CONFIG --libs]`
+			#AC_MSG_RESULT([$PHP_LIBS])
+			AC_MSG_CHECKING([for php CFLAGS])
 			PHP_CFLAGS=`[$PHP_CONFIG --includes]`
+			AC_MSG_RESULT([$PHP_CFLAGS])
+			AC_MSG_CHECKING([for php extension directory])
 			PHP_DIR=`[$PHP_CONFIG --extension-dir]`
+			AC_MSG_RESULT([$PHP_DIR])
 			VALID_PHP=yes
 			AC_MSG_NOTICE([Building with php bindings])
 		fi
@@ -843,7 +851,7 @@ fi
 AM_CONDITIONAL([ENABLE_PHP],[test x$VALID_PHP = xyes])
 
 AC_SUBST(PHP_LDFLAGS)
-AC_SUBST(PHP_LIBS)
+#AC_SUBST(PHP_LIBS)
 AC_SUBST(PHP_CFLAGS)
 AC_SUBST(PHP_DIR)
 
