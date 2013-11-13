@@ -418,9 +418,7 @@ if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$DISABLE_BI
 
 	if test "x$PERL" = xnoperl  ; then
 		if test "x$enable_perl" = xyes ; then
-			if test "x$PERL" = xnoperl ; then
-				AC_MSG_ERROR([--enable-perl was given as an option but Perl was not found on the system.])
-			fi
+			AC_MSG_ERROR([--enable-perl was given as an option but Perl was not found on the system.])
 		else
 			AC_MSG_WARN([perl was not found on the system. The perl bindings will not be built.])
 			VALID_PERL=no
@@ -808,6 +806,46 @@ AC_SUBST(RUBYDIR)
 
 fi
 
+##### PHP -> do not build by default
+AC_ARG_ENABLE([php],[AS_HELP_STRING([--disable-php],[build without the php bindings])],[enable_php=$enableval],[enable_php=check])
+
+VALID_PHP=
+
+
+if test "x$SWIG" = xnoswig && test "x$enable_php" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
+	AC_MSG_ERROR([--enable-php was given as an option but swig was not found on the system])
+fi
+
+if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BINDINGS" = xno  ;  then
+	#search for php executable
+	AC_CHECK_PROGS(PHP,[php],["nophp"])
+
+	if test "x$PHP" = xnophp  ; then
+		AC_MSG_ERROR([--enable-php was given as an option but php was not found on the system.])
+		VALID_PHP=no
+	else
+		AC_CHECK_PROGS(PHP_CONFIG,[php-config],["nophpconfig"])
+		if test "x$PHP_CONFIG" = xnophpconfig  ; then
+			AC_MSG_ERROR([--enable-php was given as an option but php-config was not found on the system.])
+			VALID_PHP=no
+		else
+			#for now no test compilation/link	
+			PHP_LDFLAGS=`[$PHP_CONFIG --ldflags]`
+			PHP_LIBS=`[$PHP_CONFIG --libs]`
+			PHP_CFLAGS=`[$PHP_CONFIG --includes]`
+			PHP_DIR=`[$PHP_CONFIG --extension-dir]`
+			VALID_PHP=yes
+			AC_MSG_NOTICE([Building with php bindings])
+		fi
+	fi
+fi
+
+AM_CONDITIONAL([ENABLE_PHP],[test x$VALID_PHP = xyes])
+
+AC_SUBST(PHP_LDFLAGS)
+AC_SUBST(PHP_LIBS)
+AC_SUBST(PHP_CFLAGS)
+AC_SUBST(PHP_DIR)
 
 AC_CONFIG_FILES([Makefile
 				 src/Makefile
@@ -844,6 +882,7 @@ AC_CONFIG_FILES([Makefile
 				 nsis/python/python3.3/Makefile
 				 nsis/python/python3.3/xrlsetup.py
 				 ruby/Makefile
+				 php/Makefile
 ])
 
 
@@ -891,6 +930,9 @@ if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PE
 	fi
 	if test "$VALID_RUBY" = yes ; then
 		AC_MSG_NOTICE([Ruby])
+	fi
+	if test "$VALID_PHP" = yes ; then
+		AC_MSG_NOTICE([PHP])
 	fi
 else
 	AC_MSG_NOTICE([Building without bindings])

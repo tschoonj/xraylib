@@ -42,6 +42,9 @@ endif
 if ENABLE_RUBY
   check_SCRIPTS += xrlexample10.sh
 endif
+if ENABLE_PHP
+  check_SCRIPTS += xrlexample12.sh
+endif
 
 
 xrlexample1_SOURCES = xrlexample1.c
@@ -114,6 +117,13 @@ xrlexample10.sh: ../ruby/xraylib.la
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby/.libs\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
 	@chmod +x xrlexample10.sh
 
+xrlexample12.sh: ../php/xraylib.la
+	@echo "Testing PHP bindings"
+	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
+	@echo "include_path=\"${top_builddir}/php/\"" >> php.ini
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -c ${builddir}  ${top_srcdir}/example/xrlexample12.php" >> xrlexample12.sh
+	@chmod +x xrlexample12.sh
+
 
 ../perl/xraylib.pm:
 	$(MAKE) -C ../perl xraylib.pm
@@ -133,6 +143,8 @@ xrlexample10.sh: ../ruby/xraylib.la
 ../ruby/xraylib.la:
 	$(MAKE) -C ../ruby xraylib.la
 
+../php/xraylib.la:
+	$(MAKE) -C ../php xraylib.la
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh xrlexample12.sh
