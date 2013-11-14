@@ -42,6 +42,9 @@ endif
 if ENABLE_RUBY
   check_SCRIPTS += xrlexample10.sh
 endif
+if ENABLE_PHP
+  check_SCRIPTS += xrlexample12.sh
+endif
 
 
 xrlexample1_SOURCES = xrlexample1.c
@@ -71,11 +74,11 @@ endif
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 #AM_TESTS_FD_REDIRECT = 9>&2
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php
 
 
 #test the idl bindings using this script
-xrlexample4.sh: ../idl/libxrlidl.la 
+xrlexample4.sh: ../idl/libxrlidl.la xrlexample4.pro
 	@echo "Testing IDL bindings"
 	@echo "unset IDL_STARTUP" > xrlexample4.sh
 	@echo "cp ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
@@ -84,35 +87,43 @@ xrlexample4.sh: ../idl/libxrlidl.la
 	@chmod +x xrlexample4.sh	
 
 #test the perl bindings
-xrlexample2.sh: ../perl/xraylib.pm
+xrlexample2.sh: ../perl/xraylib.pm xrlexample2.pl
 	@echo "Testing perl bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/.libs/:${top_builddir}/perl\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
 	@chmod +x xrlexample2.sh
 
 #test the python bindings
-xrlexample5.sh: ../python/_xraylib.la
+xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 	@echo "Testing python bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
-xrlexample7.sh: ../java/xraylib.java
+xrlexample7.sh: ../java/xraylib.java xrlexample7.java
 	@echo "Testing java bindings"
 	@echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java/.libs\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
 	@chmod +x xrlexample7.sh
 
 #test the lua bindings
-xrlexample9.sh: ../lua/xraylib.la
+xrlexample9.sh: ../lua/xraylib.la xrlexample9.lua
 	@echo "Testing lua bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
 	@chmod +x xrlexample9.sh
 	
 #test the ruby bindings
-xrlexample10.sh: ../ruby/xraylib.la
+xrlexample10.sh: ../ruby/xraylib.la xrlexample10.rb
 	@echo "Testing ruby bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby/.libs\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
 	@chmod +x xrlexample10.sh
+
+xrlexample12.sh: ../php/xraylib.la xrlexample12.php
+	@echo "Testing PHP bindings"
+	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
+	@echo "include_path=\"${top_builddir}/php/\"" >> php.ini
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -c ${builddir}  ${top_srcdir}/example/xrlexample12.php" >> xrlexample12.sh
+	@echo "rm -f php.ini" >> xrlexample12.sh
+	@chmod +x xrlexample12.sh
 
 
 ../perl/xraylib.pm:
@@ -133,6 +144,8 @@ xrlexample10.sh: ../ruby/xraylib.la
 ../ruby/xraylib.la:
 	$(MAKE) -C ../ruby xraylib.la
 
+../php/xraylib.la:
+	$(MAKE) -C ../php xraylib.la
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh xrlexample12.sh
