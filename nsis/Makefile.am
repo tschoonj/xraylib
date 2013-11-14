@@ -72,7 +72,7 @@ common:
 idl32:
 	cp ${top_srcdir}/idl/xraylib_idl.c .
 	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
-	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\ITT\IDL71\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
+	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Program Files (x86)\ITT\IDL71\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
 	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib\build\nsis'" >> batch.pro
 	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE" >> batch.pro
 	echo "exit" >> batch.pro
