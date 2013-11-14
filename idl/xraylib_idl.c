@@ -1127,12 +1127,20 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	IDL_MEMINT array_dims[] = {1,cd->nElements};
 	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
 	void *sdef;
+	/*
 	struct compoundData_IDL {
 		IDL_LONG nElements;
 		double nAtomsAll;
 		IDL_LONG Elements[cd->nElements];
 		double massFractions[cd->nElements];
 	};
+	*/
+	struct compoundData_IDL {
+		IDL_LONG nElements;
+		double nAtomsAll;
+		char dummy[1];
+	};
+
 	struct compoundData_IDL *cdi;
 	IDL_STRUCT_TAG_DEF s_tags[] = {
 		{"NELEMENTS", 0, (void *) IDL_TYP_LONG},
@@ -1141,15 +1149,17 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 		{"MASSFRACTIONS", array_dims, (void *) IDL_TYP_DOUBLE},
 		{0}
 	};
-	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL));
+	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL)-sizeof(char)+sizeof(IDL_LONG)*cd->nElements+sizeof(double)*cd->nElements);
 	cdi->nElements = cd->nElements;
 	cdi->nAtomsAll = cd->nAtomsAll;
-	memcpy(cdi->Elements,cd->Elements,sizeof(int)*cd->nElements);
-	memcpy(cdi->massFractions,cd->massFractions,sizeof(double)*cd->nElements);
-	FreeCompoundData(cd);
-	sdef = IDL_MakeStruct(NULL,s_tags);
 	ilDims[0] = 1;
+	sdef = IDL_MakeStruct(NULL,s_tags);
 	rv=IDL_ImportArray(1,ilDims, IDL_TYP_STRUCT,(UCHAR *) cdi, release,sdef);
+	IDL_MEMINT offset = IDL_StructTagInfoByName(sdef, "ELEMENTS", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,cd->Elements,sizeof(int)*cd->nElements);
+	offset = IDL_StructTagInfoByName(sdef, "MASSFRACTIONS", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,cd->massFractions,sizeof(double)*cd->nElements);
+	FreeCompoundData(cd);
 
 	return rv;
 }
@@ -1241,10 +1251,11 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 		double gamma;
 		double volume;
 		IDL_LONG n_atom;
-		Crystal_Atom atom[cryst->n_atom];
+		/*Crystal_Atom atom[cryst->n_atom];*/
+		char dummy[1];
 	};
 
-	struct Crystal_Struct_IDL *csi = (struct Crystal_Struct_IDL *) malloc(sizeof(struct Crystal_Struct_IDL));
+	struct Crystal_Struct_IDL *csi = (struct Crystal_Struct_IDL *) malloc(sizeof(struct Crystal_Struct_IDL) - sizeof(char) + sizeof(Crystal_Atom)*cryst->n_atom);
 	IDL_StrStore(&(csi->name),cryst->name);
 	csi->a = cryst->a;
 	csi->b = cryst->b;
@@ -1254,22 +1265,22 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 	csi->gamma = cryst->gamma;
 	csi->volume = cryst->volume;
 	csi->n_atom = cryst->n_atom;
-	memcpy(csi->atom,cryst->atom, cryst->n_atom*sizeof(Crystal_Atom));
 
 	IDL_MEMINT dims_cryst[IDL_MAX_ARRAY_DIM];
 	dims_cryst[0] = 1;
 	IDL_VPTR rv = IDL_ImportArray(1, dims_cryst, IDL_TYP_STRUCT, (UCHAR *) csi, release, sdef_struct);
+	IDL_MEMINT offset = IDL_StructTagInfoByName(sdef_struct, "ATOM", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,cryst->atom, cryst->n_atom*sizeof(Crystal_Atom));
 	
 	return rv;
 }
 
 static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
-	IDL_MEMINT offset = IDL_StructTagInfoByName(arg->value.s.sdef,"N_ATOM",IDL_MSG_LONGJMP, NULL);
+	IDL_MEMINT offset = IDL_StructTagInfoByName(arg->value.s.sdef,"ATOM",IDL_MSG_LONGJMP, NULL);
 	IDL_MEMINT n;
 	char *data;
 	IDL_VarGetData(arg,&n, (char **) &data, FALSE);
-	char *n_atom_data = data+offset;
-	int n_atom = *((int *) n_atom_data);
+	char *atom_data = data+offset;
 
 	Crystal_Struct *cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
 	
@@ -1283,7 +1294,8 @@ static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
 		double gamma;
 		double volume;
 		IDL_LONG n_atom;
-		Crystal_Atom atom[n_atom];
+		/*Crystal_Atom atom[n_atom];*/
+		char dummy[1];
 	};
 
 	struct Crystal_Struct_IDL *csi = (struct Crystal_Struct_IDL *) data;
@@ -1295,7 +1307,7 @@ static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
 	cs->gamma = csi->gamma;
 	cs->volume = csi->volume;
 	cs->n_atom = csi->n_atom;
-	cs->atom = csi->atom;
+	cs->atom = (Crystal_Atom *) atom_data;
 
 	return cs;
 }
@@ -1440,28 +1452,27 @@ static IDL_VPTR IDL_GetCompoundDataNIST(struct compoundDataNIST *cdn) {
 	struct compoundDataNIST_IDL {
 		IDL_STRING name;
 		IDL_LONG nElements;
-		IDL_LONG Elements[cdn->nElements];
-		double massFractions[cdn->nElements];
 		double density;
+		char dummy[1];
+		/*IDL_LONG Elements[cdn->nElements];
+		double massFractions[cdn->nElements];*/
 	};
 
 	struct compoundDataNIST_IDL *cdni;
 	IDL_STRUCT_TAG_DEF s_tags[] = {
 		{"NAME", 0, (void *) IDL_TYP_STRING},
 		{"NELEMENTS", 0, (void *) IDL_TYP_LONG},
+		{"DENSITY", 0, (void *) IDL_TYP_DOUBLE},
 		{"ELEMENTS", array_dims, (void *) IDL_TYP_LONG},
 		{"MASSFRACTIONS", array_dims, (void *) IDL_TYP_DOUBLE},
-		{"DENSITY", 0, (void *) IDL_TYP_DOUBLE},
 		{0}
 	};
 
 	void *sdef_struct = IDL_MakeStruct(NULL, s_tags);
 
-	cdni = (struct compoundDataNIST_IDL *) malloc(sizeof(struct compoundDataNIST_IDL));
+	cdni = (struct compoundDataNIST_IDL *) malloc(sizeof(struct compoundDataNIST_IDL)-sizeof(char)+sizeof(IDL_LONG)*cdn->nElements+sizeof(double)*cdn->nElements);
 	cdni->nElements = cdn->nElements;
 	cdni->density = cdn->density;
-	memcpy(cdni->Elements, cdn->Elements, sizeof(int)*cdn->nElements);
-	memcpy(cdni->massFractions, cdn->massFractions, sizeof(double)*cdn->nElements);
 	IDL_StrStore(&(cdni->name), cdn->name);
 
 	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
@@ -1469,6 +1480,10 @@ static IDL_VPTR IDL_GetCompoundDataNIST(struct compoundDataNIST *cdn) {
 	//release will probably lead to a small memory leak here due to the name not being freed
 	//perhaps to be fixed later on
 	rv = IDL_ImportArray(1, ilDims, IDL_TYP_STRUCT, (UCHAR *) cdni, release, sdef_struct);
+	IDL_MEMINT offset = IDL_StructTagInfoByName(sdef_struct, "ELEMENTS", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,cdn->Elements,sizeof(int)*cdn->nElements);
+	offset = IDL_StructTagInfoByName(sdef_struct, "MASSFRACTIONS", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,cdn->massFractions,sizeof(double)*cdn->nElements);
 	return rv;
 }
 
