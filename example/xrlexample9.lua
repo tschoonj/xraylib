@@ -19,17 +19,17 @@ printf = function(s,...)
 	return io.write(s:format(...))
 	end
 
-xraylib.SetErrorMessages(0);
+xraylib.SetErrorMessages(0)
 
 printf("Example of lua program using xraylib\n")
-printf("Density of pure Al: %f g/cm3\n", xraylib.ElementDensity(13));
-printf("Ca K-alpha Fluorescence Line Energy: %f\n", xraylib.LineEnergy(20,xraylib.KA_LINE));
-printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,6.0));
-printf("Zr L1 edge energy: %f\n",xraylib.EdgeEnergy(40,xraylib.L1_SHELL));
-printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",xraylib.CS_FluorLine(82,xraylib.LA_LINE,20.0));
-printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,20.0));
-printf("Bi M1N2 radiative rate: %f\n",xraylib.RadRate(83,xraylib.M1N2_LINE));
-printf("U M3O3 Fluorescence Line Energy: %f\n",xraylib.LineEnergy(92,xraylib.M3O3_LINE));
+printf("Density of pure Al: %f g/cm3\n", xraylib.ElementDensity(13))
+printf("Ca K-alpha Fluorescence Line Energy: %f\n", xraylib.LineEnergy(20,xraylib.KA_LINE))
+printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,6.0))
+printf("Zr L1 edge energy: %f\n",xraylib.EdgeEnergy(40,xraylib.L1_SHELL))
+printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",xraylib.CS_FluorLine(82,xraylib.LA_LINE,20.0))
+printf("Pb Lalpha XRF production cs at 20.0 keV (Kissel): %f\n",xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,20.0))
+printf("Bi M1N2 radiative rate: %f\n",xraylib.RadRate(83,xraylib.M1N2_LINE))
+printf("U M3O3 Fluorescence Line Energy: %f\n",xraylib.LineEnergy(92,xraylib.M3O3_LINE))
 
 cdtest = xraylib.CompoundParser("Ca(HCO3)2")
 printf("Ca(HCO3)2 contains %g atoms and %i elements\n",cdtest["nAtomsAll"],cdtest["nElements"])
@@ -75,9 +75,9 @@ printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xr
 
 printf("Al mass energy-absorption cs at 20.0 keV: %f\n", xraylib.CS_Energy(13, 20.0))
 printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", xraylib.CS_Energy(82, 40.0))
-printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", xraylib.CS_Energy_CP("CdTe", 40.0));
+printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", xraylib.CS_Energy_CP("CdTe", 40.0))
 
-cryst = xraylib.Crystal_GetCrystal("Si");
+cryst = xraylib.Crystal_GetCrystal("Si")
 if (cryst == nil) then
   	exit(1)
 end
@@ -202,7 +202,7 @@ for i=1,cdn['nElements'] do
 end
 
 nistCompounds = xraylib.GetCompoundDataNISTList()
-printf ("List of available NIST compounds:\n");
+printf ("List of available NIST compounds:\n")
 for i,v in ipairs(nistCompounds) do printf("  Compound %i: %s\n",i,v) end
 
 printf ("\n--------------------------- END OF XRLEXAMPLE9 -------------------------------\n")

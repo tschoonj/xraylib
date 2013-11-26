@@ -16,7 +16,7 @@ end
 
 Xraylib.SetErrorMessages(0)
 printf("Example of ruby program using xraylib\n")
-printf("Density of pure Al: %f g/cm3\n", Xraylib::ElementDensity(13))
+printf("Density of pure Al: %f g/cm3\n", Xraylib.ElementDensity(13))
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",
 	 Xraylib.LineEnergy(20,Xraylib::KA_LINE))
 printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",Xraylib.CS_Photo_Partial(26,Xraylib::L3_SHELL,6.0))
