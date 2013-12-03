@@ -152,13 +152,14 @@ double CS_Total(int Z, double E);
 double CS_Photo(int Z, double E);
 double CS_Rayl(int Z, double E);
 double CS_Compt(int Z, double E); 
+double CS_KN(double E);
+double CS_Energy(int Z, double E);
+
 /* barn/atom */
 double CSb_Total(int Z, double E);
 double CSb_Photo(int Z, double E);
 double CSb_Rayl(int Z, double E);
 double CSb_Compt(int Z, double E); 
-double CS_KN(double E);
-double CS_Energy(int Z, double E);
 
 
 /* Unpolarized differential scattering cross sections */
