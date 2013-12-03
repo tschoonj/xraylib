@@ -428,13 +428,9 @@ if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$DISABLE_BI
 			AX_PERL_EXT
 	  		AC_MSG_CHECKING([consistency of all components of perl development environment])
 			ac_save_CFLAGS="$CFLAGS"
-			ac_save_LDFLAGS="$LDFLAGS"
-			ac_save_CPPFLAGS="$CPPFLAGS"
-			ac_save_LIBS="$LIBS"
 			CFLAGS="-I$PERL_EXT_INC $PERL_EXT_CPPFLAGS"
-			LIBS="$PERL_EXT_LDFLAGS"
 	       		AC_LANG_PUSH([C])
-			AC_TRY_LINK([
+			AC_TRY_COMPILE([
 				#include <EXTERN.h>
 				#include <perl.h>
 				static PerlInterpreter *my_perl;
@@ -449,9 +445,6 @@ if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$DISABLE_BI
 			AC_MSG_RESULT([$perlexists])
 			AC_LANG_POP
 			CFLAGS="$ac_save_CFLAGS"
-			LDFLAGS="$ac_save_LDFLAGS"
-			CPPFLAGS="$ac_save_CPPFLAGS"
-			LIBS="$ac_save_LIBS"
 			VALID_PERL=$perlexists
 	fi
 else
