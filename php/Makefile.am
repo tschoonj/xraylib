@@ -23,7 +23,7 @@ nodist_plugin_SCRIPTS = xraylib.php
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -php ${top_srcdir}/src/xraylib.i
 
-
+xraylib.php: xraylib_wrap.c
 
 
 

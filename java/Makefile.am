@@ -37,6 +37,8 @@ xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -java -o xraylib_wrap.c ${top_srcdir}/src/xraylib.i
 
 xraylib.java: xraylib_wrap.c
+xraylibConstants.java: xraylib_wrap.c
+xraylibJNI.java: xraylib_wrap.c
 
 clean-local:
 	rm -rf *.java xraylib_wrap.c
