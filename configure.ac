@@ -893,7 +893,6 @@ AC_CONFIG_FILES([Makefile
 				 nsis/python/python2.6/xrlsetup.py
 				 nsis/python/python2.7/xrlsetup.py
 				 nsis/python/python3.1/xrlsetup.py
-				 nsis/dotNet/Makefile
 				 nsis/python/python3.2/Makefile
 				 nsis/python/python3.2/xrlsetup.py
 				 nsis/python/python3.3/Makefile

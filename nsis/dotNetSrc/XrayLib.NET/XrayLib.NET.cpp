@@ -1,5 +1,5 @@
 /*
-	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2013 Matthew Wormington. All rights reserved.
 	
 	File: XrfLibNET.cpp
 	Author: Matthew Wormington
@@ -105,6 +105,11 @@ double Science::XrayLib::AtomicWeight( int Z )
 	return ::AtomicWeight(Z);
 }
 
+double Science::XrayLib::ElementDensity(int Z)
+{
+	return ::ElementDensity(Z);
+}
+
 Science::ElementData Science::XrayLib::GetElementData( int Z )
 {
 	return Elements::GetData(Z);
@@ -113,126 +118,131 @@ Science::ElementData Science::XrayLib::GetElementData( int Z )
 // Cross sections (cm2/g)
 double Science::XrayLib::CS_Total(int Z, double E)
 {
-	return ::CS_Total(Z, float(E));
+	return ::CS_Total(Z, E);
 }
 
 double Science::XrayLib::CS_Photo(int Z, double E)
 {
-	return ::CS_Photo(Z, float(E));
+	return ::CS_Photo(Z, E);
 }
 
 double Science::XrayLib::CS_Rayl(int Z, double E)
 {
-	return ::CS_Rayl(Z, float(E));
+	return ::CS_Rayl(Z, E);
 }
 
 double Science::XrayLib::CS_Compt(int Z, double E)
 {
-	return ::CS_Compt(Z, float(E));
+	return ::CS_Compt(Z, E);
+}
+
+double Science::XrayLib::CS_Energy(int Z, double E)
+{
+	return ::CS_Energy(Z, E);
 }
 
 // barn/atom
 double Science::XrayLib::CSb_Total(int Z, double E)
 {
-	return ::CSb_Total(Z, float(E));
+	return ::CSb_Total(Z, E);
 }
 
 double Science::XrayLib::CSb_Photo(int Z, double E)
 {
-	return ::CSb_Photo(Z, float(E));
+	return ::CSb_Photo(Z, E);
 }
 
 double Science::XrayLib::CSb_Rayl(int Z, double E)
 {
-	return ::CSb_Rayl(Z, float(E));
+	return ::CSb_Rayl(Z, E);
 }
 
 double Science::XrayLib::CSb_Compt(int Z, double E)
 {
-	return ::CSb_Compt(Z, float(E));
+	return ::CSb_Compt(Z, E);
 }
 
 double Science::XrayLib::CS_KN(double E)
 {
-	return ::CS_KN(float(E));
+	return ::CS_KN(E);
 }
 
 // Unpolarized differential scattering cross sections
 double Science::XrayLib::DCS_Thoms(double theta)
 {
-	return ::DCS_Thoms(float(theta));
+	return ::DCS_Thoms(theta);
 }
 
 double Science::XrayLib::DCS_KN(double E, double theta)
 {
-	return ::DCS_KN(float(E), (float)theta);
+	return ::DCS_KN(E, theta);
 }
 
 double Science::XrayLib::DCS_Rayl(int Z, double E, double theta)
 {
-	return ::DCS_Rayl(Z, float(E), float(theta));
+	return ::DCS_Rayl(Z, E, theta);
 }
 
 double Science::XrayLib::DCS_Compt(int Z, double E, double theta)
 {
-	return ::DCS_Compt(Z, float(E), float(theta));
+	return ::DCS_Compt(Z, E, theta);
 }
 
 double Science::XrayLib::DCSb_Rayl(int Z, double E, double theta)
 {
-	return ::DCSb_Rayl(Z, float(E), float(theta));
+	return ::DCSb_Rayl(Z, E, theta);
 }
 
 double Science::XrayLib::DCSb_Compt(int Z, double E, double theta)
 {
-	return ::DCSb_Compt(Z, float(E), float(theta));
+	return ::DCSb_Compt(Z, E, theta);
 }
 
 // Polarized differential scattering cross sections
 double Science::XrayLib::DCSP_Thoms(double theta, double phi)
 {
-	return ::DCSP_Thoms(float(theta), float(phi));
+	return ::DCSP_Thoms(theta, phi);
 }
 
 double Science::XrayLib::DCSP_KN(double E, double theta, double phi)
 {
-	return ::DCSP_KN(float(E), float(theta), float(phi));
+	return ::DCSP_KN(E, theta, phi);
 }
 
 double Science::XrayLib::DCSP_Rayl(int Z, double E, double theta, double phi)
 {
-	return ::DCSP_Rayl(Z, float(E), float(theta), float(phi));
+	return ::DCSP_Rayl(Z, E, theta, phi);
 }
 
 double Science::XrayLib::DCSP_Compt(int Z, double E, double theta, double phi)
 {
-	return ::DCSP_Compt(Z, float(E), float(theta), float(phi));
+	return ::DCSP_Compt(Z, E, theta, phi);
 }
 
 double Science::XrayLib::DCSPb_Rayl(int Z, double E, double theta, double phi)
 {
-	return ::DCSPb_Rayl(Z, float(E), float(theta), float(phi));
+	return ::DCSPb_Rayl(Z, E, theta, phi);
 }
 
 double Science::XrayLib::DCSPb_Compt(int Z, double E, double theta, double phi)
 {
-	return ::DCSPb_Compt(Z, float(E), float(theta), float(phi));
+	return ::DCSPb_Compt(Z, E, theta, phi);
 }
 
 // Scattering factors
 double Science::XrayLib::FF_Rayl(int Z, double q)
 {
-	return ::FF_Rayl(Z, float(q));
+	return ::FF_Rayl(Z, q);
 }
 
 double  Science::XrayLib::SF_Compt(int Z, double q)
 {
-	return:: SF_Compt(Z, float(q));
+	return:: SF_Compt(Z, q);
 }
 
 double  Science::XrayLib::MomentTransf(double E, double theta)
 {
-	return:: MomentTransf(float(E), float(theta));
+	return:: MomentTransf(E, theta);
 }
 
 // X-ray fluorescent line energy
@@ -268,12 +278,12 @@ double Science::XrayLib::JumpFactor(int Z, int shell)
 // Fluorescent-lines cross sections
 double Science::XrayLib::CS_FluorLine(int Z, int line, double E)
 {
-	return ::CS_FluorLine(Z, line, float(E)); 
+	return ::CS_FluorLine(Z, line, E); 
 }
 
 double Science::XrayLib::CSb_FluorLine(int Z, int line, double E)
 {
-	return ::CSb_FluorLine(Z, line, float(E)); 
+	return ::CSb_FluorLine(Z, line, E); 
 }
 
 // Fractional radiative rate
@@ -285,98 +295,98 @@ double Science::XrayLib::RadRate(int Z, int line)
 // Photon energy after Compton scattering
 double Science::XrayLib::ComptonEnergy(double E0, double theta)
 {
-	return ::ComptonEnergy(float(E0), float(theta));
+	return ::ComptonEnergy(E0, theta);
 }
 
 // Anomalous scattering factors
 double Science::XrayLib::Fi( int Z, double E )
 {
-	return ::Fi(Z, float(E)); 
+	return ::Fi(Z, E); 
 }
 
 double Science::XrayLib::Fii( int Z, double E )
 {
-	return ::Fii(Z, float(E)); 
+	return ::Fii(Z, E); 
 }
 
 double Science::XrayLib::CS_Photo_Total( int Z, double E )
 {
-	return ::CS_Photo_Total(Z, float(E));
+	return ::CS_Photo_Total(Z, E);
 }
 
 double Science::XrayLib::CSb_Photo_Total( int Z, double E )
 {
-	return ::CSb_Photo_Total(Z, float(E));
+	return ::CSb_Photo_Total(Z, E);
 }
 
 double Science::XrayLib::CS_Photo_Partial( int Z, int shell, double E )
 {
-	return ::CS_Photo_Partial(Z, shell, float(E));
+	return ::CS_Photo_Partial(Z, shell, E);
 }
 
 double Science::XrayLib::CSb_Photo_Partial( int Z, int shell, double E )
 {
-	return ::CSb_Photo_Partial(Z, shell, float(E));
+	return ::CSb_Photo_Partial(Z, shell, E);
 }
 
 double Science::XrayLib::CS_FluorLine_Kissel( int Z, int line, double E )
 {
-	return ::CS_FluorLine_Kissel(Z, line, float(E));
+	return ::CS_FluorLine_Kissel(Z, line, E);
 }
 
 double Science::XrayLib::CSb_FluorLine_Kissel( int Z, int line, double E )
 {
-	return ::CSb_FluorLine_Kissel(Z, line, float(E));
+	return ::CSb_FluorLine_Kissel(Z, line, E);
 }
 
 double Science::XrayLib::CS_Total_Kissel( int Z, double E )
 {
-	return ::CS_Total_Kissel(Z, float(E));
+	return ::CS_Total_Kissel(Z, E);
 }
 
 double Science::XrayLib::CSb_Total_Kissel( int Z, double E )
 {
-	return ::CSb_Total_Kissel(Z, float(E));
+	return ::CSb_Total_Kissel(Z, E);
 }
 
 double Science::XrayLib::CS_FluorLine_Kissel_Cascade( int Z, int line, double E )
 {
-	return ::CS_FluorLine_Kissel_Cascade(Z, line, float(E));
+	return ::CS_FluorLine_Kissel_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CSb_FluorLine_Kissel_Cascade( int Z, int line, double E )
 {
-	return ::CSb_FluorLine_Kissel_Cascade(Z, line, float(E));
+	return ::CSb_FluorLine_Kissel_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CS_FluorLine_Kissel_Nonradiative_Cascade( int Z, int line, double E )
 {
-	return ::CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, float(E));
+	return ::CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CSb_FluorLine_Kissel_Nonradiative_Cascade( int Z, int line, double E )
 {
-	return ::CSb_FluorLine_Kissel_Nonradiative_Cascade(Z, line, float(E));
+	return ::CSb_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CS_FluorLine_Kissel_Radiative_Cascade( int Z, int line, double E )
 {
-	return ::CS_FluorLine_Kissel_Radiative_Cascade(Z, line, float(E));
+	return ::CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CSb_FluorLine_Kissel_Radiative_Cascade( int Z, int line, double E )
 {
-	return ::CSb_FluorLine_Kissel_Radiative_Cascade(Z, line, float(E));
+	return ::CSb_FluorLine_Kissel_Radiative_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CS_FluorLine_Kissel_No_Cascade( int Z, int line, double E )
 {
-	return ::CS_FluorLine_Kissel_no_Cascade(Z, line, float(E));
+	return ::CS_FluorLine_Kissel_no_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CSb_FluorLine_Kissel_No_Cascade( int Z, int line, double E )
 {
-	return ::CSb_FluorLine_Kissel_no_Cascade(Z, line, float(E));
+	return ::CSb_FluorLine_Kissel_no_Cascade(Z, line, E);
 }
 
 double Science::XrayLib::CS_Total_CP( String^ compound, double E )
@@ -387,7 +397,7 @@ double Science::XrayLib::CS_Total_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CS_Total_CP(pCompound, (float)E);
+		result = ::CS_Total_CP(pCompound, E);
 	}
 	finally
 	{
@@ -405,7 +415,7 @@ double Science::XrayLib::CS_Photo_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CS_Photo_CP(pCompound, (float)E);
+		result = ::CS_Photo_CP(pCompound, E);
 	}
 	finally
 	{
@@ -423,7 +433,7 @@ double Science::XrayLib::CS_Rayl_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CS_Rayl_CP(pCompound, (float)E);
+		result = ::CS_Rayl_CP(pCompound, E);
 	}
 	finally
 	{
@@ -441,7 +451,7 @@ double Science::XrayLib::CS_Compt_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CS_Compt_CP(pCompound, (float)E);
+		result = ::CS_Compt_CP(pCompound, E);
 	}
 	finally
 	{
@@ -459,7 +469,7 @@ double Science::XrayLib::CSb_Total_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CSb_Total_CP(pCompound, (float)E);
+		result = ::CSb_Total_CP(pCompound, E);
 	}
 	finally
 	{
@@ -477,7 +487,7 @@ double Science::XrayLib::CSb_Photo_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CSb_Photo_CP(pCompound, (float)E);
+		result = ::CSb_Photo_CP(pCompound, E);
 	}
 	finally
 	{
@@ -495,7 +505,7 @@ double Science::XrayLib::CSb_Rayl_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CSb_Rayl_CP(pCompound, (float)E);
+		result = ::CSb_Rayl_CP(pCompound, E);
 	}
 	finally
 	{
@@ -513,7 +523,7 @@ double Science::XrayLib::CSb_Compt_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CSb_Compt_CP(pCompound, (float)E);
+		result = ::CSb_Compt_CP(pCompound, E);
 	}
 	finally
 	{
@@ -531,7 +541,7 @@ double Science::XrayLib::DCS_Rayl_CP( String^ compound, double E, double theta )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCS_Rayl_CP(pCompound, (float)E, (float)theta);
+		result = ::DCS_Rayl_CP(pCompound, E, theta);
 	}
 	finally
 	{
@@ -549,7 +559,7 @@ double Science::XrayLib::DCS_Compt_CP( String^ compound, double E, double theta 
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCS_Compt_CP(pCompound, (float)E, (float)theta);
+		result = ::DCS_Compt_CP(pCompound, E, theta);
 	}
 	finally
 	{
@@ -567,7 +577,7 @@ double Science::XrayLib::DCSb_Rayl_CP( String^ compound, double E, double theta 
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCSb_Rayl_CP(pCompound, (float)E, (float)theta);
+		result = ::DCSb_Rayl_CP(pCompound, E, theta);
 	}
 	finally
 	{
@@ -585,7 +595,7 @@ double Science::XrayLib::DCSb_Compt_CP( String^ compound, double E, double theta
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCSb_Compt_CP(pCompound, (float)E, (float)theta);
+		result = ::DCSb_Compt_CP(pCompound, E, theta);
 	}
 	finally
 	{
@@ -603,7 +613,7 @@ double Science::XrayLib::DCSP_Rayl_CP( String^ compound, double E, double theta,
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCSP_Rayl_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSP_Rayl_CP(pCompound, E, theta, phi);
 	}
 	finally
 	{
@@ -621,7 +631,7 @@ double Science::XrayLib::DCSP_Compt_CP( String^ compound, double E, double theta
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCSP_Compt_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSP_Compt_CP(pCompound, E, theta, phi);
 	}
 	finally
 	{
@@ -639,7 +649,7 @@ double Science::XrayLib::DCSPb_Rayl_CP( String^ compound, double E, double theta
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCSPb_Rayl_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSPb_Rayl_CP(pCompound, E, theta, phi);
 	}
 	finally
 	{
@@ -657,7 +667,7 @@ double Science::XrayLib::DCSPb_Compt_CP( String^ compound, double E, double thet
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::DCSPb_Compt_CP(pCompound, (float)E, (float)theta, (float)phi);
+		result = ::DCSPb_Compt_CP(pCompound, E, theta, phi);
 	}
 	finally
 	{
@@ -675,7 +685,7 @@ double Science::XrayLib::CS_Photo_Total_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CS_Photo_Total_CP(pCompound, (float)E);
+		result = ::CS_Photo_Total_CP(pCompound, E);
 	}
 	finally
 	{
@@ -693,7 +703,7 @@ double Science::XrayLib::CSb_Photo_Total_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CSb_Photo_Total_CP(pCompound, (float)E);
+		result = ::CSb_Photo_Total_CP(pCompound, E);
 	}
 	finally
 	{
@@ -711,7 +721,7 @@ double Science::XrayLib::CS_Total_Kissel_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CS_Total_Kissel_CP(pCompound, (float)E);
+		result = ::CS_Total_Kissel_CP(pCompound, E);
 	}
 	finally
 	{
@@ -729,7 +739,7 @@ double Science::XrayLib::CSb_Total_Kissel_CP( String^ compound, double E )
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		result = ::CSb_Total_Kissel_CP(pCompound, (float)E);
+		result = ::CSb_Total_Kissel_CP(pCompound, E);
 	}
 	finally
 	{
@@ -739,6 +749,25 @@ double Science::XrayLib::CSb_Total_Kissel_CP( String^ compound, double E )
 	return result;
 }
 
+double Science::XrayLib::CS_Energy_CP(String^ compound, double E)
+{
+	double result = -1.0;
+
+	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
+	try
+	{
+		char* pCompound = static_cast<char*>(p.ToPointer());
+		result = ::CS_Energy_CP(pCompound, E);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(p);
+	}
+
+	return result;
+}
+
+
 double Science::XrayLib::ElectronConfig( int Z, int shell )
 {
 	return ::ElectronConfig(Z, shell);
@@ -746,12 +775,12 @@ double Science::XrayLib::ElectronConfig( int Z, int shell )
 
 double Science::XrayLib::ComptonProfile( int Z, double pz )
 {
-	return ::ComptonProfile(Z, (float)pz);
+	return ::ComptonProfile(Z, pz);
 }
 
 double Science::XrayLib::ComptonProfile_Partial( int Z, int shell, double pz )
 {
-	return ::ComptonProfile_Partial(Z, shell, (float)pz);
+	return ::ComptonProfile_Partial(Z, shell, pz);
 }
 
 double Science::XrayLib::Refractive_Index_Re( String^ compound, double E, double density )
@@ -760,7 +789,7 @@ double Science::XrayLib::Refractive_Index_Re( String^ compound, double E, double
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::Refractive_Index_Re(pCompound, (float)E, (float)density);
+		return ::Refractive_Index_Re(pCompound, E, density);
 	}
 	finally
 	{
@@ -774,7 +803,25 @@ double Science::XrayLib::Refractive_Index_Im( String^ compound, double E, double
 	try
 	{					
 		char* pCompound = static_cast<char*>(p.ToPointer());
-		return ::Refractive_Index_Im(pCompound, (float)E, (float)density);
+		return ::Refractive_Index_Im(pCompound, E, density);
+	}
+	finally
+	{
+		Marshal::FreeHGlobal(p);
+	}
+}
+
+
+Numerics::Complex Science::XrayLib::Refractive_Index( String^ compound, double E, double density )
+{
+	IntPtr p = Marshal::StringToHGlobalAnsi(compound);
+	try
+	{					
+		char* pCompound = static_cast<char*>(p.ToPointer());
+		::xrlComplex z;
+		::Refractive_Index2(pCompound, E, density, &z);
+
+		return Numerics::Complex(z.re, z.im);
 	}
 	finally
 	{
@@ -790,6 +837,11 @@ double Science::XrayLib::AtomicLevelWidth( int Z, int shell )
 double Science::XrayLib::AugerRate( int Z, int auger_trans )
 {
 	return ::AugerRate(Z, auger_trans);
+}
+
+double Science::XrayLib::AugerYield(int Z, int shell)
+{
+	return ::AugerYield(Z, shell);
 }
 
 System::String ^ Science::XrayLib::IUPACToSiegbahnLineName( System::String ^name )

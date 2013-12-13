@@ -1,5 +1,5 @@
 /*
-	XrayLib.NET copyright (c) 2010-2012 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2013 Matthew Wormington. All rights reserved.
 
 	File: Diffraction.h
 	Author: Matthew Wormington
@@ -53,7 +53,9 @@
 	OF SUCH DAMAGE.
 */
 
-#include "xraylib.h"
+extern "C" {
+	#include "..\XrayLib\xraylib-crystal-diffraction.h"
+}
 #include <string.h>
 
 using namespace System;
@@ -119,13 +121,13 @@ namespace Science {
 				Marshal::FreeHGlobal(p);
 			}
 			
-			result->a = float(A);
-			result->b = float(B);
-			result->c = float(C);
-			result->alpha = float(Alpha);
-			result->beta = float(Beta);
-			result->gamma = float(Gamma);
-			result->volume = float(Volume);
+			result->a = A;
+			result->b = B;
+			result->c = C;
+			result->alpha = Alpha;
+			result->beta = Beta;
+			result->gamma = Gamma;
+			result->volume = Volume;
 
 			int atomCount = _atoms->Count;
 			result->n_atom = atomCount;
@@ -135,10 +137,10 @@ namespace Science {
 			{
 				::Crystal_Atom* ca = &result->atom[i];
 				ca->Zatom = _atoms[i].Zatom;
-				ca->fraction = float(_atoms[i].fraction);
-				ca->x = float(_atoms[i].x);
-				ca->y = float(_atoms[i].y);
-				ca->z = float(_atoms[i].z);
+				ca->fraction = _atoms[i].fraction;
+				ca->x = _atoms[i].x;
+				ca->y = _atoms[i].y;
+				ca->z = _atoms[i].z;
 			}
 
 			return result;
@@ -217,7 +219,7 @@ namespace Science {
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				result = ::Bragg_angle(cs, float(E), h, k, l);
+				result = ::Bragg_angle(cs, E, h, k, l);
 			}
 			finally
 			{
@@ -237,11 +239,11 @@ namespace Science {
 		/// <param name="fpp">f''</param>
 		void AtomicScatteringFactors(int Z, double E, double q, double debyeFactor, double %f0, double %fp, double %fpp)
 		{
-			float f0_;
-			float fp_;
-			float fpp_;
+			double f0_ = f0;
+			double fp_ = fp;
+			double fpp_ = fpp;
 
-			::Atomic_Factors(Z, float(E), float(q), float(debyeFactor), &f0_, &fp_, &fpp_);
+			::Atomic_Factors(Z, E, q, debyeFactor, &f0_, &fp_, &fpp_);  
 
 			f0 = f0_;
 			fp = fp_;
@@ -254,23 +256,26 @@ namespace Science {
 		/// <param name="h">Miller index, h </param>
 		/// <param name="k">Miller index, k</param>
 		/// <param name="l">Miller index, l</param>
-		/// <param name="debyeFactor">Debye temperature facotor</param>
-		/// <param name="theta">Scattering angle (rad)</param>
+		/// <param name="debyeFactor">Debye temperature factor</param>
+		/// <param name="relativeAngle">Relative angle, i.e. fraction of Bragg angle</param>
 		/// <returns>Complex structure factor</returns>
-		Numerics::Complex StructureFactor(double E, int h, int k, int l, double debyeFactor, double theta)
+		Numerics::Complex StructureFactor(double E, int h, int k, int l, double debyeFactor, double relativeAngle)
 		{
 			Numerics::Complex result = 1.0;
-
+			
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				::Complex z = ::Crystal_F_H_StructureFactor(cs, float(E), h, k, l, float(debyeFactor), float(theta));
+				//::xrlComplex z = ::Crystal_F_H_StructureFactor(cs, E, h, k, l, debyeFactor, relativeAngle);
+				
+				::xrlComplex z;
+				::Crystal_F_H_StructureFactor2(cs, E, h, k, l, debyeFactor, relativeAngle, &z);  
 				result = Numerics::Complex(z.re, z.im);
 			}
 			finally
 			{
 				DeleteCrystal_Struct(cs);
-			}
+			}  
 
 			return result;		
 		}
@@ -289,19 +294,22 @@ namespace Science {
 		/// <param name="k">Miller index, k</param>
 		/// <param name="l">Miller index, l</param>
 		/// <param name="debyeFactor">Debye temperature factor</param>
-		/// <param name="theta">Scattering angle (rad)</param>		
+		/// <param name="relativeAngle">Relative angle, i.e. fraction of Bragg angle</param>		
 		/// <param name="f0Flag">f0 flag. </param>
 		/// <param name="fpFlag">f' flag. </param>
 		/// <param name="fppFlag">f'' flag. </param>
 		/// <returns>Complex structure factor</returns>
-		Numerics::Complex PartialStructureFactor(double E, int h, int k, int l, double debyeFactor, double theta, int f0Flag, int fpFlag, int fppFlag)
+		Numerics::Complex PartialStructureFactor(double E, int h, int k, int l, double debyeFactor, double relativeAngle, int f0Flag, int fpFlag, int fppFlag)
 		{
 			Numerics::Complex result = -1.0;
 
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				::Complex z = ::Crystal_F_H_StructureFactor_Partial(cs, float(E), h, k, l, float(debyeFactor), float(theta), f0Flag, fpFlag, fppFlag);
+				//::xrlComplex z = ::Crystal_F_H_StructureFactor_Partial(cs, E, h, k, l, debyeFactor, relativeAngle, f0Flag, fpFlag, fppFlag);
+				
+				::xrlComplex z;
+				::Crystal_F_H_StructureFactor_Partial2(cs, E, h, k, l, debyeFactor, relativeAngle, f0Flag, fpFlag, fppFlag, &z);
 				result = Numerics::Complex(z.re, z.im);
 			}
 			finally
@@ -471,7 +479,7 @@ namespace Science {
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				result = ::Q_scattering_amplitude(cs, float(E), h, k, l, float(relativeAngle));
+				result = ::Q_scattering_amplitude(cs, E, h, k, l, relativeAngle);
 			}
 			finally
 			{

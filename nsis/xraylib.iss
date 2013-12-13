@@ -57,8 +57,8 @@ Name: "custom" ; Description: "Custom installation" ; Flags: iscustom
 [Components]
 Name: "core" ; Description: "xraylib shared library and documentation" ; Flags: fixed ; Types: full minimal custom
 Name: "sdk" ; Description: "SDK: headers and static libraries" ; Types: full 
-#ifndef XRL64
 Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full 
+#ifndef XRL64
 Name: "idl" ; Description: "IDL bindings" ; Types: full 
 #endif
 Name: "python" ; Description: "Python bindings" ; Types: full 
@@ -100,10 +100,13 @@ Source: "{#builddir}\nsis\xraylib-crystal-diffraction.h" ; DestDir: "{app}\Inclu
 Source: "{#builddir}\nsis\xraylib-defs.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\nsis\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
 
-#ifndef XRL64
-Source: "{#srcdir}\nsis\dotNet\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+#ifdef XRL64
+Source: "{#srcdir}\nsis\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+#else
+Source: "{#srcdir}\nsis\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+#endif
 Source: "{#builddir}\nsis\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
-Source: "{#srcdir}\nsis\dotNet\XrayLib.NET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
+Source: "{#srcdir}\nsis\dotNet\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
 Source: "{#builddir}\nsis\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
 ;Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl

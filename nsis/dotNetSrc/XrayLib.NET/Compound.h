@@ -53,7 +53,10 @@
 	OF SUCH DAMAGE.
 */
 
-#include "xraylib.h"
+
+extern "C" {
+	#include "..\XrayLib\xraylib-parser.h"
+}
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -70,8 +73,8 @@ namespace Science {
 	/// </summary>
 	public ref class CompoundData
 	{		
-		int _atomCount;
-		int _elementCount;
+		double _atomCount;
+		double _elementCount;
 		List<int>^ _atomicNumber;  
 		List<double>^ _massFraction;  
 
@@ -106,9 +109,8 @@ namespace Science {
 		/// <param name="weightB">The weight of compound B. </param>
 		CompoundData(String^ compoundA, double weightA, String^ compoundB, double weightB)
 		{
-			struct ::compoundData cdA, cdB;
-			struct ::compoundData* cd;
-			int validCompound;
+			::compoundData *cdA, *cdB;
+			::compoundData *cd;
 
 			_atomicNumber = gcnew List<int>();	
 			_massFraction = gcnew List<double>();	
@@ -120,32 +122,32 @@ namespace Science {
 			try
 			{					
 				char* pCompound = static_cast<char*>(p.ToPointer());
-				validCompound = ::CompoundParser(pCompound, &cdA);
+				cdA = ::CompoundParser(pCompound);
 			}
 			finally
 			{
 				Marshal::FreeHGlobal(p);
 			}
-			if (validCompound == 0)
+			if (cdA == nullptr)
 				return;
 
 			p = Marshal::StringToHGlobalAnsi(compoundB);
 			try
 			{					
 				char* pCompound = static_cast<char*>(p.ToPointer());
-				validCompound = ::CompoundParser(pCompound, &cdB);
+				cdB = ::CompoundParser(pCompound);
 			}
 			finally
 			{
 				Marshal::FreeHGlobal(p);
 			}
-			if (validCompound == 0)
+			if (cdB == nullptr)
 			{
-				::_free_compound_data(&cdA); 
+				::FreeCompoundData(cdA); 
 				return;
 			}
 
-			cd = ::add_compound_data(cdA, weightA, cdB, weightB);		
+			cd = ::add_compound_data(*cdA, weightA, *cdB, weightB);		
 			if (cd != nullptr)
 			{
 				_atomCount = cd->nAtomsAll;
@@ -158,21 +160,19 @@ namespace Science {
 						_massFraction->Add(cd->massFractions[i]);
 					}
 				}
-				::_free_compound_data(cd);
-				::xrlFree(cd);
+				::FreeCompoundData(cd);
 			}
 
-			::_free_compound_data(&cdA); 
-			::_free_compound_data(&cdB); 			
+			::FreeCompoundData(cdA); 
+			::FreeCompoundData(cdB); 			
 		}
 
 		/// <summary> Parses the chemical formula of the compound into its component elements. </summary>
 		/// <param name="compound">	The chemical formula of the compound. </param>
 		void Parse(String^ compound)
 		{
-			struct ::compoundData cd;
-			int validCompound;
-
+			struct ::compoundData *cd;
+	
 			if (String::IsNullOrEmpty(compound))
 				return;
 
@@ -180,28 +180,28 @@ namespace Science {
 			try
 			{					
 				char* pCompound = static_cast<char*>(p.ToPointer());
-				validCompound = ::CompoundParser(pCompound, &cd);
+				cd = ::CompoundParser(pCompound);
 			}
 			finally
 			{
 				Marshal::FreeHGlobal(p);
 			}
 			
-			if (validCompound != 0)
+			if (cd != nullptr)
 			{
-				_atomCount = cd.nAtomsAll;
-				_elementCount = cd.nElements;
+				_atomCount = cd->nAtomsAll;
+				_elementCount = cd->nElements;
 				if (_elementCount > 0)
 				{
 					for (int i = 0; i < _elementCount; i++)
 					{
-						_atomicNumber->Add(cd.Elements[i]);
-						_massFraction->Add(cd.massFractions[i]);
+						_atomicNumber->Add(cd->Elements[i]);
+						_massFraction->Add(cd->massFractions[i]);
 					}
 				}
 			}
 						
-			::_free_compound_data(&cd); 
+			::FreeCompoundData(cd); 
 		}
 
 		/// <summary> Clears this object to its blank/initial state. </summary>
@@ -215,9 +215,9 @@ namespace Science {
 
 		/// <summary>Gets the number of atoms. </summary>
 		/// <value>	The number of atoms. </value>
-		property int AtomCount
+		property double AtomCount
 		{
-			int get()
+			double get()
 			{
 				return _atomCount;
 			}
@@ -225,9 +225,9 @@ namespace Science {
 
 		/// <summary>Gets the number of elements. </summary>
 		/// <value>	The number of elements. </value>
-		property int ElementCount
+		property double ElementCount
 		{
-			int get()
+			double get()
 			{
 				return _elementCount;
 			}
