@@ -99,6 +99,7 @@ extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Re(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Im(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Refractive_Index(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
@@ -249,6 +250,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_CSb_Total_Kissel_CP},"CSB_TOTAL_KISSEL_CP",2,2,0,0},
 	{{IDL_Refractive_Index_Re},"REFRACTIVE_INDEX_RE",3,3,0,0},
 	{{IDL_Refractive_Index_Im},"REFRACTIVE_INDEX_IM",3,3,0,0},
+	{{IDL_Refractive_Index},"REFRACTIVE_INDEX",3,3,0,0},
 	{{IDL_ComptonProfile},"COMPTONPROFILE",2,2,0,0},
 	{{IDL_ComptonProfile_Partial},"COMPTONPROFILE_PARTIAL",3,3,0,0},
 	{{IDL_ElectronConfig},"ELECTRONCONFIG", 2, 2, 0, 0},
@@ -1405,10 +1407,10 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR ar
 
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
-  	rv->type = IDL_TYP_COMPLEX;
+  	rv->type = IDL_TYP_DCOMPLEX;
 	xrlComplex F = Crystal_F_H_StructureFactor_Partial(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
-  	rv->value.cmp.r = F.re; 
-  	rv->value.cmp.i = F.im; 
+  	rv->value.dcmp.r = F.re; 
+  	rv->value.dcmp.i = F.im; 
 
 	free(cs);
 	return rv;
@@ -1554,6 +1556,25 @@ IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTList(int argc, IDL_VPTR argv[]) {
 
 	return rv;
 }
+
+IDL_VPTR IDL_CDECL IDL_Refractive_Index(int argc, IDL_VPTR argv[]) {
+	IDL_ENSURE_STRING(argv[0]);
+	IDL_ENSURE_SCALAR(argv[0]);
+  	char *compound;
+  	compound = IDL_VarGetString(argv[0]);
+	double energy = IDL_DoubleScalar(argv[1]);
+	double density = IDL_DoubleScalar(argv[2]);
+	
+	IDL_VPTR rv = IDL_Gettmp();
+  	rv->type = IDL_TYP_DCOMPLEX;
+	xrlComplex F = Refractive_Index(compound, energy, density);
+
+  	rv->value.dcmp.r = F.re; 
+  	rv->value.dcmp.i = F.im; 
+
+	return rv;
+}
+
 
 int IDL_Load (void) 
 {
