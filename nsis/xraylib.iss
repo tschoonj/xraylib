@@ -106,8 +106,9 @@ Source: "{#srcdir}\nsis\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Compo
 Source: "{#srcdir}\nsis\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
 #endif
 Source: "{#builddir}\nsis\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
-Source: "{#srcdir}\nsis\dotNet\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
+Source: "{#srcdir}\nsis\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
+#ifndef XRL64
 Source: "{#builddir}\nsis\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
 ;Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
 Source: "{#builddir}\nsis\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
