@@ -16,7 +16,6 @@ nsis:
 	$(MAKE) common
 	lib /machine:i386 /def:libxrl-$(LIB_CURRENT_MINUS_AGE).def
 	implib.exe -a -c libxrl-$(LIB_CURRENT_MINUS_AGE)-bcc.lib libxrl-$(LIB_CURRENT_MINUS_AGE).dll
-	unix2dos -n ${top_srcdir}/example/xrlexample8.cs xrlexample8.cs
 	unix2dos -n ${top_srcdir}/example/xrlexample4.pro xrlexample4.pro
 	unix2dos -n ${top_srcdir}/idl/libxrlidl.dlm libxrlidl.dlm 
 	unix2dos -n ${top_srcdir}/idl/xraylib.pro xraylib.pro 
@@ -54,6 +53,7 @@ common:
 	unix2dos -n ${top_srcdir}/doc/xrayfunc.txt xrayfunc.txt
 	unix2dos -n ${top_srcdir}/doc/xrayhelp.txt xrayhelp.txt
 	unix2dos -n ${srcdir}/README README2.txt
+	unix2dos -n ${top_srcdir}/example/xrlexample8.cs xrlexample8.cs
 	unix2dos -n ${top_srcdir}/example/xrlexample1.c xrlexample1.c
 	unix2dos -n ${top_srcdir}/example/xrlexample6.cpp xrlexample6.cpp
 	unix2dos -n ${top_srcdir}/include/xraylib.h xraylib.h
