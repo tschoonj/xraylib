@@ -54,7 +54,7 @@ xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
   xrlexample3_SOURCES = xrlexample3.f90 
-  xrlexample3_LDADD = ../fortran/libxrlf03.la
+  xrlexample3_LDADD = ../fortran/libxrlf03.la ../src/libxrl.la
   xrlexample3_CPPFLAGS = -I../fortran
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
   xrlexample3_FCFLAGS = ${xrlexample3_CPPFLAGS}
