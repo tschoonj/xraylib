@@ -7,7 +7,7 @@ GetCompoundDataNISTByName, GetCompoundDataNISTList and FreeCompoundData)
 - All _CP functions now also support the NIST compound names.
 - Element density function added, using values from NIST (new API:
 ElementDensity)
-- Bindings for new language: Ruby
+- Bindings for new languages: Ruby and PHP
 - Fluorescence yields and CK transition probabilities updated according to
 J.L. Campbell's Atomic Data and Nuclear Data Tables 95 (2009) 115–124
 - Auger non-radiative rates extended. Consists now of almost 1000 macros. (new
