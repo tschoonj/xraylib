@@ -3,7 +3,7 @@ Version 3.0.0 Tom Schoonjans
 - Moved all floats to doubles
 - Added support for Python3 (CLI)
 - NIST compound data included (new API: GetCompoundDataNISTByIndex,
-GetCompoundDataNISTByName, GetCompoundDataNISTList and FreeCompoundData)
+GetCompoundDataNISTByName, GetCompoundDataNISTList and FreeCompoundDataNIST)
 - All _CP functions now also support the NIST compound names.
 - Element density function added, using values from NIST (new API:
 ElementDensity)
