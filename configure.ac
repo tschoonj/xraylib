@@ -12,7 +12,7 @@
 
 
 
-AC_INIT([xraylib],[3.0.0],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[3.0.1],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -21,7 +21,7 @@ AC_CANONICAL_HOST
 
 
 LIB_CURRENT=7
-LIB_REVISION=0
+LIB_REVISION=1
 LIB_AGE=0
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
