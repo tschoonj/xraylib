@@ -19,8 +19,10 @@ public class xrlexample7 {
 
 	public static void main(String argv[]) {
 		xraylib.XRayInit();
+		xraylib.SetErrorMessages(0);
 //		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
+		System.out.println("Density of pure Al: "+xraylib.ElementDensity(13)+" g/cm3");
 		System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));
 		System.out.println("Zr L1 edge energy: "+xraylib.EdgeEnergy(40,xraylib.L1_SHELL));
@@ -36,6 +38,7 @@ public class xrlexample7 {
 		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.out.println("K atomic level width for Fe: "+xraylib.AtomicLevelWidth(26,xraylib.K_SHELL));
 		System.out.println("Bi L2-M5M5 Auger non-radiative rate: "+xraylib.AugerRate(86,xraylib.L2_M5M5_AUGER));
+		System.out.println("Bi L3 Auger yield: "+xraylib.AugerYield(86, xraylib.L3_SHELL));
 		System.out.println("M1->M5 Coster-Kronig transition probability for Au : "+xraylib.CosKronTransProb(79,xraylib.FM15_TRANS));
 		System.out.println("L1->L3 Coster-Kronig transition probability for Fe : "+xraylib.CosKronTransProb(26,xraylib.FL13_TRANS));
 		System.out.println("Au Ma1 XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MA1_LINE,(float) 10.0));
@@ -45,6 +48,11 @@ public class xrlexample7 {
 		System.out.println("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
 	System.out.println("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
 		System.out.println("Pb Malpha XRF production cs at 20.0 keV without cascade effect: "+xraylib.CS_FluorLine_Kissel_no_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
+
+		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ xraylib.CS_Energy(13, (float) 20.0));
+		System.out.println("Pb mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy(82, (float) 40.0));
+		System.out.println("CdTe mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy_CP("CdTe", (float) 40.0));
+
 		System.out.println("");
 		System.out.println("--------------------------- END OF XRLEXAMPLE7 -------------------------------");
 		System.out.println("");

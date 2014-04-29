@@ -1,3 +1,36 @@
+Version 3.0.0 Tom Schoonjans
+
+- Moved all floats to doubles
+- Added support for Python3 (CLI)
+- NIST compound data included (new API: GetCompoundDataNISTByIndex,
+GetCompoundDataNISTByName, GetCompoundDataNISTList and FreeCompoundDataNIST)
+- All _CP functions now also support the NIST compound names.
+- Element density function added, using values from NIST (new API:
+ElementDensity)
+- Bindings for new languages: Ruby and PHP
+- Fluorescence yields and CK transition probabilities updated according to
+J.L. Campbell's Atomic Data and Nuclear Data Tables 95 (2009) 115–124
+- Auger non-radiative rates extended. Consists now of almost 1000 macros. (new
+API: AugerYield)
+- Cascade effects improvements
+- Mass-energy absorption cross sections added from NIST. (new API: CS_Energy
+and CS_Energy_CP) (requested by Piernicola Oliva)
+- CompoundParser prototype changed!!! (new API: FreeCompoundData)
+- strict ANSI-C compliance for core library, thanks to Oleg Shirokobrod for providing the necessary patches!
+- Complex datatype changed to xrlComplex!!!
+- Refractive_Index_* functions now use double instead of floats (thanks to
+Manuel Sanchez del Rio for pointing out the problem). (new API:
+Refractive_Index, returns xrlComplex)
+- Fortran: changes to CompoundParser and Crystal_GetCrystal. All functions now
+use Fortran strings instead of C-style strings
+- CompoundParser now accepts real numbers as coefficients (requested by
+Olivier Tache)
+- Greatly enhanced documentation at http://github.com/tschoonj/xraylib.wiki
+- Windows 64 bit SDK
+- Many bugfixes and under-the-hood improvements
+
+
+
 Version 2.16.0 Tom Schoonjans
 
 -Crystal diffraction functions added (David Sagan):

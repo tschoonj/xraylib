@@ -39,6 +39,12 @@ endif
 if ENABLE_LUA
   check_SCRIPTS += xrlexample9.sh
 endif
+if ENABLE_RUBY
+  check_SCRIPTS += xrlexample10.sh
+endif
+if ENABLE_PHP
+  check_SCRIPTS += xrlexample12.sh
+endif
 
 
 
@@ -53,8 +59,8 @@ xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
-  xrlexample3_SOURCES = xrlexample3.f90
-  xrlexample3_LDADD = ../fortran/libxrlf03.la
+  xrlexample3_SOURCES = xrlexample3.f90 
+  xrlexample3_LDADD = ../fortran/libxrlf03.la ../src/libxrl.la
   xrlexample3_CPPFLAGS = -I../fortran
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
   xrlexample3_FCFLAGS = ${xrlexample3_CPPFLAGS}
@@ -68,9 +74,10 @@ endif
 
 if ENABLE_CUDA
 xrlexample11_SOURCES = xrlexample11.cu
-xrlexample11_LDADD = ../src/libxrl.la  $(CUDA_LDFLAGS) -lcudart ../cuda/libxrlcuda.la
+xrlexample11_LDADD = xrlcudalink.o ../src/libxrl.la  $(CUDA_LDFLAGS) ../cuda/libxrlcuda.a -lcudart
 xrlexample11_CFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/cuda -I${top_srcdir}/src
-TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH="$(CUDA_LIBDIR)"
+TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH="$(CUDA_LIBDIR)" LD_LIBRARY_PATH="$(CUDA_LIBDIR)"
+
 endif
 
 if ENABLE_CROSS
@@ -78,67 +85,103 @@ TESTS_ENVIRONMENT = path="${top_builddir}/src/.libs" $(WINE)
 endif
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
+#AM_TESTS_FD_REDIRECT = 9>&2
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php
 
 
 #test the idl bindings using this script
-xrlexample4.sh: 
-	echo "Testing IDL bindings"
-	echo "unset IDL_STARTUP" > xrlexample4.sh
-if !ABS_SRC_BUILD_EQUAL
-	echo "ln -s ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
-endif
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
-if !ABS_SRC_BUILD_EQUAL
-	echo "rm -f ${top_builddir}/idl/libxrlidl.dlm" >> xrlexample4.sh
-endif
-	chmod +x xrlexample4.sh	
+xrlexample4.sh: ../idl/libxrlidl.la xrlexample4.pro
+	@echo "Testing IDL bindings"
+	@echo "unset IDL_STARTUP" > xrlexample4.sh
+	@echo "cp ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl/.libs:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
+	@echo "rm -f ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
+	@chmod +x xrlexample4.sh	
 
 #test the perl bindings
-xrlexample2.sh:
-	echo "Testing perl bindings"
-#	echo "unset PERL5LIB" > xrlexample2.sh
-#	echo "unset PERLLIB" >> xrlexample2.sh
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/blib/lib:${top_builddir}/perl/blib/arch\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
-	chmod +x xrlexample2.sh
+xrlexample2.sh: ../perl/xraylib.pm xrlexample2.pl
+	@echo "Testing perl bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/.libs/:${top_builddir}/perl\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" >> xrlexample2.sh
+	@chmod +x xrlexample2.sh
 
 #test the python bindings
-xrlexample5.sh:
-	echo "Testing python bindings"
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
-	chmod +x xrlexample5.sh
+xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
+	@echo "Testing python bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" >> xrlexample5.sh
+	@chmod +x xrlexample5.sh
 
 #test the java bindings
-xrlexample7.sh:
-	echo "Testing java bindings"
-	echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
-	chmod +x xrlexample7.sh
+xrlexample7.sh: ../java/xraylib.java xrlexample7.java
+	@echo "Testing java bindings"
+	@echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" >> xrlexample7.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java/.libs\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
+	@chmod +x xrlexample7.sh
 
 #test the lua bindings
-xrlexample9.sh:
-	echo "Testing lua bindings"
-	echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
-	chmod +x xrlexample9.sh
+xrlexample9.sh: ../lua/xraylib.la xrlexample9.lua
+	@echo "Testing lua bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" >> xrlexample9.sh
+	@chmod +x xrlexample9.sh
 	
+#test the ruby bindings
+xrlexample10.sh: ../ruby/xraylib.la xrlexample10.rb
+	@echo "Testing ruby bindings"
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby/.libs\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" >> xrlexample10.sh
+	@chmod +x xrlexample10.sh
+
+xrlexample12.sh: ../php/xraylib.la xrlexample12.php
+	@echo "Testing PHP bindings"
+	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
+	@echo "include_path=\"${top_builddir}/php/\"" >> php.ini
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -c ${builddir}  ${top_srcdir}/example/xrlexample12.php" >> xrlexample12.sh
+	@echo "rm -f php.ini" >> xrlexample12.sh
+	@chmod +x xrlexample12.sh
+
+
+../perl/xraylib.pm:
+	$(MAKE) -C ../perl xraylib.pm
+
+../idl/libxrlidl.la:
+	$(MAKE) -C ../idl libxrlidl.la
+
+../python/_xraylib.la:
+	$(MAKE) -C ../python _xraylib.la
+
+../java/xraylib.java:
+	$(MAKE) -C ../java xraylib.java
+
+../lua/xraylib.la:
+	$(MAKE) -C ../lua xraylib.la
+
+../ruby/xraylib.la:
+	$(MAKE) -C ../ruby xraylib.la
+
+../php/xraylib.la:
+	$(MAKE) -C ../php xraylib.la
 
 .cu.o:
-	$(NVCC) -dc -m64 -g -G -O0 -arch=sm_20 --compiler-options="$(CFLAGS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(xrlexample11_CFLAGS)" $(CUDA_CFLAGS) -o $@ -c $<
+	$(NVCC) $(xrlexample11_CFLAGS) -arch=sm_20 -dc -o $@ $<
 
-.cu.lo:
-	$(srcdir)/cudalt.py $@ $(NVCC) \
-	-dc -m64 -g -G -O0 -arch=sm_20 --compiler-options=\"$(CFLAGS) \
-	$(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) \
-	$(xrlexample11_CFLAGS)\" $(CUDA_CFLAGS) -c $<
+xrlcudalink.o: xrlexample11.o
+	$(NVCC) -arch=sm_20 -dlink xrlexample11.o ../cuda/libxrlcuda.a -o xrlcudalink.o
+
+#.cu.o:
+#	$(NVCC) -dc -arch=sm_20 --compiler-options="$(CFLAGS) \
+#	$(DEFAULT_INCLUDES) $(INCLUDES) \
+#	$(AM_CPPFLAGS) $(CPPFLAGS) \
+#	$(xrlexample11_CFLAGS)" $(CUDA_CFLAGS) -o $@ -c $<
+
+#.cu.lo:
+#	$(srcdir)/cudalt.py $@ $(NVCC) \
+#	-dc -m64 -g -G -O0 -arch=sm_20 --compiler-options=\"$(CFLAGS) \
+#	$(DEFAULT_INCLUDES) $(INCLUDES) \
+#	$(AM_CPPFLAGS) $(CPPFLAGS) \
+#	$(xrlexample11_CFLAGS)\" $(CUDA_CFLAGS) -c $<
 
 
 
 
 
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh xrlexample12.sh

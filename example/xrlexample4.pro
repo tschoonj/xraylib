@@ -17,7 +17,14 @@
 
 @xraylib
 
+CATCH, Error_status
+
+IF Error_status NE 0 THEN EXIT,STATUS=0
+
+SetErrorMessages,0
+
 PRINT,'Example of IDL program using xraylib'
+PRINT,'Density of pure Al: ', ElementDensity(13), ' g/cm3'
 PRINT,'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE)
 PRINT,'Fe partial photoionization cs of L3 at 6.0 keV: ',CS_Photo_Partial(26,L3_SHELL,6.0)
 PRINT,'Zr L1 edge energy: ',EdgeEnergy(40,L1_SHELL)
@@ -52,11 +59,16 @@ PRINT,'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG
 PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 PRINT,'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 PRINT,'Bi L2-M5M5 Auger non-radiative rate: ', AugerRate(86,L2_M5M5_AUGER)
+PRINT,'Bi L3 Auger yield: ', AugerYield(86, L3_SHELL)
 
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with cascade effect: ',CS_FluorLine_Kissel(82,MA1_LINE,20.0)
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: ',CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0)
 PRINT,'Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0)
 PRINT,'Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0)
+
+PRINT,'Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0)
+PRINT,'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0)
+PRINT,'CdTe mass energy-absorption cs at 40.0 keV: ', CS_Energy_CP('CdTe', 40.0)
 
 ;Si crystal structure
 cryst = Crystal_GetCrystal('Si')
@@ -162,8 +174,29 @@ F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel
 PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
 
 
+PRINT, ''
 
+; compoundDataNIST tests
+cdn = GetCompoundDataNISTByName('Uranium Monocarbide')
+PRINT, 'Uranium Monocarbide'
+PRINT, '  Name: ',cdn.name
+PRINT, '  Density: ',cdn.density, ' g/cm3'
+FOR i=0,cdn.nElements-1 DO $
+	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
+	cdn.massFractions[i]*100.0
 
+cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
+PRINT, 'NIST_COMPOUND_BRAIN_ICRP'
+PRINT, '  Name: ',cdn.name
+PRINT, '  Density: ',cdn.density, ' g/cm3'
+FOR i=0,cdn.nElements-1 DO $ 
+	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
+	cdn.massFractions[i]*100.0
+
+nistCompounds = GetCompoundDataNISTList()
+PRINT, 'List of available NIST compounds'
+FOR i=0,N_ELEMENTS(nistCompounds)-1 DO $
+	PRINT, FORMAT='(%"  Compound %i: %s")', i, nistCompounds[i]
 
 PRINT,''
 PRINT,'--------------------------- END OF XRLEXAMPLE4 -------------------------------'

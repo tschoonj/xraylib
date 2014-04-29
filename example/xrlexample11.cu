@@ -8,7 +8,7 @@
 //#define CUDA_ERROR_CHECK
 
 
-__global__ void Yields(int *Z, int *shells, float *yields) {
+__global__ void Yields(int *Z, int *shells, double *yields) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -18,7 +18,7 @@ __global__ void Yields(int *Z, int *shells, float *yields) {
 	return;
 }
 
-__global__ void Weights(int *Z, float *weights) {
+__global__ void Weights(int *Z, double *weights) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -28,7 +28,7 @@ __global__ void Weights(int *Z, float *weights) {
 	return;
 }
 
-__global__ void Edges(int *Z, int *shells, float *edges) {
+__global__ void Edges(int *Z, int *shells, double *edges) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -38,7 +38,7 @@ __global__ void Edges(int *Z, int *shells, float *edges) {
 	return;
 }
 
-__global__ void Jumps(int *Z, int *shells, float *jumps) {
+__global__ void Jumps(int *Z, int *shells, double *jumps) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -48,7 +48,7 @@ __global__ void Jumps(int *Z, int *shells, float *jumps) {
 	return;
 }
 
-__global__ void CosKrons(int *Z, int *trans, float *coskrons) {
+__global__ void CosKrons(int *Z, int *trans, double *coskrons) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -58,7 +58,7 @@ __global__ void CosKrons(int *Z, int *trans, float *coskrons) {
 	return;
 }
 
-__global__ void RadRates(int *Z, int *lines, float *radrates) {
+__global__ void RadRates(int *Z, int *lines, double *radrates) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -68,7 +68,7 @@ __global__ void RadRates(int *Z, int *lines, float *radrates) {
 	return;
 }
 
-__global__ void Widths(int *Z, int *shells, float *widths) {
+__global__ void Widths(int *Z, int *shells, double *widths) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
@@ -78,7 +78,7 @@ __global__ void Widths(int *Z, int *shells, float *widths) {
 	return;
 }
 
-__global__ void CS_Photos(int *Z, float *energies, float *cs) {
+__global__ void CS_Photos(int *Z, double *energies, double *cs) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 	
 	cs[tid] = CS_Photo_cu(Z[tid], energies[tid]);
@@ -96,22 +96,22 @@ int main (int argc, char *argv[]) {
 	int Z[5] = {10,15,26,79,82};
 	int shells[5] = {K_SHELL, K_SHELL, K_SHELL, L3_SHELL,L1_SHELL};
 	int lines[5] = {KL2_LINE, KL3_LINE, KM3_LINE, L3M5_LINE, L2M4_LINE};
-	float energies[5] = {2.0, 8.0, 9.275, 15.89, 50.23};
+	double energies[5] = {2.0, 8.0, 9.275, 15.89, 50.23};
 	int Z2[3] = {56, 68, 80};
 	int trans[3] = {FL13_TRANS, FL23_TRANS, FM34_TRANS};
 	int *Zd, *Z2d;
 	int *shellsd, *linesd, *transd;
-	float *energiesd;
+	double *energiesd;
 
-	float yields[5], *yieldsd;
-	float weights[5], *weightsd;
-	float edges[5], *edgesd;
-	float lineEnergies[5], *lineEnergiesd;
-	float jumps[5], *jumpsd;
-	float coskrons[3], *coskronsd;
-	float radrates[5], *radratesd;
-	float widths[5], *widthsd; 
-	float photo_cs[5], *photo_csd;
+	double yields[5], *yieldsd;
+	double weights[5], *weightsd;
+	double edges[5], *edgesd;
+	double lineEnergies[5], *lineEnergiesd;
+	double jumps[5], *jumpsd;
+	double coskrons[3], *coskronsd;
+	double radrates[5], *radratesd;
+	double widths[5], *widthsd; 
+	double photo_cs[5], *photo_csd;
 
 
 	int i;
@@ -129,20 +129,20 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(linesd, lines, 5*sizeof(int), cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMalloc((void **) &transd, 3*sizeof(int)));
 	CudaSafeCall(cudaMemcpy(transd, trans, 3*sizeof(int), cudaMemcpyHostToDevice));
-	CudaSafeCall(cudaMalloc((void **) &energiesd, 5*sizeof(float)));
-	CudaSafeCall(cudaMemcpy(energiesd, energies, 5*sizeof(float), cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMalloc((void **) &energiesd, 5*sizeof(double)));
+	CudaSafeCall(cudaMemcpy(energiesd, energies, 5*sizeof(double), cudaMemcpyHostToDevice));
 
 
 	//output variables
-	CudaSafeCall(cudaMalloc((void **) &yieldsd, 5*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &weightsd, 5*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &edgesd, 5*sizeof(float)));
-//	CudaSafeCall(cudaMalloc((void **) &lineEnergiesd, 5*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &jumpsd, 5*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &coskronsd, 3*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &radratesd, 5*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &widthsd, 5*sizeof(float)));
-	CudaSafeCall(cudaMalloc((void **) &photo_csd, 5*sizeof(float)));
+	CudaSafeCall(cudaMalloc((void **) &yieldsd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &weightsd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &edgesd, 5*sizeof(double)));
+//	CudaSafeCall(cudaMalloc((void **) &lineEnergiesd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &jumpsd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &coskronsd, 3*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &radratesd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &widthsd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &photo_csd, 5*sizeof(double)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -169,15 +169,15 @@ int main (int argc, char *argv[]) {
 	CS_Photos<<<1,5>>>(Zd, energiesd, photo_csd);	
 	CudaCheckError();
 	
-	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(edges, edgesd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-//	CudaSafeCall(cudaMemcpy(lineEnergies, lineEnergiesd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(jumps, jumpsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(coskrons, coskronsd, 3*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(radrates, radratesd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(widths, widthsd, 5*sizeof(float), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(photo_cs, photo_csd, 5*sizeof(float), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(edges, edgesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+//	CudaSafeCall(cudaMemcpy(lineEnergies, lineEnergiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(jumps, jumpsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(coskrons, coskronsd, 3*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(radrates, radratesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(widths, widthsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(photo_cs, photo_csd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 
 
 	fprintf(stdout,"Fluorescence yields\n");
@@ -245,6 +245,8 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Fe-K    %8f %f\n",AtomicLevelWidth(26,K_SHELL), widths[2]);
 	fprintf(stdout,"Au-L3   %8f %f\n",AtomicLevelWidth(79,L3_SHELL), widths[3]);
 	fprintf(stdout,"Pb-L1   %8f %f\n",AtomicLevelWidth(82,L1_SHELL), widths[4]);
+
+	fprintf(stdout,"\n\n");
 
 	fprintf(stdout,"Photo ionization cross sections\n");
 	fprintf(stdout,"Element   Energy(keV)   Classic   Cuda\n");

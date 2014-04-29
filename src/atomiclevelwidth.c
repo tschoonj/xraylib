@@ -33,9 +33,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float AtomicLevelWidth(int Z, int shell)
+double AtomicLevelWidth(int Z, int shell)
 {
-  float atomic_level_width;
+  double atomic_level_width;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function AtomicLevelWidth");

@@ -20,6 +20,6 @@
 from distutils.core import setup, Extension
 
 
-xraylib_module = Extension('_xraylib', sources=['..\\..\\xraylib_wrap.c'],libraries = ['xrl','python26'], include_dirs = ['C:\\Python26\\include','..\\..\\..\\include'], library_dirs=['..\\..\\..\\src\\.libs','C:\\Python26\\libs'])
+xraylib_module = Extension('_xraylib', sources=['..\\..\\xraylib_wrap.c'],libraries = ['xrl','python26'], include_dirs = ['C:\\Python26\\include','..\..\\..\\..\\include'], library_dirs=['..\\..\\..\\src\\.libs','C:\\Python26\\libs'])
 
 setup (name = 'xraylib' ,version = '@VERSION@' , author = "Tom Schoonjans", description = """python bindings of xraylib""", ext_modules = [xraylib_module], py_modules = ["xraylib"])

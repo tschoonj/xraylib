@@ -26,7 +26,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float CS_Total(int Z, float E)
+double CS_Total(int Z, double E)
 {
   if (Z<1 || Z>ZMAX || NE_Photo[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
     ErrorExit("Z out of range in function CS_Total");
@@ -49,9 +49,9 @@ float CS_Total(int Z, float E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float CS_Photo(int Z, float E)
+double CS_Photo(int Z, double E)
 {
-  float ln_E, ln_sigma, sigma;
+  double ln_E, ln_sigma, sigma;
 
   if (Z<1 || Z>ZMAX || NE_Photo[Z]<0) {
     ErrorExit("Z out of range in function CS_Photo");
@@ -81,9 +81,9 @@ float CS_Photo(int Z, float E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float CS_Rayl(int Z, float E)
+double CS_Rayl(int Z, double E)
 {
-  float ln_E, ln_sigma, sigma;
+  double ln_E, ln_sigma, sigma;
 
   if (Z<1 || Z>ZMAX || NE_Rayl[Z]<0) {
     ErrorExit("Z out of range in function CS_Rayl");
@@ -112,9 +112,9 @@ float CS_Rayl(int Z, float E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float CS_Compt(int Z, float E) 
+double CS_Compt(int Z, double E) 
 {
-  float ln_E, ln_sigma, sigma;
+  double ln_E, ln_sigma, sigma;
 
   if (Z<1 || Z>ZMAX || NE_Compt[Z]<0) {
     ErrorExit("Z out of range in function CS_Compt");
@@ -134,6 +134,34 @@ float CS_Compt(int Z, float E)
   sigma = exp(ln_sigma);
 
   return sigma;
+}
+
+
+/*////////////////////////////////////////////////////////////////////
+//                                                                  //
+//            Mass energy-absorption coefficient (cm2/g)            //
+//                                                                  //
+//          Z : atomic number                                       //
+//          E : energy (keV)                                        //
+//                                                                  //
+/////////////////////////////////////////////////////////////////// */
+double CS_Energy(int Z, double E)
+{
+	double ln_E, ln_sigma, sigma;
+	if (Z < 1 || Z > 92 || NE_Energy[Z] < 0) {
+		ErrorExit("Z out of range in function CS_Energy");
+		return 0;
+	}
+	if (E <= 0.0) {
+		ErrorExit("Z <= 0 in function CS_Energy");
+		return 0;
+	}
+	ln_E = log(E);
+	splint(E_Energy_arr[Z]-1, CS_Energy_arr[Z]-1, CS_Energy_arr2[Z]-1, NE_Energy[Z], ln_E, &ln_sigma);
+
+	sigma = exp(ln_sigma);
+
+	return sigma;
 }
 
 

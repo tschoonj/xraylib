@@ -33,9 +33,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float FluorYield(int Z, int shell)
+double FluorYield(int Z, int shell)
 {
-  float fluor_yield;
+  double fluor_yield;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function FluorYield");

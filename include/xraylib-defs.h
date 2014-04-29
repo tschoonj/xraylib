@@ -25,7 +25,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan, Bruno Golosio, Antonio Brunetti, Manue
 #define SHELLNUM_C 29
 #define LINENUM 383
 #define TRANSNUM 15
-#define AUGERNUM 204
+#define AUGERNUM 996
 #define SHELLNUM_A 9
 /* Delta for size increase of Crystal_Array.crystal array */
 #define N_NEW_CRYSTAL 10   
@@ -36,40 +36,31 @@ THIS SOFTWARE IS PROVIDED BY David Sagan, Bruno Golosio, Antonio Brunetti, Manue
 /* Complex number */
 
 typedef struct {
-  float re;               /* Real part */
-  float im;               /* Imaginary part */
-} Complex;
+  double re;               /* Real part */
+  double im;               /* Imaginary part */
+} xrlComplex;
 
-float c_abs(Complex x);
-Complex c_mul(Complex x, Complex y);
-
-/* Struct to hold info on a particular type of atom */
-
-struct MendelElement {
-  int Zatom;              /* Atomic number of atom. */
-  char *name;             /* Name of atom. */
-};
+double c_abs(xrlComplex x);
+xrlComplex c_mul(xrlComplex x, xrlComplex y);
 
 /* Struct for an atom in a crystal. */
 
 typedef struct {
   int Zatom;              /* Atomic number of atom. */
-  float fraction;         /* Fractional contribution. Normally 1.0. */
-  float x, y, z;          /* Atom position in fractions of the unit cell lengths. */
+  double fraction;         /* Fractional contribution. Normally 1.0. */
+  double x, y, z;          /* Atom position in fractions of the unit cell lengths. */
 } Crystal_Atom;
-/*typedef struct CrystalAtom Crystal_Atom;*/
 
 /* Struct for a crystal. */
 
 typedef struct {
   char* name;                 /* Name of crystal. */
-  float a, b, c;              /* Unit cell size in Angstroms. */
-  float alpha, beta, gamma;   /* Unit cell angles in degrees. */
-  float volume;               /* Unit cell volume in Angstroms^3. */
+  double a, b, c;              /* Unit cell size in Angstroms. */
+  double alpha, beta, gamma;   /* Unit cell angles in degrees. */
+  double volume;               /* Unit cell volume in Angstroms^3. */
   int n_atom;                 /* Number of atoms. */
   Crystal_Atom* atom;   /* Array of atoms in unit cell. */
 } Crystal_Struct;
-/*typedef struct CrystalStruct Crystal_Struct;*/
 
 /* Container struct to hold an array of CrystalStructs */
 
@@ -79,5 +70,4 @@ typedef struct {
   Crystal_Struct* crystal;
 } Crystal_Array;
 
-/*typedef struct CrystalArray Crystal_Array;*/
 #endif

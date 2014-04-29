@@ -15,35 +15,23 @@ xraylibincludedir=${includedir}/xraylib
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I.. -I${top_srcdir}/src
 
 if ENABLE_IDL
-all:
-	$(MAKE) idlxrl
+
+dlmdir = $(prefix)/dlm
+dist_dlm_DATA = libxrlidl.dlm
+prodir = $(prefix)/pro
+dist_pro_DATA = xraylib_nist_compounds.pro  xraylib_auger.pro xraylib_shells.pro  xraylib_help.pro xraylib_lines.pro xraylib.pro
+
+plugindir = $(dlmdir)
+plugin_LTLIBRARIES = libxrlidl.la
+libxrlidl_la_CFLAGS = -I@RSIIDL_INCDIR@
+libxrlidl_la_LIBADD = ../src/libxrl.la @IDL_LIBADD@
+libxrlidl_la_SOURCES = xraylib_idl.c
+libxrlidl_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
 
 
-#I'm not sure how portable this .libs link location is...
-#Maybe this could be rewritten using libtool...
-idlxrl:	xraylib_idl.c ../src/libxrl.la
-	$(CC) -c $(AM_CPPFLAGS) -I@RSIIDL_DIR@/external/include $(CFLAGS) @IDL_CFLAGS@ ${srcdir}/xraylib_idl.c
-	gcc @IDL_LD_FLAGS@ -o libxrlidl.so xraylib_idl.o -L${top_builddir}/src/.libs -lxrl
 
 
-#install the IDL bindings specific files
-install-exec-local:
-	$(MKDIR_P) $(DESTDIR)$(prefix)/dlm
-	$(INSTALL) libxrlidl.so ${srcdir}/libxrlidl.dlm $(DESTDIR)$(prefix)/dlm
-	$(MKDIR_P) $(DESTDIR)$(prefix)/pro	
-	$(INSTALL) $(top_srcdir)/idl/xraylib_auger.pro $(top_srcdir)/idl/xraylib_shells.pro $(top_srcdir)/idl/xraylib_help.pro $(top_srcdir)/idl/xraylib_lines.pro $(top_srcdir)/idl/xraylib.pro $(DESTDIR)$(prefix)/pro
-
-uninstall-local:
-	rm -f $(DESTDIR)$(prefix)/dlm/libxrlidl.so $(DESTDIR)$(prefix)/dlm/libxrlidl.dlm
-	rm -f $(DESTDIR)$(prefix)/pro/xraylib_auger.pro $(DESTDIR)$(prefix)/pro/xraylib_shells.pro $(DESTDIR)$(prefix)/pro/xraylib_help.pro  $(DESTDIR)$(prefix)/pro/xraylib_lines.pro $(DESTDIR)$(prefix)/pro/xraylib.pro
-
-
-clean-local:
-	rm -f libxrlidl.so 
-	rm -f xraylib_idl.o 
-	rm -rf libxrlidl.so.dSYM
 endif
 
-EXTRA_DIST = xraylib_idl.c libxrlidl.dlm 
 
 

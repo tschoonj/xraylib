@@ -33,9 +33,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float EdgeEnergy(int Z, int shell)
+double EdgeEnergy(int Z, int shell)
 {
-  float edge_energy;
+  double edge_energy;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function EdgeEnergy");

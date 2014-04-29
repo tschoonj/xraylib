@@ -13,13 +13,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
-#define KL1 -KL1_LINE-1
-#define KL2 -KL2_LINE-1
-#define KL3 -KL3_LINE-1
-#define KM1 -KM1_LINE-1
-#define KM2 -KM2_LINE-1
-#define KM3 -KM3_LINE-1
-#define KP5 -KP5_LINE-1
+#define KL1 -(int)KL1_LINE-1
+#define KL2 -(int)KL2_LINE-1
+#define KL3 -(int)KL3_LINE-1
+#define KM1 -(int)KM1_LINE-1
+#define KM2 -(int)KM2_LINE-1
+#define KM3 -(int)KM3_LINE-1
+#define KP5 -(int)KP5_LINE-1
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -34,11 +34,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float LineEnergy(int Z, int line)
+double LineEnergy(int Z, int line)
 {
-  float line_energy;
-  float lE[50],rr[50];
-  float tmp=0.0,tmp1=0.0,tmp2=0.0;
+  double line_energy;
+  double lE[50],rr[50];
+  double tmp=0.0,tmp1=0.0,tmp2=0.0;
   int i;
   int temp_line;
   

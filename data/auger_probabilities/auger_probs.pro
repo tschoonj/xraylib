@@ -45,6 +45,9 @@ WHILE (NOT EOF(lun)) DO BEGIN
 	IF (line EQ '') THEN BREAK
 	IF (STRMID(line,0,1) EQ '#') THEN CONTINUE
 	data_prov = DOUBLE(STRSPLIT(line,/EXTRACT))
+	;IF (data_prov[1] GT 0.0 AND N_ELEMENTS(data_prov) GT 2) THEN BEGIN
+	;	data_prov[2:N_ELEMENTS(data_prov)-1] /= data_prov[1]
+	;ENDIF
 	data = [data, data_prov[1:N_ELEMENTS(data_prov)-1] ]
 ENDWHILE
 
@@ -96,24 +99,70 @@ FOREACH file, files DO BEGIN
 	data = [data, read_auger_file(file)]
 ENDFOREACH
 
-STOP
 
 
 
 OPENW, lun, '../auger_rates.dat', /GET_LUN
+OPENW, lun2, '../../include/xraylib-auger.h', /get_lun
+PRINTF, lun2, '/* Copyright (c) 2009-2013 Tom Schoonjans'
+PRINTF, lun2, 'All rights reserved.'
+PRINTF, lun2, ''
+PRINTF, lun2, 'Redistribution and use in source and binary forms, with or without'
+PRINTF, lun2, 'modification, are permitted provided that the following conditions are met:'
+PRINTF, lun2, '    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.'
+PRINTF, lun2, '    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.'
+PRINTF, lun2, '    * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.'
+PRINTF, lun2, ''
+PRINTF, lun2, 'THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.'
+PRINTF, lun2, '*/'
+
+PRINTF, lun2, ''
+PRINTF, lun2, '#ifndef XRAYLIB_AUGER_H'
+PRINTF, lun2, '#define XRAYLIB_AUGER_H'
+PRINTF, lun2, ''
+
+macro = 0
+
+
+forbidden = ['O8', 'O9', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11']
+
 
 FOR i=0,N_ELEMENTS(data)-1 DO BEGIN
+	dims=SIZE((*data[i]).data,/DIMENSIONS)
 	FOR j=0,N_ELEMENTS((*data[i]).names)-1 DO BEGIN
-		dims=SIZE((*data[i]).data,/DIMENSIONS)
+		name = (*data[i]).names[j]
+		matched = 0
+		FOREACH forbid, forbidden DO BEGIN
+			IF (STRPOS(name, forbid) NE -1) THEN BEGIN
+				matched = 1
+				BREAK
+			ENDIF
+		ENDFOREACH
+		IF (matched) THEN BEGIN
+			;calculate sum
+			sum = TOTAL((*data[i]).data[j,*])
+			IF (sum GT 0.0) THEN PRINT, 'name ',name, ' has positive sum: ',sum
+			CONTINUE
+		ENDIF
+
+		;convert name to acceptable macro
+		IF (STRPOS(name,'TOTAL') EQ -1) THEN BEGIN
+			pos = STRPOS(name, '-')
+			STRPUT,name,'_',pos
+			name += '_AUGER'
+
+			PRINTF, lun2, '#define ',name,macro++,FORMAT='(A,1X,A,X,I4)'
+		ENDIF
 		FOR k=0,dims[1]-1 DO BEGIN
 			PRINTF,lun,k+1,(*data[i]).names[j],(*data[i]).data[j,k],FORMAT='(I3,4X,A,E16.8)'
 		ENDFOR
 	ENDFOR
 ENDFOR
+PRINTF, lun2, ''
+PRINTF, lun2, '#endif'
 FREE_LUN,lun
+FREE_LUN,lun2
 
-
-FREE_LUN, lun
 
 
 

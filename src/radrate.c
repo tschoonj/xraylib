@@ -13,11 +13,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
-#define KL1 -KL1_LINE-1
-#define KL2 -KL2_LINE-1
-#define KL3 -KL3_LINE-1
-#define KM2 -KM2_LINE-1
-#define KM3 -KM3_LINE-1
+#define KL1 -(int)KL1_LINE-1
+#define KL2 -(int)KL2_LINE-1
+#define KL3 -(int)KL3_LINE-1
+#define KM2 -(int)KM2_LINE-1
+#define KM3 -(int)KM3_LINE-1
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -32,9 +32,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-float RadRate(int Z, int line)
+double RadRate(int Z, int line)
 {
-  float rad_rate, rr;
+  double rad_rate, rr;
   int i;
 
   if (Z<1 || Z>ZMAX) {
@@ -42,26 +42,31 @@ float RadRate(int Z, int line)
     return 0;
   }
 
-  if (line>=KA_LINE && line<LA_LINE) {
-    if (line == KA_LINE) {
+  if (line == KA_LINE) {
         rr=0.0;
     	for (i=KL1 ; i <= KL3 ; i++)
 		rr += RadRate_arr[Z][i];
-    }
-    else if (line == KB_LINE) {
+    	if (rr == 0.0) {
+      		ErrorExit("Line not available in function RadRate");
+      		return 0.0;
+    	}
+    	return rr;
+  }
+  else if (line == KB_LINE) {
     	/*
 	 * we assume that RR(Ka)+RR(Kb) = 1.0
 	 */
-    	return 1.0 - RadRate(Z,KA_LINE);
-    }
-    if (rr == 0.0 || rr == 1.0) {
-      ErrorExit("Line not available in function RadRate");
-      return 0.0;
-    }
-    return rr;
+    	rr = RadRate(Z,KA_LINE);
+    	if (rr == 1.0) {
+      		ErrorExit("Line not available in function RadRate");
+      		return 0.0;
+    	}
+	else if (rr == 0.0) {
+		return 0.0;
+	}
+    	return 1.0-rr;
   }
-
-  if (line == LA_LINE) {
+  else if (line == LA_LINE) {
 	line = -L3M5_LINE-1;
 	rr=RadRate_arr[Z][line];
 	line = -L3M4_LINE-1;

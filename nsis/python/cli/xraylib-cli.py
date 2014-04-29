@@ -15,8 +15,9 @@
 
 
 
+from __future__ import print_function
 from math import *
-from _xraylib import *
+from xraylib import *
 import getopt, sys, string, traceback
 from xraymessages import *
 from xrayhelp import *
@@ -24,36 +25,36 @@ from pprint import pprint
 
 
 if __name__ == '__main__' :
-    if len(sys.argv) == 1:
-        display_banner()
-        display_usage()
-        sys.exit(0)
-    short = 'hdf:'
-    long = ('help', 'doc', 'func=')
-    arglist = string.split(sys.argv[1])
-    opts,args = getopt.getopt(arglist, short, long)
-    for opt,val in opts:
-        if opt in ('-h', '--help'):
-            display_banner()
-	    display_help()
-	    sys.exit(0)
-        elif opt in ('-d', '--doc'):
-            display_banner()
-	    display_doc()
-	    sys.exit(0)
-        elif opt in ('-f', '--func'):
-            print val
-	    display_func(val)
-	    sys.exit(0)
-    try:    
-        XRayInit()
-	res = eval(sys.argv[1])
-	if type(res) == dict or type(res) == list:
-		pprint(res)
-	elif res == None:
-		print "No result available. Check the arguments"
-	else:
-        	print "%.5g" % res
-    except:
-        traceback.print_exc()
-        display_usage()
+	if len(sys.argv) == 1:
+		display_banner()
+		display_usage()
+		sys.exit(0)
+	short = 'hdf:'
+	long = ('help', 'doc', 'func=')
+	arglist = sys.argv[1].split()
+	opts,args = getopt.getopt(arglist, short, long)
+	for opt,val in opts:
+		if opt in ('-h', '--help'):
+			display_banner()
+			display_help()
+			sys.exit(0)
+		elif opt in ('-d', '--doc'):
+			display_banner()
+			display_doc()
+			sys.exit(0)
+		elif opt in ('-f', '--func'):
+			print (val)
+			display_func(val)
+			sys.exit(0)
+	try:    
+		XRayInit()
+		res = eval(sys.argv[1])
+		if type(res) == dict or type(res) == list:
+			pprint(res)
+		elif res == None:
+			print ("No result available. Check the arguments")
+		else:
+			print ("%.5g" % res)
+	except: 
+		traceback.print_exc()
+		display_usage()

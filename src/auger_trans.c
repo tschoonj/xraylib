@@ -15,6 +15,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayvars.h"
 #include "xrayglob.h"
 
+
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                Fractional non Radiative Rate                     //
@@ -26,8 +27,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float AugerRate(int Z, int auger_trans) {
-	float rv;
+double AugerRate(int Z, int auger_trans) {
+	double rv;
+	double yield, yield2;
 
 	rv = 0.0;
 
@@ -35,51 +37,41 @@ float AugerRate(int Z, int auger_trans) {
 		ErrorExit("Invalid Z detected in AugerRate");
 		return rv;
 	}
-	else if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5M5_AUGER) {
+	else if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5Q3_AUGER) {
 		ErrorExit("Invalid Auger transition detected in AugerRate");
 		return rv;
 	}
 
-	if (auger_trans >= K_L1L1_AUGER && auger_trans < L1_L2L2_AUGER  ) {
-		if (Auger_Transition_Total[Z][K_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][K_SHELL];
+	rv = Auger_Rates[Z][auger_trans];
+	return rv;
+}
+
+/*////////////////////////////////////////////////////////////////////
+//                                                                  //
+//                AugerYield                                        //
+//                                                                  //
+//          Z : atomic number                                       //
+//          shell: macro identifying excited shell                  //
+//                                                                  //
+/////////////////////////////////////////////////////////////////// */
+
+double AugerYield(int Z, int shell) {
+
+	double rv;
+
+	rv = 0.0;
+
+	if (Z > ZMAX || Z < 1) {
+		ErrorExit("Invalid Z detected in AugerYield");
+		return rv;
 	}
-	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER  ) {
-		if (Auger_Transition_Total[Z][L1_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L1_SHELL];
+	else if (shell < K_SHELL || shell > M5_SHELL) {
+		ErrorExit("Invalid Auger transition detected in AugerYield");
+		return rv;
 	}
-	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER  ) {
-		if (Auger_Transition_Total[Z][L2_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L2_SHELL];
-	}
-	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER  ) {
-		if (Auger_Transition_Total[Z][L3_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][L3_SHELL];
-	}
-	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER  ) {
-		if (Auger_Transition_Total[Z][M1_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M1_SHELL];
-	}
-	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER  ) {
-		if (Auger_Transition_Total[Z][M2_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M2_SHELL];
-	}
-	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER  ) {
-		if (Auger_Transition_Total[Z][M3_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M3_SHELL];
-	}
-	else if (auger_trans == M4_M5M5_AUGER) {
-		if (Auger_Transition_Total[Z][M4_SHELL] < 10E-8) 
-			return rv;
-		return Auger_Transition_Individual[Z][auger_trans]/Auger_Transition_Total[Z][M4_SHELL];
-	}
+	
+	rv = Auger_Yields[Z][shell];
 
 	return rv;
 }
+

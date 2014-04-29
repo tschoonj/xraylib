@@ -1,5 +1,3 @@
-#!/usr/bin/perl 
-
 #Copyright (c) 2009, 2010, 2011, Tom Schoonjans
 #All rights reserved.
 
@@ -21,10 +19,12 @@ use Math::Complex;
 
 xraylib::XRayInit();
 #xraylib::SetHardExit(1);
+xraylib::SetErrorMessages(0);
 
 
 
 printf "Example of perl program using xraylib\n";
+printf("Density of pure Al: %f g/cm3\n", xraylib::ElementDensity(13));
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",
 	 xraylib::LineEnergy(20,$xraylib::KA_LINE ));
 printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",xraylib::CS_Photo_Partial(26,$xraylib::L3_SHELL,6.0));
@@ -35,13 +35,13 @@ printf("Bi M1N2 radiative rate: %f\n",xraylib::RadRate(83,$xraylib::M1N2_LINE));
 printf("U M3O3 Fluorescence Line Energy: %f\n",xraylib::LineEnergy(92,$xraylib::M3O3_LINE));
 
 my $cdtest = xraylib::CompoundParser("Ca(HCO3)2");
-printf("Ca(HCO3)2 contains %i atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
+printf("Ca(HCO3)2 contains %g atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
 for ($i = 0 ; $i < $cdtest->{nElements} ; $i++) {
   printf("Element %i: %lf %%\n",$cdtest->{Elements}->[$i],$cdtest->{massFractions}->[$i]*100.0);
 }
 
 $cdtest = xraylib::CompoundParser("SiO2");
-printf("SiO2 contains %i atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
+printf("SiO2 contains %g atoms and %i elements\n",$cdtest->{nAtomsAll},$cdtest->{nElements});
 for ($i = 0 ; $i < $cdtest->{nElements} ; $i++) {
   printf("Element %i: %lf %%\n",$cdtest->{Elements}->[$i],$cdtest->{massFractions}->[$i]*100.0);
 }
@@ -59,7 +59,8 @@ printf("Au Ma1 XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorL
 printf("Au Mb XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MB_LINE,10.0));
 printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLine_Kissel(79,$xraylib::MG_LINE,10.0));
 
-printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
+printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
+printf("Bi L3 Auger yield: %f\n", xraylib::AugerYield(86, $xraylib::L3_SHELL));
 
 
 $symbol = xraylib::AtomicNumberToSymbol(26);
@@ -72,6 +73,9 @@ printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %
 printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Nonradiative_Cascade(82,$xraylib::MA1_LINE,20.0));
 printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_no_Cascade(82,$xraylib::MA1_LINE,20.0));
  
+printf("Al mass energy-absorption cs at 20.0 keV: %f\n", xraylib::CS_Energy(13, 20.0));
+printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", xraylib::CS_Energy(82, 40.0));
+printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", xraylib::CS_Energy_CP("CdTe", 40.0));
 
 # Si Crystal structure 
 
@@ -179,6 +183,35 @@ printf ("  FH(3,3,1) structure factor: (%f, %f)\n", Re($FH), Im($FH));
 
 $F0 = xraylib::Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_temp_factor, $rel_angle);
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", Re($F0), Im($F0));
+
+printf ("\n");
+
+# compoundDataNIST tests
+
+$cdn = xraylib::GetCompoundDataNISTByName("Uranium Monocarbide");
+printf ("Uranium Monocarbide\n");
+printf ("  Name: %s\n", $cdn->{name});
+printf ("  Density: %lf g/cm3\n", $cdn->{density});
+for ($i = 0 ; $i < $cdn->{nElements} ; $i++) {
+	printf("  Element %i: %lf %%\n",$cdn->{Elements}->[$i], $cdn->{massFractions}->[$i]*100.0);
+}
+
+$cdn = xraylib::GetCompoundDataNISTByIndex($xraylib::NIST_COMPOUND_BRAIN_ICRP);
+printf ("NIST_COMPOUND_BRAIN_ICRP\n");
+printf ("  Name: %s\n", $cdn->{name});
+printf ("  Density: %lf g/cm3\n", $cdn->{density});
+for ($i = 0 ; $i < $cdn->{nElements} ; $i++) {
+	printf("  Element %i: %lf %%\n",$cdn->{Elements}->[$i], $cdn->{massFractions}->[$i]*100.0);
+}
+
+#not that GetCompoundDataNISTList returns a REFERENCE to an array of strings...
+my $nistCompounds = xraylib::GetCompoundDataNISTList();
+printf ("List of available NIST compounds:\n");
+my $counter = 0;
+foreach my $nistCompound (@$nistCompounds) {
+	printf ("  Compound %i: %s\n", $counter++, $nistCompound);
+}
+
 
 printf("\n--------------------------- END OF XRLEXAMPLE2 -------------------------------\n");
 exit 0;

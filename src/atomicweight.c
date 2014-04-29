@@ -21,9 +21,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          Z : atomic number                                       //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float AtomicWeight(int Z)
+double AtomicWeight(int Z)
 {
-  float atomic_weight;
+  double atomic_weight;
 
   if (Z<1 || Z>ZMAX) {
     ErrorExit("Z out of range in function AtomicWeight");

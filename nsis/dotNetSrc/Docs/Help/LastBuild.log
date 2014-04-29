@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shfbBuild product="Sandcastle Help File Builder" version="1.9.8.0" projectFile="D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\XrayLibNET.shfbproj" started="11/22/2013 2:44:02 PM">
+<buildStep step="Initializing">
+Finding tools...
+Found Sandcastle tools in &#39;C:\Program Files (x86)\Sandcastle\&#39;
+Searching for HTML Help 1 compiler...
+Found HTML Help 1 compiler in &#39;C:\Program Files (x86)\HTML Help Workshop\&#39;
+</buildStep>
+<buildStep step="ValidatingDocumentationSources">
+Validating and copying documentation source information
+Source: D:\XrayLib v2.17 .NET\XrayLib.NET\Debug\XrayLib.NET.dll
+    Found assembly &#39;D:\XrayLib v2.17 .NET\XrayLib.NET\Debug\XrayLib.NET.dll&#39;
+Source: D:\XrayLib v2.17 .NET\XrayLib.NET\Debug\XrayLib.NET.xml
+
+Copying XML comments files
+    D:\XrayLib v2.17 .NET\XrayLib.NET\Debug\XrayLib.NET.xml -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\XrayLib.NET.xml
+</buildStep>
+<buildStep step="GenerateSharedContent">
+Generating shared content files (en-US, English (United States))...
+    Last step completed in 00:00:00.0780
+</buildStep>
+<buildStep step="GenerateApiFilter">
+Generating API filter for MRefBuilder...
+    Last step completed in 00:00:00.0110
+</buildStep>
+<buildStep step="GenerateReflectionInfo">
+Generating reflection information...
+[C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
+  MRefBuilder (v2.7.4.0)
+  Copyright c 2006-2013, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2013, Eric Woodruff, All Rights Reserved.
+  Info: Loaded 1 assemblies for reflection and 1 dependency assemblies.
+  Info: Wrote information on 1 namespaces, 7 types, and 1631 members
+  XslTransform (v2.7.4.0)
+  Copyright c 2006-2013, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2013, Eric Woodruff, All Rights Reserved.
+  Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl&#39;.
+    Last step completed in 00:00:01.6251
+</buildStep>
+<buildStep step="GenerateNamespaceSummaries">
+Generating namespace summary information...
+    Last step completed in 00:00:00.0140
+</buildStep>
+<buildStep step="ApplyVisibilityProperties">
+Applying visibility properties to reflection information file
+    0 attribute nodes removed
+    0 explicit interface implementations removed
+    0 local and base class EII elements removed
+    Last step completed in 00:00:00.0640
+</buildStep>
+<buildStep step="TransformReflectionInfo">
+Transforming reflection output...
+[C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
+  XslTransform (v2.7.4.0)
+  Copyright c 2006-2013, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2013, Eric Woodruff, All Rights Reserved.
+  Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\\ProductionTransforms\ApplyPrototypeDocModel.xsl&#39;.
+  Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\AddFilenames.xsl&#39;.
+  XslTransform (v2.7.4.0)
+  Copyright c 2006-2013, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2013, Eric Woodruff, All Rights Reserved.
+  Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl&#39;.
+    Last step completed in 00:00:01.3901
+</buildStep>
+<buildStep step="CopyAdditionalContent">
+Copying additional content files...
+No additional content to copy
+    Last step completed in 00:00:00.0110
+</buildStep>
+<buildStep step="MergeTablesOfContents">
+Merging conceptual and additional tables of contents...
+    Last step completed in 00:00:00.0010
+</buildStep>
+<buildStep step="GenerateIntermediateTableOfContents">
+Generating intermediate table of contents file...
+[C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
+  XslTransform (v2.7.4.0)
+  Copyright c 2006-2013, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2013, Eric Woodruff, All Rights Reserved.
+  Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\\ProductionTransforms\CreatePrototypeToc.xsl&#39;.
+Generating conceptual content intermediate TOC file...
+    Last step completed in 00:00:01.1281
+</buildStep>
+<buildStep step="CreateBuildAssemblerConfigs">
+Creating Sandcastle configuration files...
+    sandcastle.config
+    Last step completed in 00:00:00.2390
+</buildStep>
+<buildStep step="MergeCustomConfigs">
+Merging custom build component configurations
+D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\sandcastle.config
+    Last step completed in 00:00:00.0330
+</buildStep>
+<buildStep step="BuildReferenceTopics">
+Building reference help topics...
+[C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
+  BuildAssembler (v2.7.4.0)
+  Copyright c 2006-2013, Microsoft Corporation, All Rights Reserved.
+  Portions Copyright c 2006-2013, Eric Woodruff, All Rights Reserved.
+  Info: Loading configuration...
+  Diagnostic: ResolveReferenceLinksComponent2: The MSDN content ID cache &#39;C:\Users\Matthew\AppData\Local\EWSoftware\Sandcastle Help File Builder\Cache\MsdnContentId.cache&#39; does not exist yet.  All IDs will be looked up in this build which will slow it down.
+  Info: Processing topics...
+  Info: Processed 1642 topic(s)
+  Diagnostic: CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 1 of 15.
+  Diagnostic: CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 3 of 30.
+  Diagnostic: ResolveReferenceLinksComponent2: New MSDN content ID cache size: 33 entries
+    Last step completed in 00:00:36.5351
+</buildStep>
+<buildStep step="CombiningIntermediateTocFiles">
+Combining conceptual and API intermediate TOC files...
+    Last step completed in 00:00:00.0120
+</buildStep>
+<buildStep step="ExtractingHtmlInfo">
+Extracting HTML info for HTML Help 1 and/or website...
+[C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
+Sandcastle Help File Builder, version 1.9.8.0
+Copyright c 2006-2013, Eric Woodruff, All Rights Reserved
+E-Mail: Eric@EWoodruff.us
+
+Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
+
+Processing Help 1 files in D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1
+Processed 1642 HTML files
+Sorting keywords and generating See Also indices
+Saving HTML Help 1 keyword index to D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\XrayLibNET.hhk
+Saving HTML Help 1 table of contents to D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\XrayLibNET.hhc
+    Last step completed in 00:00:02.2481
+</buildStep>
+<buildStep step="CopyStandardHelpContent">
+Copying standard help content...
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\alert_caution.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\alert_caution.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\alert_note.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\alert_note.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\alert_security.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\alert_security.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\Caution.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\Caution.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\CFW.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\CFW.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\collapse_all.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\collapse_all.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\copycode.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\copycode.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\copycodeHighlight.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\copycodeHighlight.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\expand_all.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\expand_all.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\LastChild.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\LastChild.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\NotLastChild.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\NotLastChild.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privclass.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privclass.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privdelegate.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privdelegate.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privenum.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privenum.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privevent.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privevent.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privfield.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privfield.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privinterface.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privinterface.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privmethod.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privmethod.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privproperty.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privproperty.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\privstructure.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\privstructure.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protclass.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protclass.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protdelegate.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protdelegate.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protenum.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protenum.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protevent.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protevent.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protfield.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protfield.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protfield.png -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protfield.png
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protinterface.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protinterface.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protmethod.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protmethod.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protoperator.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protoperator.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protproperty.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protproperty.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\protstructure.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\protstructure.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubclass.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubclass.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubdelegate.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubdelegate.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubenum.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubenum.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubevent.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubevent.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubfield.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubfield.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubinterface.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubinterface.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubmethod.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubmethod.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\puboperator.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\puboperator.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubproperty.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubproperty.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\pubstructure.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\pubstructure.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\security.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\security.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\icons\static.gif -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\icons\static.gif
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\CollapsibleSection.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\CollapsibleSection.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\CookieDataStore.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\CookieDataStore.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\ElementCollection.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\ElementCollection.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\EventUtilities.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\EventUtilities.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\LanguageFilter.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\LanguageFilter.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\MemberFilter.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\MemberFilter.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\script_prototype.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\script_prototype.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\SplitScreen.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\SplitScreen.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\scripts\StyleUtilities.js -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\scripts\StyleUtilities.js
+C:\Program Files (x86)\Sandcastle\\Presentation\Prototype\styles\presentation.css -&gt; D:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\styles\presentation.css
+    Last step completed in 00:00:00.3870
+</buildStep>
+<buildStep step="GenerateHelpFormatTableOfContents">
+Generating HTML Help 1 table of contents file...
+    Last step completed in 00:00:00.0020
+</buildStep>
+<buildStep step="GenerateHelpFileIndex">
+Generating HTML Help 1 index file...
+    Last step completed in 00:00:00.0020
+</buildStep>
+<buildStep step="GenerateHelpProject">
+Generating HTML Help 1 project file...
+    Last step completed in 00:00:00.0380
+</buildStep>
+<buildStep step="CompilingHelpFile">
+Compiling HTML Help 1 file...
+[C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
+  Microsoft HTML Help Compiler 4.74.8702
+  
+  
+  
+  Compiling d:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\XrayLibNET.chm
+  
+  
+  
+  
+  
+  Compile time: 0 minutes, 14 seconds
+  
+  1,644	Topics
+  
+  16,394	Local links
+  
+  2,029	Internet links
+  
+  0	Graphics
+  
+  
+  
+  
+  
+  Created d:\XrayLib v2.17 .NET\XrayLib.NET\Docs\Help\Working\Output\HtmlHelp1\XrayLibNET.chm, 1,136,447 bytes
+  
+  Compression decreased file by 10,881,717 bytes.
+  
+    Last step completed in 00:00:15.6569
+</buildStep>
+<buildStep step="CleanIntermediates">
+Removing intermediate files...
+    Last step completed in 00:00:00.2760
+</buildStep>
+<buildStep step="Completed">
+
+Build completed successfully at 11/22/2013 02:45 PM.  Total time: 00:00:59.8864
+
+</buildStep>
+</shfbBuild>

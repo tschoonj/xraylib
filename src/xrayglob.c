@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 #include "xraylib-defs.h"
+#include "xrayglob.h"
 
 /*////////////////////////////////////////////////////////////////////
 /////            Variables                                       /////
@@ -35,56 +36,62 @@ struct MendelElement MendelArraySorted[MENDEL_MAX];
 
 Crystal_Array Crystal_arr;
 
-float AtomicWeight_arr[ZMAX+1];
-float EdgeEnergy_arr[ZMAX+1][SHELLNUM];
-float LineEnergy_arr[ZMAX+1][LINENUM];
-float FluorYield_arr[ZMAX+1][SHELLNUM];
-float JumpFactor_arr[ZMAX+1][SHELLNUM];
-float CosKron_arr[ZMAX+1][TRANSNUM];
-float RadRate_arr[ZMAX+1][LINENUM];
-float AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
+double AtomicWeight_arr[ZMAX+1];
+double EdgeEnergy_arr[ZMAX+1][SHELLNUM];
+double LineEnergy_arr[ZMAX+1][LINENUM];
+double FluorYield_arr[ZMAX+1][SHELLNUM];
+double JumpFactor_arr[ZMAX+1][SHELLNUM];
+double CosKron_arr[ZMAX+1][TRANSNUM];
+double RadRate_arr[ZMAX+1][LINENUM];
+double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM];
 
 int NE_Photo[ZMAX+1];
-float *E_Photo_arr[ZMAX+1];
-float *CS_Photo_arr[ZMAX+1];
-float *CS_Photo_arr2[ZMAX+1];
+double *E_Photo_arr[ZMAX+1];
+double *CS_Photo_arr[ZMAX+1];
+double *CS_Photo_arr2[ZMAX+1];
 
 int NE_Rayl[ZMAX+1];
-float *E_Rayl_arr[ZMAX+1];
-float *CS_Rayl_arr[ZMAX+1];
-float *CS_Rayl_arr2[ZMAX+1];
+double *E_Rayl_arr[ZMAX+1];
+double *CS_Rayl_arr[ZMAX+1];
+double *CS_Rayl_arr2[ZMAX+1];
 
 int NE_Compt[ZMAX+1];
-float *E_Compt_arr[ZMAX+1];
-float *CS_Compt_arr[ZMAX+1];
-float *CS_Compt_arr2[ZMAX+1];
+double *E_Compt_arr[ZMAX+1];
+double *CS_Compt_arr[ZMAX+1];
+double *CS_Compt_arr2[ZMAX+1];
 
 int Nq_Rayl[ZMAX+1];
-float *q_Rayl_arr[ZMAX+1];
-float *FF_Rayl_arr[ZMAX+1];
-float *FF_Rayl_arr2[ZMAX+1];
+double *q_Rayl_arr[ZMAX+1];
+double *FF_Rayl_arr[ZMAX+1];
+double *FF_Rayl_arr2[ZMAX+1];
 
 int Nq_Compt[ZMAX+1];
-float *q_Compt_arr[ZMAX+1];
-float *SF_Compt_arr[ZMAX+1];
-float *SF_Compt_arr2[ZMAX+1];
+double *q_Compt_arr[ZMAX+1];
+double *SF_Compt_arr[ZMAX+1];
+double *SF_Compt_arr2[ZMAX+1];
+
+int NE_Energy[ZMAX+1];
+double *E_Energy_arr[ZMAX+1];
+double *CS_Energy_arr[ZMAX+1];
+double *CS_Energy_arr2[ZMAX+1];
+
 
 int NE_Fi[ZMAX+1];
-float *E_Fi_arr[ZMAX+1];
-float *Fi_arr[ZMAX+1];
-float *Fi_arr2[ZMAX+1];
+double *E_Fi_arr[ZMAX+1];
+double *Fi_arr[ZMAX+1];
+double *Fi_arr2[ZMAX+1];
 
 int NE_Fii[ZMAX+1];
-float *E_Fii_arr[ZMAX+1];
-float *Fii_arr[ZMAX+1];
-float *Fii_arr2[ZMAX+1];
+double *E_Fii_arr[ZMAX+1];
+double *Fii_arr[ZMAX+1];
+double *Fii_arr2[ZMAX+1];
 
 int NE_Photo_Total_Kissel[ZMAX+1];
 double *E_Photo_Total_Kissel[ZMAX+1];
 double *Photo_Total_Kissel[ZMAX+1];
 double *Photo_Total_Kissel2[ZMAX+1];
 
-float Electron_Config_Kissel[ZMAX+1][SHELLNUM_K];
+double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K];
 double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K];
 
 int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K];
@@ -101,9 +108,9 @@ double *Total_ComptonProfiles2[ZMAX+1];
 double *Partial_ComptonProfiles[ZMAX+1][SHELLNUM_C];
 double *Partial_ComptonProfiles2[ZMAX+1][SHELLNUM_C];
 
-double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
-double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
+double Auger_Rates[ZMAX+1][AUGERNUM];
+double Auger_Yields[ZMAX+1][SHELLNUM_A];
 
-
+double ElementDensity_arr[ZMAX+1];
 
 

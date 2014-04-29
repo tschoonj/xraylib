@@ -1,4 +1,3 @@
-
 ;Copyright (c) 2009-2010, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 ;All rights reserved.
 

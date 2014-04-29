@@ -28,9 +28,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //    E : energy (keV)                                   //
 //                                                       //
 //////////////////////////////////////////////////////// */
-float CSb_Photo_Total(int Z, float E) {
+double CSb_Photo_Total(int Z, double E) {
   int shell;
-  float rv = 0.0;
+  double rv = 0.0;
 
   if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel[Z]<0) {
     ErrorExit("Z out of range in function CSb_Photo_Total");
@@ -41,11 +41,11 @@ float CSb_Photo_Total(int Z, float E) {
     return 0.0;
   }
 /*  ln_E = log((double) E);
-  splintd(E_Photo_Total_Kissel[Z]-1, Photo_Total_Kissel[Z]-1, Photo_Total_Kissel2[Z]-1,NE_Photo_Total_Kissel[Z], ln_E, &ln_sigma);
+  splint(E_Photo_Total_Kissel[Z]-1, Photo_Total_Kissel[Z]-1, Photo_Total_Kissel2[Z]-1,NE_Photo_Total_Kissel[Z], ln_E, &ln_sigma);
 
   sigma = exp(ln_sigma);
 
-  return (float) sigma; 
+  return (double) sigma; 
 */
   for (shell = K_SHELL ; shell <= Q3_SHELL ; shell++) {
     if (Electron_Config_Kissel[Z][shell] > 1.0E-06 && E >= EdgeEnergy_arr[Z][shell] ) {
@@ -65,7 +65,7 @@ float CSb_Photo_Total(int Z, float E) {
 //                                                       //
 //////////////////////////////////////////////////////// */
 
-float CS_Photo_Total(int Z, float E) {
+double CS_Photo_Total(int Z, double E) {
   return CSb_Photo_Total(Z, E)*AVOGNUM/AtomicWeight_arr[Z];
 }
 
@@ -81,7 +81,7 @@ float CS_Photo_Total(int Z, float E) {
 //                                                       //
 //////////////////////////////////////////////////////// */
 
-float CSb_Photo_Partial(int Z, int shell, float E) {
+double CSb_Photo_Partial(int Z, int shell, double E) {
   double ln_E, ln_sigma, sigma;
   double x0, x1, y0, y1;
   double m;
@@ -128,12 +128,12 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
 	ln_sigma = y0+m*(ln_E-x0);
     }
     else {
-    	splintd(E_Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel2[Z][shell]-1,NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
+    	splint(E_Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel2[Z][shell]-1,NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
    }
  sigma = exp(ln_sigma);
 
 
-    return (float) sigma; 
+    return (double) sigma; 
 
   }
 }
@@ -150,7 +150,7 @@ float CSb_Photo_Partial(int Z, int shell, float E) {
 //////////////////////////////////////////////////////// */
 
 
-float CS_Photo_Partial(int Z, int shell, float E) {
+double CS_Photo_Partial(int Z, int shell, double E) {
   return CSb_Photo_Partial(Z, shell, E)*Electron_Config_Kissel[Z][shell]*AVOGNUM/AtomicWeight_arr[Z];
 }
 
@@ -169,7 +169,7 @@ float CS_Photo_Partial(int Z, int shell, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CS_FluorLine_Kissel(int Z, int line, float E) {
+double CS_FluorLine_Kissel(int Z, int line, double E) {
 	return CS_FluorLine_Kissel_Cascade(Z, line, E);
 }
 
@@ -187,7 +187,7 @@ float CS_FluorLine_Kissel(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_FluorLine_Kissel(int Z, int line, float E) {
+double CSb_FluorLine_Kissel(int Z, int line, double E) {
   return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
@@ -200,7 +200,7 @@ float CSb_FluorLine_Kissel(int Z, int line, float E) {
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-float CS_Total_Kissel(int Z, float E) { 
+double CS_Total_Kissel(int Z, double E) { 
 
   if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
     ErrorExit("Z out of range in function CS_Total_Kissel");
@@ -226,7 +226,7 @@ float CS_Total_Kissel(int Z, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_Total_Kissel(int Z, float E) {
+double CSb_Total_Kissel(int Z, double E) {
 
   return CS_Total_Kissel(Z,E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
@@ -241,7 +241,7 @@ float CSb_Total_Kissel(int Z, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float ElectronConfig(int Z, int shell) {
+double ElectronConfig(int Z, int shell) {
 
   if (Z<1 || Z>ZMAX  ) {
     ErrorExit("Z out of range in function ElectronConfig");
@@ -273,8 +273,8 @@ float ElectronConfig(int Z, int shell) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
-  float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
+double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
+  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
 
   PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
 
@@ -404,8 +404,8 @@ float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
-  float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
+double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
+  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
 
   PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
 
@@ -557,8 +557,8 @@ float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
-  float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
+double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
+  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
 
   PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
 
@@ -710,8 +710,8 @@ float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
-  float PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
+double CS_FluorLine_Kissel_Cascade(int Z, int line, double E) {
+  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
 
   PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
 
@@ -863,7 +863,7 @@ float CS_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E) {
+double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E) {
   return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
@@ -882,7 +882,7 @@ float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
+double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
   return CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
@@ -901,7 +901,7 @@ float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
+double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
   return CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
@@ -920,6 +920,6 @@ float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E) {
+double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
   return CS_FluorLine_Kissel_no_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }

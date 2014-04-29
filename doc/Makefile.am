@@ -1,5 +1,5 @@
 
 xraylibdir = ${prefix}/share/xraylib
 
-xraylib_DATA = xraybanner.txt  xraydoc.txt  xrayfunc.txt  xrayhelp.txt
+dist_xraylib_DATA = xraybanner.txt  xraydoc.txt  xrayfunc.txt  xrayhelp.txt
 

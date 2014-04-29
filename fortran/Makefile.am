@@ -15,12 +15,13 @@ xraylibincludedir=${includedir}/xraylib
 
 if ENABLE_FORTRAN
 lib_LTLIBRARIES=libxrlf03.la
-libxrlf03_la_SOURCES = xraylib_wrap.f90
+libxrlf03_la_SOURCES = xraylib_wrap.F90
 libxrlf03_la_LIBADD = ../src/libxrl.la
 libxrlf03_la_FCFLAGS = $(ARCHFLAGS)
 libxrlf03_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 nodist_xraylibinclude_HEADERS = xraylib.mod
 
+xraylib.mod: libxrlf03.la
 
 clean-local:
 	rm -f xraylib.mod

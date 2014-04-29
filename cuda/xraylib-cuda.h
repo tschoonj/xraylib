@@ -27,16 +27,16 @@ int CudaXRayFree();
 
 //device functions
 
-__device__ float splint_cu(float *xa, float *ya, float *y2a, int n, float x);
-__device__ float CS_Photo_cu(int Z, float E);
-__device__ float  FluorYield_cu(int Z, int shell);
-__device__ float AtomicWeight_cu(int Z);
-__device__ float EdgeEnergy_cu(int Z, int shell);
-//__device__ float LineEnergy_cu(int Z, int line);
-__device__ float JumpFactor_cu(int Z, int shell);
-__device__ float CosKronTransProb_cu(int Z, int trans);
-__device__ float RadRate_cu(int Z, int line);
-__device__ float AtomicLevelWidth_cu(int Z, int shell);
+__device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x);
+__device__ double CS_Photo_cu(int Z, double E);
+__device__ double  FluorYield_cu(int Z, int shell);
+__device__ double AtomicWeight_cu(int Z);
+__device__ double EdgeEnergy_cu(int Z, int shell);
+//__device__ double LineEnergy_cu(int Z, int line);
+__device__ double JumpFactor_cu(int Z, int shell);
+__device__ double CosKronTransProb_cu(int Z, int trans);
+__device__ double RadRate_cu(int Z, int line);
+__device__ double AtomicLevelWidth_cu(int Z, int shell);
 
 
 #define CUDA_ERROR_CHECK

@@ -15,19 +15,43 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %include "typemaps.i"
 %include "exception.i"
 
-%apply float *OUTPUT { float* f0, float* f_primep, float* f_prime2 }
+%apply double *OUTPUT { double* f0, double* f_primep, double* f_prime2 }
 
-
+%begin %{
+#ifdef SWIGRUBY_TRICK
+#include <config.h>
+#undef PACKAGE_NAME
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef PACKAGE_STRING
+#undef PACKAGE_BUGREPORT
+#endif
+#ifdef _WIN64
+  #define MS_WIN64
+  #define Py_InitModule4 Py_InitModule4_64
+#endif
+%}
 
 
 %{
 #ifdef SWIGPYTHON
 #undef c_abs
 #endif
+
+#ifdef SWIGLUA
+  #if LUA_VERSION_NUM < 502
+    #ifndef lua_rawlen
+      #define lua_rawlen lua_objlen
+    #endif
+  #endif
+#endif
+
 #include "xraylib.h"
+
+
 %}
 
-#ifndef SWIGLUA
+#if !defined(SWIGLUA) && !defined(SWIGPHP)
 %ignore c_abs;
 %ignore c_mul;
 #endif
@@ -35,30 +59,105 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %ignore Crystal_AddCrystal;
 %ignore Crystal_ReadFile;
 %ignore Crystal_Array;
+%ignore xrlFree;
+%ignore FreeCompoundData;
+%ignore FreeCompoundDataNIST;
+%ignore compoundData;
+%ignore compoundDataNIST;
+%ignore xrlComplex;
 
+%typemap(newfree) char * {
+        if ($1)
+                xrlFree($1);
+}
 
+%newobject AtomicNumberToSymbol;
 
 #ifndef SWIGJAVA
-%typemap(in,numinputs=0) struct compoundData* (struct compoundData *temp) {
-        temp = (struct compoundData *) malloc(sizeof(struct compoundData));
-        temp->nElements=0;
-        temp->nAtomsAll=0;
-        temp->Elements=NULL;
-        temp->massFractions=NULL;
-        $1 = temp;
-}
 %typemap(in, numinputs=0) Crystal_Array* c_array {
    /* do not use crystal_array argument for now... */
+   $1 = NULL;
+}
+%typemap(in, numinputs=0) int* nCompounds {
    $1 = NULL;
 }
 #endif
 
 #ifdef SWIGLUA
-%typemap(argout) struct compoundData * cd {
+%typemap(out) char ** {
+        int i=0;
+        char ** list = $1;
+
+        lua_newtable(L);
+        for (i = 0 ; list[i] != NULL ; i++) {
+                lua_pushinteger(L,i+1);
+                lua_pushstring(L, list[i]);
+                lua_settable(L, -3);
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+        lua_pushvalue(L,-1);
+
+        SWIG_arg++;
+}
+
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                fprintf(stderr,"Error: requested NIST compound not found in database\n");
+                lua_pushnil(L);
+                SWIG_arg++;
+        }
+        else {
+                lua_newtable(L);
+
+                lua_pushstring(L, "name");
+                lua_pushstring(L, cdn->name);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "nElements");
+                lua_pushinteger(L, cdn->nElements);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "Elements");
+                lua_createtable(L, cdn->nElements, 0);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushinteger(L,cdn->Elements[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "massFractions");
+                lua_createtable(L, cdn->nElements, 0);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushnumber(L,cdn->massFractions[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "density");
+                lua_pushnumber(L, cdn->density);
+                lua_settable(L,-3);
+
+                lua_pushvalue(L, -1);
+
+                FreeCompoundDataNIST(cdn);
+
+                SWIG_arg++;
+        }
+}
+
+
+%typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1;
 
-        if (cd->nElements == 0) {
+        if (cd == NULL) {
                 lua_pushnil(L);
                 SWIG_arg++;
         }
@@ -70,7 +169,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_settable(L,-3);
 
                 lua_pushstring(L, "nAtomsAll");
-                lua_pushinteger(L, cd->nAtomsAll);
+                lua_pushnumber(L, cd->nAtomsAll);
                 lua_settable(L,-3);
 
                 lua_pushstring(L, "Elements");
@@ -92,16 +191,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_settable(L, -3);
 
                 lua_pushvalue(L, -1);
-                xrlFree(cd->Elements);
-                xrlFree(cd->massFractions);
-                free(cd);
-
+                FreeCompoundData(cd);
                 SWIG_arg++;
         }
 }
 
-%typemap(out) Complex {
-        Complex c = $1;
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
 
         lua_newtable(L);
 
@@ -112,6 +208,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         lua_pushstring(L, "im");
         lua_pushnumber(L, c.im);
         lua_settable(L,-3);
+        lua_pushvalue(L,-1);
 
         SWIG_arg++;
 }
@@ -208,8 +305,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 }
 
-%typemap(in) Complex {
-        Complex c;
+%typemap(in) xrlComplex {
+        xrlComplex c;
        if (!lua_istable(L, $input)) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a table");
        } 
@@ -351,7 +448,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_getfield(L, $input,"atom");
                 if (lua_istable(L,-1)) {
                         /* count number of elements */
-                        size_t n_atom = lua_objlen(L, -1);
+                        size_t n_atom = lua_rawlen(L, -1);
                         if (n_atom != cs->n_atom) {
                                 SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
                         }
@@ -431,26 +528,64 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 #ifdef SWIGPYTHON
-%typemap(argout) struct compoundData * cd {
-        PyObject *dict = PyDict_New();
+%typemap(out) char ** {
+        int i;
+        char **list = $1;
+
+        PyObject *res = PyList_New(0);
+        for (i = 0 ; list[i] != NULL ; i++) {
+                PyList_Append(res,PyString_FromString(list[i]));
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+
+        $result = res;
+}
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                PyErr_WarnEx(NULL, "Error: requested NIST compound not found in database\n",1);
+                $result = Py_None;
+        }
+        else {
+                PyObject *dict = PyDict_New();
+                PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name)); 
+                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements)); 
+                PyDict_SetItemString(dict, "density",PyFloat_FromDouble(cdn->density)); 
+                PyObject *Elements = PyList_New(cdn->nElements);
+                PyObject *massFractions = PyList_New(cdn->nElements);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                       PyList_SetItem(Elements, i, PyInt_FromLong(cdn->Elements[i])); 
+                       PyList_SetItem(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i])); 
+                }
+                PyDict_SetItemString(dict, "Elements", Elements);
+                PyDict_SetItemString(dict, "massFractions", massFractions);
+                FreeCompoundDataNIST(cdn);
+                $result = dict;
+        }
+
+}
+%typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1;
-        if (cd->nElements > 0) {
+        if (cd) {
+                PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements)); 
-                PyDict_SetItemString(dict, "nAtomsAll",PyInt_FromLong((long) cd->nAtomsAll)); 
+                PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll)); 
                 PyObject *elements=PyList_New(cd->nElements);
                 PyObject *massfractions=PyList_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
                         PyObject *o = PyInt_FromLong((long) cd->Elements[i]);
                         PyList_SetItem(elements, i, o);
-                        o = PyFloat_FromDouble((double) cd->massFractions[i]);
+                        o = PyFloat_FromDouble(cd->massFractions[i]);
                         PyList_SetItem(massfractions, i, o);
                 }
                 PyDict_SetItemString(dict, "Elements", elements); 
                 PyDict_SetItemString(dict, "massFractions", massfractions); 
-                xrlFree(cd->Elements);
-                xrlFree(cd->massFractions);
-                free(cd);
+                FreeCompoundData(cd);
                 $result=dict;
         }
         else {
@@ -463,9 +598,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 
-%typemap(out) Complex {
-        Complex c = $1;
-        PyObject *cp = PyComplex_FromDoubles((double) c.re, (double) c.im);
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
+        PyObject *cp = PyComplex_FromDoubles(c.re, c.im);
 
         $result = cp;
 }
@@ -481,27 +616,31 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         else {
              PyObject *dict = PyDict_New();   
              PyDict_SetItemString(dict, "name",PyString_FromString(cs->name)); 
-             PyDict_SetItemString(dict, "a",PyFloat_FromDouble((double) cs->a)); 
-             PyDict_SetItemString(dict, "b",PyFloat_FromDouble((double) cs->b)); 
-             PyDict_SetItemString(dict, "c",PyFloat_FromDouble((double) cs->c)); 
-             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble((double) cs->alpha)); 
-             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble((double) cs->beta)); 
-             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble((double) cs->gamma)); 
-             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble((double) cs->volume)); 
+             PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a)); 
+             PyDict_SetItemString(dict, "b",PyFloat_FromDouble(cs->b)); 
+             PyDict_SetItemString(dict, "c",PyFloat_FromDouble(cs->c)); 
+             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble(cs->alpha)); 
+             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble(cs->beta)); 
+             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble(cs->gamma)); 
+             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble(cs->volume)); 
              PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom)); 
              PyObject *atom = PyList_New(cs->n_atom);
              PyDict_SetItemString(dict, "atom", atom); 
              for (i = 0 ; i < cs->n_atom ; i++) {
                 PyObject *dict_temp = PyDict_New();
                 PyDict_SetItemString(dict_temp, "Zatom",PyInt_FromLong((int) cs->atom[i].Zatom)); 
-                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble((double) cs->atom[i].fraction)); 
-                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble((double) cs->atom[i].x)); 
-                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble((double) cs->atom[i].y)); 
-                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble((double) cs->atom[i].z)); 
+                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble(cs->atom[i].fraction)); 
+                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble(cs->atom[i].x)); 
+                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble(cs->atom[i].y)); 
+                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble(cs->atom[i].z)); 
                 PyList_SetItem(atom, i, dict_temp);
              }
              /* store cpointer in dictionary */
+%#ifdef _WIN64
+             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long long) cs)); 
+%#else
              PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long) cs)); 
+%#endif
 
              $result = dict;
         }
@@ -523,7 +662,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 cpointer = PyDict_GetItemString(dict,"cpointer");
                 if (cpointer != NULL) {
                         /* convert to long */
+%#ifdef _WIN64
+                        long long cpointer_l = PyInt_AsLong(cpointer); 
+%#else
                         long cpointer_l = PyInt_AsLong(cpointer); 
+%#endif
                         if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"Invalid cpointer value");
                                 $1 = NULL;
@@ -536,7 +679,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 /* no cpointer found -> read from structure */
                 else {
                         /* name */ 
-                         cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+                         cs = malloc(sizeof(Crystal_Struct));
                          temp = PyDict_GetItemString(dict,"name");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"Name key not present");
@@ -755,17 +898,68 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
 
 
+%typemap(out) char ** {
+        int i;
+        char **list = $1;
 
-%typemap(argout) struct compoundData * cd {
+
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+
+        AV *res = newAV();
+
+        for (i = 0 ; list[i] != NULL ; i++) {
+                av_push(res, newSVpvn(list[i], strlen(list[i])));
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+        $result = sv_2mortal(newRV_noinc((SV*) res));
+
+        argvi++;
+}
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+        if (cdn == NULL) {
+                fprintf(stderr,"Error: requested NIST compound not found in database\n");
+                $result = &PL_sv_undef;
+        }
+        else {
+                HV *hash = newHV();
+                STORE_HASH("name", newSVpvn(cdn->name, strlen(cdn->name)),hash) 
+                STORE_HASH("nElements", newSViv(cdn->nElements),hash) 
+                STORE_HASH("density", newSVnv(cdn->density),hash) 
+                AV *Elements = newAV();
+                AV *massFractions = newAV();
+                STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
+                STORE_HASH("massFractions", newRV_noinc((SV*) massFractions),hash)
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        av_push(Elements, newSViv(cdn->Elements[i]));
+                        av_push(massFractions, newSVnv(cdn->massFractions[i]));
+                }
+                FreeCompoundDataNIST(cdn);
+                $result = sv_2mortal(newRV_noinc((SV*) hash));
+        }
+
+        argvi++;
+}
+
+%typemap(out) struct compoundData *  {
         int i;
         struct compoundData *cd = $1;
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (cd->nElements > 0) {
+        if (cd != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("nElements", newSViv(cd->nElements),hash)
-                STORE_HASH("nAtomsAll", newSViv(cd->nAtomsAll),hash)
+                STORE_HASH("nAtomsAll", newSVnv(cd->nAtomsAll),hash)
                 AV *Elements = newAV();
                 AV *massFractions = newAV();
                 STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
@@ -774,9 +968,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         av_push(Elements, newSViv(cd->Elements[i]));
                         av_push(massFractions, newSVnv(cd->massFractions[i]));
                 }
-                xrlFree(cd->Elements);
-                xrlFree(cd->massFractions);
-                free(cd);
+                FreeCompoundData(cd);
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
         }
@@ -788,8 +980,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 }
 
-%typemap(out) Complex {
-        Complex c = $1;
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
         int count;
         if (argvi >= items) {
                 EXTEND(sp,1);
@@ -820,32 +1012,32 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 EXTEND(sp,1);
         }
         if (cs == NULL) {
-                fprintf(stdout,"Crystal_GetCrystal Error: crystal not found");
+                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found\n");
                 $result = &PL_sv_undef;
         }
         else {
                 HV *rv = newHV();
-                hv_store(rv, "name", 4, newSVpvn(cs->name,strlen(cs->name)),0);
-                hv_store(rv, "a", 1, newSVnv(cs->a),0);
-                hv_store(rv, "b", 1, newSVnv(cs->b),0);
-                hv_store(rv, "c", 1, newSVnv(cs->c),0);
-                hv_store(rv, "alpha", 5, newSVnv(cs->alpha),0);
-                hv_store(rv, "beta", 4, newSVnv(cs->beta),0);
-                hv_store(rv, "gamma", 5, newSVnv(cs->gamma),0);
-                hv_store(rv, "volume", 6, newSVnv(cs->volume),0);
-                hv_store(rv, "n_atom", 6, newSViv(cs->n_atom),0);
+                STORE_HASH("name", newSVpvn(cs->name,strlen(cs->name)), rv)
+                STORE_HASH("a", newSVnv(cs->a), rv)
+                STORE_HASH("b", newSVnv(cs->b), rv)
+                STORE_HASH("c", newSVnv(cs->c), rv)
+                STORE_HASH("alpha", newSVnv(cs->alpha), rv)
+                STORE_HASH("beta", newSVnv(cs->beta), rv)
+                STORE_HASH("gamma", newSVnv(cs->gamma), rv)
+                STORE_HASH("volume", newSVnv(cs->volume), rv)
+                STORE_HASH("n_atom", newSViv(cs->n_atom), rv)
                 AV *atoms = newAV();
-                hv_store(rv, "atom", 4, newRV_noinc((SV*) atoms),0);
+                STORE_HASH("atom", newRV_noinc((SV*) atoms), rv)
                 for (i = 0 ; i < cs->n_atom ; i++) {
                         HV *atom = newHV();
-                        hv_store(atom, "Zatom", 5, newSViv(cs->atom[i].Zatom),0);
-                        hv_store(atom, "fraction", 8, newSVnv(cs->atom[i].fraction),0);
-                        hv_store(atom, "x", 1, newSVnv(cs->atom[i].x),0);
-                        hv_store(atom, "y", 1, newSVnv(cs->atom[i].y),0);
-                        hv_store(atom, "z", 1, newSVnv(cs->atom[i].z),0);
+                        STORE_HASH("Zatom", newSViv(cs->atom[i].Zatom), atom)
+                        STORE_HASH("fraction", newSVnv(cs->atom[i].fraction), atom)
+                        STORE_HASH("x", newSVnv(cs->atom[i].x), atom)
+                        STORE_HASH("y", newSVnv(cs->atom[i].y), atom)
+                        STORE_HASH("z", newSVnv(cs->atom[i].z), atom)
                         av_push(atoms, newRV_noinc((SV*) atom));
                 }
-                hv_store(rv, "cpointer", 8, newSViv((IV) cs),0);
+                STORE_HASH("cpointer", newSViv((IV) cs), rv)
                 $result = sv_2mortal(newRV_noinc((SV*) rv));
                 
         }
@@ -1063,8 +1255,514 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 #endif
 
+#ifdef SWIGRUBY
+%typemap(out) char ** {
+        int i;
+        char **list = $1;
+
+        VALUE res = rb_ary_new();
+        for (i = 0 ; list[i] != NULL ; i++) {
+                rb_ary_push(res, rb_str_new2(list[i]));
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+        $result = res;
+}
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                fprintf(stderr, "Error: requested NIST compound not found in database\n");
+                $result = Qnil;
+        }
+        else {
+                VALUE rv = rb_hash_new();
+                rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cdn->name));
+                rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cdn->nElements));
+                rb_hash_aset(rv, rb_str_new2("density"), rb_float_new(cdn->density));
+                VALUE elements, massFractions;
+                elements = rb_ary_new2(cdn->nElements);
+                massFractions = rb_ary_new2(cdn->nElements);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        rb_ary_store(elements, (long) i , INT2FIX(cdn->Elements[i]));
+                        rb_ary_store(massFractions, (long) i , rb_float_new(cdn->massFractions[i]));
+                }
+                rb_hash_aset(rv, rb_str_new2("Elements"), elements);
+                rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
+                FreeCompoundDataNIST(cdn);
+                $result = rv;
+        }
+
+}
+%typemap(out) struct compoundData * {
+        int i;
+        struct compoundData *cd = $1; 
+
+        if (cd == NULL) {
+               $result = Qnil; 
+        }
+        else {
+                VALUE rv;
+                rv = rb_hash_new(); 
+                rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
+                rb_hash_aset(rv, rb_str_new2("nAtomsAll"), rb_float_new(cd->nAtomsAll));
+                VALUE elements, massFractions;
+                elements = rb_ary_new2(cd->nElements);
+                massFractions = rb_ary_new2(cd->nElements);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        rb_ary_store(elements, (long) i , INT2FIX(cd->Elements[i]));
+                        rb_ary_store(massFractions, (long) i , rb_float_new(cd->massFractions[i]));
+                }
+                rb_hash_aset(rv, rb_str_new2("Elements"), elements);
+                rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
+                FreeCompoundData(cd);
+                $result = rv;
+        }
+
+}
+
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+
+        if (cs == NULL) {
+                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
+                $result = Qnil;
+        }
+        else {
+                VALUE rv;
+                rv = rb_hash_new();
+                rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cs->name));
+                rb_hash_aset(rv, rb_str_new2("a"), rb_float_new(cs->a));
+                rb_hash_aset(rv, rb_str_new2("b"), rb_float_new(cs->b));
+                rb_hash_aset(rv, rb_str_new2("c"), rb_float_new(cs->c));
+                rb_hash_aset(rv, rb_str_new2("alpha"), rb_float_new(cs->alpha));
+                rb_hash_aset(rv, rb_str_new2("beta"), rb_float_new(cs->beta));
+                rb_hash_aset(rv, rb_str_new2("gamma"), rb_float_new(cs->gamma));
+                rb_hash_aset(rv, rb_str_new2("volume"), rb_float_new(cs->volume));
+                rb_hash_aset(rv, rb_str_new2("n_atom"), INT2FIX(cs->n_atom));
+                VALUE atoms = rb_ary_new2(cs->n_atom);
+                rb_hash_aset(rv, rb_str_new2("atom"), atoms);
+                int i;
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        VALUE atom = rb_hash_new();
+                        rb_hash_aset(atom, rb_str_new2("Zatom"), INT2FIX(cs->atom[i].Zatom));
+                        rb_hash_aset(atom, rb_str_new2("fraction"), rb_float_new(cs->atom[i].fraction));
+                        rb_hash_aset(atom, rb_str_new2("x"), rb_float_new(cs->atom[i].x));
+                        rb_hash_aset(atom, rb_str_new2("y"), rb_float_new(cs->atom[i].y));
+                        rb_hash_aset(atom, rb_str_new2("z"), rb_float_new(cs->atom[i].z));
+                        rb_ary_store(atoms, (long) i, atom);
+                }
+                rb_hash_aset(rv, rb_str_new2("cpointer"), INT2FIX((long) cs));
+                $result = rv;
+        }
+}
+
+%typemap(in) Crystal_Struct * {
+        VALUE input = $input;
+        Crystal_Struct *cs;
+        int cpointer_found = 0;
+        
+        if (TYPE(input) != T_HASH) {
+                SWIG_exception(SWIG_TypeError,"Argument must be a hash");
+        }
+
+        /* get cpointer if available */
+        VALUE cpointer;
+        if ((cpointer = rb_hash_aref(input, rb_str_new2("cpointer"))) != Qnil ) {
+                /* cpointer found */
+                cs = (Crystal_Struct *) FIX2LONG(cpointer);
+                cpointer_found = 1;
+        }
+        else {
+                /* not a cpointer -> we'll have to analyze the complete hash then :-( */
+                VALUE temp;
+                cs = (Crystal_Struct *)  malloc(sizeof(Crystal_Struct));
+
+                /* name */
+                temp = rb_hash_aref(input, rb_str_new2("name"));
+                if (temp == Qnil || TYPE(temp) != T_STRING) {
+                        SWIG_exception(SWIG_RuntimeError,"name hash key not present or not a string");
+                }
+                cs->name = strdup(StringValuePtr(temp));
+                /* a */
+                temp = rb_hash_aref(input, rb_str_new2("a"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"a hash key not present or not a float");
+                }
+                cs->a = NUM2DBL(temp);
+                /* b */
+                temp = rb_hash_aref(input, rb_str_new2("b"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"b hash key not present or not a float");
+                }
+                cs->b = NUM2DBL(temp);
+                /* c */
+                temp = rb_hash_aref(input, rb_str_new2("c"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"c hash key not present or not a float");
+                }
+                cs->c = NUM2DBL(temp);
+                /* alpha */
+                temp = rb_hash_aref(input, rb_str_new2("alpha"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or not a float");
+                }
+                cs->alpha = NUM2DBL(temp);
+                /* beta */
+                temp = rb_hash_aref(input, rb_str_new2("beta"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"beta hash key not present or not a float");
+                }
+                cs->beta = NUM2DBL(temp);
+                /* gamma */
+                temp = rb_hash_aref(input, rb_str_new2("gamma"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or not a float");
+                }
+                cs->gamma = NUM2DBL(temp);
+                /* volume */
+                temp = rb_hash_aref(input, rb_str_new2("volume"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"volume hash key not present or not a float");
+                }
+                cs->volume = NUM2DBL(temp);
+                /* n_atom */
+                temp = rb_hash_aref(input, rb_str_new2("n_atom"));
+                if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
+                        SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or not an integer");
+                }
+                cs->n_atom = FIX2INT(temp);
+                if (cs->n_atom < 1) {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+                }
+                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+
+                /* atom */
+                VALUE atoms = rb_hash_aref(input, rb_str_new2("atom"));
+                if (atoms == Qnil || TYPE(atoms) != T_ARRAY) {
+                        SWIG_exception(SWIG_RuntimeError,"atom hash key not present or not an array");
+                }
+                if (RARRAY_LEN(atoms) != cs->n_atom) {
+                        SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+                }
+                long i;
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        VALUE atom = rb_ary_entry(atoms, i);
+                        if (atom == Qnil || TYPE(atom) != T_HASH) {
+                                SWIG_exception(SWIG_RuntimeError,"elements of atom array must be hashes");
+                        }
+                        /* Zatom */
+                        temp = rb_hash_aref(atom, rb_str_new2("Zatom"));
+                        if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
+                                SWIG_exception(SWIG_RuntimeError,"Zatom hash key missing or not an integer");
+                        }
+                        cs->atom[i].Zatom = FIX2INT(temp);
+                        /* fraction */
+                        temp = rb_hash_aref(atom, rb_str_new2("fraction"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"fraction hash key missing or not a float");
+                        }
+                        cs->atom[i].fraction = NUM2DBL(temp);
+                        /* x */
+                        temp = rb_hash_aref(atom, rb_str_new2("x"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"x hash key missing or not a float");
+                        }
+                        cs->atom[i].x = NUM2DBL(temp);
+                        /* y */
+                        temp = rb_hash_aref(atom, rb_str_new2("y"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"y hash key missing or not a float");
+                        }
+                        cs->atom[i].y = NUM2DBL(temp);
+                        /* z */
+                        temp = rb_hash_aref(atom, rb_str_new2("z"));
+                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                                SWIG_exception(SWIG_RuntimeError,"z hash key missing or not a float");
+                        }
+                        cs->atom[i].z = NUM2DBL(temp);
+
+                }
 
 
+        }
+
+        $1 = cs;        
+
+}
+
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
+%#ifdef T_COMPLEX
+        /* Ruby 1.9 */
+        VALUE cp = rb_Complex2(rb_float_new(c.re),rb_float_new(c.im));
+%#else
+        /* Ruby 1.8 */
+        VALUE *args = (VALUE *) malloc(sizeof(VALUE)*2);
+        args[0] = rb_float_new(c.re);
+        args[1] = rb_float_new(c.im);
+        /*VALUE cp = rb_class_new_instance(2, args, rb_path2class("Complex"));*/
+        VALUE cp = rb_class_new_instance(2,args,rb_const_get(rb_cObject, rb_intern("Complex")));
+%#endif
+        $result = cp;
+}
+
+#endif
+
+
+#ifdef SWIGPHP
+
+%typemap(out) char ** {
+        int i = 0;
+        char **list = $1;
+
+        array_init(return_value);
+        for (i = 0 ; list[i] != NULL ; i++) {
+                add_index_string(return_value, i, list[i], 1);
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+}
+
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1; 
+
+        if (cdn == NULL) {
+                php_log_err("Error: requested NIST compound not found in database\n");
+                RETURN_NULL();
+        }
+        array_init(return_value);
+        add_assoc_string(return_value, "name", cdn->name, 1);
+        add_assoc_long(return_value, "nElements", cdn->nElements);
+        add_assoc_double(return_value, "density", cdn->density);
+        zval *Elements, *massFractions;
+
+        ALLOC_INIT_ZVAL(Elements);
+        ALLOC_INIT_ZVAL(massFractions);
+        array_init(Elements);
+        array_init(massFractions);
+        for (i = 0 ; i < cdn->nElements ; i++) {
+                add_index_long(Elements, i, cdn->Elements[i]);
+                add_index_double(massFractions, i, cdn->massFractions[i]);
+        }
+        add_assoc_zval(return_value, "Elements", Elements);
+        add_assoc_zval(return_value, "massFractions", massFractions);
+        FreeCompoundDataNIST(cdn);
+}
+
+%typemap(out) struct compoundData * {
+        int i;
+        struct compoundData *cd = $1; 
+
+        if (cd == NULL) {
+                php_log_err("CompoundParser Error\n");
+                RETURN_NULL();
+        }
+        array_init(return_value);
+        add_assoc_long(return_value, "nElements", cd->nElements);
+        add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
+        zval *Elements, *massFractions;
+
+        ALLOC_INIT_ZVAL(Elements);
+        ALLOC_INIT_ZVAL(massFractions);
+        array_init(Elements);
+        array_init(massFractions);
+        for (i = 0 ; i < cd->nElements ; i++) {
+                add_index_long(Elements, i, cd->Elements[i]);
+                add_index_double(massFractions, i, cd->massFractions[i]);
+        }
+        add_assoc_zval(return_value, "Elements", Elements);
+        add_assoc_zval(return_value, "massFractions", massFractions);
+        FreeCompoundData(cd);
+}
+
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
+
+        array_init(return_value);
+        add_assoc_double(return_value, "re", c.re);
+        add_assoc_double(return_value, "im", c.im);
+}
+%typemap(in) xrlComplex {
+        xrlComplex c;
+
+        if (Z_TYPE_PP($input) != IS_ARRAY) {
+                SWIG_exception(SWIG_TypeError,"Argument must be an array");
+        }
+        if (!zend_hash_exists(Z_ARRVAL_PP($input), "re", sizeof("re"))) {
+                SWIG_exception(SWIG_TypeError, "re hash key not present");
+        }
+        if (!zend_hash_exists(Z_ARRVAL_PP($input), "im", sizeof("im"))) {
+                SWIG_exception(SWIG_TypeError, "im hash key not present");
+        }
+        zval **re, **im;
+        zend_hash_find(Z_ARRVAL_PP($input), "re", sizeof("re"), (void **) &re);
+        zend_hash_find(Z_ARRVAL_PP($input), "im", sizeof("im"), (void **) &im);
+        convert_to_double_ex(re);
+        convert_to_double_ex(im);
+        c.re = Z_DVAL_PP(re);
+        c.im = Z_DVAL_PP(im);
+        $1 = c;
+}
+
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+        int i;
+        if (cs == NULL) {
+                php_log_err("Crystal_GetCrystal Error: crystal not found");
+                RETURN_NULL();
+        }
+
+        array_init(return_value);
+        add_assoc_string(return_value, "name", cs->name, 1);
+        add_assoc_double(return_value, "a", cs->a);
+        add_assoc_double(return_value, "b", cs->b);
+        add_assoc_double(return_value, "c", cs->c);
+        add_assoc_double(return_value, "alpha", cs->alpha);
+        add_assoc_double(return_value, "beta", cs->beta);
+        add_assoc_double(return_value, "gamma", cs->gamma);
+        add_assoc_double(return_value, "volume", cs->volume);
+        add_assoc_long(return_value, "n_atom", cs->n_atom);
+        zval *atom;
+        ALLOC_INIT_ZVAL(atom);
+        array_init(atom);
+        add_assoc_zval(return_value, "atom", atom);
+        for (i = 0 ; i < cs->n_atom ; i++) {
+                zval *dict_temp;
+                ALLOC_INIT_ZVAL(dict_temp);
+                array_init(dict_temp);
+                add_assoc_long(dict_temp, "Zatom", cs->atom[i].Zatom);
+                add_assoc_double(dict_temp, "fraction", cs->atom[i].fraction);
+                add_assoc_double(dict_temp, "x", cs->atom[i].x);
+                add_assoc_double(dict_temp, "y", cs->atom[i].y);
+                add_assoc_double(dict_temp, "z", cs->atom[i].z);
+                add_index_zval(atom, i, dict_temp);
+        }
+        add_assoc_zval(return_value, "cpointer", (zval*) cs);
+}
+%typemap(in) Crystal_Struct * {
+        /* cpointer should be used if present and valid */
+        
+        if (Z_TYPE_PP($input) != IS_ARRAY) {
+                SWIG_exception(SWIG_TypeError,"Argument must be an array");
+        }
+        if (zend_hash_exists(Z_ARRVAL_PP($input), "cpointer", sizeof("cpointer"))) {
+                /* cpointer found */
+                zval *cpointer;
+                zend_hash_find(Z_ARRVAL_PP($input), "cpointer", sizeof("cpointer"), (void **) &cpointer);
+                $1 = (Crystal_Struct *) Z_ARRVAL_P(cpointer);
+        }
+        else {
+                Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
+                zval *temp1, **temp2;
+                if (zend_hash_find(Z_ARRVAL_PP($input), "name", sizeof("name"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"Name key not present");
+                }
+                cs->name = strdup(Z_STRVAL_PP(temp2));
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "a", sizeof("a"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"a key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->a = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "b", sizeof("b"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"b key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->b = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "c", sizeof("c"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"c key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->c = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "alpha", sizeof("alpha"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"alpha key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->alpha = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "beta", sizeof("beta"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"beta key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->beta= Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "gamma", sizeof("gamma"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"gamma key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->gamma = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "volume", sizeof("volume"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"volume key not present");
+                }
+                convert_to_double_ex(temp2);
+                cs->volume = Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "n_atom", sizeof("n_atom"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"n_atom key not present");
+                }
+                convert_to_long_ex(temp2);
+                cs->n_atom = (int) Z_LVAL_PP(temp2);
+       
+                zval **atom;
+
+                if (zend_hash_find(Z_ARRVAL_PP($input), "atom", sizeof("atom"), (void **) &atom) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"atom key not present");
+                }
+       
+                if (Z_TYPE_PP(atom) != IS_ARRAY) {
+                        SWIG_exception(SWIG_TypeError,"atom must be an array");
+                }
+                int i;
+                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        zval **this_atom;
+                        if (zend_hash_index_find(Z_ARRVAL_PP(atom), i, (void **) &this_atom) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"atom member not found\n");
+                        }
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "Zatom", sizeof("Zatom"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
+                        }
+                        convert_to_long_ex(temp2);
+                        cs->atom[i].Zatom = (int) Z_LVAL_PP(temp2);
+
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "fraction", sizeof("fraction"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"fraction key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].fraction = (double) Z_DVAL_PP(temp2);
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "x", sizeof("x"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"x key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].x = (double) Z_DVAL_PP(temp2);
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "y", sizeof("y"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"y key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].y = (double) Z_DVAL_PP(temp2);
+                        
+                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "z", sizeof("z"), (void **) &temp2) == FAILURE) {
+                                SWIG_exception(SWIG_TypeError,"z key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].z = (double) Z_DVAL_PP(temp2);
+                        
+                }
+                $1 = cs;
+        }
+
+}
+#endif
 
 %include "xraylib.h"
 

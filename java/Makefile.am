@@ -15,27 +15,33 @@ if ENABLE_JAVA
 #java bindings for xraylib
 xrljavadir = $(prefix)/share/xraylib/java
 xrljava_JAVA = xraylib.java xraylibConstants.java xraylibJNI.java 
+if OS_WINDOWS
+xrljava_LTLIBRARIES = xraylib.la 
+else
+xrljava_LTLIBRARIES = libxraylib.la 
+endif
+libxraylib_la_CFLAGS = -I${top_srcdir}/include $(JAVACFLAGS) $(JAVAINC)
+libxraylib_la_LIBADD = ../src/libxrl.la
+nodist_libxraylib_la_SOURCES = xraylib_wrap.c
+libxraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(JAVASO)
 
-EXTRA_DIST =
+xraylib_la_CFLAGS = -I${top_srcdir}/include $(JAVACFLAGS) $(JAVAINC)
+xraylib_la_LIBADD = ../src/libxrl.la
+nodist_xraylib_la_SOURCES = xraylib_wrap.c
+xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(JAVASO)
 
 
 
-#all:
-#$(MAKE) javaxrl
 
-xraylib.java: ${top_srcdir}/src/xraylib.i
+xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -java -o xraylib_wrap.c ${top_srcdir}/src/xraylib.i
-	$(CC) -I${top_srcdir}/include -c $(CCSHARED) $(CFLAGS) $(JAVACFLAGS) xraylib_wrap.c $(JAVAINC)
-	$(JAVALDSHARED) $(CFLAGS) xraylib_wrap.o $(JAVADYNAMICLINKING) -L@abs_top_builddir@/src/.libs -lxrl -o $(JAVALIBRARYPREFIX)xraylib$(JAVASO)
 
-install-exec-local:
-	$(MKDIR_P) $(DESTDIR)$(xrljavadir)
-	$(INSTALL) $(JAVALIBRARYPREFIX)xraylib$(JAVASO) $(DESTDIR)$(xrljavadir)
-
-uninstall-local:
-	rm -f $(DESTDIR)/$(prefix)/share/xraylib/java/libxraylib.jnilib
+xraylib.java: xraylib_wrap.c
+xraylibConstants.java: xraylib_wrap.c
+xraylibJNI.java: xraylib_wrap.c
 
 clean-local:
-	rm -rf classxrljava.stamp $(JAVALIBRARYPREFIX)xraylib$(JAVASO) *.java *.class xraylib_wrap.* 
+	rm -rf *.java xraylib_wrap.c
 
 endif
+

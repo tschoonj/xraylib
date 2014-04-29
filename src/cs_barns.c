@@ -21,47 +21,47 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-float CSb_Total(int Z, float E)
+double CSb_Total(int Z, double E)
 {
   return CS_Total(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float CSb_Photo(int Z, float E)
+double CSb_Photo(int Z, double E)
 {
   return CS_Photo(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float CSb_Rayl(int Z, float E)
+double CSb_Rayl(int Z, double E)
 {
   return CS_Rayl(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float CSb_Compt(int Z, float E)
+double CSb_Compt(int Z, double E)
 {
   return CS_Compt(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float CSb_FluorLine(int Z, int line, float E)
+double CSb_FluorLine(int Z, int line, double E)
 {
   return CS_FluorLine(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float DCSb_Rayl(int Z, float E, float theta)
+double DCSb_Rayl(int Z, double E, double theta)
 {
   return DCS_Rayl(Z, E, theta)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float DCSb_Compt(int Z, float E, float theta)
+double DCSb_Compt(int Z, double E, double theta)
 {
   return DCS_Compt(Z, E, theta)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float DCSPb_Rayl(int Z, float E, float theta, float phi)
+double DCSPb_Rayl(int Z, double E, double theta, double phi)
 {
   return DCSP_Rayl(Z, E, theta, phi)*AtomicWeight_arr[Z]/AVOGNUM;
 }
 
-float DCSPb_Compt(int Z, float E, float theta, float phi)
+double DCSPb_Compt(int Z, double E, double theta, double phi)
 {
   return DCSP_Compt(Z, E, theta, phi)*AtomicWeight_arr[Z]/AVOGNUM;
 }

@@ -21,6 +21,7 @@ Note: Starting with xraylib 2.16.0, a native build is being used. For this do (i
 This procedure is heavily adapted to my own directory layout and will require considerable changes to get it working on your system.
 Build environment is MSYS, compiler comes from TDM-GCC...
 
+For version 2.17.0, the installer of the win32 SDK has been rewritten with Inno Setup. This was done to ensure a smoother installation experience: NSIS' lack of radiobuttons and deactivateable sections became a real problem. It is possible that the installer of the CLI package will also move at some point to Inno Setup.
 
 
 ----

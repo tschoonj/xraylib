@@ -22,7 +22,7 @@
 !define abs_top_builddir_win "C:\MinGW\msys\1.0\@abs_top_builddir_win@"
 !define DLLTOOL "i686-pc-mingw32-dlltool"
 
-!addincludedir "${abs_top_srcdir_win}\nsis"
+!addincludedir "${abs_top_srcdir_win}\nsis\python\cli_py2exe"
 !include "MUI2.nsh"
 !include "EnvVarUpdate.nsh"
 !include "Sections.nsh"
@@ -120,7 +120,7 @@ Section "-xraylib core files" SecDummy
 
 	
 	SetOutPath "$INSTDIR\Bin"
-	File ${abs_top_srcdir_win}\nsis\python\cli_py2exe\dist\xraylib.exe
+	File ${abs_top_builddir_win}\nsis\python\cli_py2exe\dist\xraylib.exe
 	SetOutPath "$INSTDIR\temp"
 	File "${abs_top_srcdir_win}\..\vcredist_x86_90.exe"
 	ExecWait "$INSTDIR\temp\vcredist_x86_90.exe /q"

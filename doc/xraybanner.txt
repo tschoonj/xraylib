@@ -1,7 +1,7 @@
-xraylib v2.16.0 revised August 2012 
+xraylib 3.0.0 revised February 2014 
 Authors: A. Brunetti (Universita di Sassari, Italy),
 	 M. S. del Rio (ESRF, Grenoble, France),
-	 T. Schoonjans (Ghent University, Belgium),
+	 T. Schoonjans (Universita di Sassari, Italy),
 	 T. Ikonen (EMBL, Hamburg, Germany),
 	 B. Golosio (Universita di Sassari, Italy),
 	 A. Simionovici (Universite Joseph Fourier, Grenoble, France),

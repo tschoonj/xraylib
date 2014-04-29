@@ -1,16 +1,23 @@
+/*
+Copyright (c) 2014, Tom Schoonjans
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+    * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+
 #include "xraylib-cuda.h"
 #include "xraylib.h"
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "xrayglob.h"
-
-
-#ifdef __cplusplus
-#define XRLCUDACPLUSPLUS extern "C"
-#else
-#define XRLCUDACPLUSPLUS
-#endif
 
 
 #define KL1 -KL1_LINE-1
@@ -21,27 +28,27 @@
 #define KM3 -KM3_LINE-1
 #define KP5 -KP5_LINE-1
 
-__device__ float FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
-__device__ float AtomicWeight_arr_d[ZMAX+1];
-__device__ float EdgeEnergy_arr_d[(ZMAX+1)*SHELLNUM];
-__device__ float LineEnergy_arr_d[(ZMAX+1)*LINENUM];
-__device__ float JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
-__device__ float CosKron_arr_d[(ZMAX+1)*TRANSNUM];
-__device__ float RadRate_arr_d[(ZMAX+1)*LINENUM];
-__device__ float AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
+__device__ double FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
+__device__ double AtomicWeight_arr_d[ZMAX+1];
+__device__ double EdgeEnergy_arr_d[(ZMAX+1)*SHELLNUM];
+__device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
+__device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
+__device__ double CosKron_arr_d[(ZMAX+1)*TRANSNUM];
+__device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
+__device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 
 __device__ int NE_Photo_d[ZMAX+1];
-__device__ float E_Photo_arr_d[(ZMAX+1)*91];
-__device__ float CS_Photo_arr_d[(ZMAX+1)*91];
-__device__ float CS_Photo_arr2_d[(ZMAX+1)*91];
+__device__ double E_Photo_arr_d[(ZMAX+1)*91];
+__device__ double CS_Photo_arr_d[(ZMAX+1)*91];
+__device__ double CS_Photo_arr2_d[(ZMAX+1)*91];
 
 
 //device functions
 
-__device__ float splint_cu(float *xa, float *ya, float *y2a, int n, float x)
+__device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x)
 {
 	int klo, khi, k;
-	float h, b, a, y;
+	double h, b, a, y;
 
 	if (x >= xa[n]) {
 	  y = ya[n];
@@ -73,9 +80,9 @@ __device__ float splint_cu(float *xa, float *ya, float *y2a, int n, float x)
 	return y;
 }
 
-__device__ float CS_Photo_cu(int Z, float E)
+__device__ double CS_Photo_cu(int Z, double E)
 {
-  float ln_E, ln_sigma, sigma;
+  double ln_E, ln_sigma, sigma;
 
 
   if (Z<1 || Z>ZMAX || NE_Photo_d[Z]<0) {
@@ -97,8 +104,8 @@ __device__ float CS_Photo_cu(int Z, float E)
   return sigma;
 }
 
-__device__ float  FluorYield_cu(int Z, int shell) {
-  float fluor_yield;
+__device__ double  FluorYield_cu(int Z, int shell) {
+  double fluor_yield;
 
 
   if (Z<1 || Z>ZMAX) {
@@ -117,8 +124,8 @@ __device__ float  FluorYield_cu(int Z, int shell) {
   return fluor_yield;
 }
 
-__device__ float AtomicWeight_cu(int Z) {
-  float atomic_weight;
+__device__ double AtomicWeight_cu(int Z) {
+  double atomic_weight;
 
   if (Z<1 || Z>ZMAX) {
     return 0;
@@ -132,8 +139,8 @@ __device__ float AtomicWeight_cu(int Z) {
 }
 
 
-__device__ float EdgeEnergy_cu(int Z, int shell) {
-  float edge_energy;
+__device__ double EdgeEnergy_cu(int Z, int shell) {
+  double edge_energy;
 
   if (Z<1 || Z>ZMAX) {
     return 0;
@@ -150,10 +157,10 @@ __device__ float EdgeEnergy_cu(int Z, int shell) {
   return edge_energy;
 }
 
-//__device__ float LineEnergy_cu(int Z, int line) {
-//  float line_energy;
-//  float lE[50],rr[50];
-//  float tmp=0.0,tmp1=0.0,tmp2=0.0;
+//__device__ double LineEnergy_cu(int Z, int line) {
+//  double line_energy;
+//  double lE[50],rr[50];
+//  double tmp=0.0,tmp1=0.0,tmp2=0.0;
 //  int i;
 //  int temp_line;
 //  
@@ -277,8 +284,8 @@ __device__ float EdgeEnergy_cu(int Z, int shell) {
 //}
 
 
-__device__ float JumpFactor_cu(int Z, int shell) {
-  float jump_factor;
+__device__ double JumpFactor_cu(int Z, int shell) {
+  double jump_factor;
 
   if (Z<1 || Z>ZMAX) {
     return 0;
@@ -296,8 +303,8 @@ __device__ float JumpFactor_cu(int Z, int shell) {
   return jump_factor;
 }
 
-__device__ float CosKronTransProb_cu(int Z, int trans) {
-  float trans_prob;
+__device__ double CosKronTransProb_cu(int Z, int trans) {
+  double trans_prob;
 
   if (Z<1 || Z>ZMAX){
     return 0;
@@ -315,8 +322,8 @@ __device__ float CosKronTransProb_cu(int Z, int trans) {
   return trans_prob;
 }
 
-__device__ float RadRate_cu(int Z, int line) {
-  float rad_rate, rr;
+__device__ double RadRate_cu(int Z, int line) {
+  double rad_rate, rr;
   int i;
 
   if (Z<1 || Z>ZMAX) {
@@ -368,8 +375,8 @@ __device__ float RadRate_cu(int Z, int line) {
   return rad_rate;
 }
 
-__device__ float AtomicLevelWidth_cu(int Z, int shell) {
-  float atomic_level_width;
+__device__ double AtomicLevelWidth_cu(int Z, int shell) {
+  double atomic_level_width;
 
   if (Z<1 || Z>ZMAX) {
     return 0;
@@ -420,21 +427,21 @@ int CudaXRayInit() {
 
 
 
-	/* start malloc'ing and memcpy'ing */
-  	CudaSafeCall(cudaMemcpyToSymbol( FluorYield_arr_d, FluorYield_arr, sizeof(float)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( AtomicWeight_arr_d, AtomicWeight_arr, sizeof(float)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(float)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( LineEnergy_arr_d, LineEnergy_arr, sizeof(float)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( JumpFactor_arr_d, JumpFactor_arr, sizeof(float)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( CosKron_arr_d, CosKron_arr, sizeof(float)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( RadRate_arr_d, RadRate_arr, sizeof(float)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( AtomicLevelWidth_arr_d, AtomicLevelWidth_arr, sizeof(float)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+	/* start memcpy'ing */
+  	CudaSafeCall(cudaMemcpyToSymbol( FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( AtomicWeight_arr_d, AtomicWeight_arr, sizeof(double)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol( AtomicLevelWidth_arr_d, AtomicLevelWidth_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol( NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
 	for (Z = 1; Z <= ZMAX; Z++) {
 		if (NE_Photo[Z] > 0) {
-			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_arr_d, E_Photo_arr[Z], sizeof(float)*NE_Photo[Z], (size_t) Z*91*sizeof(float), cudaMemcpyHostToDevice));
-			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr_d, CS_Photo_arr[Z], sizeof(float)*NE_Photo[Z], (size_t) Z*91*sizeof(float), cudaMemcpyHostToDevice));
-			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr2_d, CS_Photo_arr2[Z], sizeof(float)*NE_Photo[Z], (size_t) Z*91*sizeof(float), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_arr_d, E_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr_d, CS_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr2_d, CS_Photo_arr2[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
 		}
 	}
 

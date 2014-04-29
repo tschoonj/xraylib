@@ -27,7 +27,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 /////////////////////////////////////////////////////////////////// */
 
 
-float ComptonProfile(int Z, float pz) {
+double ComptonProfile(int Z, double pz) {
 	double q, ln_q;
 	double ln_pz;
 
@@ -43,11 +43,11 @@ float ComptonProfile(int Z, float pz) {
 	
 	ln_pz = log((double) pz + 1.0);
 
-	splintd(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,  Npz_ComptonProfiles[Z],ln_pz,&ln_q);
+	splint(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,  Npz_ComptonProfiles[Z],ln_pz,&ln_q);
 
 	q = exp(ln_q); 
 
-	return (float) q;
+	return (double) q;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -62,7 +62,7 @@ float ComptonProfile(int Z, float pz) {
 
 
 
-float ComptonProfile_Partial(int Z, int shell, float pz) {
+double ComptonProfile_Partial(int Z, int shell, double pz) {
 	double q, ln_q;
 	double ln_pz;
 
@@ -78,10 +78,10 @@ float ComptonProfile_Partial(int Z, int shell, float pz) {
 
 	ln_pz = log((double) pz + 1.0);
 
-	splintd(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z],ln_pz,&ln_q);
+	splint(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z],ln_pz,&ln_q);
 
 	q = exp(ln_q); 
 
-	return (float) q;
+	return (double) q;
 }
 
