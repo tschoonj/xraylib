@@ -358,6 +358,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Rayl_d, NE_Rayl, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Compt_d, NE_Compt, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Energy_d, NE_Energy, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(ElementDensity_arr_d, ElementDensity_arr, sizeof(double)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {

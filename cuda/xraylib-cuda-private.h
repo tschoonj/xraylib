@@ -50,6 +50,7 @@ extern __device__ int NE_Energy_d[ZMAX+1];
 extern __device__ double E_Energy_arr_d[(ZMAX+1)*NE_ENERGY_MAX];
 extern __device__ double CS_Energy_arr_d[(ZMAX+1)*NE_ENERGY_MAX];
 extern __device__ double CS_Energy_arr2_d[(ZMAX+1)*NE_ENERGY_MAX];
+extern __device__ double ElementDensity_arr_d[ZMAX+1];
 
 
 #define CudaSafeCall( err ) __cudaSafeCall( err, __FILE__, __LINE__ )

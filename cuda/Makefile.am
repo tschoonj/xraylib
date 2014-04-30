@@ -22,7 +22,8 @@ libxrlcuda_a_SOURCES = xraylib-cuda.cu xraylib-cuda.h \
 		       auger_trans.cu \
 		       comptonprofiles.cu \
 		       coskron.cu \
-		       cross_sections.cu
+		       cross_sections.cu \
+		       densities.cu
 libxrlcuda_a_CFLAGS = $(CUDA_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/include
 libxrlcuda_a_AR = $(NVCC) -arch=sm_20 -lib -o
 

@@ -46,6 +46,15 @@ __global__ void Weights(int *Z, double *weights) {
 	return;
 }
 
+__global__ void Densities(int *Z, double *densities) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+
+
+	densities[tid] = ElementDensity_cu(Z[tid]);
+	
+	return;
+}
+
 __global__ void Edges(int *Z, int *shells, double *edges) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
@@ -141,6 +150,7 @@ int main (int argc, char *argv[]) {
 	double yields[5], *yieldsd;
 	double augeryields[5], *augeryieldsd;
 	double weights[5], *weightsd;
+	double densities[5], *densitiesd;
 	double edges[5], *edgesd;
 	double lineEnergies[5], *lineEnergiesd;
 	double jumps[5], *jumpsd;
@@ -180,6 +190,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &yieldsd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &augeryieldsd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &weightsd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &densitiesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &edgesd, 5*sizeof(double)));
 //	CudaSafeCall(cudaMalloc((void **) &lineEnergiesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &jumpsd, 5*sizeof(double)));
@@ -196,6 +207,9 @@ int main (int argc, char *argv[]) {
 	CudaCheckError();
 
 	Weights<<<1,5>>>(Zd, weightsd);	
+	CudaCheckError();
+
+	Densities<<<1,5>>>(Zd, densitiesd);	
 	CudaCheckError();
 
 	Edges<<<1,5>>>(Zd, shellsd, edgesd);	
@@ -230,6 +244,7 @@ int main (int argc, char *argv[]) {
 
 	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(densities, densitiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(edges, edgesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 //	CudaSafeCall(cudaMemcpy(lineEnergies, lineEnergiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(jumps, jumpsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
@@ -389,5 +404,16 @@ int main (int argc, char *argv[]) {
 		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], CS_Energy(Z[i], energies[i]), cs[i+20]);
 	}
 
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Element density\n");
+	fprintf(stdout,"Element   Classic   CUDA\n");
+	fprintf(stdout,"Ne      %8f %f\n",ElementDensity(10), densities[0]);
+	fprintf(stdout,"P       %8f %f\n",ElementDensity(15), densities[1]);
+	fprintf(stdout,"Fe      %8f %f\n",ElementDensity(26), densities[2]);
+	fprintf(stdout,"Au      %8f %f\n",ElementDensity(79), densities[3]);
+	fprintf(stdout,"Pb      %8f %f\n",ElementDensity(82), densities[4]);
+
+	fprintf(stdout,"\n\n");
 
 }
