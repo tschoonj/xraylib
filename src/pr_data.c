@@ -110,7 +110,7 @@ fprintf(f, "};\n\n");
   fprintf(f,"\n};\n");\
 
 #define PR_DYNMAT_3DD_C(NVAR2D, NVAR2D2, NVAR2D3, EVAR, ENAME) \
-  for (i = 1; i < 102; i++) { \
+  for (i = 0; i < ZMAX+1 ; i++) { \
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       if (UOCCUP_ComptonProfiles[i][j] > 0.0) {\
         if(NVAR2D[i] > 0) {\
@@ -128,7 +128,7 @@ fprintf(f, "};\n\n");
     }\
   }\
   fprintf(f, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
-  for (i = 1; i < 102; i++) {\
+  for (i = 0; i < ZMAX+1 ; i++) {\
     fprintf(f,"{\n");\
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
