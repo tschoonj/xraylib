@@ -21,20 +21,18 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #include <stdlib.h>
 #include "xrayglob.h"
 
-
-#define KL1 -KL1_LINE-1
-#define KL2 -KL2_LINE-1
-#define KL3 -KL3_LINE-1
-#define KM1 -KM1_LINE-1
-#define KM2 -KM2_LINE-1
-#define KM3 -KM3_LINE-1
-#define KP5 -KP5_LINE-1
-
-__device__ double FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
 __device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
 
+
+#define KL1 -(int)KL1_LINE-1
+#define KL2 -(int)KL2_LINE-1
+#define KL3 -(int)KL3_LINE-1
+#define KM1 -(int)KM1_LINE-1
+#define KM2 -(int)KM2_LINE-1
+#define KM3 -(int)KM3_LINE-1
+#define KP5 -(int)KP5_LINE-1
 
 //device functions
 
@@ -71,26 +69,6 @@ __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x
 	y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
 	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
 	return y;
-}
-
-__device__ double  FluorYield_cu(int Z, int shell) {
-  double fluor_yield;
-
-
-  if (Z<1 || Z>ZMAX) {
-    return 0;
-  }
-
-  if (shell<0 || shell>=SHELLNUM) {
-    return 0;
-  }
-
-  fluor_yield = FluorYield_arr_d[Z*SHELLNUM+shell];
-  if (fluor_yield < 0.) {
-    return 0;
-  }
-
-  return fluor_yield;
 }
 
 //__device__ double LineEnergy_cu(int Z, int line) {
@@ -334,6 +312,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(Auger_Yields_d, Auger_Yields, sizeof(double)*(ZMAX+1)*SHELLNUM_A, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(Npz_ComptonProfiles_d, Npz_ComptonProfiles, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NShells_ComptonProfiles_d, NShells_ComptonProfiles, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Rayl_d, NE_Rayl, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Compt_d, NE_Compt, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
@@ -342,6 +321,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Fi_d, NE_Fi, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Fii_d, NE_Fii, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -393,10 +373,8 @@ int CudaXRayInit() {
 	}
 
 
-  	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol(CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
