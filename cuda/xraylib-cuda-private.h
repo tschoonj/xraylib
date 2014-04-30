@@ -20,6 +20,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #define NE_COMPT_MAX 47
 #define NE_RAYL_MAX 47
 #define NE_ENERGY_MAX 66
+#define NE_FI_MAX 5330
+#define NE_FII_MAX 5330
 
 extern __device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 extern __device__ double AtomicWeight_arr_d[ZMAX+1];
@@ -52,6 +54,14 @@ extern __device__ double CS_Energy_arr_d[(ZMAX+1)*NE_ENERGY_MAX];
 extern __device__ double CS_Energy_arr2_d[(ZMAX+1)*NE_ENERGY_MAX];
 extern __device__ double ElementDensity_arr_d[ZMAX+1];
 extern __device__ double EdgeEnergy_arr_d[(ZMAX+1)*SHELLNUM];
+extern __device__ int NE_Fi_d[ZMAX+1];
+extern __device__ double E_Fi_arr_d[(ZMAX+1)*NE_FI_MAX];
+extern __device__ double Fi_arr_d[(ZMAX+1)*NE_FI_MAX];
+extern __device__ double Fi_arr2_d[(ZMAX+1)*NE_FI_MAX];
+extern __device__ int NE_Fii_d[ZMAX+1];
+extern __device__ double E_Fii_arr_d[(ZMAX+1)*NE_FII_MAX];
+extern __device__ double Fii_arr_d[(ZMAX+1)*NE_FII_MAX];
+extern __device__ double Fii_arr2_d[(ZMAX+1)*NE_FII_MAX];
 
 
 #define CudaSafeCall( err ) __cudaSafeCall( err, __FILE__, __LINE__ )

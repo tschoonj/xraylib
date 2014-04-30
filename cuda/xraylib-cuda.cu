@@ -340,6 +340,8 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Energy_d, NE_Energy, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(ElementDensity_arr_d, ElementDensity_arr, sizeof(double)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Fi_d, NE_Fi, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Fii_d, NE_Fii, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -362,6 +364,16 @@ int CudaXRayInit() {
 			CudaSafeCall(cudaMemcpyToSymbol(E_Energy_arr_d, E_Energy_arr[Z], sizeof(double)*NE_Energy[Z], (size_t) Z*NE_ENERGY_MAX*sizeof(double), cudaMemcpyHostToDevice));
 			CudaSafeCall(cudaMemcpyToSymbol(CS_Energy_arr_d, CS_Energy_arr[Z], sizeof(double)*NE_Energy[Z], (size_t) Z*NE_ENERGY_MAX*sizeof(double), cudaMemcpyHostToDevice));
 			CudaSafeCall(cudaMemcpyToSymbol(CS_Energy_arr2_d, CS_Energy_arr2[Z], sizeof(double)*NE_Energy[Z], (size_t) Z*NE_ENERGY_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (NE_Fi[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Fi_arr_d, E_Fi_arr[Z], sizeof(double)*NE_Fi[Z], (size_t) Z*NE_FI_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Fi_arr_d, Fi_arr[Z], sizeof(double)*NE_Fi[Z], (size_t) Z*NE_FI_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Fi_arr2_d, Fi_arr2[Z], sizeof(double)*NE_Fi[Z], (size_t) Z*NE_FI_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (NE_Fii[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Fii_arr_d, E_Fii_arr[Z], sizeof(double)*NE_Fii[Z], (size_t) Z*NE_FII_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Fii_arr_d, Fii_arr[Z], sizeof(double)*NE_Fii[Z], (size_t) Z*NE_FII_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Fii_arr2_d, Fii_arr2[Z], sizeof(double)*NE_Fii[Z], (size_t) Z*NE_FII_MAX*sizeof(double), cudaMemcpyHostToDevice));
 		}
 		if (Npz_ComptonProfiles[Z] > 0) {
 			CudaSafeCall(cudaMemcpyToSymbol(pz_ComptonProfiles_d, pz_ComptonProfiles[Z], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) Z*NPZ*sizeof(double), cudaMemcpyHostToDevice));

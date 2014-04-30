@@ -112,6 +112,15 @@ __global__ void CS(int *Z, double *energies, double *cs) {
 	return;
 }
 
+__global__ void Anomalous(int *Z, double *energies, double *anom) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	anom[tid] = Fi_cu(Z[tid], energies[tid]);
+	anom[tid+blockDim.x] = Fii_cu(Z[tid], energies[tid]);
+	
+	return;
+}
+
 __global__ void ComptonProfiles(int *Z, double *pz, double *q) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 	
@@ -161,6 +170,7 @@ int main (int argc, char *argv[]) {
 	double cs[5], *csd;
 	double compton_profiles[5], *compton_profilesd;
 	double partial_compton_profiles[5], *partial_compton_profilesd;
+	double anom[10], *anomd;
 
 
 	int i;
@@ -201,6 +211,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &csd, 25*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &compton_profilesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &partial_compton_profilesd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &anomd, 10*sizeof(double)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -242,6 +253,9 @@ int main (int argc, char *argv[]) {
 	ComptonProfilesPartial<<<1,5>>>(Zd, shellsd, pzd, partial_compton_profilesd);
 	CudaCheckError();
 
+	Anomalous<<<1,5>>>(Zd, energiesd, anomd);
+	CudaCheckError();
+
 	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(densities, densitiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
@@ -256,6 +270,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(augeryields, augeryieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(compton_profiles, compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(partial_compton_profiles, partial_compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(anom, anomd, 10*sizeof(double), cudaMemcpyDeviceToHost));
 
 
 	fprintf(stdout,"Fluorescence yields\n");
@@ -413,6 +428,22 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Fe      %8f %f\n",ElementDensity(26), densities[2]);
 	fprintf(stdout,"Au      %8f %f\n",ElementDensity(79), densities[3]);
 	fprintf(stdout,"Pb      %8f %f\n",ElementDensity(82), densities[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Anomalous scattering factor phi prime\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], Fi(Z[i], energies[i]), anom[i]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Anomalous scattering factor phi double prime\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], Fii(Z[i], energies[i]), anom[i+5]);
+	}
 
 	fprintf(stdout,"\n\n");
 
