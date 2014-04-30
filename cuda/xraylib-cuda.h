@@ -58,6 +58,15 @@ __device__ double Fii_cu(int Z, double E);
 __device__ double FluorYield_cu(int Z, int shell);
 __device__ double JumpFactor_cu(int Z, int shell);
 __device__ double RadRate_cu(int Z, int line);
+__device__ double FF_Rayl_cu(int Z, double q);
+__device__ double SF_Compt_cu(int Z, double q);
+__device__ double DCS_Thoms_cu(double theta);
+__device__ double DCS_KN_cu(double E, double theta); 
+__device__ double DCS_Rayl_cu(int Z, double E, double theta);
+__device__ double DCS_Compt_cu(int Z, double E, double theta);
+__device__ double MomentTransf_cu(double E, double theta);
+__device__ double CS_KN_cu(double E);
+__device__ double ComptonEnergy_cu(double E0, double theta);
 
 
 __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x);

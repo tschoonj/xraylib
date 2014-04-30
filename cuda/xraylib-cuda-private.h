@@ -22,6 +22,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #define NE_ENERGY_MAX 66
 #define NE_FI_MAX 5330
 #define NE_FII_MAX 5330
+#define NQ_RAYL_MAX 173
+#define NQ_COMPT_MAX 169
 
 extern __device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 extern __device__ double AtomicWeight_arr_d[ZMAX+1];
@@ -65,6 +67,15 @@ extern __device__ double Fii_arr2_d[(ZMAX+1)*NE_FII_MAX];
 extern __device__ double FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
 extern __device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 extern __device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
+extern __device__ int Nq_Rayl_d[ZMAX+1];
+extern __device__ double q_Rayl_arr_d[(ZMAX+1)*NQ_RAYL_MAX];
+extern __device__ double FF_Rayl_arr_d[(ZMAX+1)*NQ_RAYL_MAX];
+extern __device__ double FF_Rayl_arr2_d[(ZMAX+1)*NQ_RAYL_MAX];
+extern __device__ int Nq_Compt_d[ZMAX+1];
+extern __device__ double q_Compt_arr_d[(ZMAX+1)*NQ_COMPT_MAX];
+extern __device__ double SF_Compt_arr_d[(ZMAX+1)*NQ_COMPT_MAX];
+extern __device__ double SF_Compt_arr2_d[(ZMAX+1)*NQ_COMPT_MAX];
+
 
 
 #define CudaSafeCall( err ) __cudaSafeCall( err, __FILE__, __LINE__ )

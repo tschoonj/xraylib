@@ -121,6 +121,15 @@ __global__ void Anomalous(int *Z, double *energies, double *anom) {
 	return;
 }
 
+__global__ void DCS(int *Z, double *energies, double *thetas, double *dcs) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	dcs[tid] = DCS_Rayl_cu(Z[tid], energies[tid], thetas[tid]);
+	dcs[tid+blockDim.x] = DCS_Compt_cu(Z[tid], energies[tid], thetas[tid]);
+	
+	return;
+}
+
 __global__ void ComptonProfiles(int *Z, double *pz, double *q) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 	
@@ -155,6 +164,8 @@ int main (int argc, char *argv[]) {
 	double *energiesd;
 	double pz[5] = {5.0, 10.0, 30.0, 60.0, 80.0};
 	double *pzd;
+	double thetas[5] = {0.01, 0.07, 0.12, 1.0, 1.3};
+	double *thetasd;
 
 	double yields[5], *yieldsd;
 	double augeryields[5], *augeryieldsd;
@@ -171,6 +182,7 @@ int main (int argc, char *argv[]) {
 	double compton_profiles[5], *compton_profilesd;
 	double partial_compton_profiles[5], *partial_compton_profilesd;
 	double anom[10], *anomd;
+	double dcs[10], *dcsd;
 
 
 	int i;
@@ -194,6 +206,8 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(energiesd, energies, 5*sizeof(double), cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMalloc((void **) &pzd, 5*sizeof(double)));
 	CudaSafeCall(cudaMemcpy(pzd, pz, 5*sizeof(double), cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMalloc((void **) &thetasd, 5*sizeof(double)));
+	CudaSafeCall(cudaMemcpy(thetasd, thetas, 5*sizeof(double), cudaMemcpyHostToDevice));
 
 
 	//output variables
@@ -212,6 +226,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &compton_profilesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &partial_compton_profilesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &anomd, 10*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &dcsd, 10*sizeof(double)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -256,6 +271,9 @@ int main (int argc, char *argv[]) {
 	Anomalous<<<1,5>>>(Zd, energiesd, anomd);
 	CudaCheckError();
 
+	DCS<<<1,5>>>(Zd, energiesd, thetasd, dcsd);
+	CudaCheckError();
+
 	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(densities, densitiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
@@ -271,6 +289,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(compton_profiles, compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(partial_compton_profiles, partial_compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(anom, anomd, 10*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(dcs, dcsd, 10*sizeof(double), cudaMemcpyDeviceToHost));
 
 
 	fprintf(stdout,"Fluorescence yields\n");
@@ -443,6 +462,22 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
 	for (i = 0 ; i < 5 ; i++) {
 		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], Fii(Z[i], energies[i]), anom[i+5]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Differential Rayleigh cross sections (cm2/g/sterad)\n");
+	fprintf(stdout,"Element   Energy(keV)     Theta           Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], thetas[i], DCS_Rayl(Z[i], energies[i], thetas[i]), dcs[i]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Differential Compton cross sections (cm2/g/sterad)\n");
+	fprintf(stdout,"Element   Energy(keV)     Theta           Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], thetas[i], DCS_Compt(Z[i], energies[i], thetas[i]), dcs[i+5]);
 	}
 
 	fprintf(stdout,"\n\n");

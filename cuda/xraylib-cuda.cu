@@ -245,6 +245,8 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(Nq_Rayl_d, Nq_Rayl, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(Nq_Compt_d, Nq_Compt, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -277,6 +279,16 @@ int CudaXRayInit() {
 			CudaSafeCall(cudaMemcpyToSymbol(E_Fii_arr_d, E_Fii_arr[Z], sizeof(double)*NE_Fii[Z], (size_t) Z*NE_FII_MAX*sizeof(double), cudaMemcpyHostToDevice));
 			CudaSafeCall(cudaMemcpyToSymbol(Fii_arr_d, Fii_arr[Z], sizeof(double)*NE_Fii[Z], (size_t) Z*NE_FII_MAX*sizeof(double), cudaMemcpyHostToDevice));
 			CudaSafeCall(cudaMemcpyToSymbol(Fii_arr2_d, Fii_arr2[Z], sizeof(double)*NE_Fii[Z], (size_t) Z*NE_FII_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (Nq_Rayl[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(q_Rayl_arr_d, q_Rayl_arr[Z], sizeof(double)*Nq_Rayl[Z], (size_t) Z*NQ_RAYL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(FF_Rayl_arr_d, FF_Rayl_arr[Z], sizeof(double)*Nq_Rayl[Z], (size_t) Z*NQ_RAYL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(FF_Rayl_arr2_d, FF_Rayl_arr2[Z], sizeof(double)*Nq_Rayl[Z], (size_t) Z*NQ_RAYL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (Nq_Compt[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(q_Compt_arr_d, q_Compt_arr[Z], sizeof(double)*Nq_Compt[Z], (size_t) Z*NQ_COMPT_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(SF_Compt_arr_d, SF_Compt_arr[Z], sizeof(double)*Nq_Compt[Z], (size_t) Z*NQ_COMPT_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(SF_Compt_arr2_d, SF_Compt_arr2[Z], sizeof(double)*Nq_Compt[Z], (size_t) Z*NQ_COMPT_MAX*sizeof(double), cudaMemcpyHostToDevice));
 		}
 		if (Npz_ComptonProfiles[Z] > 0) {
 			CudaSafeCall(cudaMemcpyToSymbol(pz_ComptonProfiles_d, pz_ComptonProfiles[Z], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) Z*NPZ*sizeof(double), cudaMemcpyHostToDevice));
