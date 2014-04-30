@@ -11,25 +11,27 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans and Antonio Brunetti BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef XRAYLIB_CUDA_PRIVATE_H
-#define XRAYLIB_CUDA_PRIVATE_H
-
+#include "xraylib-cuda.h"
+#include "xraylib-cuda-private.h"
 #include "xraylib-defs.h"
-#define NPZ 31
 
-extern __device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
-extern __device__ double AtomicWeight_arr_d[ZMAX+1];
-extern __device__ double Auger_Rates_d[(ZMAX+1)*AUGERNUM];
-extern __device__ double Auger_Yields_d[(ZMAX+1)*SHELLNUM_A];
-extern __device__ int Npz_ComptonProfiles_d[ZMAX+1];
-extern __device__ int NShells_ComptonProfiles_d[ZMAX+1];
-extern __device__ double UOCCUP_ComptonProfiles_d[(ZMAX+1)*SHELLNUM_C];
-extern __device__ double pz_ComptonProfiles_d[(ZMAX+1)*NPZ];
-extern __device__ double Total_ComptonProfiles_d[(ZMAX+1)*NPZ];
-extern __device__ double Total_ComptonProfiles2_d[(ZMAX+1)*NPZ];
-extern __device__ double Partial_ComptonProfiles_d[(ZMAX+1)*SHELLNUM_C*NPZ];
-extern __device__ double Partial_ComptonProfiles2_d[(ZMAX+1)*SHELLNUM_C*NPZ];
-extern __device__ double CosKron_arr_d[(ZMAX+1)*TRANSNUM];
+__device__ double CosKron_arr_d[(ZMAX+1)*TRANSNUM];
 
+__device__ double CosKronTransProb_cu(int Z, int trans) {
+  double trans_prob;
 
-#endif
+  if (Z<1 || Z>ZMAX){
+    return 0;
+  }
+
+  if (trans<0 || trans>=TRANSNUM) {
+    return 0;
+  }
+
+  trans_prob = CosKron_arr_d[Z*TRANSNUM+trans];
+  if (trans_prob < 0.) {
+    return 0;
+  }
+
+  return trans_prob;
+}

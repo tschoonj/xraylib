@@ -20,7 +20,8 @@ libxrlcuda_a_SOURCES = xraylib-cuda.cu xraylib-cuda.h \
 		       atomiclevelwidth.cu \
 		       atomicweight.cu \
 		       auger_trans.cu \
-		       comptonprofiles.cu
+		       comptonprofiles.cu \
+		       coskron.cu
 libxrlcuda_a_CFLAGS = $(CUDA_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/include
 libxrlcuda_a_AR = $(NVCC) -arch=sm_20 -lib -o
 
