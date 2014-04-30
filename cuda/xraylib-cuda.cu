@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 */
 
 
+#define CUDA_ERROR_CHECK
 #include "xraylib-cuda.h"
 #include "xraylib-cuda-private.h"
 #include "xraylib.h"
@@ -34,11 +35,6 @@ __device__ double EdgeEnergy_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
 __device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
-
-__device__ int NE_Photo_d[ZMAX+1];
-__device__ double E_Photo_arr_d[(ZMAX+1)*91];
-__device__ double CS_Photo_arr_d[(ZMAX+1)*91];
-__device__ double CS_Photo_arr2_d[(ZMAX+1)*91];
 
 
 //device functions
@@ -76,30 +72,6 @@ __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x
 	y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
 	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
 	return y;
-}
-
-__device__ double CS_Photo_cu(int Z, double E)
-{
-  double ln_E, ln_sigma, sigma;
-
-
-  if (Z<1 || Z>ZMAX || NE_Photo_d[Z]<0) {
-    return 0;
-  }
-
-  if (E <= 0.) {
-    return 0;
-  }
-
-  ln_E = log(E * 1000.0);
-
-
-  ln_sigma = splint_cu(E_Photo_arr_d+(Z*91)-1, CS_Photo_arr_d+(Z*91)-1, CS_Photo_arr2_d+(Z*91)-1,
-	 NE_Photo_d[Z], ln_E);
-
-  sigma = exp(ln_sigma);
-
-  return sigma;
 }
 
 __device__ double  FluorYield_cu(int Z, int shell) {
@@ -382,13 +354,32 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(Auger_Yields_d, Auger_Yields, sizeof(double)*(ZMAX+1)*SHELLNUM_A, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(Npz_ComptonProfiles_d, Npz_ComptonProfiles, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NShells_ComptonProfiles_d, NShells_ComptonProfiles, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Rayl_d, NE_Rayl, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Compt_d, NE_Compt, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Energy_d, NE_Energy, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
 		if (NE_Photo[Z] > 0) {
-			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_arr_d, E_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
-			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr_d, CS_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
-			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr2_d, CS_Photo_arr2[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_arr_d, E_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*NE_PHOTO_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr_d, CS_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*NE_PHOTO_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr2_d, CS_Photo_arr2[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*NE_PHOTO_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (NE_Rayl[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Rayl_arr_d, E_Rayl_arr[Z], sizeof(double)*NE_Rayl[Z], (size_t) Z*NE_RAYL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Rayl_arr_d, CS_Rayl_arr[Z], sizeof(double)*NE_Rayl[Z], (size_t) Z*NE_RAYL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Rayl_arr2_d, CS_Rayl_arr2[Z], sizeof(double)*NE_Rayl[Z], (size_t) Z*NE_RAYL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (NE_Compt[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Compt_arr_d, E_Compt_arr[Z], sizeof(double)*NE_Compt[Z], (size_t) Z*NE_COMPT_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Compt_arr_d, CS_Compt_arr[Z], sizeof(double)*NE_Compt[Z], (size_t) Z*NE_COMPT_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Compt_arr2_d, CS_Compt_arr2[Z], sizeof(double)*NE_Compt[Z], (size_t) Z*NE_COMPT_MAX*sizeof(double), cudaMemcpyHostToDevice));
+		}
+		if (NE_Energy[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Energy_arr_d, E_Energy_arr[Z], sizeof(double)*NE_Energy[Z], (size_t) Z*NE_ENERGY_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Energy_arr_d, CS_Energy_arr[Z], sizeof(double)*NE_Energy[Z], (size_t) Z*NE_ENERGY_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(CS_Energy_arr2_d, CS_Energy_arr2[Z], sizeof(double)*NE_Energy[Z], (size_t) Z*NE_ENERGY_MAX*sizeof(double), cudaMemcpyHostToDevice));
 		}
 		if (Npz_ComptonProfiles[Z] > 0) {
 			CudaSafeCall(cudaMemcpyToSymbol(pz_ComptonProfiles_d, pz_ComptonProfiles[Z], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) Z*NPZ*sizeof(double), cudaMemcpyHostToDevice));
@@ -414,7 +405,6 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	

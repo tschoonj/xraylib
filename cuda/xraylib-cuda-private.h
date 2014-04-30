@@ -16,6 +16,10 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 
 #include "xraylib-defs.h"
 #define NPZ 31
+#define NE_PHOTO_MAX 91
+#define NE_COMPT_MAX 47
+#define NE_RAYL_MAX 47
+#define NE_ENERGY_MAX 66
 
 extern __device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 extern __device__ double AtomicWeight_arr_d[ZMAX+1];
@@ -30,6 +34,64 @@ extern __device__ double Total_ComptonProfiles2_d[(ZMAX+1)*NPZ];
 extern __device__ double Partial_ComptonProfiles_d[(ZMAX+1)*SHELLNUM_C*NPZ];
 extern __device__ double Partial_ComptonProfiles2_d[(ZMAX+1)*SHELLNUM_C*NPZ];
 extern __device__ double CosKron_arr_d[(ZMAX+1)*TRANSNUM];
+extern __device__ int NE_Photo_d[ZMAX+1];
+extern __device__ double E_Photo_arr_d[(ZMAX+1)*NE_PHOTO_MAX];
+extern __device__ double CS_Photo_arr_d[(ZMAX+1)*NE_PHOTO_MAX];
+extern __device__ double CS_Photo_arr2_d[(ZMAX+1)*NE_PHOTO_MAX];
+extern __device__ int NE_Rayl_d[ZMAX+1];
+extern __device__ double E_Rayl_arr_d[(ZMAX+1)*NE_RAYL_MAX];
+extern __device__ double CS_Rayl_arr_d[(ZMAX+1)*NE_RAYL_MAX];
+extern __device__ double CS_Rayl_arr2_d[(ZMAX+1)*NE_RAYL_MAX];
+extern __device__ int NE_Compt_d[ZMAX+1];
+extern __device__ double E_Compt_arr_d[(ZMAX+1)*NE_COMPT_MAX];
+extern __device__ double CS_Compt_arr_d[(ZMAX+1)*NE_COMPT_MAX];
+extern __device__ double CS_Compt_arr2_d[(ZMAX+1)*NE_COMPT_MAX];
+extern __device__ int NE_Energy_d[ZMAX+1];
+extern __device__ double E_Energy_arr_d[(ZMAX+1)*NE_ENERGY_MAX];
+extern __device__ double CS_Energy_arr_d[(ZMAX+1)*NE_ENERGY_MAX];
+extern __device__ double CS_Energy_arr2_d[(ZMAX+1)*NE_ENERGY_MAX];
 
+
+#define CudaSafeCall( err ) __cudaSafeCall( err, __FILE__, __LINE__ )
+#define CudaCheckError()    __cudaCheckError( __FILE__, __LINE__ )
+
+inline void __cudaSafeCall( cudaError err, const char *file, const int line )
+{
+#ifdef CUDA_ERROR_CHECK
+    if ( cudaSuccess != err )
+    {
+        fprintf( stderr, "cudaSafeCall() failed at %s:%i : %s\n",
+                 file, line, cudaGetErrorString( err ) );
+        exit( -1 );
+    }
+#endif
+
+    return;
+}
+
+inline void __cudaCheckError( const char *file, const int line )
+{
+#ifdef CUDA_ERROR_CHECK
+    cudaError err = cudaGetLastError();
+    if ( cudaSuccess != err )
+    {
+        fprintf( stderr, "cudaCheckError() failed at %s:%i : %s\n",
+                 file, line, cudaGetErrorString( err ) );
+        exit( -1 );
+    }
+
+    // More careful checking. However, this will affect performance.
+    // Comment away if needed.
+    err = cudaDeviceSynchronize();
+    if( cudaSuccess != err )
+    {
+        fprintf( stderr, "cudaCheckError() with sync failed at %s:%i : %s\n",
+                 file, line, cudaGetErrorString( err ) );
+        exit( -1 );
+    }
+#endif
+
+    return;
+}
 
 #endif

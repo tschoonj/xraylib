@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "xraylib.h"
 #include "xraylib-cuda.h"
+#include "xraylib-cuda-private.h"
 #include <stdlib.h>
 #include <cuda_runtime.h>
 #include "xrayglob.h"
@@ -90,10 +91,14 @@ __global__ void Widths(int *Z, int *shells, double *widths) {
 	return;
 }
 
-__global__ void CS_Photos(int *Z, double *energies, double *cs) {
+__global__ void CS(int *Z, double *energies, double *cs) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 	
 	cs[tid] = CS_Photo_cu(Z[tid], energies[tid]);
+	cs[tid+blockDim.x] = CS_Rayl_cu(Z[tid], energies[tid]);
+	cs[tid+2*blockDim.x] = CS_Compt_cu(Z[tid], energies[tid]);
+	cs[tid+3*blockDim.x] = CS_Total_cu(Z[tid], energies[tid]);
+	cs[tid+4*blockDim.x] = CS_Energy_cu(Z[tid], energies[tid]);
 	
 	return;
 }
@@ -143,7 +148,7 @@ int main (int argc, char *argv[]) {
 	double radrates[5], *radratesd;
 	double augerrates[5], *augerratesd;
 	double widths[5], *widthsd; 
-	double photo_cs[5], *photo_csd;
+	double cs[5], *csd;
 	double compton_profiles[5], *compton_profilesd;
 	double partial_compton_profiles[5], *partial_compton_profilesd;
 
@@ -182,7 +187,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &radratesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &augerratesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &widthsd, 5*sizeof(double)));
-	CudaSafeCall(cudaMalloc((void **) &photo_csd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &csd, 25*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &compton_profilesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &partial_compton_profilesd, 5*sizeof(double)));
 
@@ -208,7 +213,7 @@ int main (int argc, char *argv[]) {
 	Widths<<<1,5>>>(Zd, shellsd, widthsd);	
 	CudaCheckError();
 	
-	CS_Photos<<<1,5>>>(Zd, energiesd, photo_csd);	
+	CS<<<1,5>>>(Zd, energiesd, csd);	
 	CudaCheckError();
 
 	AugerRates<<<1,5>>>(Zd, auger_transd, augerratesd);
@@ -231,7 +236,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(coskrons, coskronsd, 3*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(radrates, radratesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(widths, widthsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
-	CudaSafeCall(cudaMemcpy(photo_cs, photo_csd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(cs, csd, 25*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(augerrates, augerratesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(augeryields, augeryieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(compton_profiles, compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
@@ -346,10 +351,42 @@ int main (int argc, char *argv[]) {
 
 	fprintf(stdout,"\n\n");
 
-	fprintf(stdout,"Photo ionization cross sections\n");
-	fprintf(stdout,"Element   Energy(keV)   Classic   Cuda\n");
+	fprintf(stdout,"Photo ionization cross sections (cm2/g)\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
 	for (i = 0 ; i < 5 ; i++) {
-		fprintf(stdout,"%i      %6f    %8f %f\n", Z[i], energies[i], CS_Photo(Z[i], energies[i]), photo_cs[i]);
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], CS_Photo(Z[i], energies[i]), cs[i]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Rayleigh scattering cross sections (cm2/g)\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], CS_Rayl(Z[i], energies[i]), cs[i+5]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Compton scattering cross sections (cm2/g)\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], CS_Compt(Z[i], energies[i]), cs[i+10]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Total attenuation cross sections (cm2/g)\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], CS_Total(Z[i], energies[i]), cs[i+15]);
+	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Mass-energy absorption cross sections (cm2/g)\n");
+	fprintf(stdout,"Element   Energy(keV)     Classic       Cuda\n");
+	for (i = 0 ; i < 5 ; i++) {
+		fprintf(stdout,"%-2s        %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], CS_Energy(Z[i], energies[i]), cs[i+20]);
 	}
 
 
