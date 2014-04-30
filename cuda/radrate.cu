@@ -11,68 +11,71 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans and Antonio Brunetti BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef XRAYLIB_CUDA_H
-#define XRAYLIB_CUDA_H
+#include "xraylib-cuda.h"
+#include "xraylib-cuda-private.h"
+#include "xraylib-defs.h"
+#include "xraylib.h"
+      
+#define KL1 -(int)KL1_LINE-1
+#define KL2 -(int)KL2_LINE-1
+#define KL3 -(int)KL3_LINE-1
+#define KM2 -(int)KM2_LINE-1
+#define KM3 -(int)KM3_LINE-1
 
-#include <stdio.h>
+__device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
 
+__device__ double RadRate_cu(int Z, int line) {
+  double rad_rate, rr;
+  int i;
 
+  if (Z<1 || Z>ZMAX) {
+    return 0;
+  }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+  if (line == KA_LINE) {
+        rr=0.0;
+    	for (i=KL1 ; i <= KL3 ; i++)
+		rr += RadRate_arr_d[Z*LINENUM+i];
+    	if (rr == 0.0) {
+      		return 0.0;
+    	}
+    	return rr;
+  }
+  else if (line == KB_LINE) {
+    	/*
+	 * we assume that RR(Ka)+RR(Kb) = 1.0
+	 */
+        rr=0.0;
+    	for (i=KL1 ; i <= KL3 ; i++)
+		rr += RadRate_arr_d[Z*LINENUM+i];
+    	if (rr == 1.0) {
+      		return 0.0;
+    	}
+	else if (rr == 0.0) {
+		return 0.0;
+	}
+    	return 1.0-rr;
+  }
+  else if (line == LA_LINE) {
+	line = -L3M5_LINE-1;
+	rr=RadRate_arr_d[Z*LINENUM+line];
+	line = -L3M4_LINE-1;
+	rr+=RadRate_arr_d[Z*LINENUM+line];
+	return rr;
+  }
+  /*
+   * in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
+   */
 
+  line = -line - 1;
+  if (line<0 || line>=LINENUM) {
+    return 0;
+  }
 
+  rad_rate = RadRate_arr_d[Z*LINENUM+line];
+  if (rad_rate < 0.) {
+    return 0;
+  }
 
-
-//host functions
-
-/*
- *
- * Initializes cuda xraylib
- * Copies all the relevant datasets to the GPU device memory
- *
- */
-int CudaXRayInit();
-
-
-/*
- * device functions
- */
-__device__ double AtomicLevelWidth_cu(int Z, int shell);
-__device__ double AtomicWeight_cu(int Z);
-__device__ double AugerRate_cu(int Z, int auger_trans);
-__device__ double AugerYield_cu(int Z, int shell);
-__device__ double ComptonProfile_cu(int Z, double pz);
-__device__ double ComptonProfile_Partial_cu(int Z, int shell, double pz);
-__device__ double CosKronTransProb_cu(int Z, int trans);
-__device__ double CS_Total_cu(int Z, double E);
-__device__ double CS_Photo_cu(int Z, double E);
-__device__ double CS_Rayl_cu(int Z, double E);
-__device__ double CS_Compt_cu(int Z, double E);
-__device__ double CS_Energy_cu(int Z, double E);
-__device__ double ElementDensity_cu(int Z);
-__device__ double EdgeEnergy_cu(int Z, int shell);
-__device__ double Fi_cu(int Z, double E);
-__device__ double Fii_cu(int Z, double E);
-__device__ double FluorYield_cu(int Z, int shell);
-__device__ double JumpFactor_cu(int Z, int shell);
-__device__ double RadRate_cu(int Z, int line);
-
-
-__device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x);
-//__device__ double LineEnergy_cu(int Z, int line);
-
-
-
-
-
-
-
-
-
-
-#ifdef __cplusplus
+  return rad_rate;
 }
-#endif
-#endif

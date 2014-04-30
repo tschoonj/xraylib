@@ -22,7 +22,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #include "xrayglob.h"
 
 __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
-__device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
 
 
 #define KL1 -(int)KL1_LINE-1
@@ -197,63 +196,6 @@ __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x
 //}
 
 
-__device__ double RadRate_cu(int Z, int line) {
-  double rad_rate, rr;
-  int i;
-
-  if (Z<1 || Z>ZMAX) {
-    return 0;
-  }
-
-  if (line>=KA_LINE && line<LA_LINE) {
-    if (line == KA_LINE) {
-        rr=0.0;
-    	for (i=KL1 ; i <= KL3 ; i++)
-		rr += RadRate_arr_d[Z*LINENUM+i];
-    }
-    else if (line == KB_LINE) {
-        rr=0.0;
-    	for (i=KL1 ; i <= KL3 ; i++)
-		rr += RadRate_arr_d[Z*LINENUM+i];
-    	/*
-	 * we assume that RR(Ka)+RR(Kb) = 1.0
-	 */
-    	return 1.0 - rr;
-    }
-    if (rr == 0.0 || rr == 1.0) {
-      return 0.0;
-    }
-    return rr;
-  }
-
-  if (line == LA_LINE) {
-	line = -L3M5_LINE-1;
-	rr=RadRate_arr_d[Z*LINENUM+line];
-	line = -L3M4_LINE-1;
-	rr+=RadRate_arr_d[Z*LINENUM+line];
-	return rr;
-  }
-  /*
-   * in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
-   */
-
-  line = -line - 1;
-  if (line<0 || line>=LINENUM) {
-    return 0;
-  }
-
-  rad_rate = RadRate_arr_d[Z*LINENUM+line];
-  if (rad_rate < 0.) {
-    return 0;
-  }
-
-  return rad_rate;
-}
-
-
-
-
-
 
 
 
@@ -302,6 +244,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Fii_d, NE_Fii, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -354,7 +297,6 @@ int CudaXRayInit() {
 
 
   	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	

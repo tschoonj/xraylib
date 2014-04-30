@@ -167,7 +167,7 @@ int main (int argc, char *argv[]) {
 	double radrates[5], *radratesd;
 	double augerrates[5], *augerratesd;
 	double widths[5], *widthsd; 
-	double cs[5], *csd;
+	double cs[25], *csd;
 	double compton_profiles[5], *compton_profilesd;
 	double partial_compton_profiles[5], *partial_compton_profilesd;
 	double anom[10], *anomd;
