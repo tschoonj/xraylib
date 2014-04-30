@@ -8,13 +8,31 @@
 //#define CUDA_ERROR_CHECK
 
 
+__global__ void AugerRates(int *Z, int *auger_trans, double *rates) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+
+
+	rates[tid] = AugerRate_cu(Z[tid], auger_trans[tid]);
+	
+	return;
+}
+
+__global__ void AugerYields(int *Z, int *shells, double *yields) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+
+
+	yields[tid] = AugerYield_cu(Z[tid], shells[tid]);
+	
+	return;
+}
+
+
 __global__ void Yields(int *Z, int *shells, double *yields) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
 
 	yields[tid] = FluorYield_cu(Z[tid], shells[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -24,7 +42,6 @@ __global__ void Weights(int *Z, double *weights) {
 
 	weights[tid] = AtomicWeight_cu(Z[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -34,7 +51,6 @@ __global__ void Edges(int *Z, int *shells, double *edges) {
 
 	edges[tid] = EdgeEnergy_cu(Z[tid], shells[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -44,7 +60,6 @@ __global__ void Jumps(int *Z, int *shells, double *jumps) {
 
 	jumps[tid] = JumpFactor_cu(Z[tid], shells[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -54,7 +69,6 @@ __global__ void CosKrons(int *Z, int *trans, double *coskrons) {
 
 	coskrons[tid] = CosKronTransProb_cu(Z[tid], trans[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -64,7 +78,6 @@ __global__ void RadRates(int *Z, int *lines, double *radrates) {
 
 	radrates[tid] = RadRate_cu(Z[tid], lines[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -74,7 +87,6 @@ __global__ void Widths(int *Z, int *shells, double *widths) {
 
 	widths[tid] = AtomicLevelWidth_cu(Z[tid], shells[tid]);
 	
-	__syncthreads();
 	return;
 }
 
@@ -83,7 +95,22 @@ __global__ void CS_Photos(int *Z, double *energies, double *cs) {
 	
 	cs[tid] = CS_Photo_cu(Z[tid], energies[tid]);
 	
-	__syncthreads();
+	return;
+}
+
+__global__ void ComptonProfiles(int *Z, double *pz, double *q) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	q[tid] = ComptonProfile_cu(Z[tid], pz[tid]);
+	
+	return;
+}
+
+__global__ void ComptonProfilesPartial(int *Z, int *shell, double *pz, double *q) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	q[tid] = ComptonProfile_Partial_cu(Z[tid], shell[tid], pz[tid]);
+	
 	return;
 }
 
@@ -99,19 +126,26 @@ int main (int argc, char *argv[]) {
 	double energies[5] = {2.0, 8.0, 9.275, 15.89, 50.23};
 	int Z2[3] = {56, 68, 80};
 	int trans[3] = {FL13_TRANS, FL23_TRANS, FM34_TRANS};
+	int auger_trans[5] = {K_L1L1_AUGER, K_L3M1_AUGER, K_L3N1_AUGER, L2_M2M4_AUGER, M3_M4N4_AUGER};
 	int *Zd, *Z2d;
-	int *shellsd, *linesd, *transd;
+	int *shellsd, *linesd, *transd, *auger_transd;
 	double *energiesd;
+	double pz[5] = {5.0, 10.0, 30.0, 60.0, 80.0};
+	double *pzd;
 
 	double yields[5], *yieldsd;
+	double augeryields[5], *augeryieldsd;
 	double weights[5], *weightsd;
 	double edges[5], *edgesd;
 	double lineEnergies[5], *lineEnergiesd;
 	double jumps[5], *jumpsd;
 	double coskrons[3], *coskronsd;
 	double radrates[5], *radratesd;
+	double augerrates[5], *augerratesd;
 	double widths[5], *widthsd; 
 	double photo_cs[5], *photo_csd;
+	double compton_profiles[5], *compton_profilesd;
+	double partial_compton_profiles[5], *partial_compton_profilesd;
 
 
 	int i;
@@ -129,20 +163,28 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(linesd, lines, 5*sizeof(int), cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMalloc((void **) &transd, 3*sizeof(int)));
 	CudaSafeCall(cudaMemcpy(transd, trans, 3*sizeof(int), cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMalloc((void **) &auger_transd, 5*sizeof(int)));
+	CudaSafeCall(cudaMemcpy(auger_transd, auger_trans, 5*sizeof(int), cudaMemcpyHostToDevice));
 	CudaSafeCall(cudaMalloc((void **) &energiesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMemcpy(energiesd, energies, 5*sizeof(double), cudaMemcpyHostToDevice));
+	CudaSafeCall(cudaMalloc((void **) &pzd, 5*sizeof(double)));
+	CudaSafeCall(cudaMemcpy(pzd, pz, 5*sizeof(double), cudaMemcpyHostToDevice));
 
 
 	//output variables
 	CudaSafeCall(cudaMalloc((void **) &yieldsd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &augeryieldsd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &weightsd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &edgesd, 5*sizeof(double)));
 //	CudaSafeCall(cudaMalloc((void **) &lineEnergiesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &jumpsd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &coskronsd, 3*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &radratesd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &augerratesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &widthsd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &photo_csd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &compton_profilesd, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &partial_compton_profilesd, 5*sizeof(double)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -168,7 +210,19 @@ int main (int argc, char *argv[]) {
 	
 	CS_Photos<<<1,5>>>(Zd, energiesd, photo_csd);	
 	CudaCheckError();
+
+	AugerRates<<<1,5>>>(Zd, auger_transd, augerratesd);
+	CudaCheckError();
 	
+	AugerYields<<<1,5>>>(Zd, shellsd, augeryieldsd);
+	CudaCheckError();
+
+	ComptonProfiles<<<1,5>>>(Zd, pzd, compton_profilesd);
+	CudaCheckError();
+
+	ComptonProfilesPartial<<<1,5>>>(Zd, shellsd, pzd, partial_compton_profilesd);
+	CudaCheckError();
+
 	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(edges, edgesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
@@ -178,6 +232,10 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(radrates, radratesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(widths, widthsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(photo_cs, photo_csd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(augerrates, augerratesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(augeryields, augeryieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(compton_profiles, compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(partial_compton_profiles, partial_compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 
 
 	fprintf(stdout,"Fluorescence yields\n");
@@ -245,6 +303,46 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Fe-K    %8f %f\n",AtomicLevelWidth(26,K_SHELL), widths[2]);
 	fprintf(stdout,"Au-L3   %8f %f\n",AtomicLevelWidth(79,L3_SHELL), widths[3]);
 	fprintf(stdout,"Pb-L1   %8f %f\n",AtomicLevelWidth(82,L1_SHELL), widths[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Auger yields\n");
+	fprintf(stdout,"Shell   Classic   CUDA\n");
+	fprintf(stdout,"Ne-K    %8f %f\n",AugerYield(10,K_SHELL), augeryields[0]);
+	fprintf(stdout,"P-K     %8f %f\n",AugerYield(15,K_SHELL), augeryields[1]);
+	fprintf(stdout,"Fe-K    %8f %f\n",AugerYield(26,K_SHELL), augeryields[2]);
+	fprintf(stdout,"Au-L3   %8f %f\n",AugerYield(79,L3_SHELL), augeryields[3]);
+	fprintf(stdout,"Pb-L1   %8f %f\n",AugerYield(82,L1_SHELL), augeryields[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Fraction non radiative rates\n");
+	fprintf(stdout,"Auger transition   Classic   CUDA\n");
+	fprintf(stdout,"Ne-K->L1L1         %8f %f\n",AugerRate(10, auger_trans[0]), augerrates[0]);
+	fprintf(stdout,"P-K->L3M1          %8f %f\n",AugerRate(15, auger_trans[1]), augerrates[1]);
+	fprintf(stdout,"Fe-K->L3N1         %8f %f\n",AugerRate(26, auger_trans[2]), augerrates[2]);
+	fprintf(stdout,"Au-L2->M2M4        %8f %f\n",AugerRate(79, auger_trans[3]), augerrates[3]);
+	fprintf(stdout,"Pb-M3->M4N4        %8f %f\n",AugerRate(82, auger_trans[4]), augerrates[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Full Compton profiles\n");
+	fprintf(stdout,"Element  pz        Classic   CUDA\n");
+	fprintf(stdout,"Ne       %6f  %8f %f\n", pz[0], ComptonProfile(Z[0],pz[0]), compton_profiles[0]);
+	fprintf(stdout,"P        %6f %8f %f\n", pz[1], ComptonProfile(Z[1],pz[1]), compton_profiles[1]);
+	fprintf(stdout,"Fe       %6f %8f %f\n", pz[2], ComptonProfile(Z[2],pz[2]), compton_profiles[2]);
+	fprintf(stdout,"Au       %6f %8f %f\n", pz[3], ComptonProfile(Z[3],pz[3]), compton_profiles[3]);
+	fprintf(stdout,"Pb       %6f %8f %f\n", pz[4], ComptonProfile(Z[4],pz[4]), compton_profiles[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Partial Compton profiles\n");
+	fprintf(stdout,"Element  pz        Classic   CUDA\n");
+	fprintf(stdout,"Ne-K     %6f  %8f %f\n", pz[0], ComptonProfile_Partial(Z[0],shells[0], pz[0]), partial_compton_profiles[0]);
+	fprintf(stdout,"P-K      %6f %8f %f\n", pz[1], ComptonProfile_Partial(Z[1],shells[1], pz[1]), partial_compton_profiles[1]);
+	fprintf(stdout,"Fe-K     %6f %8f %f\n", pz[2], ComptonProfile_Partial(Z[2],shells[2], pz[2]), partial_compton_profiles[2]);
+	fprintf(stdout,"Au-L3    %6f %8f %f\n", pz[3], ComptonProfile_Partial(Z[3],shells[3], pz[3]), partial_compton_profiles[3]);
+	fprintf(stdout,"Pb-L1    %6f %8f %f\n", pz[4], ComptonProfile_Partial(Z[4],shells[4], pz[4]), partial_compton_profiles[4]);
 
 	fprintf(stdout,"\n\n");
 

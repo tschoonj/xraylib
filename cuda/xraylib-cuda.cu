@@ -8,11 +8,12 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
     * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
 #include "xraylib-cuda.h"
+#include "xraylib-cuda-private.h"
 #include "xraylib.h"
 #include <cuda_runtime.h>
 #include <stdio.h>
@@ -29,13 +30,11 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #define KP5 -KP5_LINE-1
 
 __device__ double FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
-__device__ double AtomicWeight_arr_d[ZMAX+1];
 __device__ double EdgeEnergy_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
 __device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double CosKron_arr_d[(ZMAX+1)*TRANSNUM];
 __device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
-__device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 
 __device__ int NE_Photo_d[ZMAX+1];
 __device__ double E_Photo_arr_d[(ZMAX+1)*91];
@@ -122,20 +121,6 @@ __device__ double  FluorYield_cu(int Z, int shell) {
   }
 
   return fluor_yield;
-}
-
-__device__ double AtomicWeight_cu(int Z) {
-  double atomic_weight;
-
-  if (Z<1 || Z>ZMAX) {
-    return 0;
-  }
-
-  atomic_weight = AtomicWeight_arr_d[Z];
-  if (atomic_weight < 0.) {
-    return 0;
-  }
-  return atomic_weight;
 }
 
 
@@ -375,24 +360,6 @@ __device__ double RadRate_cu(int Z, int line) {
   return rad_rate;
 }
 
-__device__ double AtomicLevelWidth_cu(int Z, int shell) {
-  double atomic_level_width;
-
-  if (Z<1 || Z>ZMAX) {
-    return 0;
-  }
-  if (shell<0 || shell>=SHELLNUM) {
-    return 0;
-  }
-  atomic_level_width = AtomicLevelWidth_arr_d[Z*SHELLNUM+shell];
-
-  if (atomic_level_width < 0.) {
-    return 0;
-  }
-
-  return atomic_level_width;
-}
-
 
 
 
@@ -408,7 +375,7 @@ int CudaXRayInit() {
 	int gpuDeviceCount = 0;
 	cudaDeviceProp properties;
 	cudaError_t cudaResultCode = cudaGetDeviceCount(&deviceCount);
-	int Z;
+	int Z, shell;
 	if (cudaResultCode != cudaSuccess) 
         	deviceCount = 0;
    	/* machines with no GPUs can still report one emulation device */
@@ -428,24 +395,46 @@ int CudaXRayInit() {
 
 
 	/* start memcpy'ing */
-  	CudaSafeCall(cudaMemcpyToSymbol( FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( AtomicWeight_arr_d, AtomicWeight_arr, sizeof(double)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( AtomicLevelWidth_arr_d, AtomicLevelWidth_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol( NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(AtomicLevelWidth_arr_d, AtomicLevelWidth_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(AtomicWeight_arr_d, AtomicWeight_arr, sizeof(double)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(Auger_Rates_d, Auger_Rates, sizeof(double)*(ZMAX+1)*AUGERNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(Auger_Yields_d, Auger_Yields, sizeof(double)*(ZMAX+1)*SHELLNUM_A, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(Npz_ComptonProfiles_d, Npz_ComptonProfiles, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NShells_ComptonProfiles_d, NShells_ComptonProfiles, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+
+
 	for (Z = 1; Z <= ZMAX; Z++) {
 		if (NE_Photo[Z] > 0) {
 			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_arr_d, E_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
 			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr_d, CS_Photo_arr[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
 			CudaSafeCall(cudaMemcpyToSymbol(CS_Photo_arr2_d, CS_Photo_arr2[Z], sizeof(double)*NE_Photo[Z], (size_t) Z*91*sizeof(double), cudaMemcpyHostToDevice));
 		}
+		if (Npz_ComptonProfiles[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(pz_ComptonProfiles_d, pz_ComptonProfiles[Z], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) Z*NPZ*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Total_ComptonProfiles_d, Total_ComptonProfiles[Z], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) Z*NPZ*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Total_ComptonProfiles2_d, Total_ComptonProfiles2[Z], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) Z*NPZ*sizeof(double), cudaMemcpyHostToDevice));
+			for (shell = K_SHELL ; shell < NShells_ComptonProfiles[Z] ; shell++) {
+				if (UOCCUP_ComptonProfiles[Z][shell] > 0.0) {
+					CudaSafeCall(cudaMemcpyToSymbol(Partial_ComptonProfiles_d, Partial_ComptonProfiles[Z][shell], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) NPZ*(SHELLNUM_C*Z+shell)*sizeof(double), cudaMemcpyHostToDevice));
+					CudaSafeCall(cudaMemcpyToSymbol(Partial_ComptonProfiles2_d, Partial_ComptonProfiles2[Z][shell], sizeof(double)*Npz_ComptonProfiles[Z], (size_t) NPZ*(SHELLNUM_C*Z+shell)*sizeof(double), cudaMemcpyHostToDevice));
+
+				}
+			}
+			if (NShells_ComptonProfiles[Z] > 0.0) {
+				CudaSafeCall(cudaMemcpyToSymbol(UOCCUP_ComptonProfiles_d, UOCCUP_ComptonProfiles[Z], sizeof(double)*NShells_ComptonProfiles[Z], (size_t) Z*SHELLNUM_C*sizeof(double), cudaMemcpyHostToDevice));
+			}
+		}
 	}
 
-	//cudaThreadSynchronize();
+
+  	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_d, NE_Photo, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+
 
 	
 

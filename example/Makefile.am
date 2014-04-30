@@ -163,21 +163,8 @@ xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 .cu.o:
 	$(NVCC) $(xrlexample11_CFLAGS) -arch=sm_20 -dc -o $@ $<
 
-xrlcudalink.o: xrlexample11.o
+xrlcudalink.o: xrlexample11.o ../cuda/libxrlcuda.a
 	$(NVCC) -arch=sm_20 -dlink xrlexample11.o ../cuda/libxrlcuda.a -o xrlcudalink.o
-
-#.cu.o:
-#	$(NVCC) -dc -arch=sm_20 --compiler-options="$(CFLAGS) \
-#	$(DEFAULT_INCLUDES) $(INCLUDES) \
-#	$(AM_CPPFLAGS) $(CPPFLAGS) \
-#	$(xrlexample11_CFLAGS)" $(CUDA_CFLAGS) -o $@ -c $<
-
-#.cu.lo:
-#	$(srcdir)/cudalt.py $@ $(NVCC) \
-#	-dc -m64 -g -G -O0 -arch=sm_20 --compiler-options=\"$(CFLAGS) \
-#	$(DEFAULT_INCLUDES) $(INCLUDES) \
-#	$(AM_CPPFLAGS) $(CPPFLAGS) \
-#	$(xrlexample11_CFLAGS)\" $(CUDA_CFLAGS) -c $<
 
 
 
