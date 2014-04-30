@@ -22,7 +22,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #include "xrayglob.h"
 
 __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
-__device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
 
 
@@ -198,26 +197,6 @@ __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x
 //}
 
 
-__device__ double JumpFactor_cu(int Z, int shell) {
-  double jump_factor;
-
-  if (Z<1 || Z>ZMAX) {
-    return 0;
-  }
-
-  if (shell<0 || shell>=SHELLNUM) {
-    return 0;
-  }
-
-  jump_factor = JumpFactor_arr_d[Z*SHELLNUM+shell];
-  if (jump_factor < 0.) {
-    return 0;
-  }
-
-  return jump_factor;
-}
-
-
 __device__ double RadRate_cu(int Z, int line) {
   double rad_rate, rr;
   int i;
@@ -322,6 +301,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Fi_d, NE_Fi, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Fii_d, NE_Fii, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -374,7 +354,6 @@ int CudaXRayInit() {
 
 
   	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 

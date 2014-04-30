@@ -63,6 +63,7 @@ extern __device__ double E_Fii_arr_d[(ZMAX+1)*NE_FII_MAX];
 extern __device__ double Fii_arr_d[(ZMAX+1)*NE_FII_MAX];
 extern __device__ double Fii_arr2_d[(ZMAX+1)*NE_FII_MAX];
 extern __device__ double FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
+extern __device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 
 
 #define CudaSafeCall( err ) __cudaSafeCall( err, __FILE__, __LINE__ )
