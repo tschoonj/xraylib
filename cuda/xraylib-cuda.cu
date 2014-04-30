@@ -31,7 +31,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #define KP5 -KP5_LINE-1
 
 __device__ double FluorYield_arr_d[(ZMAX+1)*SHELLNUM];
-__device__ double EdgeEnergy_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
 __device__ double JumpFactor_arr_d[(ZMAX+1)*SHELLNUM];
 __device__ double RadRate_arr_d[(ZMAX+1)*LINENUM];
@@ -92,25 +91,6 @@ __device__ double  FluorYield_cu(int Z, int shell) {
   }
 
   return fluor_yield;
-}
-
-
-__device__ double EdgeEnergy_cu(int Z, int shell) {
-  double edge_energy;
-
-  if (Z<1 || Z>ZMAX) {
-    return 0;
-  }
-  if (shell<0 || shell>=SHELLNUM) {
-    return 0;
-  }
-  edge_energy = EdgeEnergy_arr_d[Z*SHELLNUM+shell];
-
-  if (edge_energy < 0.) {
-    return 0;
-  }
-
-  return edge_energy;
 }
 
 //__device__ double LineEnergy_cu(int Z, int line) {
@@ -359,6 +339,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Compt_d, NE_Compt, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Energy_d, NE_Energy, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(ElementDensity_arr_d, ElementDensity_arr, sizeof(double)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -401,7 +382,6 @@ int CudaXRayInit() {
 
 
   	CudaSafeCall(cudaMemcpyToSymbol(FluorYield_arr_d, FluorYield_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
-  	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_arr_d, EdgeEnergy_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(JumpFactor_arr_d, JumpFactor_arr, sizeof(double)*(ZMAX+1)*SHELLNUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(CosKron_arr_d, CosKron_arr, sizeof(double)*(ZMAX+1)*TRANSNUM, (size_t) 0,cudaMemcpyHostToDevice));
