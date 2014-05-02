@@ -191,10 +191,10 @@ __device__ double CS_FluorLine_Kissel_no_Cascade_cu(int Z, int line, double E) {
     PL2 = PL2_pure_kissel_cu(Z, E, PL1);
     return (FluorYield_cu(Z, L3_SHELL)*RadRate_cu(Z,line))*PL3_pure_kissel_cu(Z, E, PL1, PL2);
   }
-  else if (line == LA_LINE) {
+  /*else if (line == LA_LINE) {
     return (CS_FluorLine_Kissel_no_Cascade_cu(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_no_Cascade_cu(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
+  }*/
+  /*else if (line == LB_LINE) {
     return (CS_FluorLine_Kissel_no_Cascade_cu(Z,L2M4_LINE,E)+
     	CS_FluorLine_Kissel_no_Cascade_cu(Z,L2M3_LINE,E)+
         CS_FluorLine_Kissel_no_Cascade_cu(Z,L3N5_LINE,E)+
@@ -211,7 +211,7 @@ __device__ double CS_FluorLine_Kissel_no_Cascade_cu(int Z, int line, double E) {
 	CS_FluorLine_Kissel_no_Cascade_cu(Z,L1M5_LINE,E)+
 	CS_FluorLine_Kissel_no_Cascade_cu(Z,L1M4_LINE,E)
     );
-  }
+  }*/
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
     /*
      * M1 lines
@@ -307,10 +307,10 @@ __device__ double CS_FluorLine_Kissel_Radiative_Cascade_cu(int Z, int line, doub
     PL2 = PL2_rad_cascade_kissel_cu(Z, E, PK, PL1);
     return (FluorYield_cu(Z, L3_SHELL)*RadRate_cu(Z,line))*PL3_rad_cascade_kissel_cu(Z, E, PK, PL1, PL2);
   }
-  else if (line == LA_LINE) {
+  /*else if (line == LA_LINE) {
     return (CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
+  }*/
+  /*else if (line == LB_LINE) {
     return (CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L2M4_LINE,E)+
     	CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L2M3_LINE,E)+
         CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L3N5_LINE,E)+
@@ -327,7 +327,7 @@ __device__ double CS_FluorLine_Kissel_Radiative_Cascade_cu(int Z, int line, doub
 	CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L1M5_LINE,E)+
 	CS_FluorLine_Kissel_Radiative_Cascade_cu(Z,L1M4_LINE,E)
     );
-  }
+  }*/
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
     /*
      * M1 lines
@@ -442,10 +442,10 @@ __device__ double CS_FluorLine_Kissel_Nonradiative_Cascade_cu(int Z, int line, d
     PL2 = PL2_auger_cascade_kissel_cu(Z, E, PK, PL1);
     return (FluorYield_cu(Z, L3_SHELL)*RadRate_cu(Z,line))*PL3_auger_cascade_kissel_cu(Z, E, PK, PL1, PL2);
   }
-  else if (line == LA_LINE) {
+  /*else if (line == LA_LINE) {
     return (CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
+  }*/
+  /*else if (line == LB_LINE) {
     return (CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L2M4_LINE,E)+
     	CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L2M3_LINE,E)+
         CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L3N5_LINE,E)+
@@ -462,7 +462,7 @@ __device__ double CS_FluorLine_Kissel_Nonradiative_Cascade_cu(int Z, int line, d
 	CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L1M5_LINE,E)+
 	CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z,L1M4_LINE,E)
     );
-  }
+  }*/
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
     /*
      * M1 lines
@@ -577,10 +577,10 @@ __device__ double CS_FluorLine_Kissel_Cascade_cu(int Z, int line, double E) {
     PL2 = PL2_full_cascade_kissel_cu(Z, E, PK, PL1);
     return (FluorYield_cu(Z, L3_SHELL)*RadRate_cu(Z,line))*PL3_full_cascade_kissel_cu(Z, E, PK, PL1, PL2);
   }
-  else if (line == LA_LINE) {
+  /*else if (line == LA_LINE) {
     return (CS_FluorLine_Kissel_Cascade_cu(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Cascade_cu(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
+  }*/
+  /*else if (line == LB_LINE) {
     return (CS_FluorLine_Kissel_Cascade_cu(Z,L2M4_LINE,E)+
     	CS_FluorLine_Kissel_Cascade_cu(Z,L2M3_LINE,E)+
         CS_FluorLine_Kissel_Cascade_cu(Z,L3N5_LINE,E)+
@@ -597,7 +597,7 @@ __device__ double CS_FluorLine_Kissel_Cascade_cu(int Z, int line, double E) {
 	CS_FluorLine_Kissel_Cascade_cu(Z,L1M5_LINE,E)+
 	CS_FluorLine_Kissel_Cascade_cu(Z,L1M4_LINE,E)
     );
-  }
+  }*/
   else if (line>=M1P5_LINE && line<=M1N1_LINE) {
     /*
      * M1 lines

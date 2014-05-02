@@ -160,7 +160,7 @@ xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 ../php/xraylib.la:
 	$(MAKE) -C ../php xraylib.la
 
-.cu.o:
+.cu.o: ../cuda/libxrlcuda.a
 	$(NVCC) $(xrlexample11_CFLAGS) -arch=sm_20 -dc -o $@ $<
 
 xrlcudalink.o: xrlexample11.o ../cuda/libxrlcuda.a
