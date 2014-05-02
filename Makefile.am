@@ -18,12 +18,15 @@ pkgconfig_DATA=libxrl.pc
 if ENABLE_FORTRAN
   pkgconfig_DATA += libxrlf03.pc
 endif
+if ENABLE_CUDA
+  pkgconfig_DATA += libxrlcuda.pc
+endif
 
 nsis:
 	$(MAKE) -C nsis nsis
 
 
 EXTRA_DIST = xraylib.spec.in BUGS Changelog 
-#DISTCHECK_CONFIGURE_FLAGS = --disable-idl --enable-php
+DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-cuda
 
 .PHONY: nsis

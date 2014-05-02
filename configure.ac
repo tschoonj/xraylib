@@ -891,6 +891,7 @@ AC_CONFIG_FILES([Makefile
 				 doc/Makefile
 				 libxrl.pc
 				 libxrlf03.pc
+				 libxrlcuda.pc
 				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
