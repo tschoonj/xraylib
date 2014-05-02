@@ -112,6 +112,25 @@ __global__ void CS(int *Z, double *energies, double *cs) {
 	return;
 }
 
+__global__ void XRFCS(int *Z, int *lines, double *energies, double *cs) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	cs[tid] = CS_FluorLine_Kissel_Cascade_cu(Z[tid], lines[tid], energies[tid]);
+	cs[tid+blockDim.x] = CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z[tid], lines[tid], energies[tid]);
+	cs[tid+2*blockDim.x] = CS_FluorLine_Kissel_Radiative_Cascade_cu(Z[tid], lines[tid], energies[tid]);
+	cs[tid+3*blockDim.x] = CS_FluorLine_Kissel_no_Cascade_cu(Z[tid], lines[tid], energies[tid]);
+	
+	return;
+}
+
+__global__ void CS_Partial(int *Z, int *shells, double *energies, double *cs) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+	
+	cs[tid] = CS_Photo_Partial_cu(Z[tid], shells[tid],energies[tid]);
+	
+	return;
+}
+
 __global__ void Anomalous(int *Z, double *energies, double *anom) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 	
@@ -154,8 +173,8 @@ int main (int argc, char *argv[]) {
 	
 	int Z[5] = {10,15,26,79,82};
 	int shells[5] = {K_SHELL, K_SHELL, K_SHELL, L3_SHELL,L1_SHELL};
-	int lines[5] = {KL2_LINE, KL3_LINE, KM3_LINE, L3M5_LINE, L2M4_LINE};
-	double energies[5] = {2.0, 8.0, 9.275, 15.89, 50.23};
+	int lines[5] = {KL2_LINE, KL3_LINE, KM3_LINE, L3M5_LINE, M5N6_LINE};
+	double energies[5] = {2.0, 8.0, 9.275, 93.0, 50.23};
 	int Z2[3] = {56, 68, 80};
 	int trans[3] = {FL13_TRANS, FL23_TRANS, FM34_TRANS};
 	int auger_trans[5] = {K_L1L1_AUGER, K_L3M1_AUGER, K_L3N1_AUGER, L2_M2M4_AUGER, M3_M4N4_AUGER};
@@ -183,11 +202,14 @@ int main (int argc, char *argv[]) {
 	double partial_compton_profiles[5], *partial_compton_profilesd;
 	double anom[10], *anomd;
 	double dcs[10], *dcsd;
+	double xrfcs[25], *xrfcsd;
+	double cs_partial[5], *cs_partiald;
 
 
 	int i;
 
 	CudaXRayInit();
+	SetErrorMessages(0);
 
 	//input variables
 	CudaSafeCall(cudaMalloc((void **) &Zd, 5*sizeof(int)));
@@ -227,6 +249,8 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &partial_compton_profilesd, 5*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &anomd, 10*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &dcsd, 10*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &xrfcsd, 25*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &cs_partiald, 5*sizeof(double)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -274,6 +298,12 @@ int main (int argc, char *argv[]) {
 	DCS<<<1,5>>>(Zd, energiesd, thetasd, dcsd);
 	CudaCheckError();
 
+	XRFCS<<<1,5>>>(Zd, linesd, energiesd, xrfcsd);
+	CudaCheckError();
+
+	CS_Partial<<<1,5>>>(Zd, shellsd, energiesd, cs_partiald);
+	CudaCheckError();
+
 	CudaSafeCall(cudaMemcpy(yields, yieldsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(weights, weightsd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(densities, densitiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
@@ -290,6 +320,8 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(partial_compton_profiles, partial_compton_profilesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(anom, anomd, 10*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(dcs, dcsd, 10*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(xrfcs, xrfcsd, 25*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(cs_partial, cs_partiald, 5*sizeof(double), cudaMemcpyDeviceToHost));
 
 
 	fprintf(stdout,"Fluorescence yields\n");
@@ -479,6 +511,56 @@ int main (int argc, char *argv[]) {
 	for (i = 0 ; i < 5 ; i++) {
 		fprintf(stdout,"%-2s        %-10.4f      %-10.4f      %-10.4f    %-10.4f\n", AtomicNumberToSymbol(Z[i]), energies[i], thetas[i], DCS_Compt(Z[i], energies[i], thetas[i]), dcs[i+5]);
 	}
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"Partial photoionization cross sections (cm2/g)\n");
+	fprintf(stdout,"Shell   Energy(keV)     Classic       CUDA\n");
+	fprintf(stdout,"Ne-K    %-10.4f      %-10.4f    %-10.4f\n",energies[0], CS_Photo_Partial(Z[0], shells[0], energies[0]), cs_partial[0]);
+	fprintf(stdout,"P-K     %-10.4f      %-10.4f    %-10.4f\n",energies[1], CS_Photo_Partial(Z[1], shells[1], energies[1]), cs_partial[1]);
+	fprintf(stdout,"Fe-K    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_Photo_Partial(Z[2], shells[2], energies[2]), cs_partial[2]);
+	fprintf(stdout,"Au-L3   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_Photo_Partial(Z[3], shells[3], energies[3]), cs_partial[3]);
+	fprintf(stdout,"Pb-L1   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_Photo_Partial(Z[4], shells[4], energies[4]), cs_partial[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"XRF production cross sections with full cascade (cm2/g)\n");
+	fprintf(stdout,"Line      Energy(keV)     Classic       CUDA\n");
+	fprintf(stdout,"Ne-KL2    %-10.4f      %-10.4f    %-10.4f\n",energies[0], CS_FluorLine_Kissel_Cascade(Z[0], lines[0], energies[0]), xrfcs[0]);
+	fprintf(stdout,"P-KL3     %-10.4f      %-10.4f    %-10.4f\n",energies[1], CS_FluorLine_Kissel_Cascade(Z[1], lines[1], energies[1]), xrfcs[1]);
+	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine_Kissel_Cascade(Z[2], lines[2], energies[2]), xrfcs[2]);
+	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine_Kissel_Cascade(Z[3], lines[3], energies[3]), xrfcs[3]);
+	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine_Kissel_Cascade(Z[4], lines[4], energies[4]), xrfcs[4]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"XRF production cross sections with non-radiative cascade (cm2/g)\n");
+	fprintf(stdout,"Line      Energy(keV)     Classic       CUDA\n");
+	fprintf(stdout,"Ne-KL2    %-10.4f      %-10.4f    %-10.4f\n",energies[0], CS_FluorLine_Kissel_Nonradiative_Cascade(Z[0], lines[0], energies[0]), xrfcs[5]);
+	fprintf(stdout,"P-KL3     %-10.4f      %-10.4f    %-10.4f\n",energies[1], CS_FluorLine_Kissel_Nonradiative_Cascade(Z[1], lines[1], energies[1]), xrfcs[6]);
+	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine_Kissel_Nonradiative_Cascade(Z[2], lines[2], energies[2]), xrfcs[7]);
+	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine_Kissel_Nonradiative_Cascade(Z[3], lines[3], energies[3]), xrfcs[8]);
+	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine_Kissel_Nonradiative_Cascade(Z[4], lines[4], energies[4]), xrfcs[9]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"XRF production cross sections with radiative cascade (cm2/g)\n");
+	fprintf(stdout,"Line      Energy(keV)     Classic       CUDA\n");
+	fprintf(stdout,"Ne-KL2    %-10.4f      %-10.4f    %-10.4f\n",energies[0], CS_FluorLine_Kissel_Radiative_Cascade(Z[0], lines[0], energies[0]), xrfcs[10]);
+	fprintf(stdout,"P-KL3     %-10.4f      %-10.4f    %-10.4f\n",energies[1], CS_FluorLine_Kissel_Radiative_Cascade(Z[1], lines[1], energies[1]), xrfcs[11]);
+	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine_Kissel_Radiative_Cascade(Z[2], lines[2], energies[2]), xrfcs[12]);
+	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine_Kissel_Radiative_Cascade(Z[3], lines[3], energies[3]), xrfcs[13]);
+	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine_Kissel_Radiative_Cascade(Z[4], lines[4], energies[4]), xrfcs[14]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"XRF production cross sections without cascade (cm2/g)\n");
+	fprintf(stdout,"Line      Energy(keV)     Classic       CUDA\n");
+	fprintf(stdout,"Ne-KL2    %-10.4f      %-10.4f    %-10.4f\n",energies[0], CS_FluorLine_Kissel_no_Cascade(Z[0], lines[0], energies[0]), xrfcs[15]);
+	fprintf(stdout,"P-KL3     %-10.4f      %-10.4f    %-10.4f\n",energies[1], CS_FluorLine_Kissel_no_Cascade(Z[1], lines[1], energies[1]), xrfcs[16]);
+	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine_Kissel_no_Cascade(Z[2], lines[2], energies[2]), xrfcs[17]);
+	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine_Kissel_no_Cascade(Z[3], lines[3], energies[3]), xrfcs[18]);
+	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine_Kissel_no_Cascade(Z[4], lines[4], energies[4]), xrfcs[19]);
 
 	fprintf(stdout,"\n\n");
 

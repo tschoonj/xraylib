@@ -67,12 +67,61 @@ __device__ double DCS_Compt_cu(int Z, double E, double theta);
 __device__ double MomentTransf_cu(double E, double theta);
 __device__ double CS_KN_cu(double E);
 __device__ double ComptonEnergy_cu(double E0, double theta);
+__device__ double CSb_Photo_Total_cu(int Z, double E);
+__device__ double CS_Photo_Total_cu(int Z, double E);
+__device__ double CSb_Photo_Partial_cu(int Z, int shell, double E);
+__device__ double CS_Photo_Partial_cu(int Z, int shell, double E);
+__device__ double CS_FluorLine_Kissel_cu(int Z, int line, double E);
+__device__ double CSb_FluorLine_Kissel_cu(int Z, int line, double E);
+__device__ double CS_Total_Kissel_cu(int Z, double E);
+__device__ double CSb_Total_Kissel_cu(int Z, double E);
+__device__ double ElectronConfig_cu(int Z, int shell);
+__device__ double CS_FluorLine_Kissel_no_Cascade_cu(int Z, int line, double E);
+__device__ double CS_FluorLine_Kissel_Radiative_Cascade_cu(int Z, int line, double E);
+__device__ double CS_FluorLine_Kissel_Nonradiative_Cascade_cu(int Z, int line, double E);
+__device__ double CS_FluorLine_Kissel_Cascade_cu(int Z, int line, double E);
+__device__ double CSb_FluorLine_Kissel_Cascade_cu(int Z, int line, double E);
+__device__ double CSb_FluorLine_Kissel_Nonradiative_Cascade_cu(int Z, int line, double E);
+__device__ double CSb_FluorLine_Kissel_Radiative_Cascade_cu(int Z, int line, double E);
+__device__ double CSb_FluorLine_Kissel_no_Cascade_cu(int Z, int line, double E);
 
 
 __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x);
 //__device__ double LineEnergy_cu(int Z, int line);
 
 
+__device__ double PL1_pure_kissel_cu(int Z, double E);
+__device__ double PL1_rad_cascade_kissel_cu(int Z, double E, double PK);
+__device__ double PL1_auger_cascade_kissel_cu(int Z, double E, double PK);
+__device__ double PL1_full_cascade_kissel_cu(int Z, double E, double PK);
+__device__ double PL2_pure_kissel_cu(int Z, double E, double PL1);
+__device__ double PL2_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1);
+__device__ double PL2_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1);
+__device__ double PL2_full_cascade_kissel_cu(int Z, double E, double PK, double PL1);
+__device__ double PL3_pure_kissel_cu(int Z, double E, double PL1, double PL2);
+__device__ double PL3_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2);
+__device__ double PL3_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2);
+__device__ double PL3_full_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2);
+__device__ double PM1_pure_kissel_cu(int Z, double E);
+__device__ double PM1_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3);
+__device__ double PM1_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3);
+__device__ double PM1_full_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3);
+__device__ double PM2_pure_kissel_cu(int Z, double E, double PM1);
+__device__ double PM2_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1);
+__device__ double PM2_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1);
+__device__ double PM2_full_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1);
+__device__ double PM3_pure_kissel_cu(int Z, double E, double PM1, double PM2);
+__device__ double PM3_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2);
+__device__ double PM3_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2);
+__device__ double PM3_full_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2);
+__device__ double PM4_pure_kissel_cu(int Z, double E, double PM1, double PM2, double PM3);
+__device__ double PM4_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3);
+__device__ double PM4_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3);
+__device__ double PM4_full_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3);
+__device__ double PM5_pure_kissel_cu(int Z, double E, double PM1, double PM2, double PM3, double PM4);
+__device__ double PM5_rad_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4);
+__device__ double PM5_auger_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4);
+__device__ double PM5_full_cascade_kissel_cu(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4);
 
 
 

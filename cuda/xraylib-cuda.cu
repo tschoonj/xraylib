@@ -247,6 +247,10 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(RadRate_arr_d, RadRate_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(Nq_Rayl_d, Nq_Rayl, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(Nq_Compt_d, Nq_Compt, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_Total_Kissel_d, NE_Photo_Total_Kissel, sizeof(int)*(ZMAX+1), (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(Electron_Config_Kissel_d, Electron_Config_Kissel, sizeof(double)*(ZMAX+1)*SHELLNUM_K, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_Kissel_d, EdgeEnergy_Kissel, sizeof(double)*(ZMAX+1)*SHELLNUM_K, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_Partial_Kissel_d, NE_Photo_Partial_Kissel, sizeof(int)*(ZMAX+1)*SHELLNUM_K, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -303,6 +307,20 @@ int CudaXRayInit() {
 			}
 			if (NShells_ComptonProfiles[Z] > 0.0) {
 				CudaSafeCall(cudaMemcpyToSymbol(UOCCUP_ComptonProfiles_d, UOCCUP_ComptonProfiles[Z], sizeof(double)*NShells_ComptonProfiles[Z], (size_t) Z*SHELLNUM_C*sizeof(double), cudaMemcpyHostToDevice));
+			}
+		}
+		if (NE_Photo_Total_Kissel[Z] > 0) {
+			CudaSafeCall(cudaMemcpyToSymbol(E_Photo_Total_Kissel_d, E_Photo_Total_Kissel[Z], sizeof(double)*NE_Photo_Total_Kissel[Z], (size_t) Z*NE_PHOTO_TOTAL_KISSEL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Photo_Total_Kissel_d, Photo_Total_Kissel[Z], sizeof(double)*NE_Photo_Total_Kissel[Z], (size_t) Z*NE_PHOTO_TOTAL_KISSEL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			CudaSafeCall(cudaMemcpyToSymbol(Photo_Total_Kissel2_d, Photo_Total_Kissel2[Z], sizeof(double)*NE_Photo_Total_Kissel[Z], (size_t) Z*NE_PHOTO_TOTAL_KISSEL_MAX*sizeof(double), cudaMemcpyHostToDevice));
+			for (shell = K_SHELL ; shell < SHELLNUM_K ; shell++) {
+				if (NE_Photo_Partial_Kissel[Z][shell] > 0.0) {
+        				int offset = NE_PHOTO_PARTIAL_KISSEL_MAX*(Z*SHELLNUM_K+shell);
+					CudaSafeCall(cudaMemcpyToSymbol(E_Photo_Partial_Kissel_d, E_Photo_Partial_Kissel[Z][shell], sizeof(double)*NE_Photo_Partial_Kissel[Z][shell], (size_t) offset*sizeof(double), cudaMemcpyHostToDevice));
+					CudaSafeCall(cudaMemcpyToSymbol(Photo_Partial_Kissel_d, Photo_Partial_Kissel[Z][shell], sizeof(double)*NE_Photo_Partial_Kissel[Z][shell], (size_t) offset*sizeof(double), cudaMemcpyHostToDevice));
+					CudaSafeCall(cudaMemcpyToSymbol(Photo_Partial_Kissel2_d, Photo_Partial_Kissel2[Z][shell], sizeof(double)*NE_Photo_Partial_Kissel[Z][shell], (size_t) offset*sizeof(double), cudaMemcpyHostToDevice));
+					
+				}
 			}
 		}
 	}

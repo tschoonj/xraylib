@@ -24,6 +24,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #define NE_FII_MAX 5330
 #define NQ_RAYL_MAX 173
 #define NQ_COMPT_MAX 169
+#define NE_PHOTO_TOTAL_KISSEL_MAX 1649
+#define NE_PHOTO_PARTIAL_KISSEL_MAX 525
 
 extern __device__ double AtomicLevelWidth_arr_d[(ZMAX+1)*SHELLNUM];
 extern __device__ double AtomicWeight_arr_d[ZMAX+1];
@@ -75,6 +77,18 @@ extern __device__ int Nq_Compt_d[ZMAX+1];
 extern __device__ double q_Compt_arr_d[(ZMAX+1)*NQ_COMPT_MAX];
 extern __device__ double SF_Compt_arr_d[(ZMAX+1)*NQ_COMPT_MAX];
 extern __device__ double SF_Compt_arr2_d[(ZMAX+1)*NQ_COMPT_MAX];
+extern __device__ int NE_Photo_Total_Kissel_d[ZMAX+1];
+extern __device__ double E_Photo_Total_Kissel_d[(ZMAX+1)*NE_PHOTO_TOTAL_KISSEL_MAX];
+extern __device__ double Photo_Total_Kissel_d[(ZMAX+1)*NE_PHOTO_TOTAL_KISSEL_MAX];
+extern __device__ double Photo_Total_Kissel2_d[(ZMAX+1)*NE_PHOTO_TOTAL_KISSEL_MAX];
+extern __device__ double Electron_Config_Kissel_d[(ZMAX+1)*SHELLNUM_K];
+extern __device__ double EdgeEnergy_Kissel_d[(ZMAX+1)*SHELLNUM_K];
+extern __device__ int NE_Photo_Partial_Kissel_d[(ZMAX+1)*SHELLNUM_K];
+extern __device__ double E_Photo_Partial_Kissel_d[(ZMAX+1)*SHELLNUM_K*NE_PHOTO_PARTIAL_KISSEL_MAX];
+extern __device__ double Photo_Partial_Kissel_d[(ZMAX+1)*SHELLNUM_K*NE_PHOTO_PARTIAL_KISSEL_MAX];
+extern __device__ double Photo_Partial_Kissel2_d[(ZMAX+1)*SHELLNUM_K*NE_PHOTO_PARTIAL_KISSEL_MAX];
+
+
 
 
 

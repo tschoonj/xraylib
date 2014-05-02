@@ -402,6 +402,8 @@ print,files
 GET_LUN,lunw
 OPENW,lunw,'../kissel_pe.dat'
 
+n_elements_arr = []
+
 
 FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 
@@ -459,6 +461,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 	
 	;print partial cross sections
 	IF (config.K NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.K[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.K[0])
 		PRINTF,lunw,binding_energies.K
 		FOR j=0,N_ELEMENTS(*partial_pe.K[0])-1 DO $
@@ -469,6 +472,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.L1 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.L1[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.L1[0])
 		PRINTF,lunw,binding_energies.L1
 		FOR j=0,N_ELEMENTS(*partial_pe.L1[0])-1 DO $
@@ -479,6 +483,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.L2 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.L2[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.L2[0])
 		PRINTF,lunw,binding_energies.L2
 		FOR j=0,N_ELEMENTS(*partial_pe.L2[0])-1 DO $
@@ -489,6 +494,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.L3 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.L3[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.L3[0])
 		PRINTF,lunw,binding_energies.L3
 		FOR j=0,N_ELEMENTS(*partial_pe.L3[0])-1 DO $
@@ -499,6 +505,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.M1 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.M1[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.M1[0])
 		PRINTF,lunw,binding_energies.M1
 		FOR j=0,N_ELEMENTS(*partial_pe.M1[0])-1 DO $
@@ -509,6 +516,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.M2 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.M2[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.M2[0])
 		PRINTF,lunw,binding_energies.M2
 		FOR j=0,N_ELEMENTS(*partial_pe.M2[0])-1 DO $
@@ -519,6 +527,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.M3 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.M3[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.M3[0])
 		PRINTF,lunw,binding_energies.M3
 		FOR j=0,N_ELEMENTS(*partial_pe.M3[0])-1 DO $
@@ -529,6 +538,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.M4 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.M4[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.M4[0])
 		PRINTF,lunw,binding_energies.M4
 		FOR j=0,N_ELEMENTS(*partial_pe.M4[0])-1 DO $
@@ -539,6 +549,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.M5 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.M5[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.M5[0])
 		PRINTF,lunw,binding_energies.M5
 		FOR j=0,N_ELEMENTS(*partial_pe.M5[0])-1 DO $
@@ -549,6 +560,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N1 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N1[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N1[0])
 		PRINTF,lunw,binding_energies.N1
 		FOR j=0,N_ELEMENTS(*partial_pe.N1[0])-1 DO $
@@ -559,6 +571,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N2 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N2[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N2[0])
 		PRINTF,lunw,binding_energies.N2
 		FOR j=0,N_ELEMENTS(*partial_pe.N2[0])-1 DO $
@@ -569,6 +582,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N3 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N3[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N3[0])
 		PRINTF,lunw,binding_energies.N3
 		FOR j=0,N_ELEMENTS(*partial_pe.N3[0])-1 DO $
@@ -579,6 +593,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N4 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N4[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N4[0])
 		PRINTF,lunw,binding_energies.N4
 		FOR j=0,N_ELEMENTS(*partial_pe.N4[0])-1 DO $
@@ -589,6 +604,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N5 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N5[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N5[0])
 		PRINTF,lunw,binding_energies.N5
 		FOR j=0,N_ELEMENTS(*partial_pe.N5[0])-1 DO $
@@ -599,6 +615,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N6 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N6[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N6[0])
 		PRINTF,lunw,binding_energies.N6
 		FOR j=0,N_ELEMENTS(*partial_pe.N6[0])-1 DO $
@@ -609,6 +626,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.N7 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.N7[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.N7[0])
 		PRINTF,lunw,binding_energies.N7
 		FOR j=0,N_ELEMENTS(*partial_pe.N7[0])-1 DO $
@@ -619,6 +637,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O1 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O1[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O1[0])
 		PRINTF,lunw,binding_energies.O1
 		FOR j=0,N_ELEMENTS(*partial_pe.O1[0])-1 DO $
@@ -629,6 +648,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O2 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O2[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O2[0])
 		PRINTF,lunw,binding_energies.O2
 		FOR j=0,N_ELEMENTS(*partial_pe.O2[0])-1 DO $
@@ -639,6 +659,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O3 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O3[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O3[0])
 		PRINTF,lunw,binding_energies.O3
 		FOR j=0,N_ELEMENTS(*partial_pe.O3[0])-1 DO $
@@ -649,6 +670,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O4 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O4[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O4[0])
 		PRINTF,lunw,binding_energies.O4
 		FOR j=0,N_ELEMENTS(*partial_pe.O4[0])-1 DO $
@@ -659,6 +681,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O5 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O5[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O5[0])
 		PRINTF,lunw,binding_energies.O5
 		FOR j=0,N_ELEMENTS(*partial_pe.O5[0])-1 DO $
@@ -669,6 +692,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O6 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O6[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O6[0])
 		PRINTF,lunw,binding_energies.O6
 		FOR j=0,N_ELEMENTS(*partial_pe.O6[0])-1 DO $
@@ -679,6 +703,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.O7 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.O7[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.O7[0])
 		PRINTF,lunw,binding_energies.O7
 		FOR j=0,N_ELEMENTS(*partial_pe.O7[0])-1 DO $
@@ -689,6 +714,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.P1 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.P1[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.P1[0])
 		PRINTF,lunw,binding_energies.P1
 		FOR j=0,N_ELEMENTS(*partial_pe.P1[0])-1 DO $
@@ -699,6 +725,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.P2 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.P2[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.P2[0])
 		PRINTF,lunw,binding_energies.P2
 		FOR j=0,N_ELEMENTS(*partial_pe.P2[0])-1 DO $
@@ -709,6 +736,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.P3 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.P3[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.P3[0])
 		PRINTF,lunw,binding_energies.P3
 		FOR j=0,N_ELEMENTS(*partial_pe.P3[0])-1 DO $
@@ -719,6 +747,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.P4 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.P4[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.P4[0])
 		PRINTF,lunw,binding_energies.P4
 		FOR j=0,N_ELEMENTS(*partial_pe.P4[0])-1 DO $
@@ -729,6 +758,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.P5 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.P5[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.P5[0])
 		PRINTF,lunw,binding_energies.P5
 		FOR j=0,N_ELEMENTS(*partial_pe.P5[0])-1 DO $
@@ -739,6 +769,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.Q1 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.Q1[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.Q1[0])
 		PRINTF,lunw,binding_energies.Q1
 		FOR j=0,N_ELEMENTS(*partial_pe.Q1[0])-1 DO $
@@ -749,6 +780,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.Q2 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.Q2[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.Q2[0])
 		PRINTF,lunw,binding_energies.Q2
 		FOR j=0,N_ELEMENTS(*partial_pe.Q2[0])-1 DO $
@@ -759,6 +791,7 @@ FOR i=0,N_ELEMENTS(files)-1 DO BEGIN
 		PRINTF,lunw,0
 	ENDELSE
 	IF (config.Q3 NE 0.0) THEN BEGIN
+		n_elements_arr = [n_elements_arr, N_ELEMENTS(*partial_pe.Q3[0])]
 	 	PRINTF,lunw,N_ELEMENTS(*partial_pe.Q3[0])
 		PRINTF,lunw,binding_energies.Q3
 		FOR j=0,N_ELEMENTS(*partial_pe.Q3[0])-1 DO $
@@ -777,6 +810,9 @@ ENDFOR
 
 CLOSE,lunw
 FREE_LUN,lunw
+
+
+PRINT, 'max partial n_elements: ', MAX(n_elements_arr)
 
 
 PRINT,'kissel_pe.dat was succesfully created'
