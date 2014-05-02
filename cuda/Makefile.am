@@ -32,7 +32,8 @@ libxrlcuda_a_SOURCES = xraylib-cuda.cu xraylib-cuda.h \
 		       radrate.cu \
 		       scattering.cu \
 		       kissel_pe.cu \
-		       xrf_cross_sections_aux.cu
+		       xrf_cross_sections_aux.cu \
+		       cs_line.cu
 libxrlcuda_a_CFLAGS = $(CUDA_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/include
 libxrlcuda_a_AR = $(NVCC) -arch=sm_20 -lib -o
 

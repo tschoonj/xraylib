@@ -84,6 +84,7 @@ __device__ double CSb_FluorLine_Kissel_Cascade_cu(int Z, int line, double E);
 __device__ double CSb_FluorLine_Kissel_Nonradiative_Cascade_cu(int Z, int line, double E);
 __device__ double CSb_FluorLine_Kissel_Radiative_Cascade_cu(int Z, int line, double E);
 __device__ double CSb_FluorLine_Kissel_no_Cascade_cu(int Z, int line, double E);
+__device__ double CS_FluorLine_cu(int Z, int line, double E);
 
 
 __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x);

@@ -119,6 +119,7 @@ __global__ void XRFCS(int *Z, int *lines, double *energies, double *cs) {
 	cs[tid+blockDim.x] = CS_FluorLine_Kissel_Nonradiative_Cascade_cu(Z[tid], lines[tid], energies[tid]);
 	cs[tid+2*blockDim.x] = CS_FluorLine_Kissel_Radiative_Cascade_cu(Z[tid], lines[tid], energies[tid]);
 	cs[tid+3*blockDim.x] = CS_FluorLine_Kissel_no_Cascade_cu(Z[tid], lines[tid], energies[tid]);
+	cs[tid+4*blockDim.x] = CS_FluorLine_cu(Z[tid], lines[tid], energies[tid]);
 	
 	return;
 }
@@ -561,6 +562,16 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine_Kissel_no_Cascade(Z[2], lines[2], energies[2]), xrfcs[17]);
 	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine_Kissel_no_Cascade(Z[3], lines[3], energies[3]), xrfcs[18]);
 	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine_Kissel_no_Cascade(Z[4], lines[4], energies[4]), xrfcs[19]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"XRF production cross sections using jump approximation(cm2/g)\n");
+	fprintf(stdout,"Line      Energy(keV)     Classic       CUDA\n");
+	fprintf(stdout,"Ne-KL2    %-10.4f      %-10.4f    %-10.4f\n",energies[0], CS_FluorLine(Z[0], lines[0], energies[0]), xrfcs[20]);
+	fprintf(stdout,"P-KL3     %-10.4f      %-10.4f    %-10.4f\n",energies[1], CS_FluorLine(Z[1], lines[1], energies[1]), xrfcs[21]);
+	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine(Z[2], lines[2], energies[2]), xrfcs[22]);
+	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine(Z[3], lines[3], energies[3]), xrfcs[23]);
+	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine(Z[4], lines[4], energies[4]), xrfcs[24]);
 
 	fprintf(stdout,"\n\n");
 
