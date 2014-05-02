@@ -21,188 +21,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Antonio Brunetti ''AS IS'' AND A
 #include <stdlib.h>
 #include "xrayglob.h"
 
-__device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
-
-
-#define KL1 -(int)KL1_LINE-1
-#define KL2 -(int)KL2_LINE-1
-#define KL3 -(int)KL3_LINE-1
-#define KM1 -(int)KM1_LINE-1
-#define KM2 -(int)KM2_LINE-1
-#define KM3 -(int)KM3_LINE-1
-#define KP5 -(int)KP5_LINE-1
-
-//device functions
-
-__device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x)
-{
-	int klo, khi, k;
-	double h, b, a, y;
-
-	if (x >= xa[n]) {
-	  y = ya[n];
-	  return y;
-	}
-
-	if (x <= xa[1]) {
-	  y = ya[1];
-	  return y;
-	}
-
-	klo = 1;
-	khi = n;
-	while (khi-klo > 1) {
-		k = (khi + klo) >> 1;
-		if (xa[k] > x) khi = k;
-		else klo = k;
-	}
-
-	h = xa[khi] - xa[klo];
-	if (h == 0.0) {
-	  y = (ya[klo] + ya[khi])/2.0;
-	  return y;
-	}
-	a = (xa[khi] - x) / h;
-	b = (x - xa[klo]) / h;
-	y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
-	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
-	return y;
-}
-
-//__device__ double LineEnergy_cu(int Z, int line) {
-//  double line_energy;
-//  double lE[50],rr[50];
-//  double tmp=0.0,tmp1=0.0,tmp2=0.0;
-//  int i;
-//  int temp_line;
-//  
-//  if (Z<1 || Z>ZMAX) {
-//    ErrorExit("Z out of range in function LineEnergy");
-//    return 0;
-//  }
-//  
-//  if (line>=KA_LINE && line<LA_LINE) {
-//    if (line == KA_LINE) {
-//	for (i = KL1; i <= KL3 ; i++) {
-//	 lE[i] = LineEnergy_arr_d[Z*LINENUM+i];
-//	 rr[i] = RadRate_arr_d[Z*LINENUM+i];
-//	 tmp1+=rr[i];
-//	 tmp+=lE[i]*rr[i];
-
-//	 if (lE[i]<0.0 || rr[i]<0.0) {
-//	  ErrorExit("Line not available in function LineEnergy");
-//	  return 0;
-//	 }
-//	}
-//    }
-//    else if (line == KB_LINE) {
-//    	for (i = KM1; i < KP5; i++) {
-//	 lE[i] = LineEnergy_arr_d[Z*LINENUM+i];
-//	 rr[i] = RadRate_arr_d[Z*LINENUM+i];
-//	 tmp1+=rr[i];
-//	 tmp+=lE[i]*rr[i];
-//	 if (lE[i]<0.0 || rr[i]<0.0) {
-//	  ErrorExit("Line not available in function LineEnergy");
-//	  return 0;
-//	 }
-//	}
-//    }
-//   if (tmp1>0)   return tmp/tmp1;  else return 0.0;
-//  }
-//  
-//  if (line == LA_LINE) {
-//	temp_line = L3M5_LINE;
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-//	tmp2=tmp1;
-//	tmp=LineEnergy_cu(Z,temp_line)*tmp1;
-//	temp_line = L3M4_LINE;
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-//  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
-//  }
-//  else if (line == LB_LINE) {
-//	temp_line = L2M4_LINE;     /* b1 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L2_SHELL)+0.1);
-//	tmp2=tmp1;
-//	tmp=LineEnergy_cu(Z,temp_line)*tmp1;
-
-//	temp_line = L3N5_LINE;     /* b2 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-
-//	temp_line = L1M3_LINE;     /* b3 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L1_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-
-//	temp_line = L1M2_LINE;     /* b4 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L1_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-
-//	temp_line = L3O3_LINE;     /* b5 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-
-//	temp_line = L3O4_LINE;     /* b5 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-
-//	temp_line = L3N1_LINE;     /* b6 */
-//	tmp1=CS_FluorLine_cu(Z, temp_line,EdgeEnergy_cu(Z,L3_SHELL)+0.1);
-//	tmp2+=tmp1;
-//	tmp+=LineEnergy_cu(Z,temp_line)*tmp1 ;
-//  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
-//  }
-//  /*
-//   * special cases for composed lines
-//   */
-//  else if (line == L1N67_LINE) {
-// 	return (LineEnergy_cu(Z, L1N6_LINE)+LineEnergy_cu(Z,L1N7_LINE))/2.0; 
-//  }
-//  else if (line == L1O45_LINE) {
-// 	return (LineEnergy_cu(Z, L1O4_LINE)+LineEnergy_cu(Z,L1O5_LINE))/2.0; 
-//  }
-//  else if (line == L1P23_LINE) {
-// 	return (LineEnergy_cu(Z, L1P2_LINE)+LineEnergy_cu(Z,L1P3_LINE))/2.0; 
-//  }
-//  else if (line == L2P23_LINE) {
-// 	return (LineEnergy_cu(Z, L2P2_LINE)+LineEnergy_cu(Z,L2P3_LINE))/2.0; 
-//  }
-//  else if (line == L3O45_LINE) {
-// 	return (LineEnergy_cu(Z, L3O4_LINE)+LineEnergy_cu(Z,L3O5_LINE))/2.0; 
-//  }
-//  else if (line == L3P23_LINE) {
-// 	return (LineEnergy_cu(Z, L3P2_LINE)+LineEnergy_cu(Z,L3P3_LINE))/2.0; 
-//  }
-//  else if (line == L3P45_LINE) {
-// 	return (LineEnergy_cu(Z, L3P4_LINE)+LineEnergy_cu(Z,L3P5_LINE))/2.0; 
-//  }
-//  
-//  line = -line - 1;
-//  if (line<0 || line>=LINENUM) {
-//    return 0;
-//  }
-//  
-//  line_energy = LineEnergy_arr_d[Z*LINENUM+line];
-//  if (line_energy < 0.) {
-//    return 0;
-//  }
-//  return line_energy;
-//}
-
-
-
 
 
 int CudaXRayInit() {
-
-
-
 	int deviceCount, device;
 	int gpuDeviceCount = 0;
 	cudaDeviceProp properties;
@@ -251,6 +72,7 @@ int CudaXRayInit() {
   	CudaSafeCall(cudaMemcpyToSymbol(Electron_Config_Kissel_d, Electron_Config_Kissel, sizeof(double)*(ZMAX+1)*SHELLNUM_K, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(EdgeEnergy_Kissel_d, EdgeEnergy_Kissel, sizeof(double)*(ZMAX+1)*SHELLNUM_K, (size_t) 0,cudaMemcpyHostToDevice));
   	CudaSafeCall(cudaMemcpyToSymbol(NE_Photo_Partial_Kissel_d, NE_Photo_Partial_Kissel, sizeof(int)*(ZMAX+1)*SHELLNUM_K, (size_t) 0,cudaMemcpyHostToDevice));
+  	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	for (Z = 1; Z <= ZMAX; Z++) {
@@ -326,7 +148,6 @@ int CudaXRayInit() {
 	}
 
 
-  	CudaSafeCall(cudaMemcpyToSymbol(LineEnergy_arr_d, LineEnergy_arr, sizeof(double)*(ZMAX+1)*LINENUM, (size_t) 0,cudaMemcpyHostToDevice));
 
 
 	

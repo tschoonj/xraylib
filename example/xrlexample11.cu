@@ -73,6 +73,15 @@ __global__ void Jumps(int *Z, int *shells, double *jumps) {
 	return;
 }
 
+__global__ void LineEnergies(int *Z, int *lines, double *line_energies) {
+	int tid = blockIdx.x*blockDim.x + threadIdx.x;
+
+
+	line_energies[tid] = LineEnergy_cu(Z[tid], lines[tid]);
+	
+	return;
+}
+
 __global__ void CosKrons(int *Z, int *trans, double *coskrons) {
 	int tid = blockIdx.x*blockDim.x + threadIdx.x;
 
@@ -205,6 +214,7 @@ int main (int argc, char *argv[]) {
 	double dcs[10], *dcsd;
 	double xrfcs[25], *xrfcsd;
 	double cs_partial[5], *cs_partiald;
+	double line_energies[5], *line_energiesd;
 
 
 	int i;
@@ -252,6 +262,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMalloc((void **) &dcsd, 10*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &xrfcsd, 25*sizeof(double)));
 	CudaSafeCall(cudaMalloc((void **) &cs_partiald, 5*sizeof(double)));
+	CudaSafeCall(cudaMalloc((void **) &line_energiesd, 5*sizeof(double)));
 
 
 	Yields<<<1,5>>>(Zd, shellsd,yieldsd);	
@@ -264,6 +275,9 @@ int main (int argc, char *argv[]) {
 	CudaCheckError();
 
 	Edges<<<1,5>>>(Zd, shellsd, edgesd);	
+	CudaCheckError();
+
+	LineEnergies<<<1,5>>>(Zd, linesd, line_energiesd);	
 	CudaCheckError();
 
 	Jumps<<<1,5>>>(Zd, shellsd, jumpsd);	
@@ -323,6 +337,7 @@ int main (int argc, char *argv[]) {
 	CudaSafeCall(cudaMemcpy(dcs, dcsd, 10*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(xrfcs, xrfcsd, 25*sizeof(double), cudaMemcpyDeviceToHost));
 	CudaSafeCall(cudaMemcpy(cs_partial, cs_partiald, 5*sizeof(double), cudaMemcpyDeviceToHost));
+	CudaSafeCall(cudaMemcpy(line_energies, line_energiesd, 5*sizeof(double), cudaMemcpyDeviceToHost));
 
 
 	fprintf(stdout,"Fluorescence yields\n");
@@ -379,7 +394,7 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"P-KL3     %8f %f\n",RadRate(15,lines[1]), radrates[1]);
 	fprintf(stdout,"Fe-KM3    %8f %f\n",RadRate(26,lines[2]), radrates[2]);
 	fprintf(stdout,"Au-L3M5   %8f %f\n",RadRate(79,lines[3]), radrates[3]);
-	fprintf(stdout,"Pb-L2M4   %8f %f\n",RadRate(82,lines[4]), radrates[4]);
+	fprintf(stdout,"Pb-M5N6   %8f %f\n",RadRate(82,lines[4]), radrates[4]);
 
 	fprintf(stdout,"\n\n");
 
@@ -572,6 +587,16 @@ int main (int argc, char *argv[]) {
 	fprintf(stdout,"Fe-KM3    %-10.4f      %-10.4f    %-10.4f\n",energies[2], CS_FluorLine(Z[2], lines[2], energies[2]), xrfcs[22]);
 	fprintf(stdout,"Au-L3M5   %-10.4f      %-10.4f    %-10.4f\n",energies[3], CS_FluorLine(Z[3], lines[3], energies[3]), xrfcs[23]);
 	fprintf(stdout,"Pb-M5N6   %-10.4f      %-10.4f    %-10.4f\n",energies[4], CS_FluorLine(Z[4], lines[4], energies[4]), xrfcs[24]);
+
+	fprintf(stdout,"\n\n");
+
+	fprintf(stdout,"XRF line energies\n");
+	fprintf(stdout,"Line      Classic   CUDA\n");
+	fprintf(stdout,"Ne-KL2    %8f %f\n",LineEnergy(10,lines[0]), line_energies[0]);
+	fprintf(stdout,"P-KL3     %8f %f\n",LineEnergy(15,lines[1]), line_energies[1]);
+	fprintf(stdout,"Fe-KM3    %8f %f\n",LineEnergy(26,lines[2]), line_energies[2]);
+	fprintf(stdout,"Au-L3M5   %8f %f\n",LineEnergy(79,lines[3]), line_energies[3]);
+	fprintf(stdout,"Pb-M5N6   %8f %f\n",LineEnergy(82,lines[4]), line_energies[4]);
 
 	fprintf(stdout,"\n\n");
 

@@ -87,6 +87,7 @@ extern __device__ int NE_Photo_Partial_Kissel_d[(ZMAX+1)*SHELLNUM_K];
 extern __device__ double E_Photo_Partial_Kissel_d[(ZMAX+1)*SHELLNUM_K*NE_PHOTO_PARTIAL_KISSEL_MAX];
 extern __device__ double Photo_Partial_Kissel_d[(ZMAX+1)*SHELLNUM_K*NE_PHOTO_PARTIAL_KISSEL_MAX];
 extern __device__ double Photo_Partial_Kissel2_d[(ZMAX+1)*SHELLNUM_K*NE_PHOTO_PARTIAL_KISSEL_MAX];
+extern __device__ double LineEnergy_arr_d[(ZMAX+1)*LINENUM];
 
 
 
