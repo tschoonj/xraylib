@@ -36,7 +36,8 @@ libxrlcuda_a_SOURCES = xraylib-cuda.cu xraylib-cuda.h \
 		       cs_line.cu \
 		       splint.cu \
 		       fluor_lines.cu \
-		       polarized.cu
+		       polarized.cu \
+		       cs_barns.cu
 libxrlcuda_a_CFLAGS = $(CUDA_CFLAGS) -I$(top_srcdir)/src -I$(top_srcdir)/include
 libxrlcuda_a_AR = $(NVCC) -arch=sm_20 -lib -o
 
