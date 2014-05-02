@@ -87,6 +87,10 @@ __device__ double CSb_FluorLine_Kissel_no_Cascade_cu(int Z, int line, double E);
 __device__ double CS_FluorLine_cu(int Z, int line, double E);
 __device__ double LineEnergy_cu(int Z, int line);
 __device__ double splint_cu(double *xa, double *ya, double *y2a, int n, double x);
+__device__ double DCSP_Rayl_cu(int Z, double E, double theta, double phi);
+__device__ double DCSP_Compt_cu(int Z, double E, double theta, double phi);
+__device__ double DCSP_KN_cu(double E, double theta, double phi);
+__device__ double DCSP_Thoms_cu(double theta, double phi);
 
 
 __device__ double PL1_pure_kissel_cu(int Z, double E);
