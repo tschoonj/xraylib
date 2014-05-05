@@ -219,7 +219,9 @@ int main (int argc, char *argv[]) {
 
 	int i;
 
-	CudaXRayInit();
+	if (CudaXRayInit() == 0) {
+		return 1;
+	}
 	SetErrorMessages(0);
 
 	//input variables
