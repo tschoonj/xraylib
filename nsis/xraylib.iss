@@ -17,7 +17,6 @@
 #define MyAppURL "http://github.com/tschoonj/xraylib"
 
 
-
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
@@ -110,8 +109,8 @@ Source: "{#srcdir}\nsis\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Do
 
 #ifndef XRL64
 Source: "{#builddir}\nsis\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
-;Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
-Source: "{#builddir}\nsis\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
+Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
+;Source: "{#builddir}\nsis\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
 Source: "{#builddir}\nsis\libxrlidl.dlm"; DestDir: "{app}\dlm" ; Components: idl
 Source: "{#builddir}\nsis\xraylib.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_help.pro"; DestDir: "{app}\pro" ; Components: idl
@@ -119,7 +118,6 @@ Source: "{#builddir}\nsis\xraylib_lines.pro"; DestDir: "{app}\pro" ; Components:
 Source: "{#builddir}\nsis\xraylib_shells.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_auger.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#srcdir}\nsis\msvcrt\vcredist_x86_100.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
 #endif
 
 Source: "{#builddir}\nsis\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
@@ -136,10 +134,6 @@ Source: "{#builddir}\nsis\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Pytho
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
-#ifndef XRL64
-[Run]
-Filename: "{tmp}\vcredist_x86_100.exe" ; Parameters: "/q" ; StatusMsg: "Installing Visual Studio 2010 C++ CRT Libraries if required..." ; Components: idl   
-#endif
 
 [UninstallDelete]
 Type: filesandordirs ; Name: "{app}\Python\__pycache__"

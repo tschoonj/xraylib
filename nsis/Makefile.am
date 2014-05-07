@@ -24,7 +24,6 @@ nsis:
 	unix2dos -n ${top_srcdir}/idl/xraylib_shells.pro xraylib_shells.pro 
 	unix2dos -n ${top_srcdir}/idl/xraylib_auger.pro xraylib_auger.pro 
 	unix2dos -n ${top_srcdir}/idl/xraylib_nist_compounds.pro xraylib_nist_compounds.pro 
-	$(MAKE) idl32
 	iscc.exe "-dLIB_CURRENT_MINUS_AGE=$(LIB_CURRENT_MINUS_AGE)" "-dMyAppVersion=$(VERSION)" "-dabs_top_srcdir_win=$(abs_top_srcdir_win)" "-dabs_top_builddir_win=$(abs_top_builddir_win)" "${srcdir}/xraylib.iss"
 	rm libxrl-$(LIB_CURRENT_MINUS_AGE).def
 	$(MAKE) -C python/cli_py2exe nsis

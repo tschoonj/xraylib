@@ -295,9 +295,9 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	fi
 	#moving on...
 	if test -n "$RSIIDL_BINDIR" && test "x$VALID_IDL" != xno ; then
-		RSIIDL_DIR=`AS_DIRNAME([$RSIIDL_BINDIR])`
-		if test `AS_BASENAME([$RSIIDL_DIR])` = "bin" ; then
-			RSIIDL_DIR=`AS_DIRNAME([$RSIIDL_DIR])`
+		RSIIDL_DIR="`AS_DIRNAME(["$RSIIDL_BINDIR"])`"
+		if test "`AS_BASENAME(["$RSIIDL_DIR"])`" = "bin" ; then
+			RSIIDL_DIR=`AS_DIRNAME(["$RSIIDL_DIR"])`
 		fi	
 		#if this test succeeds then using version 5.6 or greater
 		RSIIDL_INCDIR="$RSIIDL_DIR/external/include"
@@ -365,7 +365,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		  esac
 
 		if test "x$VALID_IDL" != xno ; then
-		AC_ARG_WITH([idl-libdir],[AS_HELP_STRING([--with-idl-bindir],[set location of the idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
+		AC_ARG_WITH([idl-libdir],[AS_HELP_STRING([--with-idl-libdir],[set location of the idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])	
 		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])	
 		AC_CHECK_FILE([$IDL_LIBBIN/idl.dll],[RSIIDL_HASBIN_DLL=yes],[RSIIDL_HASBIN_DLL=no])	
