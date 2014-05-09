@@ -57,15 +57,14 @@ Name: "custom" ; Description: "Custom installation" ; Flags: iscustom
 Name: "core" ; Description: "xraylib shared library and documentation" ; Flags: fixed ; Types: full minimal custom
 Name: "sdk" ; Description: "SDK: headers and static libraries" ; Types: full 
 Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full 
-#ifndef XRL64
 Name: "idl" ; Description: "IDL bindings" ; Types: full 
-#endif
 Name: "python" ; Description: "Python bindings" ; Types: full 
 Name: "python/2_6" ; Description: "Python 2.6" ; Flags: exclusive
 Name: "python/2_7" ; Description: "Python 2.7" ; Types: full ; Flags: exclusive 
 Name: "python/3_1" ; Description: "Python 3.1" ; Flags: exclusive 
 Name: "python/3_2" ; Description: "Python 3.2" ; Flags: exclusive 
 Name: "python/3_3" ; Description: "Python 3.3" ; Flags: exclusive 
+;Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive 
 
 [Files]
 Source: "{#builddir}\src\.libs\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
@@ -107,10 +106,12 @@ Source: "{#srcdir}\nsis\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Compo
 Source: "{#builddir}\nsis\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
 Source: "{#srcdir}\nsis\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
-#ifndef XRL64
 Source: "{#builddir}\nsis\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
+#ifdef XRL64
+Source: "{#builddir}\nsis\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
+#else
 Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
-;Source: "{#builddir}\nsis\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
+#endif
 Source: "{#builddir}\nsis\libxrlidl.dlm"; DestDir: "{app}\dlm" ; Components: idl
 Source: "{#builddir}\nsis\xraylib.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_help.pro"; DestDir: "{app}\pro" ; Components: idl
@@ -118,7 +119,6 @@ Source: "{#builddir}\nsis\xraylib_lines.pro"; DestDir: "{app}\pro" ; Components:
 Source: "{#builddir}\nsis\xraylib_shells.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_auger.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
-#endif
 
 Source: "{#builddir}\nsis\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
 Source: "{#builddir}\nsis\xraylib.py" ; DestDir: "{app}\Python" ; Components: python
@@ -130,10 +130,19 @@ Source: "{#builddir}\nsis\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Pytho
 Source: "{#builddir}\nsis\python\python3.1\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_1"
 Source: "{#builddir}\nsis\python\python3.2\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_2"
 Source: "{#builddir}\nsis\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_3"
+;Source: "{#builddir}\nsis\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
+#ifdef XRL64
+Source: "{#srcdir}\nsis\msvcrt\vcredist_x64_110.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
+#endif
 
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
+
+#ifdef XRL64
+[Run]
+Filename: "{tmp}\vcredist_x64_110.exe" ; Parameters: "/q" ; StatusMsg: "Installing Visual Studio 2012 C++ CRT Libraries if required..." ; Components: idl   
+#endif
 
 [UninstallDelete]
 Type: filesandordirs ; Name: "{app}\Python\__pycache__"
@@ -144,12 +153,10 @@ Type: dirifempty ; Name: "{app}"
 
 [Registry]
 Root: HKLM; Subkey: "Software\xraylib" ; ValueType: string ; ValueName: "" ; ValueData: "{app}" ; Flags: uninsdeletekey
-#ifndef XRL64
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_DLM_PATH"; ValueData: "<IDL_DEFAULT>" ; Flags: createvalueifdoesntexist ; Components: idl
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_DLM_PATH"; ValueData: "{olddata};{app}\dlm" ; Components: idl
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_PATH"; ValueData: "<IDL_DEFAULT>" ; Flags: createvalueifdoesntexist ; Components: idl
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_PATH"; ValueData: "{olddata};{app}\pro" ; Components: idl
-#endif
 
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "PYTHONPATH"; ValueData: "{olddata};{app}\Python" ; Components: python 
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "PATH"; ValueData: "{olddata};{app}\Bin" ; Components: python 

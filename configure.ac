@@ -351,7 +351,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		      AC_MSG_WARN([Solaris is currently not supported for the IDL bindings])
 			VALID_IDL=no
 		      ;;
-		   i686-pc-mingw32)
+		   *-mingw32)
 			IDL_LIBBIN=$RSIIDL_BINDIR
 			#IDL_LIBADD="$RSIIDL_BINDIR/idl.lib"
 			IDL_LIBADD="-L$RSIIDL_BINDIR -lidl"
@@ -902,6 +902,8 @@ AC_CONFIG_FILES([Makefile
 				 nsis/python/python3.2/xrlsetup.py
 				 nsis/python/python3.3/Makefile
 				 nsis/python/python3.3/xrlsetup.py
+				 nsis/python/python3.4/Makefile
+				 nsis/python/python3.4/xrlsetup.py
 				 ruby/Makefile
 				 php/Makefile
 ])
