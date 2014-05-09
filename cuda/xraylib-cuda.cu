@@ -29,8 +29,10 @@ int CudaXRayInit() {
 	cudaDeviceProp properties;
 	cudaError_t cudaResultCode = cudaGetDeviceCount(&deviceCount);
 	int Z, shell;
-	if (cudaResultCode != cudaSuccess) 
+	if (cudaResultCode != cudaSuccess) {
+		fprintf(stderr, "cudaGetDeviceCount returned error\n");
         	deviceCount = 0;
+	}
    	/* machines with no GPUs can still report one emulation device */
 	for (device = 0; device < deviceCount; ++device) {
         	cudaGetDeviceProperties(&properties, device);
