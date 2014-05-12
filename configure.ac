@@ -466,9 +466,9 @@ AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
 
 
 AC_ARG_ENABLE([python],[AS_HELP_STRING([--disable-python],[build without the python bindings])],[enable_python=$enableval],[enable_python=check])
-AC_ARG_ENABLE([python-integration],[AS_HELP_STRING([--enable-python-integration],[install the python bindings in the interpreters site-packages folder])],[enable_python_integration=$enableval],[enable_python_integration=check])
 
 VALID_PYTHON=
+PYTHON_FOUND=
 
 if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
@@ -489,6 +489,7 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno && test "x$DISABLE_B
 			VALID_PYTHON=no
 		else
 			VALID_PYTHON=yes
+			AC_MSG_NOTICE([Building with Python bindings])
 		fi
 
 	fi
@@ -497,18 +498,71 @@ fi
 
 
 
-if test "x$VALID_PYTHON" = xyes ; then
-AC_MSG_NOTICE([Building with Python bindings])
+AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
+
+
+#
+#Python numpy bindings using cython
+#
+AC_ARG_ENABLE([python-numpy],[AS_HELP_STRING([--disable-python-numpy],[build without the python-numpy bindings])],[enable_python_np=$enableval],[enable_python_np=check])
+#for this we need to check for cython and for numpy, and python itself obviously
+VALID_PYTHON_NUMPY=
+AC_ARG_VAR(CYTHON, [the Cython command])
+if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
+	##check for python if not done yet
+	if test "x$VALID_PYTHON" != xyes ; then
+		AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
+		if test "x$PYTHON_FOUND" = xtrue ; then
+			PYTHON_CPPFLAGS=
+			PYTHON_LDFLAGS=
+			AX_PYTHON_DEVEL
+			if test "x$PYTHON" = x ; then
+				if test "x$enable_python_np" = xyes ; then
+					AC_MSG_ERROR([Incomplete python development package])
+				else
+					AC_MSG_WARN([Incomplete python development package])
+				fi
+				VALID_PYTHON_EXE=no
+			else
+				VALID_PYTHON_EXE=yes
+			fi
+		fi
+	else
+		VALID_PYTHON_EXE=yes
+	fi
+	if test "x$VALID_PYTHON_EXE" = xyes ; then
+		#now check cython
+		AC_CHECK_PROGS(CYTHON, [cython cython-[$PYTHON_VERSION]],["nocython"])
+		#check for numpy
+		AC_MSG_CHECKING([for numpy])
+		eval [$PYTHON -c \"import numpy\" &> /dev/null]
+		NUMPY=$?
+		if test x$NUMPY = x0 ; then
+			AC_MSG_RESULT([yes])
+		else
+			AC_MSG_RESULT([no])
+		fi
+		if test x$CYTHON != "xnocython" && test x$NUMPY = x0 ; then
+			VALID_PYTHON_NUMPY=yes
+			AC_MSG_NOTICE([Building with Python-NumPy bindings])
+		elif test "x$enable_python_np" = "xyes" ; then
+			AC_MSG_ERROR([Cannot build Python-NumPy bindings])
+		else
+			AC_MSG_WARN([Cannot build Python-NumPy bindings])
+			VALID_PYTHON_NUMPY=no
+		fi
+
+	fi
+fi
+AM_CONDITIONAL([ENABLE_PYTHON_NUMPY],[test x$VALID_PYTHON_NUMPY = xyes])
+
+if test "x$VALID_PYTHON" = xyes || test "x$VALID_PYTHON_NUMPY" = xyes ; then
 #transform PYTHON_INCDIR and PYTHON_LIBS
 PYTHON_INCLUDE_FIXED="'`echo $PYTHON_CPPFLAGS | $SED -e "s/ \{1,\}/','/g" -e  "s/-I//g" `'"
 PYTHON_LIBS_FIXED="'`echo $PYTHON_LDFLAGS | $SED -e "s/ \{1,\}/','/g" -e "s/-l//g" `'"
 #echo "PYTHON_INCLUDE_FIXED: $PYTHON_INCLUDE_FIXED"
 #echo "PYTHON_LIBS_FIXED: $PYTHON_LIBS_FIXED"
 
-if test "x$enable_python_integration" = xyes ; then
-	pythondir=$PYTHON_SITE_PKG
-	pyexecdir=$PYTHON_SITE_PKG_EXEC
-fi
 
 AC_SUBST(PYTHON_INCLUDE_FIXED)
 AC_SUBST(PYTHON_LIBS_FIXED)
@@ -519,8 +573,11 @@ AC_SUBST(PYEXECDIR,$pyexecdir)
 AC_SUBST(PKGPYEXECDIR,$pkgpyexecdir)
 AC_SUBST(XRLDATADIR,[`echo ${prefix}`/share/xraylib])
 fi
-AM_CONDITIONAL([ENABLE_PYTHON],[test x$VALID_PYTHON = xyes])
-
+AC_ARG_ENABLE([python-integration],[AS_HELP_STRING([--enable-python-integration],[install the python bindings in the interpreters site-packages folder])],[enable_python_integration=$enableval],[enable_python_integration=check])
+if test "x$enable_python_integration" = xyes ; then
+	pythondir=$PYTHON_SITE_PKG
+	pyexecdir=$PYTHON_SITE_PKG_EXEC
+fi
 
 #
 #Java bindings
@@ -931,7 +988,7 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([])
-if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes ; then
+if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes || test "$VALID_PYTHON_NUMPY" = yes ; then
 	AC_MSG_NOTICE([Building xraylib with bindings for:])
 	if test "$VALID_FORTRAN" = "yes" ; then
 		AC_MSG_NOTICE([Fortran 2003])
@@ -944,6 +1001,9 @@ if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PE
 	fi
 	if test "$VALID_PYTHON" = yes ; then
 		AC_MSG_NOTICE([Python])
+	fi
+	if test "$VALID_PYTHON_NUMPY" = yes ; then
+		AC_MSG_NOTICE([Python-NumPy])
 	fi
 	if test "$VALID_JAVA" = yes ; then
 		AC_MSG_NOTICE([Java])
