@@ -14,10 +14,10 @@
 
 #python bindings for xraylib
 
+pyexec_LTLIBRARIES = 
 
 if ENABLE_PYTHON
-
-pyexec_LTLIBRARIES = _xraylib.la
+pyexec_LTLIBRARIES += _xraylib.la
 _xraylib_la_CFLAGS = $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) 
 _xraylib_la_LIBADD = ../src/libxrl.la
 nodist__xraylib_la_SOURCES = xraylib_wrap.c
@@ -25,7 +25,18 @@ _xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
 
 dist_bin_SCRIPTS = xraylib
 nodist_python_PYTHON = xraylib.py xrayhelp.py xraymessages.py
+endif
 
+if ENABLE_PYTHON_NUMPY
+pyexec_LTLIBRARIES += xraylib_np.la 
+xraylib_np_la_CFLAGS = $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS)
+xraylib_np_la_LIBADD = ../src/libxrl.la
+nodist_xraylib_np_la_SOURCES = xraylib_np.c
+xraylib_np_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
+endif
+
+xraylib_np.c: ${srcdir}/xraylib_np.pyx ${srcdir}/xraylib_np_c.pxd
+	$(CYTHON) -I${top_srcdir}/include -o ${builddir}/xraylib_np.c ${srcdir}/xraylib_np.pyx
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
@@ -33,10 +44,9 @@ xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 xraylib.py: xraylib_wrap.c
 
 clean-local:
-	rm -rf xraylib_wrap.c xraylib.py xraylib.pyc
+	rm -rf xraylib_wrap.c xraylib.py xraylib.pyc xraylib_np.c
+
+EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx
 
 
 
-
-
-endif

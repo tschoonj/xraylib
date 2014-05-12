@@ -39,8 +39,10 @@ typedef struct {
   double re;               /* Real part */
   double im;               /* Imaginary part */
 } xrlComplex;
-
+#ifndef c_abs
+/* this is giving a lot of trouble with python */
 double c_abs(xrlComplex x);
+#endif
 xrlComplex c_mul(xrlComplex x, xrlComplex y);
 
 /* Struct for an atom in a crystal. */
