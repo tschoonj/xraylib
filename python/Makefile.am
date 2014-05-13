@@ -36,7 +36,7 @@ xraylib_np_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
 endif
 
 xraylib_np.c: ${srcdir}/xraylib_np.pyx ${srcdir}/xraylib_np_c.pxd
-	$(CYTHON) -I${top_srcdir}/include -o ${builddir}/xraylib_np.c ${srcdir}/xraylib_np.pyx
+	$(CYTHON) -X boundscheck=False,wraparound=False -I${top_srcdir}/include -o ${builddir}/xraylib_np.c ${srcdir}/xraylib_np.pyx
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i

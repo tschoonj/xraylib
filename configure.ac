@@ -532,7 +532,7 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 	fi
 	if test "x$VALID_PYTHON_EXE" = xyes ; then
 		#now check cython
-		AC_CHECK_PROGS(CYTHON, [cython cython-[$PYTHON_VERSION]],["nocython"])
+		AC_CHECK_PROGS(CYTHON, [cython-[$PYTHON_VERSION] cython],["nocython"])
 		#check for numpy
 		AC_MSG_CHECKING([for numpy])
 		eval [$PYTHON -c \"import numpy\" &> /dev/null]
