@@ -122,7 +122,7 @@ Section "-xraylib core files" SecDummy
 	SetOutPath "$INSTDIR\Bin"
 	File ${abs_top_builddir_win}\nsis\python\cli_py2exe\dist\xraylib.exe
 	SetOutPath "$INSTDIR\temp"
-	File "${abs_top_srcdir_win}\..\vcredist_x86_90.exe"
+	File "${abs_top_srcdir_win}\nsis\msvcrt\vcredist_x86_90.exe"
 	ExecWait "$INSTDIR\temp\vcredist_x86_90.exe /q"
 	SetOutPath "$INSTDIR"
 	RMDir /r "$INSTDIR\temp"
