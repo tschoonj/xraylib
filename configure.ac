@@ -535,16 +535,16 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 		AC_CHECK_PROGS(CYTHON, [cython-[$PYTHON_VERSION] cython],["nocython"])
 		#check for numpy
 		AC_MSG_CHECKING([for numpy])
-		eval [$PYTHON -c \"import numpy\" &> /dev/null]
+		res=`$PYTHON -c "import numpy" &>/dev/null`
 		NUMPY=$?
 		if test x$NUMPY = x0 ; then
 			AC_MSG_RESULT([yes])
+			NUMPY_HEADERS=-I`$PYTHON -c "import numpy; \
+				print numpy.get_include()"`
+			AC_SUBST(NUMPY_HEADERS)
 		else
 			AC_MSG_RESULT([no])
 		fi
-		NUMPY_HEADERS=-I`$PYTHON -c "import numpy; \
-			print numpy.get_include()"`
-		AC_SUBST(NUMPY_HEADERS)
 		if test x$CYTHON != "xnocython" && test x$NUMPY = x0 ; then
 			VALID_PYTHON_NUMPY=yes
 			AC_MSG_NOTICE([Building with Python-NumPy bindings])
