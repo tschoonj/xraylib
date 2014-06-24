@@ -20,6 +20,19 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #ifndef XRAYLIB_RADIO_NUCLIDES_H
 #define XRAYLIB_RADIO_NUCLIDES_H
 
+/* 
+ * name: a string containing the mass number (A), followed by the chemical element (e.g. 55Fe)
+ * Z: atomic number of the radionuclide
+ * A: mass number of the radionuclide
+ * N: number of neutrons of the radionuclide
+ * Z_xray: atomic number of the nuclide after decay, and which should be used in calculating the energy of the emitted X-ray lines
+ * nXrays: number of emitted characteristic X-rays
+ * XrayLines: array of *_LINE macros, identifying the emitted X-rays
+ * XrayIntensities: array of photons per disintegration, one value per emitted X-ray
+ * nGammas: number of emitted gamma-rays
+ * GammaEnergies: array of emitted gamma-ray energies
+ * GammaIntensities: array of emitted gamma-ray photons per disintegration
+ */
 
 struct radioNuclideData{
 	char *name;

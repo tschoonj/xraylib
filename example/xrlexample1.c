@@ -33,6 +33,8 @@ int main()
   xrlComplex FHbar;
   struct compoundDataNIST *cdn;
   char **nistCompounds;
+  struct radioNuclideData *rnd;
+  char **radioNuclides;
 
   XRayInit();
   /*if something goes wrong, the test will end with EXIT_FAILURE
@@ -252,8 +254,50 @@ int main()
 	xrlFree(nistCompounds[i]);
   }
   xrlFree(nistCompounds);
+ 
+  printf ("\n");
 
-  
+  /* radioNuclideData tests */
+  rnd = GetRadioNuclideDataByName("109Cd");
+  printf ("109Cd\n");
+  printf ("  Name: %s\n", rnd->name);
+  printf ("  Z: %i\n", rnd->Z);
+  printf ("  A: %i\n", rnd->A);
+  printf ("  N: %i\n", rnd->N);
+  printf ("  Z_xray: %i\n", rnd->Z_xray);
+  printf ("  X-rays:\n");
+  for (i = 0 ; i < rnd->nXrays ; i++)
+  	printf ("  %f keV -> %f %%\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]*100.0);
+  printf ("  Gamma rays:\n");
+  for (i = 0 ; i < rnd->nGammas ; i++)
+  	printf ("  %f keV -> %f %%\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]*100.0);
+
+  FreeRadioNuclideData(rnd);
+
+  rnd = GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I);
+  printf ("RADIO_NUCLIDE_125I\n");
+  printf ("  Name: %s\n", rnd->name);
+  printf ("  Z: %i\n", rnd->Z);
+  printf ("  A: %i\n", rnd->A);
+  printf ("  N: %i\n", rnd->N);
+  printf ("  Z_xray: %i\n", rnd->Z_xray);
+  printf ("  X-rays:\n");
+  for (i = 0 ; i < rnd->nXrays ; i++)
+  	printf ("  %f keV -> %f %%\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]*100.0);
+  printf ("  Gamma rays:\n");
+  for (i = 0 ; i < rnd->nGammas ; i++)
+  	printf ("  %f keV -> %f %%\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]*100.0);
+
+  FreeRadioNuclideData(rnd);
+
+  radioNuclides = GetRadioNuclideDataList(NULL);
+  printf ("List of available radionuclides:\n");
+  for (i = 0 ; radioNuclides[i] != NULL ; i++) {
+  	printf ("  Radionuclide %i: %s\n", i, radioNuclides[i]);
+	xrlFree(radioNuclides[i]);
+  }
+  xrlFree(radioNuclides);
+
 
   printf ("\n--------------------------- END OF XRLEXAMPLE1 -------------------------------\n");
   return 0;

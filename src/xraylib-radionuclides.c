@@ -85,7 +85,7 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
 }
 
 struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex) {
-	struct radioNuclideData *key, *rv;
+	struct radioNuclideData *key;
 
 	if (radioNuclideIndex < 0 || radioNuclideIndex >= nNuclideDataList) {
 		char buffer[1000];
@@ -95,6 +95,7 @@ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex) {
 		return NULL;
 	}
 
+	key = malloc(sizeof(struct radioNuclideData));
 	key->name = strdup(nuclideDataList[radioNuclideIndex].name);
 	key->Z = nuclideDataList[radioNuclideIndex].Z; 
 	key->A = nuclideDataList[radioNuclideIndex].A; 
@@ -103,13 +104,13 @@ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex) {
 	key->nXrays = nuclideDataList[radioNuclideIndex].nXrays; 
 	key->nGammas= nuclideDataList[radioNuclideIndex].nGammas; 
 	key->XrayLines = malloc(sizeof(int)*nuclideDataList[radioNuclideIndex].nXrays);
-	memcpy(key->XrayLines, nuclideDataList[radioNuclideIndex].XrayLines, sizeof(int)*rv->nXrays);
+	memcpy(key->XrayLines, nuclideDataList[radioNuclideIndex].XrayLines, sizeof(int)*nuclideDataList[radioNuclideIndex].nXrays);
 	key->XrayIntensities = malloc(sizeof(double)*nuclideDataList[radioNuclideIndex].nXrays);
-	memcpy(key->XrayIntensities, nuclideDataList[radioNuclideIndex].XrayIntensities, sizeof(double)*rv->nXrays);
+	memcpy(key->XrayIntensities, nuclideDataList[radioNuclideIndex].XrayIntensities, sizeof(double)*nuclideDataList[radioNuclideIndex].nXrays);
 	key->GammaEnergies = malloc(sizeof(double)*nuclideDataList[radioNuclideIndex].nGammas);
-	memcpy(key->GammaEnergies, nuclideDataList[radioNuclideIndex].GammaEnergies, sizeof(double)*rv->nGammas);
+	memcpy(key->GammaEnergies, nuclideDataList[radioNuclideIndex].GammaEnergies, sizeof(double)*nuclideDataList[radioNuclideIndex].nGammas);
 	key->GammaIntensities = malloc(sizeof(double)*nuclideDataList[radioNuclideIndex].nGammas);
-	memcpy(key->GammaIntensities, nuclideDataList[radioNuclideIndex].GammaIntensities, sizeof(double)*rv->nGammas);
+	memcpy(key->GammaIntensities, nuclideDataList[radioNuclideIndex].GammaIntensities, sizeof(double)*nuclideDataList[radioNuclideIndex].nGammas);
 
 	return key;
 }
