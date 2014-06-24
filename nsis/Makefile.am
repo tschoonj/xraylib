@@ -56,6 +56,7 @@ common:
 	unix2dos -n ${top_srcdir}/include/xraylib-crystal-diffraction.h xraylib-crystal-diffraction.h
 	unix2dos -n ${top_srcdir}/include/xraylib-defs.h xraylib-defs.h
 	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
+	unix2dos -n ${top_srcdir}/include/xraylib-radionuclides.h xraylib-radionuclides.h
 	unix2dos -n ${top_srcdir}/example/xrlexample5.py xrlexample5.py
 	unix2dos -n ${srcdir}/python/cli/xraylib-cli.py xraylib-cli.py
 	unix2dos -n ${srcdir}/python/cli/xraymessages.py xraymessages.py

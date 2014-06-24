@@ -12,7 +12,7 @@
 
 
 
-AC_INIT([xraylib],[3.0.1],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[3.1.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])

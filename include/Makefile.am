@@ -7,4 +7,5 @@ xraylibinclude_HEADERS = 	xraylib.h \
 				xraylib-auger.h \
 				xraylib-defs.h \
 				xraylib-crystal-diffraction.h \
-				xraylib-nist-compounds.h
+				xraylib-nist-compounds.h \
+				xraylib-radionuclides.h

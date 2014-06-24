@@ -56,6 +56,7 @@ extern "C" {
 #include "xraylib-auger.h"
 #include "xraylib-crystal-diffraction.h"
 #include "xraylib-nist-compounds.h"
+#include "xraylib-radionuclides.h"
 
 /*
  * Siegbahn notation
@@ -71,6 +72,7 @@ extern "C" {
 /* single lines */
 #define KA1_LINE KL3_LINE
 #define KA2_LINE KL2_LINE
+#define KA3_LINE KL1_LINE
 #define KB1_LINE KM3_LINE
 #define KB2_LINE KN3_LINE
 #define KB3_LINE KM2_LINE
@@ -98,6 +100,7 @@ extern "C" {
 #define LG6_LINE L2O4_LINE
 #define LG8_LINE L2O1_LINE
 #define LE_LINE L2M1_LINE
+#define LH_LINE L2M1_LINE
 #define LL_LINE L3M1_LINE
 #define LS_LINE L3M3_LINE
 #define LT_LINE L3M2_LINE

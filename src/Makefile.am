@@ -69,7 +69,9 @@ libxrl_la_SOURCES = xrayvars.c \
 		    crystal_diffraction.c \
 		    xraylib-nist-compounds.c \
 		    xraylib-nist-compounds-internal.h \
-		    densities.c
+		    densities.c \
+		    xraylib-radionuclides-internal.h \
+		    xraylib-radionuclides.c
 
 libxrl_la_CFLAGS = $(ARCHFLAGS)
 

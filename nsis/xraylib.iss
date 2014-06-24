@@ -97,6 +97,7 @@ Source: "{#builddir}\nsis\xraylib-auger.h" ; DestDir: "{app}\Include" ; Componen
 Source: "{#builddir}\nsis\xraylib-crystal-diffraction.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\nsis\xraylib-defs.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\nsis\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\nsis\xraylib-radionuclides.h" ; DestDir: "{app}\Include" ; Components: sdk
 
 #ifdef XRL64
 Source: "{#srcdir}\nsis\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
