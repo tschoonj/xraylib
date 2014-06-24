@@ -212,6 +212,47 @@ foreach my $nistCompound (@$nistCompounds) {
 	printf ("  Compound %i: %s\n", $counter++, $nistCompound);
 }
 
+printf ("\n");
+
+# radioNuclideData tests
+my $rnd = xraylib::GetRadioNuclideDataByName("109Cd");
+printf ("109Cd\n");
+printf ("  Name: %s\n", $rnd->{name});
+printf ("  Z: %i\n", $rnd->{Z});
+printf ("  A: %i\n", $rnd->{A});
+printf ("  N: %i\n", $rnd->{N});
+printf ("  Z_xray: %i\n", $rnd->{Z_xray});
+printf ("  X-rays:\n");
+for ($i = 0 ; $i < $rnd->{nXrays} ; $i++) {
+  	printf ("  %f keV -> %f %%\n", xraylib::LineEnergy($rnd->{Z_xray}, $rnd->{XrayLines}->[$i]), $rnd->{XrayIntensities}->[$i]*100.0);
+}
+printf ("  Gamma rays:\n");
+for ($i = 0 ; $i < $rnd->{nGammas} ; $i++) {
+  	printf ("  %f keV -> %f %%\n", $rnd->{GammaEnergies}->[$i], $rnd->{GammaIntensities}->[$i]*100.0);
+}
+
+$rnd = xraylib::GetRadioNuclideDataByIndex($xraylib::RADIO_NUCLIDE_125I);
+printf ("RADIO_NUCLIDE_125I\n");
+printf ("  Name: %s\n", $rnd->{name});
+printf ("  Z: %i\n", $rnd->{Z});
+printf ("  A: %i\n", $rnd->{A});
+printf ("  N: %i\n", $rnd->{N});
+printf ("  Z_xray: %i\n", $rnd->{Z_xray});
+printf ("  X-rays:\n");
+for ($i = 0 ; $i < $rnd->{nXrays} ; $i++) {
+  	printf ("  %f keV -> %f %%\n", xraylib::LineEnergy($rnd->{Z_xray}, $rnd->{XrayLines}->[$i]), $rnd->{XrayIntensities}->[$i]*100.0);
+}
+printf ("  Gamma rays:\n");
+for ($i = 0 ; $i < $rnd->{nGammas} ; $i++) {
+  	printf ("  %f keV -> %f %%\n", $rnd->{GammaEnergies}->[$i], $rnd->{GammaIntensities}->[$i]*100.0);
+}
+
+$radioNuclides = xraylib::GetRadioNuclideDataList();
+$counter = 0;
+printf ("List of available radionuclides:\n");
+foreach my $radioNuclide (@$radioNuclides) {
+	printf ("  Radionuclide %i: %s\n", $counter++, $radioNuclide);
+}
 
 printf("\n--------------------------- END OF XRLEXAMPLE2 -------------------------------\n");
 exit 0;

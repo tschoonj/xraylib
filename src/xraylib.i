@@ -66,6 +66,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %ignore compoundData;
 %ignore compoundDataNIST;
 %ignore xrlComplex;
+%ignore radioNuclideData;
+%ignore FreeRadioNuclideData;
 
 %typemap(newfree) char * {
         if ($1)
@@ -77,6 +79,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #ifndef SWIGJAVA
 %typemap(in, numinputs=0) Crystal_Array* c_array {
    /* do not use crystal_array argument for now... */
+   $1 = NULL;
+}
+%typemap(in, numinputs=0) int* nRadioNuclides {
    $1 = NULL;
 }
 %typemap(in, numinputs=0) int* nCompounds {
@@ -916,6 +921,49 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
         xrlFree(list);
         $result = sv_2mortal(newRV_noinc((SV*) res));
+
+        argvi++;
+}
+
+%typemap(out) struct radioNuclideData * {
+        int i;
+        struct radioNuclideData *rnd = $1; 
+
+        if (argvi >= items) {
+                EXTEND(sp,1);
+        }
+        if (rnd == NULL) {
+                fprintf(stderr,"Error: requested radionuclide not found in database\n");
+                $result = &PL_sv_undef;
+        }
+        else {
+                HV *hash = newHV();
+                STORE_HASH("name", newSVpvn(rnd->name, strlen(rnd->name)),hash) 
+                STORE_HASH("Z", newSViv(rnd->Z),hash) 
+                STORE_HASH("A", newSViv(rnd->A),hash) 
+                STORE_HASH("N", newSViv(rnd->N),hash) 
+                STORE_HASH("Z_xray", newSViv(rnd->Z_xray),hash) 
+                STORE_HASH("nXrays", newSViv(rnd->nXrays),hash) 
+                STORE_HASH("nGammas", newSViv(rnd->nGammas),hash) 
+                AV *XrayLines = newAV();
+                AV *XrayIntensities = newAV();
+                AV *GammaEnergies = newAV();
+                AV *GammaIntensities = newAV();
+                STORE_HASH("XrayLines", newRV_noinc((SV*) XrayLines),hash)
+                STORE_HASH("XrayIntensities", newRV_noinc((SV*) XrayIntensities),hash)
+                for (i = 0 ; i < rnd->nXrays; i++) {
+                        av_push(XrayLines, newSViv(rnd->XrayLines[i]));
+                        av_push(XrayIntensities, newSVnv(rnd->XrayIntensities[i]));
+                }
+                STORE_HASH("GammaEnergies", newRV_noinc((SV*) GammaEnergies),hash)
+                STORE_HASH("GammaIntensities", newRV_noinc((SV*) GammaIntensities),hash)
+                for (i = 0 ; i < rnd->nGammas; i++) {
+                        av_push(GammaEnergies, newSVnv(rnd->GammaEnergies[i]));
+                        av_push(GammaIntensities, newSVnv(rnd->GammaIntensities[i]));
+                }
+                FreeRadioNuclideData(rnd);
+                $result = sv_2mortal(newRV_noinc((SV*) hash));
+        }
 
         argvi++;
 }
