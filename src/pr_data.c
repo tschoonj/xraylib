@@ -135,6 +135,9 @@ fprintf(f, "};\n\n");
       if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
         fprintf(f, "\n");\
     }\
+    if (NShells_ComptonProfiles[i] < 1) { \
+        fprintf(f, "NULL\n");\
+    }\
     fprintf(f,"},\n");\
   }\
   fprintf(f,"\n};\n");\
@@ -1069,6 +1072,7 @@ int main(void)
 
   fprintf(f, "#include \"xraylib-defs.h\"\n\n");
   fprintf(f, "#include \"xrayglob.h\"\n\n");
+  fprintf(f, "#include \"stddef.h\"\n\n");
 
   fprintf(f, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArray);

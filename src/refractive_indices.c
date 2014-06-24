@@ -115,3 +115,4 @@ void Refractive_Index2(const char compound[], double E, double density, xrlCompl
 	result->re = z.re;
 	result->im = z.im;
 }
+
