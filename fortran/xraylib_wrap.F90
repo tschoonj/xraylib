@@ -16,6 +16,7 @@
 
 
 #define _NIST_LIST_STRING_LENGTH 100 
+#define _RADIO_NUCLIDE_STRING_LENGTH 10
 
 MODULE xraylib
 
@@ -99,6 +100,33 @@ TYPE, BIND(C) :: Crystal_Array
         TYPE (C_PTR) :: crystal
 ENDTYPE
 
+TYPE, BIND(C) :: radioNuclideData_C
+        TYPE (C_PTR) :: name
+        INTEGER (C_INT) :: Z
+        INTEGER (C_INT) :: A
+        INTEGER (C_INT) :: N
+        INTEGER (C_INT) :: Z_xray
+        INTEGER (C_INT) :: nXrays
+        TYPE (C_PTR) :: XrayLines
+        TYPE (C_PTR) :: XrayIntensities
+        INTEGER (C_INT) :: nGammas
+        TYPE (C_PTR) :: GammaEnergies 
+        TYPE (C_PTR) :: GammaIntensities
+ENDTYPE
+
+TYPE :: radioNuclideData
+        CHARACTER(LEN=_RADIO_NUCLIDE_STRING_LENGTH, KIND=C_CHAR):: name
+        INTEGER (C_INT) :: Z
+        INTEGER (C_INT) :: A
+        INTEGER (C_INT) :: N
+        INTEGER (C_INT) :: Z_xray
+        INTEGER (C_INT) :: nXrays
+        INTEGER (C_INT), POINTER, DIMENSION(:) :: XrayLines
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: XrayIntensities
+        INTEGER (C_INT) :: nGammas
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaEnergies 
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaIntensities
+ENDTYPE
 
 
 
@@ -113,6 +141,8 @@ REAL (KIND=C_DOUBLE),PARAMETER :: R_E = 2.8179403267E-15    ! Classical electron
 
 !Constants
 INTEGER (KIND=C_INT),PARAMETER ::  NIST_LIST_STRING_LENGTH = _NIST_LIST_STRING_LENGTH
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_STRING_LENGTH =&
+_RADIO_NUCLIDE_STRING_LENGTH 
 
 INTEGER (KIND=C_INT),PARAMETER ::  F1_TRANS   = 0
 INTEGER (KIND=C_INT),PARAMETER ::  F12_TRANS  = 1
@@ -560,6 +590,7 @@ INTEGER (KIND=C_INT),PARAMETER ::  Q3_SHELL = 30
 
 INTEGER (KIND=C_INT),PARAMETER ::  KA1_LINE = KL3_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  KA2_LINE = KL2_LINE
+INTEGER (KIND=C_INT),PARAMETER ::  KA3_LINE = KL1_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  KB1_LINE = KM3_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  KB2_LINE = KN3_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  KB3_LINE = KM2_LINE
@@ -586,6 +617,7 @@ INTEGER (KIND=C_INT),PARAMETER ::  LG5_LINE = L2N1_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  LG6_LINE = L2O4_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  LG8_LINE = L2O1_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  LE_LINE = L2M1_LINE
+INTEGER (KIND=C_INT),PARAMETER ::  LH_LINE = L2M1_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  LL_LINE = L3M1_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  LS_LINE = L3M3_LINE
 INTEGER (KIND=C_INT),PARAMETER ::  LT_LINE = L3M2_LINE
@@ -1775,6 +1807,16 @@ INTEGER (KIND=C_INT),PARAMETER ::  NIST_COMPOUND_WATER_LIQUID = 177
 INTEGER (KIND=C_INT),PARAMETER ::  NIST_COMPOUND_WATER_VAPOR = 178
 INTEGER (KIND=C_INT),PARAMETER ::  NIST_COMPOUND_XYLENE = 179
 
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_55FE = 0
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_57CO = 1
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_109CD = 2
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_125I = 3
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_137CS = 4
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_133BA = 5
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_153GD = 6
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_238PU = 7
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_241AM = 8
+INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_244CM = 9
 
 
 
@@ -2979,6 +3021,33 @@ INTERFACE
                 TYPE (C_PTR) :: rv
         ENDFUNCTION GetCompoundDataNISTList_C
 
+        FUNCTION GetRadioNuclideDataByName_C(string)&
+        BIND (C,NAME='GetRadioNuclideDataByName')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: string
+                TYPE (C_PTR) :: rv
+        ENDFUNCTION GetRadioNuclideDataByName_C
+
+        FUNCTION GetRadioNuclideDataByIndex_C(index)&
+        BIND (C,NAME='GetRadioNuclideDataByIndex')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: index
+                TYPE (C_PTR) :: rv
+        ENDFUNCTION GetRadioNuclideDataByIndex_C
+
+        FUNCTION GetRadioNuclideDataList_C(nNuclides)&
+        BIND (C,NAME='GetRadioNuclideDataList')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(OUT) :: nNuclides
+                TYPE (C_PTR) :: rv
+        ENDFUNCTION GetRadioNuclideDataList_C
+
 ENDINTERFACE
 
 CONTAINS
@@ -3901,4 +3970,149 @@ SUBROUTINE stringF2C(stringF, stringC)
         RETURN
 ENDSUBROUTINE stringF2C
 
+FUNCTION GetRadioNuclideDataByName(radioNuclideDataString) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: radioNuclideDataString
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
+        radioNuclideDataString_F
+        TYPE (radioNuclideData), POINTER :: rv
+        TYPE (radioNuclideData_C), POINTER :: rv_C
+        TYPE (C_PTR) :: rv_c_ptr
+        INTEGER :: i
+
+        NULLIFY(rv)
+        
+        CALL stringF2C(radioNuclideDataString, radioNuclideDataString_F)
+        
+        rv_c_ptr = GetRadioNuclideDataByName_C(C_LOC(radioNuclideDataString_F))
+
+        IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
+                ALLOCATE(rv)
+                CALL C_F_POINTER(rv_c_ptr, rv_C)
+                rv%name = radioNuclideDataString
+                DO i=LEN_TRIM(radioNuclideDataString)+1,LEN(rv%name)
+                        rv%name(i:i) = ' '
+                ENDDO
+                rv%Z = rv_C%Z
+                rv%A = rv_C%A
+                rv%N = rv_C%N
+                rv%Z_xray = rv_C%Z_xray
+                rv%nXrays = rv_C%nXrays
+                rv%nGammas = rv_C%nGammas
+                CALL C_F_POINTER(rv_C%XrayLines, rv%XrayLines, [rv%nXrays])
+                CALL C_F_POINTER(rv_C%XrayIntensities, rv%XrayIntensities, [rv%nXrays])
+                CALL C_F_POINTER(rv_C%GammaEnergies, rv%GammaEnergies, [rv%nGammas])
+                CALL C_F_POINTER(rv_C%GammaIntensities, rv%GammaIntensities, [rv%nGammas])
+        ENDIF
+
+        RETURN
+ENDFUNCTION GetRadioNuclideDataByName
+
+FUNCTION GetRadioNuclideDataByIndex(index) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: index 
+        TYPE (radioNuclideData), POINTER :: rv
+        TYPE (radioNuclideData_C), POINTER :: rv_C
+        TYPE (C_PTR) :: rv_c_ptr
+        INTEGER :: i
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_C
+
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
+        NULLIFY(rv)
+        
+        rv_c_ptr = GetRadioNuclideDataByIndex_C(index)
+
+        IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
+                ALLOCATE(rv)
+                CALL C_F_POINTER(rv_c_ptr, rv_C)
+                CALL C_F_POINTER(rv_C%name, name_C, [xrlstrlen(rv_C%name)])
+                DO i=1,xrlstrlen(rv_C%name)
+                        rv%name(i:i)=name_C(i)
+                ENDDO
+                DO i=xrlstrlen(rv_C%name)+1,RADIO_NUCLIDE_STRING_LENGTH
+                        rv%name(i:i)=' '
+                ENDDO
+                NULLIFY(name_C)
+                CALL xrlFree(rv_C%name)
+                rv%Z = rv_C%Z
+                rv%A = rv_C%A
+                rv%N = rv_C%N
+                rv%Z_xray = rv_C%Z_xray
+                rv%nXrays = rv_C%nXrays
+                rv%nGammas = rv_C%nGammas
+                CALL C_F_POINTER(rv_C%XrayLines, rv%XrayLines, [rv%nXrays])
+                CALL C_F_POINTER(rv_C%XrayIntensities, rv%XrayIntensities, [rv%nXrays])
+                CALL C_F_POINTER(rv_C%GammaEnergies, rv%GammaEnergies, [rv%nGammas])
+                CALL C_F_POINTER(rv_C%GammaIntensities, rv%GammaIntensities, [rv%nGammas])
+        ENDIF
+
+
+        RETURN
+ENDFUNCTION GetRadioNuclideDataByIndex
+
+SUBROUTINE FreeRadioNuclideData(cdn)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE (radioNuclideData), POINTER, INTENT(INOUT) :: cdn
+
+        CALL xrlFree(C_LOC(cdn%XrayLines(1)))
+        CALL xrlFree(C_LOC(cdn%XrayIntensities(1)))
+        CALL xrlFree(C_LOC(cdn%GammaEnergies(1)))
+        CALL xrlFree(C_LOC(cdn%GammaIntensities(1)))
+        DEALLOCATE(cdn)
+ENDSUBROUTINE FreeRadioNuclideData
+
+FUNCTION GetRadioNuclideDataList() RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        CHARACTER(KIND=C_CHAR, LEN=RADIO_NUCLIDE_STRING_LENGTH),&
+        DIMENSION(:), POINTER :: rv
+        INTEGER (C_INT) :: nNuclideDatas
+        TYPE (C_PTR) :: list_c_ptr
+        TYPE (C_PTR), DIMENSION(:), POINTER :: list_c_ptrs
+        INTEGER :: i,j
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: list_f
+
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
+        list_c_ptr = GetRadioNuclideDataList_C(nNuclideDatas)
+
+        CALL C_F_POINTER(list_c_ptr, list_c_ptrs, [nNuclideDatas])
+
+        ALLOCATE(rv(nNuclideDatas))
+
+        DO i=1,nNuclideDatas
+                CALL C_F_POINTER(list_c_ptrs(i), list_f,&
+                [xrlstrlen(list_c_ptrs(i))])
+                DO j=1,xrlstrlen(list_c_ptrs(i))
+                        rv(i)(j:j)=list_f(j)
+                ENDDO
+                DO j=xrlstrlen(list_c_ptrs(i))+1,RADIO_NUCLIDE_STRING_LENGTH
+                        rv(i)(j:j)=' '
+                ENDDO
+                NULLIFY(list_f)
+                CALL xrlFree(list_c_ptrs(i))
+        ENDDO
+        NULLIFY(list_c_ptrs)
+        CALL xrlFree(list_c_ptr)
+ENDFUNCTION GetRadioNuclideDataList
 ENDMODULE

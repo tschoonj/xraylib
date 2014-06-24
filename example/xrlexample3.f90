@@ -29,8 +29,11 @@ COMPLEX (C_DOUBLE) :: F_H, F_0, F_Hbar
 REAL (C_DOUBLE), PARAMETER :: PI = 4.D0*DATAN(1.D0)
 
 TYPE (compoundDataNIST), POINTER :: cdn
+TYPE (radioNuclideData), POINTER :: rnd
 CHARACTER (KIND=C_CHAR, LEN=NIST_LIST_STRING_LENGTH), POINTER, &
 DIMENSION(:) :: nistCompounds
+CHARACTER (KIND=C_CHAR, LEN=RADIO_NUCLIDE_STRING_LENGTH), POINTER, &
+DIMENSION(:) :: radioNuclides 
 
 CALL XRayInit()
 !CALL SetHardExit(1)
@@ -292,6 +295,57 @@ ENDDO
 
 DEALLOCATE(nistCompounds)
 
+WRITE (6, '(A)') ''
+
+rnd => GetRadioNuclideDataByName('109Cd')
+WRITE (6, '(A)') '109Cd'
+WRITE (6, '(A,A)') '  Name: ', TRIM(rnd%name)
+WRITE (6, '(A,I3)') '  Z: ',rnd%Z
+WRITE (6, '(A,I3)') '  A: ',rnd%A
+WRITE (6, '(A,I3)') '  N: ',rnd%N
+WRITE (6, '(A,I3)') '  Z_xray: ',rnd%Z_xray
+WRITE (6, '(A)') '  X-rays: '
+DO i=1,rnd%nXrays
+        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        LineEnergy(rnd%Z_xray, rnd%XrayLines(i)),' keV -> ', &
+        rnd%XrayIntensities(i)*100.0, ' %'
+ENDDO
+WRITE (6, '(A)') '  Gamma rays: '
+DO i=1,rnd%nGammas
+        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        rnd%GammaEnergies(i),' keV -> ', &
+        rnd%GammaIntensities(i)*100.0, ' %'
+ENDDO
+CALL FreeRadioNuclideData(rnd)
+
+rnd => GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I)
+WRITE (6, '(A)') 'RADIO_NUCLIDE_125I'
+WRITE (6, '(A,A)') '  Name: ', TRIM(rnd%name)
+WRITE (6, '(A,I3)') '  Z: ',rnd%Z
+WRITE (6, '(A,I3)') '  A: ',rnd%A
+WRITE (6, '(A,I3)') '  N: ',rnd%N
+WRITE (6, '(A,I3)') '  Z_xray: ',rnd%Z_xray
+WRITE (6, '(A)') '  X-rays: '
+DO i=1,rnd%nXrays
+        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        LineEnergy(rnd%Z_xray, rnd%XrayLines(i)),' keV -> ', &
+        rnd%XrayIntensities(i)*100.0, ' %'
+ENDDO
+WRITE (6, '(A)') '  Gamma rays: '
+DO i=1,rnd%nGammas
+        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        rnd%GammaEnergies(i),' keV -> ', &
+        rnd%GammaIntensities(i)*100.0, ' %'
+ENDDO
+CALL FreeRadioNuclideData(rnd)
+
+radioNuclides => GetRadioNuclideDataList()
+WRITE (6, '(A)') 'List of available radionuclides'
+DO i=1,SIZE(radioNuclides)
+        WRITE (6, '(A,I3,A,A)') '  Radionuclides',i,': ',TRIM(radioNuclides(i))
+ENDDO
+
+DEALLOCATE(radioNuclides)
 WRITE (6,'(A)') ''
 WRITE (6,'(A)') '--------------------------- END OF XRLEXAMPLE3 -------------------------------'
 WRITE (6,'(A)') ''
