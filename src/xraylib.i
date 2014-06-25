@@ -107,6 +107,90 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         SWIG_arg++;
 }
 
+%typemap(out) struct radioNuclideData * {
+        int i;
+        struct radioNuclideData *rnd = $1; 
+
+        if (rnd == NULL) {
+                fprintf(stderr,"Error: requested radionuclide not found in database\n");
+                lua_pushnil(L);
+                SWIG_arg++;
+        }
+        else {
+                lua_newtable(L);
+
+                lua_pushstring(L, "name");
+                lua_pushstring(L, rnd->name);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "Z");
+                lua_pushinteger(L, rnd->Z);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "A");
+                lua_pushinteger(L, rnd->A);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "N");
+                lua_pushinteger(L, rnd->N);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "Z_xray");
+                lua_pushinteger(L, rnd->Z_xray);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "nXrays");
+                lua_pushinteger(L, rnd->nXrays);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "nGammas");
+                lua_pushinteger(L, rnd->nGammas);
+                lua_settable(L,-3);
+
+                lua_pushstring(L, "XrayLines");
+                lua_createtable(L, rnd->nXrays, 0);
+                for (i = 0 ; i < rnd->nXrays; i++) {
+                        lua_pushinteger(L, i+1);
+                        lua_pushinteger(L, rnd->XrayLines[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "XrayIntensities");
+                lua_createtable(L, rnd->nXrays, 0);
+                for (i = 0 ; i < rnd->nXrays; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushnumber(L, rnd->XrayIntensities[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "GammaEnergies");
+                lua_createtable(L, rnd->nGammas, 0);
+                for (i = 0 ; i < rnd->nGammas; i++) {
+                        lua_pushinteger(L, i+1);
+                        lua_pushnumber(L, rnd->GammaEnergies[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "GammaIntensities");
+                lua_createtable(L, rnd->nGammas, 0);
+                for (i = 0 ; i < rnd->nGammas; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushnumber(L, rnd->GammaIntensities[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+
+                lua_pushvalue(L, -1);
+
+                FreeRadioNuclideData(rnd);
+
+                SWIG_arg++;
+        }
+}
 
 %typemap(out) struct compoundDataNIST * {
         int i;

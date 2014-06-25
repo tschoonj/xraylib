@@ -205,4 +205,44 @@ nistCompounds = xraylib.GetCompoundDataNISTList()
 printf ("List of available NIST compounds:\n")
 for i,v in ipairs(nistCompounds) do printf("  Compound %i: %s\n",i,v) end
 
+printf ("\n")
+
+-- radioNuclideData tests
+rnd = xraylib.GetRadioNuclideDataByName("109Cd")
+printf ("109Cd")
+printf ("  Name: %s\n" , rnd['name'])
+printf ("  Z: %i\n" , rnd['Z'])
+printf ("  A: %i\n" , rnd['A'])
+printf ("  N: %i\n" , rnd['N'])
+printf ("  Z_xray: %i\n" , rnd['Z_xray'])
+printf ("  X-rays:\n")
+for i=1,rnd['nXrays'] do
+	printf ("  %f keV -> %f %%\n", xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+end
+printf ("  Gamma rays:\n")
+for i=1,rnd['nGammas'] do
+	printf ("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+end
+
+rnd = xraylib.GetRadioNuclideDataByIndex(xraylib.RADIO_NUCLIDE_125I)
+printf ("RADIO_NUCLIDE_125I\n")
+printf ("  Name: %s\n" , rnd['name'])
+printf ("  Z: %i\n" , rnd['Z'])
+printf ("  A: %i\n" , rnd['A'])
+printf ("  N: %i\n" , rnd['N'])
+printf ("  Z_xray: %i\n" , rnd['Z_xray'])
+printf ("  X-rays:\n")
+for i=1,rnd['nXrays'] do
+	printf ("  %f keV -> %f %%\n", xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+end
+printf ("  Gamma rays:\n")
+for i=1,rnd['nGammas'] do
+	printf ("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+end
+
+radioNuclides = xraylib.GetRadioNuclideDataList()
+printf ("List of available radionuclides:\n")
+for i,v in ipairs(radioNuclides) do printf("  Radionuclide %i: %s\n",i,v) end
+
+
 printf ("\n--------------------------- END OF XRLEXAMPLE9 -------------------------------\n")
