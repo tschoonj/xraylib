@@ -19,7 +19,7 @@ if ENABLE_IDL
 dlmdir = $(prefix)/dlm
 dist_dlm_DATA = libxrlidl.dlm
 prodir = $(prefix)/pro
-dist_pro_DATA = xraylib_nist_compounds.pro  xraylib_auger.pro xraylib_shells.pro  xraylib_help.pro xraylib_lines.pro xraylib.pro
+dist_pro_DATA = xraylib_nist_compounds.pro  xraylib_auger.pro xraylib_shells.pro  xraylib_help.pro xraylib_lines.pro xraylib.pro xraylib_radionuclides.pro
 
 plugindir = $(dlmdir)
 plugin_LTLIBRARIES = libxrlidl.la
