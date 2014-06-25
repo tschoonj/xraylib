@@ -19,12 +19,12 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <xraylib.h>
 
 static const int nNuclideDataList = 10;
-static int __NuclideDataList_XrayLines_0[] = {LL_LINE, LH_LINE, LA2_LINE, LA1_LINE, LB6_LINE, LB1_LINE, LB4_LINE, LB3_LINE, KA3_LINE, KA2_LINE, KA1_LINE, KB3_LINE, KB1_LINE, KB5_LINE, KB4_LINE};
-static double __NuclideDataList_XrayIntensities_0[] = {0.00037, 0.00025, 0.00028, 0.0025, 2.2e-05, 0.0019, 0.00011, 0.00017, 6.9e-08, 0.085, 0.169, 0.0101, 0.0198, 8.9e-06, 8.5e-10};
+static int __NuclideDataList_XrayLines_0[] = {LL_LINE, LH_LINE, LA2_LINE, LA1_LINE, LB1_LINE, LB4_LINE, LB3_LINE, KA3_LINE, KA2_LINE, KA1_LINE, KB3_LINE, KB1_LINE, KB5_LINE};
+static double __NuclideDataList_XrayIntensities_0[] = {0.00037, 0.00025, 0.00028, 0.0025, 0.0019, 0.00011, 0.00017, 6.9e-08, 0.085, 0.169, 0.0101, 0.0198, 8.9e-06};
 static double __NuclideDataList_GammaEnergies_0[] = {125.95};
 static double __NuclideDataList_GammaIntensities_0[] = {1.28e-09};
-static int __NuclideDataList_XrayLines_1[] = {LL_LINE, LH_LINE, LA2_LINE, LA1_LINE, LB6_LINE, LB1_LINE, LB4_LINE, LB3_LINE, KA3_LINE, KA2_LINE, KA1_LINE, KB3_LINE, KB1_LINE, KB5_LINE, KB4_LINE};
-static double __NuclideDataList_XrayIntensities_1[] = {0.00068, 0.00046, 0.00062, 0.0056, 3.8e-05, 0.0042, 0.00022, 0.00034, 1.69e-07, 0.164, 0.326, 0.0199, 0.0388, 2.06e-05, 2.2e-09};
+static int __NuclideDataList_XrayLines_1[] = {LL_LINE, LH_LINE, LA2_LINE, LA1_LINE, LB1_LINE, LB4_LINE, LB3_LINE, KA3_LINE, KA2_LINE, KA1_LINE, KB3_LINE, KB1_LINE, KB5_LINE};
+static double __NuclideDataList_XrayIntensities_1[] = {0.00068, 0.00046, 0.00062, 0.0056, 0.0042, 0.00022, 0.00034, 1.69e-07, 0.164, 0.326, 0.0199, 0.0388, 2.06e-05};
 static double __NuclideDataList_GammaEnergies_1[] = {14.41300, 122.0614, 136.4743, 230.29, 339.54, 352.36, 366.75, 569.92, 692.03, 706.40};
 static double __NuclideDataList_GammaIntensities_1[] = {0.0916, 0.856, 0.1068, 4e-06, 0.000139, 0.000132, 1.3e-05, 0.00017, 0.00157, 0.000253};
 static int __NuclideDataList_XrayLines_2[] = {LL_LINE, LH_LINE, LA2_LINE, LA1_LINE, LB1_LINE, LB4_LINE, LB3_LINE, LB6_LINE, LB2_LINE, LG1_LINE, LG2_LINE, LG3_LINE, KA3_LINE, KA2_LINE, KA1_LINE, KB3_LINE, KB1_LINE, KB5_LINE, KB2_LINE, KB4_LINE};
@@ -60,8 +60,8 @@ static double __NuclideDataList_XrayIntensities_9[] = {0.0022, 0.0035, 0.031, 0.
 static double __NuclideDataList_GammaEnergies_9[] = {42.824, 98.860, 152.63, 251.47, 263.37, 289.21, 302.98, 340.70, 507.2, 554.60, 597.40, 606.10, 758.61, 817.89, 857.48, 895.3, 900.37};
 static double __NuclideDataList_GammaIntensities_9[] = {0.00024, 1.62e-05, 9.8e-06, 9.8e-08, 5.4e-07, 4.7e-09, 1.67e-07, 1.7e-08, 7.8e-08, 7.9e-07, 4.9e-07, 7.3e-08, 1.27e-07, 6.4e-07, 5.4e-08, 1.7e-08, 1.2e-08};
 static const struct radioNuclideData nuclideDataList[] = {
-{"55Fe" ,26, 55, 29, 25, 15, __NuclideDataList_XrayLines_0, __NuclideDataList_XrayIntensities_0, 1, __NuclideDataList_GammaEnergies_0, __NuclideDataList_GammaIntensities_0},
-{"57Co" ,27, 57, 30, 26, 15, __NuclideDataList_XrayLines_1, __NuclideDataList_XrayIntensities_1, 10, __NuclideDataList_GammaEnergies_1, __NuclideDataList_GammaIntensities_1},
+{"55Fe" ,26, 55, 29, 25, 13, __NuclideDataList_XrayLines_0, __NuclideDataList_XrayIntensities_0, 1, __NuclideDataList_GammaEnergies_0, __NuclideDataList_GammaIntensities_0},
+{"57Co" ,27, 57, 30, 26, 13, __NuclideDataList_XrayLines_1, __NuclideDataList_XrayIntensities_1, 10, __NuclideDataList_GammaEnergies_1, __NuclideDataList_GammaIntensities_1},
 {"109Cd" ,48, 109, 61, 47, 20, __NuclideDataList_XrayLines_2, __NuclideDataList_XrayIntensities_2, 1, __NuclideDataList_GammaEnergies_2, __NuclideDataList_GammaIntensities_2},
 {"125I" ,53, 125, 72, 52, 20, __NuclideDataList_XrayLines_3, __NuclideDataList_XrayIntensities_3, 1, __NuclideDataList_GammaEnergies_3, __NuclideDataList_GammaIntensities_3},
 {"137Cs" ,55, 137, 82, 56, 20, __NuclideDataList_XrayLines_4, __NuclideDataList_XrayIntensities_4, 2, __NuclideDataList_GammaEnergies_4, __NuclideDataList_GammaIntensities_4},

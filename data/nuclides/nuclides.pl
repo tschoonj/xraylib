@@ -253,13 +253,13 @@ foreach my $nuclide_code (@nuclide_codes) {
 
 	foreach my $node (@xray_nodes) {
 		my $xray_intensity = $xpc->findvalue("td[2]", $node);
-		next unless (looks_like_number($xray_intensity));
-
-		#print $xpc->findvalue("td[3]", $node)."\n";
 		my $line = $xpc->findvalue("td[3]", $node);
 		$line =~ s/$Z_xray//;
 		$line = uc($line)."_LINE";
 		print "line: $line\n";
+		next unless (looks_like_number($xray_intensity) && &xraylib::LineEnergy($nuclideDataSingle{Z_xray}, ${$xraylib::{$line}}) > 0.0);
+
+		#print $xpc->findvalue("td[3]", $node)."\n";
 
 		printf "Energies: %g  %g\n", $xpc->findvalue("td[1]", $node), &xraylib::LineEnergy($nuclideDataSingle{Z_xray}, ${$xraylib::{$line}});
 
