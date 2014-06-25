@@ -224,6 +224,50 @@ int main()
   }
   xrlFree(nistCompounds);
 
+  std::printf ("\n");
+
+  /* radioNuclideData tests */
+  struct radioNuclideData *rnd;
+  rnd = GetRadioNuclideDataByName("109Cd");
+  std::printf ("109Cd\n");
+  std::printf ("  Name: %s\n", rnd->name);
+  std::printf ("  Z: %i\n", rnd->Z);
+  std::printf ("  A: %i\n", rnd->A);
+  std::printf ("  N: %i\n", rnd->N);
+  std::printf ("  Z_xray: %i\n", rnd->Z_xray);
+  std::printf ("  X-rays:\n");
+  for (i = 0 ; i < rnd->nXrays ; i++)
+  	std::printf ("  %f keV -> %f %%\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]*100.0);
+  std::printf ("  Gamma rays:\n");
+  for (i = 0 ; i < rnd->nGammas ; i++)
+  	std::printf ("  %f keV -> %f %%\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]*100.0);
+
+  FreeRadioNuclideData(rnd);
+
+  rnd = GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I);
+  std::printf ("RADIO_NUCLIDE_125I\n");
+  std::printf ("  Name: %s\n", rnd->name);
+  std::printf ("  Z: %i\n", rnd->Z);
+  std::printf ("  A: %i\n", rnd->A);
+  std::printf ("  N: %i\n", rnd->N);
+  std::printf ("  Z_xray: %i\n", rnd->Z_xray);
+  std::printf ("  X-rays:\n");
+  for (i = 0 ; i < rnd->nXrays ; i++)
+  	std::printf ("  %f keV -> %f %%\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]*100.0);
+  std::printf ("  Gamma rays:\n");
+  for (i = 0 ; i < rnd->nGammas ; i++)
+  	std::printf ("  %f keV -> %f %%\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]*100.0);
+
+  FreeRadioNuclideData(rnd);
+
+  char **radioNuclides;
+  radioNuclides = GetRadioNuclideDataList(NULL);
+  std::printf ("List of available radionuclides:\n");
+  for (i = 0 ; radioNuclides[i] != NULL ; i++) {
+  	std::printf ("  Radionuclide %i: %s\n", i, radioNuclides[i]);
+	xrlFree(radioNuclides[i]);
+  }
+  xrlFree(radioNuclides);
 
   std::printf ("\n--------------------------- END OF XRLEXAMPLE6 -------------------------------\n");
   return 0;
