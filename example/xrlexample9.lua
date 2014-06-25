@@ -209,7 +209,7 @@ printf ("\n")
 
 -- radioNuclideData tests
 rnd = xraylib.GetRadioNuclideDataByName("109Cd")
-printf ("109Cd")
+printf ("109Cd\n")
 printf ("  Name: %s\n" , rnd['name'])
 printf ("  Z: %i\n" , rnd['Z'])
 printf ("  A: %i\n" , rnd['A'])

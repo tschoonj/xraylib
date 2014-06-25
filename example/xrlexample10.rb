@@ -184,6 +184,7 @@ printf("  FH(3,3,1) structure factor: (%f, %f)\n", fh.real, fh.imag)
 f0 = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle)
 printf("  F0=FH(0,0,0) structure factor: (%f, %f)\n", f0.real, f0.imag)
 
+printf("\n")
 
 # compoundDataNIST tests
 cdn = Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")
@@ -210,4 +211,44 @@ nistCompounds.each do |nistCompound|
 	counter = counter + 1
 end
 
+# radioNuclideData tests
+rnd = Xraylib.GetRadioNuclideDataByName("109Cd")
+printf("109Cd\n")
+printf("  Name: %s\n" , rnd['name'])
+printf("  Z: %i\n" , rnd['Z'])
+printf("  A: %i\n" , rnd['A'])
+printf("  N: %i\n" , rnd['N'])
+printf("  Z_xray: %i\n" , rnd['Z_xray'])
+printf("  X-rays:\n")
+for i in (0..rnd['nXrays']-1)
+	printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+end
+printf("  Gamma rays:\n")
+for i in (0..rnd['nGammas']-1)
+	printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+end
+
+rnd = Xraylib.GetRadioNuclideDataByIndex(Xraylib::RADIO_NUCLIDE_125I)
+printf("RADIO_NUCLIDE_125I\n")
+printf("  Name: %s\n" , rnd['name'])
+printf("  Z: %i\n" , rnd['Z'])
+printf("  A: %i\n" , rnd['A'])
+printf("  N: %i\n" , rnd['N'])
+printf("  Z_xray: %i\n" , rnd['Z_xray'])
+printf("  X-rays:\n")
+for i in (0..rnd['nXrays']-1)
+	printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+end
+printf("  Gamma rays:\n")
+for i in (0..rnd['nGammas']-1)
+	printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+end
+
+radioNuclides = Xraylib.GetRadioNuclideDataList()
+counter = 0
+printf ("List of available radionuclides:\n")
+radioNuclides.each do |radioNuclide|
+	puts "  RadioNuclide #{counter}: #{radioNuclide}"
+	counter = counter + 1
+end
 printf("\n--------------------------- END OF XRLEXAMPLE10 -------------------------------\n")

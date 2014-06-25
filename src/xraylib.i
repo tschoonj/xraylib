@@ -1440,6 +1440,45 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         xrlFree(list);
         $result = res;
 }
+%typemap(out) struct radioNuclideData * {
+        int i;
+        struct radioNuclideData *rnd = $1; 
+
+        if (rnd== NULL) {
+                fprintf(stderr, "Error: requested radionuclide not found in database\n");
+                $result = Qnil;
+        }
+        else {
+                VALUE rv = rb_hash_new();
+                rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(rnd->name));
+                rb_hash_aset(rv, rb_str_new2("Z"), INT2FIX(rnd->Z));
+                rb_hash_aset(rv, rb_str_new2("A"), INT2FIX(rnd->A));
+                rb_hash_aset(rv, rb_str_new2("N"), INT2FIX(rnd->N));
+                rb_hash_aset(rv, rb_str_new2("Z_xray"), INT2FIX(rnd->Z_xray));
+                rb_hash_aset(rv, rb_str_new2("nXrays"), INT2FIX(rnd->nXrays));
+                rb_hash_aset(rv, rb_str_new2("nGammas"), INT2FIX(rnd->nGammas));
+                VALUE XrayLines, XrayIntensities, GammaEnergies, GammaIntensities;
+                XrayLines = rb_ary_new2(rnd->nXrays);
+                XrayIntensities= rb_ary_new2(rnd->nXrays);
+                GammaEnergies = rb_ary_new2(rnd->nGammas);
+                GammaIntensities= rb_ary_new2(rnd->nGammas);
+                for (i = 0 ; i < rnd->nXrays ; i++) {
+                        rb_ary_store(XrayLines, (long) i , INT2FIX(rnd->XrayLines[i]));
+                        rb_ary_store(XrayIntensities, (long) i , rb_float_new(rnd->XrayIntensities[i]));
+                }
+                for (i = 0 ; i < rnd->nGammas; i++) {
+                        rb_ary_store(GammaEnergies, (long) i , rb_float_new(rnd->GammaEnergies[i]));
+                        rb_ary_store(GammaIntensities, (long) i , rb_float_new(rnd->GammaIntensities[i]));
+                }
+                rb_hash_aset(rv, rb_str_new2("XrayLines"), XrayLines);
+                rb_hash_aset(rv, rb_str_new2("XrayIntensities"), XrayIntensities);
+                rb_hash_aset(rv, rb_str_new2("GammaEnergies"), GammaEnergies);
+                rb_hash_aset(rv, rb_str_new2("GammaIntensities"), GammaIntensities);
+                FreeRadioNuclideData(rnd);
+                $result = rv;
+        }
+
+}
 %typemap(out) struct compoundDataNIST * {
         int i;
         struct compoundDataNIST *cdn = $1; 
