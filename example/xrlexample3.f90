@@ -342,7 +342,7 @@ CALL FreeRadioNuclideData(rnd)
 radioNuclides => GetRadioNuclideDataList()
 WRITE (6, '(A)') 'List of available radionuclides'
 DO i=1,SIZE(radioNuclides)
-        WRITE (6, '(A,I3,A,A)') '  Radionuclides',i,': ',TRIM(radioNuclides(i))
+        WRITE (6, '(A,I3,A,A)') '  Radionuclide',i,': ',TRIM(radioNuclides(i))
 ENDDO
 
 DEALLOCATE(radioNuclides)

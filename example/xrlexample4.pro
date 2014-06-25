@@ -199,6 +199,57 @@ FOR i=0,N_ELEMENTS(nistCompounds)-1 DO $
 	PRINT, FORMAT='(%"  Compound %i: %s")', i, nistCompounds[i]
 
 PRINT,''
+
+; radioNuclides
+rnd = GetRadioNuclideDataByName('109Cd')
+PRINT, '109Cd'
+PRINT, '  Name: ', rnd.name
+PRINT,'  Z: ',rnd.Z
+PRINT, '  A: ',rnd.A
+PRINT, '  N: ',rnd.N
+PRINT, '  Z_xray: ',rnd.Z_xray
+;PRINT, '  nXrays: ',rnd.nXrays
+;PRINT, '  nXrays: ',N_ELEMENTS(rnd.XrayLines)
+;PRINT, '  nXrays: ',N_ELEMENTS(rnd.XrayIntensities)
+;PRINT, '  nGammas: ',rnd.nGammas
+PRINT, '  X-rays: '
+FOR i=0,rnd.nXrays-1 DO $
+        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        LineEnergy(rnd.Z_xray, rnd.XrayLines[i]),$
+        rnd.XrayIntensities[i]*100.0
+PRINT, '  Gamma rays: '
+FOR i=0,rnd.nGammas-1 DO $
+        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        rnd.GammaEnergies[i],$
+        rnd.GammaIntensities[i]*100.0
+
+rnd = GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I)
+PRINT, 'RADIO_NUCLIDE_125I'
+PRINT, '  Name: ', rnd.name
+PRINT, '  Z: ',rnd.Z
+PRINT, '  A: ',rnd.A
+PRINT, '  N: ',rnd.N
+PRINT, '  Z_xray: ',rnd.Z_xray
+PRINT, '  X-rays: '
+FOR i=0,rnd.nXrays-1 DO $
+        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        LineEnergy(rnd.Z_xray, rnd.XrayLines[i]),$
+        rnd.XrayIntensities[i]*100.0
+
+PRINT, '  Gamma rays: '
+FOR i=0,rnd.nGammas-1 DO $
+        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        rnd.GammaEnergies[i],$
+        rnd.GammaIntensities[i]*100.0
+
+radioNuclides = GetRadioNuclideDataList()
+PRINT, 'List of available radionuclides'
+FOR i=0,N_ELEMENTS(radioNuclides)-1 DO $
+	PRINT, FORMAT='(%"  Radionuclide %i: %s")', i, radioNuclides[i]
+
+
+
+PRINT,''
 PRINT,'--------------------------- END OF XRLEXAMPLE4 -------------------------------'
 PRINT,''
 

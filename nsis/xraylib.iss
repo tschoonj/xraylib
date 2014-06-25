@@ -120,6 +120,7 @@ Source: "{#builddir}\nsis\xraylib_lines.pro"; DestDir: "{app}\pro" ; Components:
 Source: "{#builddir}\nsis\xraylib_shells.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_auger.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\nsis\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\nsis\xraylib_radionuclides.pro"; DestDir: "{app}\pro" ; Components: idl
 
 Source: "{#builddir}\nsis\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
 Source: "{#builddir}\nsis\xraylib.py" ; DestDir: "{app}\Python" ; Components: python

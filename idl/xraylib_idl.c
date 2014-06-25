@@ -178,6 +178,9 @@ extern IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByName(int argc, IDL_VPTR argv[
 extern IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByIndex(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTList(int argc, IDL_VPTR argv[]);
 
+extern IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByName(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByIndex(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataList(int argc, IDL_VPTR argv[]);
 
 static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_GetExitStatus_xrl},"GETEXITSTATUS", 0 , 0 , 0 , 0},
@@ -319,6 +322,9 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_GetCompoundDataNISTByName}, "GETCOMPOUNDDATANISTBYNAME", 1, 1, 0, 0},
 	{{IDL_GetCompoundDataNISTByIndex}, "GETCOMPOUNDDATANISTBYINDEX", 1, 1, 0, 0},
 	{{IDL_GetCompoundDataNISTList}, "GETCOMPOUNDDATANISTLIST", 0, 0, 0, 0},
+	{{IDL_GetRadioNuclideDataByName}, "GETRADIONUCLIDEDATABYNAME", 1, 1, 0, 0},
+	{{IDL_GetRadioNuclideDataByIndex}, "GETRADIONUCLIDEDATABYINDEX", 1, 1, 0, 0},
+	{{IDL_GetRadioNuclideDataList}, "GETRADIONUCLIDEDATALIST", 0, 0, 0, 0},
 
 };
 static IDL_SYSFUN_DEF2 xrl_procedures[] = {
@@ -1576,7 +1582,134 @@ IDL_VPTR IDL_CDECL IDL_Refractive_Index(int argc, IDL_VPTR argv[]) {
 	return rv;
 }
 
+static IDL_VPTR IDL_GetRadioNuclideData(struct radioNuclideData *rnd) {
+	IDL_VPTR rv;
+	IDL_MEMINT array_dims1[] = {1, rnd->nXrays};
+	IDL_MEMINT array_dims2[] = {1, rnd->nGammas};
+	void *sdef;
+	struct radioNuclideData_IDL {
+		IDL_STRING name;
+		IDL_LONG Z;
+		IDL_LONG A;
+		IDL_LONG N;
+		IDL_LONG Z_xray;
+		IDL_LONG nXrays;
+		IDL_LONG nGammas;
+		char dummy[1];
+		/*IDL_LONG Elements[cdn->nElements];
+		double massFractions[cdn->nElements];*/
+	};
 
+	struct radioNuclideData_IDL *rndi;
+	IDL_STRUCT_TAG_DEF s_tags[] = {
+		{"NAME", 0, (void *) IDL_TYP_STRING},
+		{"Z", 0, (void *) IDL_TYP_LONG},
+		{"A", 0, (void *) IDL_TYP_LONG},
+		{"N", 0, (void *) IDL_TYP_LONG},
+		{"Z_XRAY", 0, (void *) IDL_TYP_LONG},
+		{"NXRAYS", 0, (void *) IDL_TYP_LONG},
+		{"NGAMMAS", 0, (void *) IDL_TYP_LONG},
+		{"XRAYLINES", array_dims1, (void *) IDL_TYP_LONG},
+		{"XRAYINTENSITIES", array_dims1, (void *) IDL_TYP_DOUBLE},
+		{"GAMMAENERGIES", array_dims2, (void *) IDL_TYP_DOUBLE},
+		{"GAMMAINTENSITIES", array_dims2, (void *) IDL_TYP_DOUBLE},
+		{0}
+	};
+
+	void *sdef_struct = IDL_MakeStruct(NULL, s_tags);
+
+	rndi = (struct radioNuclideData_IDL *) malloc(sizeof(struct radioNuclideData_IDL)-sizeof(char)+sizeof(IDL_LONG)*rnd->nXrays+sizeof(double)*rnd->nXrays+2*sizeof(double)*rnd->nGammas);
+	rndi->Z = rnd->Z;
+	rndi->A = rnd->A;
+	rndi->N = rnd->N;
+	rndi->Z_xray = rnd->Z_xray;
+	rndi->nXrays = rnd->nXrays;
+	rndi->nGammas = rnd->nGammas;
+	IDL_StrStore(&(rndi->name), rnd->name);
+
+	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
+	ilDims[0] = 1;
+	//release will probably lead to a small memory leak here due to the name not being freed
+	//perhaps to be fixed later on
+	rv = IDL_ImportArray(1, ilDims, IDL_TYP_STRUCT, (UCHAR *) rndi, release, sdef_struct);
+	IDL_MEMINT offset = IDL_StructTagInfoByName(sdef_struct, "XRAYLINES", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,rnd->XrayLines,sizeof(int)*rnd->nXrays);
+	offset = IDL_StructTagInfoByName(sdef_struct, "XRAYINTENSITIES", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,rnd->XrayIntensities,sizeof(double)*rnd->nXrays);
+	offset = IDL_StructTagInfoByName(sdef_struct, "GAMMAENERGIES", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,rnd->GammaEnergies,sizeof(double)*rnd->nGammas);
+	offset = IDL_StructTagInfoByName(sdef_struct, "GAMMAINTENSITIES", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,rnd->GammaIntensities,sizeof(double)*rnd->nGammas);
+	return rv;
+}
+
+IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByName(int argc, IDL_VPTR argv[]) {
+  	IDL_ENSURE_STRING(argv[0]);
+  	IDL_ENSURE_SCALAR(argv[0]);
+  	IDL_ENSURE_SIMPLE(argv[0]);
+
+	IDL_VPTR rv;
+
+	char *radioNuclideString = IDL_VarGetString(argv[0]);
+	struct radioNuclideData *rnd = GetRadioNuclideDataByName(radioNuclideString);
+	if (rnd == NULL) {
+		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
+	}
+
+	rv = IDL_GetRadioNuclideData(rnd); 
+
+	FreeRadioNuclideData(rnd);
+
+	return rv;
+}
+
+IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByIndex(int argc, IDL_VPTR argv[]) {
+  	IDL_EXCLUDE_STRING(argv[0]);
+  	IDL_ENSURE_SCALAR(argv[0]);
+  	IDL_ENSURE_SIMPLE(argv[0]);
+
+	IDL_VPTR rv;
+
+	int index = (int) IDL_LongScalar(argv[0]);
+	
+
+	struct radioNuclideData *rnd = GetRadioNuclideDataByIndex(index);
+	if (rnd == NULL) {
+		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
+	}
+
+	rv = IDL_GetRadioNuclideData(rnd); 
+
+	FreeRadioNuclideData(rnd);
+
+	return rv;
+}
+
+IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataList(int argc, IDL_VPTR argv[]) {
+	IDL_VPTR rv;
+
+	int nRadioNuclides;
+	char **list = GetRadioNuclideDataList(&nRadioNuclides);
+	IDL_STRING *list_IDL;
+	IDL_MEMINT dims[IDL_MAX_ARRAY_DIM];
+	dims[0] = nRadioNuclides;
+
+	list_IDL = (IDL_STRING*) IDL_MakeTempArray((int) IDL_TYP_STRING, 1, dims, IDL_ARR_INI_NOP, &rv);
+
+	int i;
+	int slen;
+
+	for (i = 0 ; i < nRadioNuclides; i++) {
+		slen = strlen(list[i]);
+		IDL_StrEnsureLength(&(list_IDL[i]), slen);
+		IDL_StrStore(&(list_IDL[i]), list[i]);
+		list_IDL[i].slen = slen;
+		xrlFree(list[i]);
+	}
+	xrlFree(list);
+
+	return rv;
+}
 int IDL_Load (void) 
 {
 	return IDL_SysRtnAdd(xrl_functions, TRUE, IDL_CARRAY_ELTS(xrl_functions)) &&

@@ -200,6 +200,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/pro/xraylib_lines.pro
 %{_prefix}/pro/xraylib_auger.pro
 %{_prefix}/pro/xraylib_nist_compounds.pro
+%{_prefix}/pro/xraylib_radionuclides.pro
 %{_prefix}/pro/xraylib.pro
 
 %files lua
