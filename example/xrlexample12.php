@@ -205,5 +205,45 @@ for ($i = 0 ; $i < count($nistCompounds) ; $i++) {
 	printf("  Compound %d: %s\n", $i, $nistCompounds[$i]);
 }
 
+printf ("\n");
 
+/* radioNuclideData tests */
+$rnd = GetRadioNuclideDataByName("109Cd");
+printf ("109Cd\n");
+printf ("  Name: %s\n", $rnd["name"]);
+printf ("  Z: %d\n", $rnd["Z"]);
+printf ("  A: %d\n", $rnd["A"]);
+printf ("  N: %d\n", $rnd["N"]);
+printf ("  Z_xray: %d\n", $rnd["Z_xray"]);
+printf ("  X-rays:\n");
+for ($i = 0 ; $i < $rnd["nXrays"] ; $i++) {
+  	printf ("  %f keV -> %f %%\n", LineEnergy($rnd["Z_xray"], $rnd["XrayLines"][$i]), $rnd["XrayIntensities"][$i]*100.0);
+}
+printf ("  Gamma rays:\n");
+for ($i = 0 ; $i < $rnd["nGammas"] ; $i++) {
+  	printf ("  %f keV -> %f %%\n", $rnd["GammaEnergies"][$i], $rnd["GammaIntensities"][$i]*100.0);
+}
+
+$rnd = GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I);
+printf ("RADIO_NUCLIDE_125I\n");
+printf ("  Name: %s\n", $rnd["name"]);
+printf ("  Z: %d\n", $rnd["Z"]);
+printf ("  A: %d\n", $rnd["A"]);
+printf ("  N: %d\n", $rnd["N"]);
+printf ("  Z_xray: %d\n", $rnd["Z_xray"]);
+printf ("  X-rays:\n");
+for ($i = 0 ; $i < $rnd["nXrays"] ; $i++) {
+  	printf ("  %f keV -> %f %%\n", LineEnergy($rnd["Z_xray"], $rnd["XrayLines"][$i]), $rnd["XrayIntensities"][$i]*100.0);
+}
+printf ("  Gamma rays:\n");
+for ($i = 0 ; $i < $rnd["nGammas"] ; $i++) {
+  	printf ("  %f keV -> %f %%\n", $rnd["GammaEnergies"][$i], $rnd["GammaIntensities"][$i]*100.0);
+}
+
+$radioNuclides = GetRadioNuclideDataList();
+printf ("List of available radionuclides:\n");
+for ($i = 0 ; $i < count($radioNuclides) ; $i++) {
+	printf("  Radionuclide %d: %s\n", $i, $radioNuclides[$i]);
+}
+printf("\n--------------------------- END OF XRLEXAMPLE12 ------------------------------\n");
 ?>

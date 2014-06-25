@@ -1736,6 +1736,46 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         xrlFree(list);
 }
 
+%typemap(out) struct radioNuclideData * {
+        int i;
+        struct radioNuclideData *rnd = $1; 
+
+        if (rnd == NULL) {
+                php_log_err("Error: requested radionuclide not found in database\n");
+                RETURN_NULL();
+        }
+        array_init(return_value);
+        add_assoc_string(return_value, "name", rnd->name, 1);
+        add_assoc_long(return_value, "Z", rnd->Z);
+        add_assoc_long(return_value, "A", rnd->A);
+        add_assoc_long(return_value, "N", rnd->N);
+        add_assoc_long(return_value, "Z_xray", rnd->Z_xray);
+        add_assoc_long(return_value, "nXrays", rnd->nXrays);
+        add_assoc_long(return_value, "nGammas", rnd->nGammas);
+        zval *XrayLines, *XrayIntensities, *GammaEnergies, *GammaIntensities;
+
+        ALLOC_INIT_ZVAL(XrayLines);
+        ALLOC_INIT_ZVAL(XrayIntensities);
+        ALLOC_INIT_ZVAL(GammaEnergies);
+        ALLOC_INIT_ZVAL(GammaIntensities);
+        array_init(XrayLines);
+        array_init(XrayIntensities);
+        array_init(GammaEnergies);
+        array_init(GammaIntensities);
+        for (i = 0 ; i < rnd->nXrays ; i++) {
+                add_index_long(XrayLines, i, rnd->XrayLines[i]);
+                add_index_double(XrayIntensities, i, rnd->XrayIntensities[i]);
+        }
+        for (i = 0 ; i < rnd->nGammas ; i++) {
+                add_index_double(GammaEnergies, i, rnd->GammaEnergies[i]);
+                add_index_double(GammaIntensities, i, rnd->GammaIntensities[i]);
+        }
+        add_assoc_zval(return_value, "XrayLines", XrayLines);
+        add_assoc_zval(return_value, "XrayIntensities", XrayIntensities);
+        add_assoc_zval(return_value, "GammaEnergies", GammaEnergies);
+        add_assoc_zval(return_value, "GammaIntensities", GammaIntensities);
+        FreeRadioNuclideData(rnd);
+}
 %typemap(out) struct compoundDataNIST * {
         int i;
         struct compoundDataNIST *cdn = $1; 
