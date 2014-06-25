@@ -195,6 +195,42 @@ if __name__ == '__main__' :
 
 
 	print ("")
+
+	#radioNuclideData tests */
+	rnd = xraylib.GetRadioNuclideDataByName("109Cd")
+	print ("109Cd")
+	print ("  Name: %s" % rnd['name'])
+	print ("  Z: %i" % rnd['Z'])
+	print ("  A: %i" % rnd['A'])
+	print ("  N: %i" % rnd['N'])
+	print ("  Z_xray: %i" % rnd['Z_xray'])
+	print ("  X-rays:")
+	for i in range(rnd['nXrays']):
+		print ("  %f keV -> %f %%" % (xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0))
+	print ("  Gamma rays:")
+	for i in range(rnd['nGammas']):
+		print ("  %f keV -> %f %%" % (rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0))
+
+
+	rnd = xraylib.GetRadioNuclideDataByIndex(xraylib.RADIO_NUCLIDE_125I)
+	print ("RADIO_NUCLIDE_125I")
+	print ("  Name: %s" % rnd['name'])
+	print ("  Z: %i" % rnd['Z'])
+	print ("  A: %i" % rnd['A'])
+	print ("  N: %i" % rnd['N'])
+	print ("  Z_xray: %i" % rnd['Z_xray'])
+	print ("  X-rays:")
+	for i in range(rnd['nXrays']):
+		print ("  %f keV -> %f %%" % (xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0))
+	print ("  Gamma rays:")
+	for i in range(rnd['nGammas']):
+		print ("  %f keV -> %f %%" % (rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0))
+
+	radioNuclides = xraylib.GetRadioNuclideDataList()
+	print ("List of available radionuclides:")
+	for i in range(len(radioNuclides)):
+		print ("  Radionuclide %i: %s" % (i, radioNuclides[i]))
+	print ("")
 	print ("--------------------------- END OF XRLEXAMPLE5 -------------------------------")
 	print ("")
 	sys.exit(0)

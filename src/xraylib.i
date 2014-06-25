@@ -548,6 +548,45 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         $result = res;
 }
 
+%typemap(out) struct radioNuclideData * {
+        int i;
+        struct radioNuclideData *rnd = $1; 
+
+        if (rnd == NULL) {
+                PyErr_WarnEx(NULL, "Error: requested radionuclide not found in database\n",1);
+                $result = Py_None;
+        }
+        else {
+                PyObject *dict = PyDict_New();
+                PyDict_SetItemString(dict, "name",PyString_FromString(rnd->name)); 
+                PyDict_SetItemString(dict, "Z",PyInt_FromLong(rnd->Z)); 
+                PyDict_SetItemString(dict, "A",PyInt_FromLong(rnd->A)); 
+                PyDict_SetItemString(dict, "N",PyInt_FromLong(rnd->N)); 
+                PyDict_SetItemString(dict, "Z_xray",PyInt_FromLong(rnd->Z_xray));
+                PyDict_SetItemString(dict, "nXrays",PyInt_FromLong(rnd->nXrays)); 
+                PyDict_SetItemString(dict, "nGammas",PyInt_FromLong(rnd->nGammas)); 
+                PyObject *XrayLines = PyList_New(rnd->nXrays);
+                PyObject *XrayIntensities= PyList_New(rnd->nXrays);
+                PyObject *GammaEnergies= PyList_New(rnd->nGammas);
+                PyObject *GammaIntensities= PyList_New(rnd->nGammas);
+                for (i = 0 ; i < rnd->nXrays ; i++) {
+                       PyList_SetItem(XrayLines, i, PyInt_FromLong(rnd->XrayLines[i])); 
+                       PyList_SetItem(XrayIntensities, i, PyFloat_FromDouble(rnd->XrayIntensities[i])); 
+                }
+                for (i = 0 ; i < rnd->nGammas ; i++) {
+                       PyList_SetItem(GammaEnergies, i, PyFloat_FromDouble(rnd->GammaEnergies[i])); 
+                       PyList_SetItem(GammaIntensities, i, PyFloat_FromDouble(rnd->GammaIntensities[i])); 
+                }
+                PyDict_SetItemString(dict, "XrayLines", XrayLines);
+                PyDict_SetItemString(dict, "XrayIntensities", XrayIntensities);
+                PyDict_SetItemString(dict, "GammaEnergies", GammaEnergies);
+                PyDict_SetItemString(dict, "GammaIntensities", GammaIntensities);
+
+                FreeRadioNuclideData(rnd);
+                $result = dict;
+        }
+
+}
 %typemap(out) struct compoundDataNIST * {
         int i;
         struct compoundDataNIST *cdn = $1; 
