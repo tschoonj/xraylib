@@ -85,3 +85,16 @@ double ComptonProfile_Partial(int Z, int shell, double pz) {
 	return (double) q;
 }
 
+double ElectronConfig_Biggs(int Z, int shell) {
+	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
+		ErrorExit("Z out of range in function ComptonProfile_Partial");
+		return 0;
+	}  
+	if (shell >= NShells_ComptonProfiles[Z] || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
+		ErrorExit("Shell unavailable in function ComptonProfile_Partial");
+		return 0;
+	}
+
+  	return UOCCUP_ComptonProfiles[Z][shell]; 
+}
+

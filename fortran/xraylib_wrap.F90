@@ -2443,6 +2443,13 @@ INTERFACE
                 REAL (KIND=C_DOUBLE) :: ElectronConfig 
         ENDFUNCTION ElectronConfig
 
+        PURE FUNCTION ElectronConfig_Biggs(Z,shell) BIND(C,NAME='ElectronConfig_Biggs')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
+                REAL (KIND=C_DOUBLE) :: ElectronConfig_Biggs
+        ENDFUNCTION ElectronConfig_Biggs
+
         PURE FUNCTION AtomicLevelWidth(Z,shell) BIND(C,NAME='AtomicLevelWidth')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
