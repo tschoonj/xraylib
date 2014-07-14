@@ -67,14 +67,19 @@ double ComptonProfile_Partial(int Z, int shell, double pz) {
 	double ln_pz;
 
 
-	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
+	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 1) {
 		ErrorExit("Z out of range in function ComptonProfile_Partial");
 		return 0;
 	}  
-	if (shell >= NShells_ComptonProfiles[Z] || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
+	if (shell >= NShells_ComptonProfiles[Z] || shell < K_SHELL || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
 		ErrorExit("Shell unavailable in function ComptonProfile_Partial");
 		return 0;
 	}
+	if (pz < 0.0) {
+		ErrorExit("pz < 0 in function ComptonProfile");
+		return 0;
+	}
+	
 
 	ln_pz = log((double) pz + 1.0);
 
