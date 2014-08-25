@@ -11,7 +11,6 @@
 
 
 
-
 AC_INIT([xraylib],[3.1.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
@@ -85,7 +84,7 @@ OS_WINDOWS=0
 if test "x$host" != "x$build" ; then
 	#cross compilation detected
 	#if $host is mingw, look for wine
-	case "$host" in 
+	case "$host" in
 		i686-*mingw*)
 			#disable bindings
 			DISABLE_BINDINGS=yes
@@ -159,7 +158,7 @@ AC_ARG_ENABLE([fortran2003], [AS_HELP_STRING([--disable-fortran2003],[build with
 VALID_FORTRAN=
 
 
-if test "x$enable_fortran2003" != xno && test "x$DISABLE_BINDINGS" = xno ; then  
+if test "x$enable_fortran2003" != xno && test "x$DISABLE_BINDINGS" = xno ; then
 #check for fortran 2003 compiler
 	AC_PROG_FC()
 	if test -z $FC && test "x$enable_fortran2003" = xyes; then
@@ -174,7 +173,7 @@ if test "x$enable_fortran2003" != xno && test "x$DISABLE_BINDINGS" = xno ; then
 		AC_LANG_PUSH(Fortran)
 		AC_COMPILE_IFELSE([[
 MODULE f2003_test
-USE, INTRINSIC ::ISO_C_BINDING 
+USE, INTRINSIC ::ISO_C_BINDING
 
 TYPE, BIND(C) :: test_C
 	INTEGER (C_INT) :: arrayLen
@@ -187,17 +186,17 @@ ENDTYPE
 
 INTERFACE
 	FUNCTION foo (bar,morebar) BIND(C,NAME='foo')
-		USE, INTRINSIC ::ISO_C_BINDING 
+		USE, INTRINSIC ::ISO_C_BINDING
 		IMPLICIT NONE
 		REAL (KIND=C_DOUBLE) :: foo
 		INTEGER (KIND=C_INT), INTENT(IN) :: bar
 		REAL (KIND=C_DOUBLE), INTENT(IN) :: morebar
 	ENDFUNCTION foo
 	FUNCTION strlen(s) BIND(C,NAME='strlen')
-		USE, INTRINSIC ::ISO_C_BINDING 
+		USE, INTRINSIC ::ISO_C_BINDING
 		IMPLICIT NONE
 		CHARACTER (KIND=C_CHAR),DIMENSION(*) :: s
-		INTEGER (C_SIZE_T) :: strlen		
+		INTEGER (C_SIZE_T) :: strlen
 	ENDFUNCTION
 ENDINTERFACE
 ENDMODULE f2003_test
@@ -211,7 +210,7 @@ TYPE (test_F) :: tester_F
 
 
 
-IF (strlen(string) /= 9) THEN 
+IF (strlen(string) /= 9) THEN
 	CALL EXIT(1)
 ELSE
 	CALL EXIT(0)
@@ -236,7 +235,7 @@ ENDPROGRAM f2003_main
 		else
 			AC_MSG_NOTICE([Building with Fortran 2003 bindings])
 		fi
-	],[           
+	],[
 #if no compiler was found that supports f90 files -> disable fortran bindings compilation IF no explicit request after them was detected
         if test "x$enable_fortran2003" = xcheck ; then
 		AC_MSG_WARN([no compiler supporting f90 extensions was found on the system. The fortran bindings will not be built.])
@@ -247,7 +246,7 @@ ENDPROGRAM f2003_main
 
 	])
 	fi
-else	
+else
 VALID_FORTRAN=no
 fi
 
@@ -263,7 +262,7 @@ AC_ARG_ENABLE([idl],[AS_HELP_STRING([--disable-idl],[build without the idl bindi
 VALID_IDL=
 ARCHFLAGS=
 
-if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then  
+if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 #search for header and libraries
 #inspired by the gpulib autoconf macros...
 
@@ -277,7 +276,7 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 			#binaries not found while they were required through the enable-idl option
 			AC_MSG_ERROR([IDL binaries not found in $IDL_PATH. Use --with-idl-bindir to set the location of the idl binary])
 		elif test -z "$RSIIDL_BIN" && test "x$enable_idl" = xcheck ; then
-			#binaries were not found but they were not requested explicitally through an option -> 
+			#binaries were not found but they were not requested explicitally through an option ->
 			AC_MSG_WARN([IDL binaries not found in $IDL_PATH. Use --with-idl-bindir to set the location of the idl binary])
 			VALID_IDL=no
 		else
@@ -291,14 +290,14 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 		if test -z "$RSIIDL_BIN" ; then
 			AC_MSG_ERROR([IDL binaries not found user-supplied $RSIIDL_BINDIR. Wrong value for --with-idl-bindir])
 			VALID_IDL=no
-		fi	
+		fi
 	fi
 	#moving on...
 	if test -n "$RSIIDL_BINDIR" && test "x$VALID_IDL" != xno ; then
 		RSIIDL_DIR="`AS_DIRNAME(["$RSIIDL_BINDIR"])`"
 		if test "`AS_BASENAME(["$RSIIDL_DIR"])`" = "bin" ; then
 			RSIIDL_DIR=`AS_DIRNAME(["$RSIIDL_DIR"])`
-		fi	
+		fi
 		#if this test succeeds then using version 5.6 or greater
 		RSIIDL_INCDIR="$RSIIDL_DIR/external/include"
 		AC_CHECK_FILE(["$RSIIDL_INCDIR/idl_export.h"],[RSIIDL_HASINC=yes],[RSIIDL_HASINC=no])
@@ -366,9 +365,9 @@ if test "x$enable_idl" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 
 		if test "x$VALID_IDL" != xno ; then
 		AC_ARG_WITH([idl-libdir],[AS_HELP_STRING([--with-idl-libdir],[set location of the idl libraries])],[RSIIDL_LIBBIN=$withval],[RSIIDL_LIBBIN="$IDL_LIBBIN"])
-		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])	
-		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])	
-		AC_CHECK_FILE([$IDL_LIBBIN/idl.dll],[RSIIDL_HASBIN_DLL=yes],[RSIIDL_HASBIN_DLL=no])	
+		AC_CHECK_FILE([$IDL_LIBBIN/libidl.so],[RSIIDL_HASBIN_SO=yes],[RSIIDL_HASBIN_SO=no])
+		AC_CHECK_FILE([$IDL_LIBBIN/libidl.dylib],[RSIIDL_HASBIN_DY=yes],[RSIIDL_HASBIN_DY=no])
+		AC_CHECK_FILE([$IDL_LIBBIN/idl.dll],[RSIIDL_HASBIN_DLL=yes],[RSIIDL_HASBIN_DLL=no])
 		if test "x$RSIIDL_HASBIN_SO" = xno && test "x$RSIIDL_HASBIN_DY" = xno && test "x$RSIIDL_HASBIN_DLL" = xno ; then
 			AC_MSG_WARN([libidl.so, libidl.dylib or idl.dll could not be found. This means that you have either a corrupt or custom installation of idl. In the first case, set --with-idl-libdir to match the location of the IDL libraries])
 			VALID_IDL=no
@@ -539,8 +538,8 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 		NUMPY=$?
 		if test x$NUMPY = x0 ; then
 			AC_MSG_RESULT([yes])
-			NUMPY_HEADERS=-I`$PYTHON -c "import numpy; \
-				print numpy.get_include()"`
+			NUMPY_HEADERS=-I`$PYTHON -c "from __future__ import print_function; import numpy; \
+				print(numpy.get_include())"`
 			AC_SUBST(NUMPY_HEADERS)
 		else
 			AC_MSG_RESULT([no])
@@ -605,7 +604,7 @@ elif test "x$SWIG" = xswig && test "x$enable_java" != xno && test "x$DISABLE_BIN
 		AX_PROG_JAVAH
 	fi
 	if test "x$JAVAC" = x || test "x$JAVA" = x || test "x$JAVACPPFLAGS" = x ; then
-		if test "x$enable_java" = xyes ; then 
+		if test "x$enable_java" = xyes ; then
 			AC_MSG_ERROR([Cannot build java bindings])
 		else
 			AC_MSG_WARN([Cannot build java bindings])
@@ -748,7 +747,7 @@ elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BIND
 
 		AC_MSG_NOTICE([Building with lua bindings])
 	fi
-	
+
 
 fi
 
@@ -801,7 +800,7 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 			AC_CHECK_DECLS([signbit],[AC_DEFINE(HAVE_SIGNBIT)],AC_CHECK_FUNCS([signbit]),[
 			#ifdef HAVE_MATH_H
 			#include <math.h>
-			#endif])			
+			#endif])
 		    	# save current global flags
 		        ac_save_LIBS="$LIBS"
 			LIBS="$RUBY_EXT_LDFLAGS"
@@ -830,7 +829,7 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 					VALID_RUBY=no
 				fi
 			else
-				VALID_RUBY=yes	
+				VALID_RUBY=yes
 				AC_MSG_NOTICE([Building with ruby bindings])
 			fi
 		else
@@ -889,7 +888,7 @@ if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BIN
 			AC_MSG_ERROR([--enable-php was given as an option but php-config was not found on the system.])
 			VALID_PHP=no
 		else
-			#for now no test compilation/link	
+			#for now no test compilation/link
 			AC_MSG_CHECKING([for php LDFLAGS])
 			PHP_LDFLAGS=`[$PHP_CONFIG --ldflags]`
 			AC_MSG_RESULT([$PHP_LDFLAGS])
