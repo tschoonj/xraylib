@@ -64,7 +64,7 @@ Name: "python/2_7" ; Description: "Python 2.7" ; Types: full ; Flags: exclusive
 Name: "python/3_1" ; Description: "Python 3.1" ; Flags: exclusive 
 Name: "python/3_2" ; Description: "Python 3.2" ; Flags: exclusive 
 Name: "python/3_3" ; Description: "Python 3.3" ; Flags: exclusive 
-;Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive 
+Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive 
 
 [Files]
 Source: "{#builddir}\src\.libs\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
@@ -132,7 +132,7 @@ Source: "{#builddir}\nsis\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Pytho
 Source: "{#builddir}\nsis\python\python3.1\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_1"
 Source: "{#builddir}\nsis\python\python3.2\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_2"
 Source: "{#builddir}\nsis\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_3"
-;Source: "{#builddir}\nsis\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
+Source: "{#builddir}\nsis\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
 #ifdef XRL64
 Source: "{#srcdir}\nsis\msvcrt\vcredist_x64_110.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
 #endif
