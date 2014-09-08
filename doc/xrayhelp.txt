@@ -1348,7 +1348,7 @@ GetCompoundDataNISTByIndex
 //           and density of a compound from the NIST database       //
 //                                                                  //
 //          i: the index of the compound in the NIST database,      //
-//           usually obtained usina a NIST_COMPOUND_* macro         //
+//           usually obtained using a NIST_COMPOUND_* macro         //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> struct compoundDataNIST *GetCompoundDataNISTByIndex(int i);
@@ -1358,7 +1358,7 @@ GetCompoundDataNISTList
 //                                                                  //
 //        Returns a NULL-terminated array of strings of all         //
 //		the compounds in the database. If nCompounds        //
-//		id not NULL, it shall receive the number of 	    //
+//		is not NULL, it shall receive the number of 	    //
 //		of compounds.					    //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
@@ -1370,9 +1370,54 @@ FreeCompoundDataNIST
 //        Deallocates a pointer to a struct compoundDataNIST        //
 //         	and its components                                  //
 //                                                                  //
-//              compoundData: pointer to struct compoundDataNIST    //
+//         compoundData: pointer to struct compoundDataNIST         //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
 >>> void FreeCompoundDataNIST(struct compoundDataNIST *compoundData);
+
+GetRadioNuclideDataByName
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Allocates a structure containing the radionuclide        //
+//         	X-ray and Gamma profile.			    //
+//                                                                  //
+//          radioNuclideString: Full name of the radionuclide       //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[]);
+
+GetRadioNuclideDataByIndex
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//         Allocates a structure containing the radionuclide        //
+//         	X-ray and Gamma profile.			    //
+//                                                                  //
+//          i: the index of the radionuclide in the database,       //
+//           usually obtained using a RADIO_NUCLIDE_* macro         //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> struct radioNuclideData *GetRadioNuclideDataByIndex(int i);
+
+GetRadioNuclideDataList
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//        Returns a NULL-terminated array of strings of all         //
+//		the radionuclides in the database. If 		    //
+//		nRadioNuclides is not NULL, it shall receive the    //
+//		number of radionuclides.			    //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> char **GetRadioNuclideDataList(int *nRadioNuclides);
+
+FreeRadioNuclideData
+//////////////////////////////////////////////////////////////////////
+//                                                                  //
+//        Deallocates a pointer to a struct radioNuclideData        //
+//         	and its components                                  //
+//                                                                  //
+//         compoundData: pointer to struct radioNuclideData         //
+//                                                                  //
+//////////////////////////////////////////////////////////////////////
+>>> void FreeRadioNuclideData(struct radioNuclideData *radioNuclideData);
 
 

@@ -172,3 +172,23 @@
  struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex)
  char **GetCompoundDataNISTList(int *nCompounds)
  void FreeCompoundDataNIST(struct compoundDataNIST *compoundData)
+
+ RADIONUCLIDES
+ struct radioNuclideData{
+	char *name;
+	int Z;
+	int A;
+	int N;
+	int Z_xray;
+	int nXrays;
+	int *XrayLines;
+	double *XrayIntensities;
+	int nGammas;
+	double *GammaEnergies;
+	double *GammaIntensities;
+ }
+ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[]);
+ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex);
+ char **GetRadioNuclideDataList(int *nRadioNuclides);
+ void FreeRadioNuclideData(struct radioNuclideData *radioNuclideData);
+

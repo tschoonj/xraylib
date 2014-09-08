@@ -183,3 +183,7 @@ Fluorescence yields and Coster-Kronig transition probabilities
 
 Some of the values have been replaced by those from Campbell's paper "Fluorescence yields and Coster–Kronig probabilities for the atomic L subshells. Part II: The L1 subshell revisited", Atomic Data and Nulear Data Tables (2009)
 
+Radionuclides
+=============
+
+Taken from http://ie.lbl.gov/toi using the nuclices.pl script

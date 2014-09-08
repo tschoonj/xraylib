@@ -69,6 +69,7 @@ common:
 	unix2dos -n ${top_srcdir}/idl/xraylib_shells.pro xraylib_shells.pro 
 	unix2dos -n ${top_srcdir}/idl/xraylib_auger.pro xraylib_auger.pro 
 	unix2dos -n ${top_srcdir}/idl/xraylib_nist_compounds.pro xraylib_nist_compounds.pro 
+	unix2dos -n ${top_srcdir}/idl/xraylib_radionuclides.pro xraylib_radionuclides.pro 
 
 idl32:
 	cp ${top_srcdir}/idl/xraylib_idl.c .

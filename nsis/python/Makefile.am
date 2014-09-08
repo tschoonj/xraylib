@@ -15,8 +15,7 @@ python:
 	$(MAKE) -C python3.1 python
 	$(MAKE) -C python3.2 python
 	$(MAKE) -C python3.3 python
-
-#$(MAKE) -C python3.4 python
+	$(MAKE) -C python3.4 python
 
 SUBDIRS = python2.6 python2.7 python3.1 cli cli_py2exe python3.2 python3.3 python3.4
 
