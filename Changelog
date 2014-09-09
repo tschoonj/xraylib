@@ -1,3 +1,17 @@
+Version 3.1.0 Tom Schoonjans
+
+- Database of commonly used radionuclides for X-ray sources added (new API:
+GetRadioNuclideDataByName, GetRadioNuclideDataByIndex, GetRadioNuclideDataList
+and FreeRadioNuclideData)
+- numpy Python bindings added, generated with Cython. Performance basically
+the same as the core C library. (suggested by Matt Newville)
+- docstring support added to Python bindings (suggested by Matt Newville)
+- Windows SDKs now have support for Python 3.4.
+- Windows 64-bit SDK now comes with IDL bindings
+- Several bugfixes: thanks to those that reported them!
+
+
+
 Version 3.0.0 Tom Schoonjans
 
 - Moved all floats to doubles
