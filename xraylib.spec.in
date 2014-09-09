@@ -29,7 +29,7 @@ Release:	1%{?dist}
 Summary: A library for X-ray matter interactions cross sections for X-ray fluorescence applications: core C library
 Group:	 Applications/Engineering and Scientific	
 License: BSD 
-Packager: Tom.Schoonjans <Tom.Schoonjans@UGent.be>	
+Packager: Tom.Schoonjans <Tom.Schoonjans@me.com>
 URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)

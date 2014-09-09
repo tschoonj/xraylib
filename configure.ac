@@ -873,6 +873,10 @@ if test "x$SWIG" = xnoswig && test "x$enable_php" = xyes && test "x$DISABLE_BIND
 	AC_MSG_ERROR([--enable-php was given as an option but swig was not found on the system])
 fi
 
+AC_ARG_VAR(PHP,[the PHP interpreter])
+AC_ARG_VAR(PHP_CONFIG,[the config utility of the PHP interpreter])
+
+
 AC_ARG_ENABLE([php-integration],[AS_HELP_STRING([--enable-php-integration],[install the php bindings in the interpreters sitearch folder])],[enable_php_integration=$enableval],[enable_php_integration=check])
 
 if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BINDINGS" = xno  ;  then
