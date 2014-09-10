@@ -8,6 +8,8 @@ the same as the core C library. (suggested by Matt Newville)
 - docstring support added to Python bindings (suggested by Matt Newville)
 - Windows SDKs now have support for Python 3.4.
 - Windows 64-bit SDK now comes with IDL bindings
+- Confirmed support for LabView (thanks to Dariush Hampai!)
+- Universal intel 32/64 bit Framework built for Mac OS X
 - Several bugfixes: thanks to those that reported them!
 
 

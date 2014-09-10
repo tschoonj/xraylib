@@ -452,9 +452,9 @@ fi #test enable perl
 
 if test x$VALID_PERL = xyes ; then
 	AC_MSG_NOTICE([Building with Perl bindings])
-elif test x$VALID_PERL = xno && test "x$enable_perl" = xyes ; then
+elif test x$VALID_PERL = xno && test "x$enable_perl" = xyes && test "x$DISABLE_BINDINGS" = xno ; then
 	AC_MSG_ERROR([Cannot build perl bindings])
-elif test x$VALID_PERL = xno && test "x$enable_perl" = xcheck ; then
+elif test x$VALID_PERL = xno && test "x$enable_perl" = xcheck && test "x$DISABLE_BINDINGS" = xno ; then
 	AC_MSG_WARN([Cannot build perl bindings])
 fi
 AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
@@ -994,7 +994,7 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([])
-if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes || test "$VALID_PYTHON_NUMPY" = yes ; then
+if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes || test "$VALID_PYTHON_NUMPY" = yes || test "$VALID_PHP" = "yes" ; then
 	AC_MSG_NOTICE([Building xraylib with bindings for:])
 	if test "$VALID_FORTRAN" = "yes" ; then
 		AC_MSG_NOTICE([Fortran 2003])
