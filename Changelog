@@ -10,6 +10,7 @@ the same as the core C library. (suggested by Matt Newville)
 - Windows 64-bit SDK now comes with IDL bindings
 - Confirmed support for LabView (thanks to Dariush Hampai!)
 - Universal intel 32/64 bit Framework built for Mac OS X
+- Perl support for Debian/Ubuntu
 - Several bugfixes: thanks to those that reported them!
 
 

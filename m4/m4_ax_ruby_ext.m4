@@ -116,7 +116,7 @@ AC_DEFUN([AX_RUBY_EXT],[
                 AC_ARG_VAR(RUBY_EXT_LIB, [Directory to install ruby extensions into])
                 AC_MSG_CHECKING([for Ruby extensions target directory])
                 if test -z "$RUBY_EXT_LIB" ; then
-                        [RUBY_EXT_LIB=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["sitearchdir"]'`];
+                        [RUBY_EXT_LIB=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["vendorarchdir"]'`];
                 fi
                 AC_MSG_RESULT([$RUBY_EXT_LIB])
                 AC_SUBST(RUBY_EXT_LIB)
