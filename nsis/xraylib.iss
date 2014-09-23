@@ -282,7 +282,6 @@ begin
       end;
     end;
   end;
-#ifndef XRL64
   if (CurUninstallStep = usPostUninstall)
      and (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'IDL_DLM_PATH', Path)) then
   begin
@@ -317,6 +316,5 @@ begin
       end
     end;
   end;
-#endif
 end;
 
