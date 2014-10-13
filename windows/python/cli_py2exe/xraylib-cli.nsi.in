@@ -22,7 +22,7 @@
 !define abs_top_builddir_win "C:\MinGW\msys\1.0\@abs_top_builddir_win@"
 !define DLLTOOL "i686-pc-mingw32-dlltool"
 
-!addincludedir "${abs_top_srcdir_win}\nsis\python\cli_py2exe"
+!addincludedir "${abs_top_srcdir_win}\windows\python\cli_py2exe"
 !include "MUI2.nsh"
 !include "EnvVarUpdate.nsh"
 !include "Sections.nsh"
@@ -53,7 +53,7 @@ CRCCheck on
 !define MUI_WELCOMEPAGE_TITLE_3LINES
 !insertmacro MUI_PAGE_WELCOME
 !define MUI_LICENSEPAGE_CHECKBOX
-!insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\nsis\License.rtf"
+!insertmacro MUI_PAGE_LICENSE "${abs_top_srcdir_win}\windows\License.rtf"
 
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
@@ -120,9 +120,9 @@ Section "-xraylib core files" SecDummy
 
 	
 	SetOutPath "$INSTDIR\Bin"
-	File ${abs_top_builddir_win}\nsis\python\cli_py2exe\dist\xraylib.exe
+	File ${abs_top_builddir_win}\windows\python\cli_py2exe\dist\xraylib.exe
 	SetOutPath "$INSTDIR\temp"
-	File "${abs_top_srcdir_win}\nsis\msvcrt\vcredist_x86_90.exe"
+	File "${abs_top_srcdir_win}\windows\msvcrt\vcredist_x86_90.exe"
 	ExecWait "$INSTDIR\temp\vcredist_x86_90.exe /q"
 	SetOutPath "$INSTDIR"
 	RMDir /r "$INSTDIR\temp"

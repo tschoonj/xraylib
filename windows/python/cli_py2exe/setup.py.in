@@ -5,7 +5,7 @@ setup(
 	name="xraylib",
 	version='@VERSION@',
 	author="Tom Schoonjans",
-	console=['..\\..\\..\\..\\nsis\\python\\cli_py2exe\\xraylib.py'],
+	console=['..\\..\\..\\..\\windows\\python\\cli_py2exe\\xraylib.py'],
 	data_files=[('Doc',['..\\..\\..\\..\\doc\\xraybanner.txt']),('Doc',['..\\..\\..\\..\\doc\\xraydoc.txt']),('Doc',['..\\..\\..\\..\\doc\\xrayfunc.txt']),('Doc',['..\\..\\..\\..\\doc\\xrayhelp.txt'])],
 	options={
 		"py2exe":{
