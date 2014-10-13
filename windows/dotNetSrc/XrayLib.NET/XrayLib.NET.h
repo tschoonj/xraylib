@@ -114,7 +114,7 @@ namespace Science {
 	public:
 		#pragma region  Constants
 		literal int VERSION_MAJOR = 3;
-		literal int VERSION_MINOR = 00;
+		literal int VERSION_MINOR = 1;
 		literal double PI = 3.14159265359;
 
 		// Values taken from physics.nist.gov
@@ -520,6 +520,7 @@ namespace Science {
   		// Single lines
 		literal int KA1_LINE = KL3_LINE;
 		literal int KA2_LINE = KL2_LINE;
+		literal int KA3_LINE = KL1_LINE;
 		literal int KB1_LINE = KM3_LINE;
 		literal int KB2_LINE = KN3_LINE;
 		literal int KB3_LINE = KM2_LINE;
@@ -547,6 +548,7 @@ namespace Science {
 		literal int LG6_LINE = L2O4_LINE;
 		literal int LG8_LINE = L2O1_LINE;
 		literal int LE_LINE = L2M1_LINE;
+		literal int LH_LINE = L2M1_LINE;
 		literal int LN_LINE = L2M1_LINE;
 		literal int LL_LINE = L3M1_LINE;
 		literal int LS_LINE = L3M3_LINE;
@@ -1611,6 +1613,18 @@ namespace Science {
 		literal int M4_M5Q1_AUGER = 993;
 		literal int M4_M5Q2_AUGER = 994;
 		literal int M4_M5Q3_AUGER = 995;
+
+		// Radionuclides
+		literal int RADIONUCLIDE_55FE = 0;
+		literal int RADIONUCLIDE_57CO = 1;
+		literal int RADIONUCLIDE_109CD = 2;
+		literal int RADIONUCLIDE_125I = 3;
+		literal int RADIONUCLIDE_137CS = 4;
+		literal int RADIONUCLIDE_133BA = 5;
+		literal int RADIONUCLIDE_153GD = 6;
+		literal int RADIONUCLIDE_238PU = 7;
+		literal int RADIONUCLIDE_241AM = 8;
+		literal int RADIONUCLIDE_244CM = 9;
 		#pragma endregion
 
 		/// <summary>

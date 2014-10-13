@@ -12,7 +12,7 @@
 SUBDIRS = python
 
 if OS_WINDOWS_32
-nsis:
+windows:
 	$(MAKE) common
 	lib /machine:i386 /def:libxrl-$(LIB_CURRENT_MINUS_AGE).def
 	implib.exe -a -c libxrl-$(LIB_CURRENT_MINUS_AGE)-bcc.lib libxrl-$(LIB_CURRENT_MINUS_AGE).dll
@@ -22,7 +22,7 @@ nsis:
 endif
 
 if OS_WINDOWS_64
-nsis:
+windows:
 	$(MAKE) common
 	$(MAKE) idl64
 	lib /machine:X64 /def:libxrl-$(LIB_CURRENT_MINUS_AGE).def
@@ -75,16 +75,16 @@ idl32:
 	cp ${top_srcdir}/idl/xraylib_idl.c .
 	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
 	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Program Files (x86)\ITT\IDL71\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
-	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib\build\nsis'" >> batch.pro
+	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib\build\windows'" >> batch.pro
 	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE" >> batch.pro
 	echo "exit" >> batch.pro
-	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib\build\nsis" idl batch
+	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib\build\windows" idl batch
 
 idl64:
 	cp ${top_srcdir}/idl/xraylib_idl.c .
 	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
 	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Exelis\IDL83\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
-	echo "CD,'C:\msys\1.0\home\schoon\github\xraylib\build\nsis'" >> batch.pro
+	echo "CD,'C:\msys\1.0\home\schoon\github\xraylib\build\windows'" >> batch.pro
 	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\msys\1.0\home\schoon\github\xraylib\include\" -I\"C:\msys\1.0\home\schoon\github\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64\" /LIBPATH:\"C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib\x64\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE, DLL_PATH=mydll" >> batch.pro
 	echo "print,mydll" >> batch.pro
 	echo "exit" >> batch.pro

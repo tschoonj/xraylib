@@ -162,6 +162,7 @@
     <ClInclude Include="Compound.h" />
     <ClInclude Include="Diffraction.h" />
     <ClInclude Include="Element.h" />
+    <ClInclude Include="Radionuclides.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
     <ClInclude Include="XrayLib.NET.h" />

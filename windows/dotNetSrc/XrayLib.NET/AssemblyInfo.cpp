@@ -16,7 +16,7 @@ using namespace System::Security::Permissions;
 [assembly:AssemblyConfigurationAttribute("")];
 [assembly:AssemblyCompanyAttribute("")];
 [assembly:AssemblyProductAttribute("XrayLibNET")];
-[assembly:AssemblyCopyrightAttribute("Copyright (c) 2010-2013 Matthew Wormington")];
+[assembly:AssemblyCopyrightAttribute("Copyright (c) 2010-2014 Matthew Wormington")];
 [assembly:AssemblyTrademarkAttribute("")];
 [assembly:AssemblyCultureAttribute("")];
 
@@ -31,7 +31,7 @@ using namespace System::Security::Permissions;
 // You can specify all the value or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
 
-[assembly:AssemblyVersionAttribute("3.00.0.0")];
+[assembly:AssemblyVersionAttribute("3.1.0.0")];
 
 [assembly:ComVisible(false)];
 

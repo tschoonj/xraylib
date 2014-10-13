@@ -44,6 +44,9 @@
     <ClInclude Include="XrayLib.NET.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Radionuclides.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.ico">

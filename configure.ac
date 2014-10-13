@@ -946,27 +946,27 @@ AC_CONFIG_FILES([Makefile
 				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
-				 nsis/python/Makefile
-				 nsis/Makefile
-				 nsis/python/python2.6/Makefile
-				 nsis/python/python2.7/Makefile
-				 nsis/python/python3.1/Makefile
-				 nsis/python/cli/Makefile
-				 nsis/python/cli_py2exe/Makefile
-				 nsis/python/cli_py2exe/xraylib-cli.nsi
-				 nsis/python/cli_py2exe/setup.py
+				 windows/python/Makefile
+				 windows/Makefile
+				 windows/python/python2.6/Makefile
+				 windows/python/python2.7/Makefile
+				 windows/python/python3.1/Makefile
+				 windows/python/cli/Makefile
+				 windows/python/cli_py2exe/Makefile
+				 windows/python/cli_py2exe/xraylib-cli.nsi
+				 windows/python/cli_py2exe/setup.py
 				 perl/Makefile
 				 lua/Makefile
 				 fortran/Makefile
-				 nsis/python/python2.6/xrlsetup.py
-				 nsis/python/python2.7/xrlsetup.py
-				 nsis/python/python3.1/xrlsetup.py
-				 nsis/python/python3.2/Makefile
-				 nsis/python/python3.2/xrlsetup.py
-				 nsis/python/python3.3/Makefile
-				 nsis/python/python3.3/xrlsetup.py
-				 nsis/python/python3.4/Makefile
-				 nsis/python/python3.4/xrlsetup.py
+				 windows/python/python2.6/xrlsetup.py
+				 windows/python/python2.7/xrlsetup.py
+				 windows/python/python3.1/xrlsetup.py
+				 windows/python/python3.2/Makefile
+				 windows/python/python3.2/xrlsetup.py
+				 windows/python/python3.3/Makefile
+				 windows/python/python3.3/xrlsetup.py
+				 windows/python/python3.4/Makefile
+				 windows/python/python3.4/xrlsetup.py
 				 ruby/Makefile
 				 php/Makefile
 ])

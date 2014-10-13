@@ -217,6 +217,20 @@ namespace Test
                 Console.WriteLine();
             }
 
+            // RadionuclideData tests 
+            RadionuclideData rd = new RadionuclideData("109Cd");
+            Console.WriteLine(rd.ToString());
+            Console.WriteLine();
+
+            rd = new RadionuclideData(XrayLib.RADIONUCLIDE_125I);
+            Console.WriteLine(rd.ToString());
+            Console.WriteLine();
+
+            rd = new RadionuclideData();
+            string namesCsv = string.Join(", ", rd.Names.ToArray());
+            Console.WriteLine(namesCsv);
+            Console.WriteLine();
+
             sw.Stop();
             Console.WriteLine("Time: {0} ms", sw.ElapsedMilliseconds);
 

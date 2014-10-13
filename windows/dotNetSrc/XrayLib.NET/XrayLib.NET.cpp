@@ -58,6 +58,7 @@
 #include "Compound.h"
 #include "Diffraction.h"
 #include "Element.h"
+#include "Radionuclides.h"
 #include "XrayLib.NET.h"
 #include "..\XrayLib\xraylib.h"
 
