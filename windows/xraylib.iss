@@ -32,8 +32,8 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile={#srcdir}\nsis\License.rtf
-OutputDir={#builddir}\nsis
+LicenseFile={#srcdir}\windows\License.rtf
+OutputDir={#builddir}\windows
 #ifdef XRL64
 OutputBaseFilename=xraylib-{#MyAppVersion}-win64
 ArchitecturesInstallIn64BitMode=x64
@@ -68,73 +68,73 @@ Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive
 
 [Files]
 Source: "{#builddir}\src\.libs\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
-Source: "{#builddir}\nsis\README.txt" ; DestDir: "{app}" ; Flags: isreadme ; Components: core
-Source: "{#builddir}\nsis\AUTHORS.txt" ; DestDir: "{app}" ; Components: core
-Source: "{#builddir}\nsis\BUGS.txt" ; DestDir: "{app}" ; Components: core
-Source: "{#builddir}\nsis\Changelog.txt" ; DestDir: "{app}" ; Components: core
-Source: "{#builddir}\nsis\TODO.txt" ; DestDir: "{app}" ; Components: core
-Source: "{#builddir}\nsis\xraybanner.txt" ; DestDir: "{app}\Doc" ; Components: core
-Source: "{#builddir}\nsis\xraydoc.txt" ; DestDir: "{app}\Doc" ; Components: core
-Source: "{#builddir}\nsis\xrayfunc.txt" ; DestDir: "{app}\Doc" ; Components: core
-Source: "{#builddir}\nsis\xrayhelp.txt" ; DestDir: "{app}\Doc" ; Components: core
+Source: "{#builddir}\windows\README.txt" ; DestDir: "{app}" ; Flags: isreadme ; Components: core
+Source: "{#builddir}\windows\AUTHORS.txt" ; DestDir: "{app}" ; Components: core
+Source: "{#builddir}\windows\BUGS.txt" ; DestDir: "{app}" ; Components: core
+Source: "{#builddir}\windows\Changelog.txt" ; DestDir: "{app}" ; Components: core
+Source: "{#builddir}\windows\TODO.txt" ; DestDir: "{app}" ; Components: core
+Source: "{#builddir}\windows\xraybanner.txt" ; DestDir: "{app}\Doc" ; Components: core
+Source: "{#builddir}\windows\xraydoc.txt" ; DestDir: "{app}\Doc" ; Components: core
+Source: "{#builddir}\windows\xrayfunc.txt" ; DestDir: "{app}\Doc" ; Components: core
+Source: "{#builddir}\windows\xrayhelp.txt" ; DestDir: "{app}\Doc" ; Components: core
 
-Source: "{#builddir}\nsis\libxrl-{#LIB_CURRENT_MINUS_AGE}.lib" ; DestDir: "{app}\Lib" ; Components: sdk
+Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}.lib" ; DestDir: "{app}\Lib" ; Components: sdk
 #ifndef XRL64
-Source: "{#builddir}\nsis\libxrl-{#LIB_CURRENT_MINUS_AGE}-bcc.lib" ; DestDir: "{app}\Lib" ; Components: sdk
+Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}-bcc.lib" ; DestDir: "{app}\Lib" ; Components: sdk
 #endif
-Source: "{#builddir}\nsis\libxrl-{#LIB_CURRENT_MINUS_AGE}.exp" ; DestDir: "{app}\Lib" ; Components: sdk
+Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}.exp" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\src\.libs\libxrl.a" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\src\.libs\libxrl.dll.a" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\src\libxrl-{#LIB_CURRENT_MINUS_AGE}.def" ; DestDir: "{app}\Lib" ; Components: sdk
-Source: "{#builddir}\nsis\README2.txt" ; DestDir: "{app}\Doc" ; DestName: "README.txt";Components: sdk
-Source: "{#builddir}\nsis\xrlexample1.c" ; DestDir: "{app}\Example" ; Components: sdk
-Source: "{#builddir}\nsis\xrlexample6.cpp" ; DestDir: "{app}\Example" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-parser.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-lines.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-shells.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-auger.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-crystal-diffraction.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-defs.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
-Source: "{#builddir}\nsis\xraylib-radionuclides.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\README2.txt" ; DestDir: "{app}\Doc" ; DestName: "README.txt";Components: sdk
+Source: "{#builddir}\windows\xrlexample1.c" ; DestDir: "{app}\Example" ; Components: sdk
+Source: "{#builddir}\windows\xrlexample6.cpp" ; DestDir: "{app}\Example" ; Components: sdk
+Source: "{#builddir}\windows\xraylib.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-parser.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-lines.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-shells.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-auger.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-crystal-diffraction.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-defs.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-radionuclides.h" ; DestDir: "{app}\Include" ; Components: sdk
 
 #ifdef XRL64
-Source: "{#srcdir}\nsis\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+Source: "{#srcdir}\windows\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
 #else
-Source: "{#srcdir}\nsis\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+Source: "{#srcdir}\windows\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
 #endif
-Source: "{#builddir}\nsis\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
-Source: "{#srcdir}\nsis\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
+Source: "{#builddir}\windows\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
+Source: "{#srcdir}\windows\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
-Source: "{#builddir}\nsis\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
+Source: "{#builddir}\windows\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
 #ifdef XRL64
-Source: "{#builddir}\nsis\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
+Source: "{#builddir}\windows\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
 #else
 Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
 #endif
-Source: "{#builddir}\nsis\libxrlidl.dlm"; DestDir: "{app}\dlm" ; Components: idl
-Source: "{#builddir}\nsis\xraylib.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\nsis\xraylib_help.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\nsis\xraylib_lines.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\nsis\xraylib_shells.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\nsis\xraylib_auger.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\nsis\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\nsis\xraylib_radionuclides.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\libxrlidl.dlm"; DestDir: "{app}\dlm" ; Components: idl
+Source: "{#builddir}\windows\xraylib.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\xraylib_help.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\xraylib_lines.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\xraylib_shells.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\xraylib_auger.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
+Source: "{#builddir}\windows\xraylib_radionuclides.pro"; DestDir: "{app}\pro" ; Components: idl
 
-Source: "{#builddir}\nsis\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
-Source: "{#builddir}\nsis\xraylib.py" ; DestDir: "{app}\Python" ; Components: python
-Source: "{#builddir}\nsis\xrayhelp.py" ; DestDir: "{app}\Python" ; Components: python
-Source: "{#builddir}\nsis\xraymessages.py" ; DestDir: "{app}\Python" ; Components: python
-Source: "{#builddir}\nsis\xraylib-cli.py" ; DestDir: "{app}\Bin" ; Components: python
-Source: "{#builddir}\nsis\python\python2.6\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_6"
-Source: "{#builddir}\nsis\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
-Source: "{#builddir}\nsis\python\python3.1\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_1"
-Source: "{#builddir}\nsis\python\python3.2\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_2"
-Source: "{#builddir}\nsis\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_3"
-Source: "{#builddir}\nsis\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
+Source: "{#builddir}\windows\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
+Source: "{#builddir}\windows\xraylib.py" ; DestDir: "{app}\Python" ; Components: python
+Source: "{#builddir}\windows\xrayhelp.py" ; DestDir: "{app}\Python" ; Components: python
+Source: "{#builddir}\windows\xraymessages.py" ; DestDir: "{app}\Python" ; Components: python
+Source: "{#builddir}\windows\xraylib-cli.py" ; DestDir: "{app}\Bin" ; Components: python
+Source: "{#builddir}\windows\python\python2.6\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_6"
+Source: "{#builddir}\windows\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
+Source: "{#builddir}\windows\python\python3.1\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_1"
+Source: "{#builddir}\windows\python\python3.2\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_2"
+Source: "{#builddir}\windows\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_3"
+Source: "{#builddir}\windows\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
 #ifdef XRL64
-Source: "{#srcdir}\nsis\msvcrt\vcredist_x64_110.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
+Source: "{#srcdir}\windows\msvcrt\vcredist_x64_110.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
 #endif
 
 [Icons]

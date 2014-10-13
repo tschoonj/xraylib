@@ -46,6 +46,9 @@ xraylib.py: xraylib_wrap.c
 clean-local:
 	rm -rf xraylib_wrap.c xraylib.py xraylib.pyc xraylib_np.c
 
+distclean-local:
+	rm -rf __pycache__
+
 EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx
 
 
