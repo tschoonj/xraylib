@@ -12,10 +12,6 @@
 
 
 
-#do not try this on other systems than linux
-%define _pkgpythondir %{_prefix}/lib/python@PYTHON_VERSION@/site-packages
-%define _pkgpyexecdir %{_libdir}/python@PYTHON_VERSION@/site-packages
-
 %define luaver @LUA_VERSION@
 %define lualibdir %{_libdir}/lua/%{luaver}
 
@@ -34,7 +30,7 @@ URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig lua-devel ruby-devel perl-devel
-BuildRequires: Cython numpy
+BuildRequires: Cython numpy python3-Cython python3-numpy python3-devel
 
 %description
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available.
@@ -109,26 +105,56 @@ This rpm package provides the perl bindings of xraylib.
 
 %prep
 %setup -q
-
+pushd ..
+cp -r xraylib-%{version} xraylib-%{version}-python2
+cp -r xraylib-%{version} xraylib-%{version}-python3
+popd
 
 %build
-%configure --disable-java --enable-idl --enable-fortran2003 --enable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --enable-python-numpy FC=gfortran 
+#first run WITHOUT python
+%configure --disable-java --enable-idl --enable-fortran2003 --disable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --disable-python-numpy FC=gfortran 
 #necessary to fix rpath issues during rpmbuild
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
+#python2
+pushd ../xraylib-%{version}-python2
+%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python2} CYTHON=/usr/bin/cython
+popd
+
+#python3
+pushd ../xraylib-%{version}-python3
+%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python3} CYTHON=/usr/bin/cython3
+popd
+
 make 
 
+mv ../xraylib-%{version}-python2/python python2
+mv ../xraylib-%{version}-python3/python python3
+
+cd python2
+make
+cd ../python3
+make
+cd ..
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+
+cd python2
+make install DESTDIR=$RPM_BUILD_ROOT
+cd ../python3
+make install DESTDIR=$RPM_BUILD_ROOT
+cd ..
+
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
 rm -f $RPM_BUILD_ROOT%{perllibdir}/*.la
-rm -f $RPM_BUILD_ROOT%{_pkgpyexecdir}/*.la
+rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
+rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
 rm -f $RPM_BUILD_ROOT%{_prefix}/dlm/libxrlidl.la
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
@@ -183,11 +209,17 @@ rm -rf $RPM_BUILD_ROOT
 %files python
 %defattr(-,root,root)
 %{_bindir}/xraylib
-%{_pkgpythondir}/xraylib.py*
-%{_pkgpythondir}/xrayhelp.py*
-%{_pkgpythondir}/xraymessages.py*
-%{_pkgpyexecdir}/_xraylib.*
-%{_pkgpyexecdir}/xraylib_np.*
+%{python2_sitelib}/xraylib.py*
+%{python2_sitelib}/xrayhelp.py*
+%{python2_sitelib}/xraymessages.py*
+%{python2_sitearch}/_xraylib.*
+%{python2_sitearch}/xraylib_np.*
+%{python3_sitelib}/xraylib.py*
+%{python3_sitelib}/xrayhelp.py*
+%{python3_sitelib}/xraymessages.py*
+%{python3_sitelib}/__pycache__/*
+%{python3_sitearch}/_xraylib.*
+%{python3_sitearch}/xraylib_np.*
 %{_prefix}/share/xraylib/*.txt
 
 %files idl
@@ -217,6 +249,9 @@ rm -rf $RPM_BUILD_ROOT
 %{perllibdir}/xraylib.so
 
 %changelog
+* Wed Dec 10 2014 Tom Schoonjans
+- Support added for python3
+
 * Tue Jun 3 2014 Tom Schoonjans
 - Added python-numpy bindings
 
