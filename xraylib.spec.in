@@ -1,4 +1,4 @@
-#Copyright (c) 2009, 2010, Tom Schoonjans
+#Copyright (c) 2009-2014, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -19,6 +19,12 @@
 %define perldir @PERL_EXT_LIB@
 %define perllibdir @PERL_EXT_LIB@/auto/xraylib
 
+%if 0%{?rhel} && 0%{?rhel} <= 6
+%{!?__python2: %global __python2 /usr/bin/python2}
+%{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 Name: xraylib
 Version: @VERSION@	
 Release:	1%{?dist}
@@ -30,7 +36,11 @@ URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig lua-devel ruby-devel perl-devel
-BuildRequires: Cython numpy python3-Cython python3-numpy python3-devel
+BuildRequires: Cython numpy 
+%if 0%{?fedora}
+#only fedora has default support for python3 nowadays...
+BuildRequires: python3-Cython python3-numpy python3-devel
+%endif
 
 %description
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available.
@@ -58,6 +68,9 @@ This rpm package provides the fortran 2003 bindings of xraylib.
 %package python
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python bindings
 Requires: python xraylib numpy
+%if 0%{?fedora}
+Requires: python3 python3-numpy
+%endif
 
 %description python
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
@@ -107,7 +120,9 @@ This rpm package provides the perl bindings of xraylib.
 %setup -q
 pushd ..
 cp -r xraylib-%{version} xraylib-%{version}-python2
+%if 0%{?fedora}
 cp -r xraylib-%{version} xraylib-%{version}-python3
+%endif
 popd
 
 %build
@@ -123,20 +138,27 @@ pushd ../xraylib-%{version}-python2
 popd
 
 #python3
+%if 0%{?fedora}
 pushd ../xraylib-%{version}-python3
 %configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python3} CYTHON=/usr/bin/cython3
 popd
+%endif
 
 make 
 
 mv ../xraylib-%{version}-python2/python python2
+%if 0%{?fedora}
 mv ../xraylib-%{version}-python3/python python3
+%endif
 
 cd python2
 make
-cd ../python3
+cd ..
+%if 0%{?fedora}
+cd python3
 make
 cd ..
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -144,9 +166,12 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 cd python2
 make install DESTDIR=$RPM_BUILD_ROOT
-cd ../python3
+cd ..
+%if 0%{?fedora}
+cd python3
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
+%endif
 
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
@@ -154,7 +179,9 @@ rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
 rm -f $RPM_BUILD_ROOT%{perllibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
+%if 0%{?fedora}
 rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
+%endif
 rm -f $RPM_BUILD_ROOT%{_prefix}/dlm/libxrlidl.la
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
@@ -214,12 +241,14 @@ rm -rf $RPM_BUILD_ROOT
 %{python2_sitelib}/xraymessages.py*
 %{python2_sitearch}/_xraylib.*
 %{python2_sitearch}/xraylib_np.*
+%if 0%{?fedora}
 %{python3_sitelib}/xraylib.py*
 %{python3_sitelib}/xrayhelp.py*
 %{python3_sitelib}/xraymessages.py*
 %{python3_sitelib}/__pycache__/*
 %{python3_sitearch}/_xraylib.*
 %{python3_sitearch}/xraylib_np.*
+%endif
 %{_prefix}/share/xraylib/*.txt
 
 %files idl
