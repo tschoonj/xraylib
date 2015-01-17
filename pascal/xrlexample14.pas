@@ -6,7 +6,8 @@ var
 	cdtest : PcompoundData;
 	mystring : string;
 	i : longint;
-
+	cdn : PcompoundDataNIST;
+	nistCompounds : stringArray;
 begin
 
 	SetErrorMessages(0);
@@ -71,9 +72,50 @@ begin
 	writeln('Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: ',CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));
 	writeln('Pb Malpha XRF production cs at 20.0 keV without cascade effect: ',CS_FluorLine_Kissel_no_Cascade(82,MA1_LINE,20.0));
 
-
 	writeln('Al mass energy-absorption cs at 20.0 keV: ', CS_Energy(13, 20.0));
 	writeln('Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82, 40.0));
 	mystring := 'CdTe';
 	writeln('CdTe mass energy-absorption cs at 40.0 keV: ', CS_Energy_CP(mystring, 40.0));
+
+
+
+	{ compoundDataNIST tests }
+	cdn := GetCompoundDataNISTByName('Uranium Monocarbide');
+	writeln('Uranium Monocarbide');
+	if (cdn = nil) then
+	begin
+		Halt(1)
+	end;
+	writeln('  Name: ', cdn^.name);
+  	writeln('  Density: ',cdn^.density ,' g/cm3');
+	for  i := 0 to cdn^.nElements-1 do
+	begin
+		writeln('  Element ', cdn^.Elements[i], ' : ', cdn^.massFractions[i]*100.0, ' %');
+	end;
+
+	Dispose(cdn);
+
+	cdn := GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP);
+	writeln('NIST_COMPOUND_BRAIN_ICRP');
+	writeln('  Name: ', cdn^.name);
+  	writeln('  Density: ',cdn^.density ,' g/cm3');
+	for  i := 0 to cdn^.nElements-1 do
+	begin
+		writeln('  Element ', cdn^.Elements[i], ' : ', cdn^.massFractions[i]*100.0, ' %');
+	end;
+
+	Dispose(cdn);
+
+	nistCompounds := GetCompoundDataNISTList();
+	writeln('List of available NIST compounds:');
+	for  i := 0 to Length(nistCompounds)-1 do
+	begin
+  		writeln('  Compound ',i,': ', nistCompounds[i]);
+	end;
+ 
+
+
+	writeln('');
+	writeln('--------------------------- END OF XRLEXAMPLE1 -------------------------------');
+	writeln('');
 end.
