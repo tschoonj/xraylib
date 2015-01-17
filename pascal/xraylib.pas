@@ -38,7 +38,6 @@ uses strings;
   
   THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS F
    }
-{ C++ extern C conditionnal removed }
 
   const
     XRAYLIB_MAJOR = 3;    
@@ -58,26 +57,11 @@ uses strings;
   const
     RADEG = 180.0/PI;    
     DEGRAD = PI/180.0;    
-  {
-   *
-   * values taken from physics.nist.gov
-   *
-    }
-  { Avogadro number (mol-1 * barn-1 * cm2)  }    AVOGNUM = 0.602214129;    
-  { keV to angstrom-1 conversion factor  }
+    AVOGNUM = 0.602214129;    
     KEV2ANGST = 12.39841930;    
-  { electron rest mass (keV)  }
     MEC2 = 510.998928;    
-  { square of classical electron radius (barn)  }
     RE2 = 0.079407877;    
-  { Classical electron radius (m)  }
     R_E = 2.8179403267e-15;    
-  {
-   * Siegbahn notation
-   * according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
-   * Linegroups -> usage is discouraged
-   *
-    }
 
   const
     K_SHELL = 0;    
@@ -115,7 +99,6 @@ uses strings;
     KB_LINE = 1;    
     LA_LINE = 2;    
     LB_LINE = 3;    
-  { single lines  }
     KL1_LINE = -(1);    
     KL2_LINE = -(2);    
     KL3_LINE = -(3);    
@@ -568,7 +551,6 @@ uses strings;
     TRANSNUM = 15;    
     AUGERNUM = 996;    
     SHELLNUM_A = 9;    
-  { Delta for size increase of Crystal_Array.crystal array  }
     N_NEW_CRYSTAL = 10;    
 
     K_L1L1_AUGER = 0;    
@@ -1573,261 +1555,196 @@ uses strings;
 
   procedure XRayInit;cdecl;external External_library name 'XRayInit';
 
-  { Error Handling  }
-  procedure SetHardExit(hard_exit:Integer);cdecl;external External_library name 'SetHardExit';
+  procedure SetHardExit(hard_exit:longint);cdecl;external External_library name 'SetHardExit';
 
-  procedure SetExitStatus(exit_status:Integer);cdecl;external External_library name 'SetExitStatus';
+  procedure SetExitStatus(exit_status:longint);cdecl;external External_library name 'SetExitStatus';
 
-  function GetExitStatus:Integer;cdecl;external External_library name 'GetExitStatus';
+  function GetExitStatus:longint;cdecl;external External_library name 'GetExitStatus';
 
-  procedure SetErrorMessages(status:Integer);cdecl;external External_library name 'SetErrorMessages';
+  procedure SetErrorMessages(status:longint);cdecl;external External_library name 'SetErrorMessages';
 
-  function GetErrorMessages:Integer;cdecl;external External_library name 'GetErrorMessages';
+  function GetErrorMessages:longint;cdecl;external External_library name 'GetErrorMessages';
 
-  { Atomic weights  }
-  function AtomicWeight(Z:Integer):double;cdecl;external External_library name 'AtomicWeight';
+  function AtomicWeight(Z:longint):double;cdecl;external External_library name 'AtomicWeight';
 
-  { Density of pure atomic element  }
-  function ElementDensity(Z:Integer):double;cdecl;external External_library name 'ElementDensity';
+  function ElementDensity(Z:longint):double;cdecl;external External_library name 'ElementDensity';
 
-  { Cross sections (cm2/g)  }
-  function CS_Total(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Total';
+  function CS_Total(Z:longint; E:double):double;cdecl;external External_library name 'CS_Total';
 
-  function CS_Photo(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Photo';
+  function CS_Photo(Z:longint; E:double):double;cdecl;external External_library name 'CS_Photo';
 
-  function CS_Rayl(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Rayl';
+  function CS_Rayl(Z:longint; E:double):double;cdecl;external External_library name 'CS_Rayl';
 
-  function CS_Compt(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Compt';
+  function CS_Compt(Z:longint; E:double):double;cdecl;external External_library name 'CS_Compt';
 
   function CS_KN(E:double):double;cdecl;external External_library name 'CS_KN';
 
-  function CS_Energy(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Energy';
+  function CS_Energy(Z:longint; E:double):double;cdecl;external External_library name 'CS_Energy';
 
-  { barn/atom  }
-  function CSb_Total(Z:Integer; E:double):double;cdecl;external External_library name 'CSb_Total';
+  function CSb_Total(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Total';
 
-  function CSb_Photo(Z:Integer; E:double):double;cdecl;external External_library name 'CSb_Photo';
+  function CSb_Photo(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Photo';
 
-  function CSb_Rayl(Z:Integer; E:double):double;cdecl;external External_library name 'CSb_Rayl';
+  function CSb_Rayl(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Rayl';
 
-  function CSb_Compt(Z:Integer; E:double):double;cdecl;external External_library name 'CSb_Compt';
+  function CSb_Compt(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Compt';
 
-  { Unpolarized differential scattering cross sections  }
   function DCS_Thoms(theta:double):double;cdecl;external External_library name 'DCS_Thoms';
 
   function DCS_KN(E:double; theta:double):double;cdecl;external External_library name 'DCS_KN';
 
-  function DCS_Rayl(Z:Integer; E:double; theta:double):double;cdecl;external External_library name 'DCS_Rayl';
+  function DCS_Rayl(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCS_Rayl';
 
-  function DCS_Compt(Z:Integer; E:double; theta:double):double;cdecl;external External_library name 'DCS_Compt';
+  function DCS_Compt(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCS_Compt';
 
-  function DCSb_Rayl(Z:Integer; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Rayl';
+  function DCSb_Rayl(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Rayl';
 
-  function DCSb_Compt(Z:Integer; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Compt';
+  function DCSb_Compt(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Compt';
 
-  { Polarized differential scattering cross sections  }
   function DCSP_Thoms(theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Thoms';
 
   function DCSP_KN(E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_KN';
 
-  function DCSP_Rayl(Z:Integer; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Rayl';
+  function DCSP_Rayl(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Rayl';
 
-  function DCSP_Compt(Z:Integer; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Compt';
+  function DCSP_Compt(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Compt';
 
-  function DCSPb_Rayl(Z:Integer; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Rayl';
+  function DCSPb_Rayl(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Rayl';
 
-  function DCSPb_Compt(Z:Integer; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Compt';
+  function DCSPb_Compt(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Compt';
 
-  { Scattering factors  }
-  function FF_Rayl(Z:Integer; q:double):double;cdecl;external External_library name 'FF_Rayl';
+  function FF_Rayl(Z:longint; q:double):double;cdecl;external External_library name 'FF_Rayl';
 
-  function SF_Compt(Z:Integer; q:double):double;cdecl;external External_library name 'SF_Compt';
+  function SF_Compt(Z:longint; q:double):double;cdecl;external External_library name 'SF_Compt';
 
   function MomentTransf(E:double; theta:double):double;cdecl;external External_library name 'MomentTransf';
 
-  { X-ray fluorescent line energy  }
-  function LineEnergy(Z:Integer; line:Integer):double;cdecl;external External_library name 'LineEnergy';
+  function LineEnergy(Z:longint; line:longint):double;cdecl;external External_library name 'LineEnergy';
 
-  { Fluorescence yield  }
-  function FluorYield(Z:Integer; shell:Integer):double;cdecl;external External_library name 'FluorYield';
+  function FluorYield(Z:longint; shell:longint):double;cdecl;external External_library name 'FluorYield';
 
-  { Coster-Kronig transition Probability  }
-  function CosKronTransProb(Z:Integer; trans:Integer):double;cdecl;external External_library name 'CosKronTransProb';
+  function CosKronTransProb(Z:longint; trans:longint):double;cdecl;external External_library name 'CosKronTransProb';
 
-  { Absorption-edge energies  }
-  function EdgeEnergy(Z:Integer; shell:Integer):double;cdecl;external External_library name 'EdgeEnergy';
+  function EdgeEnergy(Z:longint; shell:longint):double;cdecl;external External_library name 'EdgeEnergy';
 
-  { Jump ratio  }
-  function JumpFactor(Z:Integer; shell:Integer):double;cdecl;external External_library name 'JumpFactor';
+  function JumpFactor(Z:longint; shell:longint):double;cdecl;external External_library name 'JumpFactor';
 
-  { Fluorescent-lines cross sections  }
-  function CS_FluorLine(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CS_FluorLine';
+  function CS_FluorLine(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine';
 
-  function CSb_FluorLine(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CSb_FluorLine';
+  function CSb_FluorLine(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine';
 
-  { Fractional radiative rate  }
-  function RadRate(Z:Integer; line:Integer):double;cdecl;external External_library name 'RadRate';
+  function RadRate(Z:longint; line:longint):double;cdecl;external External_library name 'RadRate';
 
-  { Photon energy after Compton scattering  }
   function ComptonEnergy(E0:double; theta:double):double;cdecl;external External_library name 'ComptonEnergy';
 
-  { Anomalous Scattering Factors  }
-  function Fi(Z:Integer; E:double):double;cdecl;external External_library name 'Fi';
+  function Fi(Z:longint; E:double):double;cdecl;external External_library name 'Fi';
 
-  function Fii(Z:Integer; E:double):double;cdecl;external External_library name 'Fii';
+  function Fii(Z:longint; E:double):double;cdecl;external External_library name 'Fii';
 
-  { Kissel Photoelectric cross sections  }
-  function CS_Photo_Total(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Photo_Total';
+  function CS_Photo_Total(Z:longint; E:double):double;cdecl;external External_library name 'CS_Photo_Total';
 
-  function CSb_Photo_Total(Z:Integer; E:double):double;cdecl;external External_library name 'CSb_Photo_Total';
+  function CSb_Photo_Total(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Photo_Total';
 
-  function CS_Photo_Partial(Z:Integer; shell:Integer; E:double):double;cdecl;external External_library name 'CS_Photo_Partial';
+  function CS_Photo_Partial(Z:longint; shell:longint; E:double):double;cdecl;external External_library name 'CS_Photo_Partial';
 
-  function CSb_Photo_Partial(Z:Integer; shell:Integer; E:double):double;cdecl;external External_library name 'CSb_Photo_Partial';
+  function CSb_Photo_Partial(Z:longint; shell:longint; E:double):double;cdecl;external External_library name 'CSb_Photo_Partial';
 
-  { XRF cross sections using Kissel partial photoelectric cross sections  }
-  function CS_FluorLine_Kissel(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel';
+  function CS_FluorLine_Kissel(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel';
 
-  function CSb_FluorLine_Kissel(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel';
+  function CSb_FluorLine_Kissel(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel';
 
-  function CS_FluorLine_Kissel_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Cascade';
+  function CS_FluorLine_Kissel_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Cascade';
 
-  function CSb_FluorLine_Kissel_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Cascade';
+  function CSb_FluorLine_Kissel_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Cascade';
 
-  function CS_FluorLine_Kissel_Nonradiative_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Nonradiative_Cascade';
+  function CS_FluorLine_Kissel_Nonradiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Nonradiative_Cascade';
 
-  function CSb_FluorLine_Kissel_Nonradiative_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Nonradiative_Cascade';
+  function CSb_FluorLine_Kissel_Nonradiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Nonradiative_Cascade';
 
-  function CS_FluorLine_Kissel_Radiative_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Radiative_Cascade';
+  function CS_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Radiative_Cascade';
 
-  function CSb_FluorLine_Kissel_Radiative_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Radiative_Cascade';
+  function CSb_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Radiative_Cascade';
 
-  function CS_FluorLine_Kissel_no_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_no_Cascade';
+  function CS_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_no_Cascade';
 
-  function CSb_FluorLine_Kissel_no_Cascade(Z:Integer; line:Integer; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_no_Cascade';
+  function CSb_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_no_Cascade';
 
-  { Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections  }
-  function CS_Total_Kissel(Z:Integer; E:double):double;cdecl;external External_library name 'CS_Total_Kissel';
+  function CS_Total_Kissel(Z:longint; E:double):double;cdecl;external External_library name 'CS_Total_Kissel';
 
-  function CSb_Total_Kissel(Z:Integer; E:double):double;cdecl;external External_library name 'CSb_Total_Kissel';
+  function CSb_Total_Kissel(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Total_Kissel';
 
-  { Electron configuration (according to Kissel)  }
-  function ElectronConfig(Z:Integer; shell:Integer):double;cdecl;external External_library name 'ElectronConfig';
+  function ElectronConfig(Z:longint; shell:longint):double;cdecl;external External_library name 'ElectronConfig';
 
-  { Cross Section functions using the compound parser  }
-(* Const before type ignored *)
-  function CS_Total_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Total_CP';
+  function CS_Total_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CS_Photo_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Photo_CP';
+  function CS_Photo_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CS_Rayl_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Rayl_CP';
+  function CS_Rayl_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CS_Compt_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Compt_CP';
+  function CS_Compt_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CSb_Total_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Total_CP';
+  function CSb_Total_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CSb_Photo_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Photo_CP';
+  function CSb_Photo_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CSb_Rayl_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Rayl_CP';
+  function CSb_Rayl_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CSb_Compt_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Compt_CP';
+  function CSb_Compt_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function DCS_Rayl_CP(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCS_Rayl_CP';
+  function DCS_Rayl_CP(compound:string; E:double; theta:double):double;
 
-(* Const before type ignored *)
-  function DCS_Compt_CP(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCS_Compt_CP';
+  function DCS_Compt_CP(compound:string; E:double; theta:double):double;
 
-(* Const before type ignored *)
-  function DCSb_Rayl_CP(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Rayl_CP';
+  function DCSb_Rayl_CP(compound:string; E:double; theta:double):double;
 
-(* Const before type ignored *)
-  function DCSb_Compt_CP(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Compt_CP';
+  function DCSb_Compt_CP(compound:string; E:double; theta:double):double;
 
-(* Const before type ignored *)
-  function DCSP_Rayl_CP(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Rayl_CP';
+  function DCSP_Rayl_CP(compound:string; E:double; theta:double; phi:double):double;
 
-(* Const before type ignored *)
-  function DCSP_Compt_CP(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Compt_CP';
+  function DCSP_Compt_CP(compound:string; E:double; theta:double; phi:double):double;
 
-(* Const before type ignored *)
-  function DCSPb_Rayl_CP(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Rayl_CP';
+  function DCSPb_Rayl_CP(compound:string; E:double; theta:double; phi:double):double;
 
-(* Const before type ignored *)
-  function DCSPb_Compt_CP(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Compt_CP';
+  function DCSPb_Compt_CP(compound:string; E:double; theta:double; phi:double):double;
 
-(* Const before type ignored *)
-  function CS_Photo_Total_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Photo_Total_CP';
+  function CS_Photo_Total_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CSb_Photo_Total_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Photo_Total_CP';
+  function CSb_Photo_Total_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CS_Total_Kissel_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Total_Kissel_CP';
+  function CS_Total_Kissel_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CSb_Total_Kissel_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Total_Kissel_CP';
+  function CSb_Total_Kissel_CP(compound:string; E:double):double;
 
-(* Const before type ignored *)
-  function CS_Energy_CP(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Energy_CP';
+  function CS_Energy_CP(compound:string; E:double):double;
 
-  { Refractive indices functions  }
-(* Const before type ignored *)
-  function Refractive_Index_Re(compound:Pchar; E:double; density:double):double;cdecl;external External_library name 'Refractive_Index_Re';
+  function Refractive_Index_Re(compound:string; E:double; density:double):double;
 
-(* Const before type ignored *)
-  function Refractive_Index_Im(compound:Pchar; E:double; density:double):double;cdecl;external External_library name 'Refractive_Index_Im';
+  function Refractive_Index_Im(compound:string; E:double; density:double):double;
 
-(* Const before type ignored *)
-  function Refractive_Index(compound:Pchar; E:double; density:double):xrlComplex;cdecl;external External_library name 'Refractive_Index';
+  function Refractive_Index(compound:string; E:double; density:double):xrlComplex;
 
-  { ComptonProfiles  }
-  function ComptonProfile(Z:Integer; pz:double):double;cdecl;external External_library name 'ComptonProfile';
+  function ComptonProfile(Z:longint; pz:double):double;cdecl;external External_library name 'ComptonProfile';
 
-  function ComptonProfile_Partial(Z:Integer; shell:Integer; pz:double):double;cdecl;external External_library name 'ComptonProfile_Partial';
+  function ComptonProfile_Partial(Z:longint; shell:longint; pz:double):double;cdecl;external External_library name 'ComptonProfile_Partial';
 
-  { Atomic level widths  }
-  function AtomicLevelWidth(Z:Integer; shell:Integer):double;cdecl;external External_library name 'AtomicLevelWidth';
+  function AtomicLevelWidth(Z:longint; shell:longint):double;cdecl;external External_library name 'AtomicLevelWidth';
 
-  { Auger non-radiative rates  }
-  function AugerRate(Z:Integer; auger_trans:Integer):double;cdecl;external External_library name 'AugerRate';
+  function AugerRate(Z:longint; auger_trans:longint):double;cdecl;external External_library name 'AugerRate';
 
-  { Auger yield  }
-  function AugerYield(Z:Integer; shell:Integer):double;cdecl;external External_library name 'AugerYield';
-
-  { this is giving a lot of trouble with python  }
+  function AugerYield(Z:longint; shell:longint):double;cdecl;external External_library name 'AugerYield';
 
   function c_abs(x:xrlComplex):double;cdecl;external External_library name 'c_abs';
 
   function c_mul(x:xrlComplex; y:xrlComplex):xrlComplex;cdecl;external External_library name 'c_mul';
 
-  { Struct for an atom in a crystal.  }
-  { Atomic number of atom.  }
-  { Fractional contribution. Normally 1.0.  }
-  { Atom position in fractions of the unit cell lengths.  }
-
   type
     Crystal_Atom = record
-        Zatom : Integer;
+        Zatom : longint;
         fraction : double;
         x : double;
         y : double;
         z : double;
       end;
-  { Struct for a crystal.  }
-  { Name of crystal.  }
-  { Unit cell size in Angstroms.  }
-  { Unit cell angles in degrees.  }
-  { Unit cell volume in Angstroms^3.  }
-  { Number of atoms.  }
-  { Array of atoms in unit cell.  }
 
     Crystal_Struct = record
         name : ^char;
@@ -1838,108 +1755,50 @@ uses strings;
         beta : double;
         gamma : double;
         volume : double;
-        n_atom : Integer;
+        n_atom : longint;
         atom : ^Crystal_Atom;
       end;
-  { Container struct to hold an array of CrystalStructs  }
-  { Number of defined crystals.  }
-  { Size of .crystal array malloc'd  }
 
     Crystal_Array = record
-        n_crystal : Integer;
-        n_alloc : Integer;
+        n_crystal : longint;
+        n_alloc : longint;
         crystal : ^Crystal_Struct;
       end;
-  {
-   *
-   * this header includes the prototype of a function designed to parse
-   * chemical formulas and a structure definition which is used to store the information.
-   *
-    }
-  {
-   * A compoundData structure will be used to store the results after parsing:
-   * 	nElements: the number of different atoms present
-   * 	nAtomsAll: the total number of atoms present in the compound
-   * 	Elements: an array with length nElements that will contain the atomic
-   * 	  numbers of the different elements present in the compound, 
-   * 	  in ascending order. The array memory will be allocated using malloc 
-   * 	  and should be freed by the user when appropriate.
-   *	massFractions: an array with length nElements that will contain
-   *	  the atomic mass fractions of the different elements present in the compound,
-   *	  in an order corresponding with the Elements array. The sum of the values
-   *	  in this array is equal to 1. The array memory will be allocated 
-   *	  using malloc and should be freed by the user when appropriate.
-   *
-   * For SiO2 this would yield a structure with contents:
-   *  nElements: 2
-   *  nAtomsAll: 3
-   *  Elements: 8 14
-   *  massFractions: 0.467465  0.532535
-   *
-   *
-   *
-    }
   type
     compoundData = record
-        nElements : Integer;
+        nElements : longint;
         nAtomsAll : double;
-        Elements : array of Integer;
+        Elements : array of longint;
         massFractions : array of double;
       end;
     PcompoundData  = ^compoundData;
 
 
 
-    function AtomicNumberToSymbol(Z:Integer):string;
-    function SymbolToAtomicNumber(symbol:string):Integer;
+    function AtomicNumberToSymbol(Z:longint):string;
+    function SymbolToAtomicNumber(symbol:string):longint;
     function CompoundParser(compound:string):PcompoundData;
 
 implementation
 
-  type
+type
     compoundData_C = record
-        nElements : Integer;
+        nElements : longint;
         nAtomsAll : double;
-        Elements : ^Integer;
+        Elements : ^longint;
         massFractions : ^double;
-      end;
-    PcompoundData_C  = ^compoundData_C;
-  { 
-   * FreeCompoundData is used to free the memory allocated
-   * by CompoundParser in a compoundData struct. It is recommended
-   * to set the value of the struct to NULL after calling this function.
-    }
+end;
+PcompoundData_C  = ^compoundData_C;
 
-  procedure FreeCompoundData(_para1:PcompoundData_C);cdecl;external External_library name 'FreeCompoundData';
+procedure FreeCompoundData(_para1:PcompoundData_C);cdecl;external External_library name 'FreeCompoundData';
 
-  {
-   * The CompoundParser function will parse a string and will return 
-   * a pointer to a compoundData structure if successful, otherwise it will return a
-   * NULL pointer. After usage, the struct can be freed with FreeCompoundData
-    }
-(* error 
-struct compoundData *CompoundParser(const char compoundString[]);
-in declaration at line 74 *)
-  function CompoundParser_C(compoundString:PChar):PcompoundData_C;cdecl;external External_library name 'CompoundParser';
-    {
-     * The AtomicNumberToSymbol function returns a pointer to a string containing the element symbol.
-     * If an error occurred, the NULL string is returned.
-     * The string should be freed after usage with the xrlFree function
-      }
-    function AtomicNumberToSymbol_C(Z:Integer):Pchar;cdecl;external External_library name 'AtomicNumberToSymbol';
+function CompoundParser_C(compoundString:PChar):PcompoundData_C;cdecl;external External_library name 'CompoundParser';
+function AtomicNumberToSymbol_C(Z:longint):Pchar;cdecl;external External_library name 'AtomicNumberToSymbol';
 
-    {
-     * The SymbolToAtomicNumber function returns the atomic number that corresponds with element symbol
-     * If the element does not exist, 0 is returned
-      }
-    function SymbolToAtomicNumber_C(symbol:Pchar):Integer;cdecl;external External_library name 'SymbolToAtomicNumber';
+function SymbolToAtomicNumber_C(symbol:Pchar):longint;cdecl;external External_library name 'SymbolToAtomicNumber';
 
-    {
-     *  xrlFree frees memory that was dynamically allocated by xraylib. For now it should only be used
-     *  in combination with AtomicNumberToSymbol and add_compound_data
-      }
-    procedure xrlFree(_para1:pointer);cdecl;external External_library name 'xrlFree';
-function AtomicNumberToSymbol(Z:Integer):string;
+procedure xrlFree(_para1:pointer);cdecl;external External_library name 'xrlFree';
+function AtomicNumberToSymbol(Z:longint):string;
 var
 	temp:Pchar;
 begin
@@ -1953,7 +1812,7 @@ begin
 		AtomicNumberToSymbol := '';
 end;
 
-function SymbolToAtomicNumber(symbol:string):Integer;
+function SymbolToAtomicNumber(symbol:string):longint;
 var
 	temp:Pchar;
 begin
@@ -1965,10 +1824,10 @@ end;
 
 function CompoundParser(compound:string):PcompoundData;
 var
-	i:Integer;
+	i:longint;
 	temp:Pchar;
 	data_C:PcompoundData_C;
-	Elements:^Integer;
+	Elements:^longint;
 	massFractions:^Double;
 begin
 	temp := StrAlloc(length(compound)+1); 
@@ -1999,5 +1858,293 @@ begin
 	FreeCompoundData(data_C)
 end;
 
+function CS_Total_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Total_CP';
 
+function CS_Photo_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Photo_CP';
+
+function CS_Rayl_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Rayl_CP';
+
+function CS_Compt_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Compt_CP';
+
+function CSb_Total_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Total_CP';
+
+function CSb_Photo_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Photo_CP';
+
+function CSb_Rayl_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Rayl_CP';
+
+function CSb_Compt_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Compt_CP';
+
+function DCS_Rayl_CP_C(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCS_Rayl_CP';
+
+function DCS_Compt_CP_C(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCS_Compt_CP';
+
+function DCSb_Rayl_CP_C(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Rayl_CP';
+
+function DCSb_Compt_CP_C(compound:Pchar; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Compt_CP';
+
+function DCSP_Rayl_CP_C(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Rayl_CP';
+
+function DCSP_Compt_CP_C(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Compt_CP';
+
+function DCSPb_Rayl_CP_C(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Rayl_CP';
+
+function DCSPb_Compt_CP_C(compound:Pchar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Compt_CP';
+
+function CS_Photo_Total_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Photo_Total_CP';
+
+function CSb_Photo_Total_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Photo_Total_CP';
+
+function CS_Total_Kissel_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Total_Kissel_CP';
+
+function CSb_Total_Kissel_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CSb_Total_Kissel_CP';
+
+function CS_Energy_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Energy_CP';
+
+function CS_Total_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Total_CP := CS_Total_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CS_Photo_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Photo_CP := CS_Photo_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CS_Rayl_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Rayl_CP := CS_Rayl_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CS_Compt_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Compt_CP := CS_Compt_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CSb_Total_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CSb_Total_CP := CSb_Total_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CSb_Photo_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CSb_Photo_CP := CSb_Photo_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CSb_Rayl_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CSb_Rayl_CP := CSb_Rayl_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CSb_Compt_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CSb_Compt_CP := CSb_Compt_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function DCS_Rayl_CP(compound:string; E:double; theta:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCS_Rayl_CP := DCS_Rayl_CP_C(temp, E, theta);
+	StrDispose(temp);
+end;
+
+function DCS_Compt_CP(compound:string; E:double; theta:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCS_Compt_CP := DCS_Compt_CP_C(temp, E, theta);
+	StrDispose(temp);
+end;
+
+function DCSb_Rayl_CP(compound:string; E:double; theta:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCSb_Rayl_CP := DCSb_Rayl_CP_C(temp, E, theta);
+	StrDispose(temp);
+end;
+
+function DCSb_Compt_CP(compound:string; E:double; theta:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCSb_Compt_CP := DCSb_Compt_CP_C(temp, E, theta);
+	StrDispose(temp);
+end;
+
+function DCSP_Rayl_CP(compound:string; E:double; theta:double; phi:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCSP_Rayl_CP := DCSP_Rayl_CP_C(temp, E, theta, phi);
+	StrDispose(temp);
+end;
+
+function DCSP_Compt_CP(compound:string; E:double; theta:double; phi:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCSP_Compt_CP := DCSP_Compt_CP_C(temp, E, theta, phi);
+	StrDispose(temp);
+end;
+
+function DCSPb_Rayl_CP(compound:string; E:double; theta:double; phi:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCSPb_Rayl_CP := DCSPb_Rayl_CP_C(temp, E, theta, phi);
+	StrDispose(temp);
+end;
+
+
+function DCSPb_Compt_CP(compound:string; E:double; theta:double; phi:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	DCSPb_Compt_CP := DCSPb_Compt_CP_C(temp, E, theta, phi);
+	StrDispose(temp);
+end;
+
+function CS_Photo_Total_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Photo_Total_CP := CS_Photo_Total_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CSb_Photo_Total_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CSb_Photo_Total_CP := CSb_Photo_Total_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CS_Total_Kissel_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Total_Kissel_CP := CS_Total_Kissel_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function CSb_Total_Kissel_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CSb_Total_Kissel_CP := CSb_Total_Kissel_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+
+function CS_Energy_CP(compound:string; E:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	CS_Energy_CP := CS_Energy_CP_C(temp, E);
+	StrDispose(temp);
+end;
+
+function Refractive_Index_Re_C(compound:Pchar; E:double; density:double):double;cdecl;external External_library name 'Refractive_Index_Re';
+
+function Refractive_Index_Im_C(compound:Pchar; E:double; density:double):double;cdecl;external External_library name 'Refractive_Index_Im';
+
+function Refractive_Index_C(compound:Pchar; E:double; density:double):xrlComplex;cdecl;external External_library name 'Refractive_Index';
+
+function Refractive_Index_Re(compound:string; E:double; density:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	Refractive_Index_Re := Refractive_Index_Re_C(temp, E, density);
+	StrDispose(temp);
+end;
+
+function Refractive_Index_Im(compound:string; E:double; density:double):double;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	Refractive_Index_Im := Refractive_Index_Im_C(temp, E, density);
+	StrDispose(temp);
+end;
+
+function Refractive_Index(compound:string; E:double; density:double):xrlComplex;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(compound)+1); 
+	StrPCopy(temp, compound);
+	Refractive_Index := Refractive_Index_C(temp, E, density);
+	StrDispose(temp);
+end;
 end.

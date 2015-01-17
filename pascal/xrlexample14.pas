@@ -5,6 +5,7 @@ var
 	Energy : Double;
 	cdtest : PcompoundData;
 	mystring : string;
+	i : longint;
 
 begin
 
@@ -26,6 +27,11 @@ begin
 		Halt(1)
 	end;
   	writeln('Ca(HCO3)2 contains ',cdtest^.nAtomsAll, ' atoms and ', cdtest^.nElements,' elements');
+	for  i := 0 to cdtest^.nElements-1 do
+	begin
+		writeln('Element ', cdtest^.Elements[i], ' : ', cdtest^.massFractions[i]*100.0, ' %');
+	end;
+	Dispose(cdtest);
 
 
 	{parser test for SiO2 (quartz)}
@@ -35,6 +41,11 @@ begin
 		Halt(1)
 	end;
   	writeln('SiO2 contains ',cdtest^.nAtomsAll, ' atoms and ', cdtest^.nElements,' elements');
+	for  i := 0 to cdtest^.nElements-1 do
+	begin
+		writeln('Element ', cdtest^.Elements[i], ' : ', cdtest^.massFractions[i]*100.0, ' %');
+	end;
+	Dispose(cdtest);
 	writeln('Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2',10.0));
 
 	writeln('CS2 Refractive Index at 10.0 keV : ',Refractive_Index_Re('CS2',10.0,1.261),' - ',Refractive_Index_Im('CS2', 10.0, 1.261), ' i');
