@@ -1729,6 +1729,16 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
     NIST_COMPOUND_WATER_LIQUID = 177;      
     NIST_COMPOUND_WATER_VAPOR = 178;      
     NIST_COMPOUND_XYLENE = 179;      
+    RADIO_NUCLIDE_55FE = 0;      
+    RADIO_NUCLIDE_57CO = 1;      
+    RADIO_NUCLIDE_109CD = 2;      
+    RADIO_NUCLIDE_125I = 3;      
+    RADIO_NUCLIDE_137CS = 4;      
+    RADIO_NUCLIDE_133BA = 5;      
+    RADIO_NUCLIDE_153GD = 6;      
+    RADIO_NUCLIDE_238PU = 7;      
+    RADIO_NUCLIDE_241AM = 8;      
+    RADIO_NUCLIDE_244CM = 9;      
 
 
 
@@ -1964,13 +1974,34 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
     PcompoundDataNIST  = ^compoundDataNIST;
     StringArray = array of string;
 
+  type
+    radioNuclideData = record
+        name : string;
+        Z : longint;
+        A : longint;
+        N : longint;
+        Z_xray : longint;
+        nXrays : longint;
+        XrayLines : array of longint;
+        XrayIntensities : array of double;
+        nGammas : longint;
+        GammaEnergies : array of double;
+        GammaIntensities : array of double;
+      end;
+    PradioNuclideData  = ^radioNuclideData;
 
     function AtomicNumberToSymbol(Z:longint):string;
     function SymbolToAtomicNumber(symbol:string):longint;
     function CompoundParser(compound:string):PcompoundData;
+
     function GetCompoundDataNISTByName(compoundString:string):PcompoundDataNIST;
     function GetCompoundDataNISTByIndex(compoundIndex:longint):PcompoundDataNIST;
     function GetCompoundDataNISTList():StringArray;
+
+    function GetRadioNuclideDataByName(radioNuclideString:string):PradioNuclideData;
+    function GetRadioNuclideDataByIndex(radioNuclideIndex:longint):PradioNuclideData;
+    function GetRadioNuclideDataList():StringArray;
+
 implementation
 
 type
@@ -1991,6 +2022,22 @@ type
         density : double;
 end;
 PcompoundDataNIST_C  = ^compoundDataNIST_C;
+
+type
+    radioNuclideData_C = record
+        name : Pchar;
+        Z : longint;
+        A : longint;
+        N : longint;
+        Z_xray : longint;
+        nXrays : longint;
+        XrayLines : ^longint;
+        XrayIntensities : ^double;
+        nGammas : longint;
+        GammaEnergies : ^double;
+        GammaIntensities : ^double;
+end;
+PradioNuclideData_C  = ^radioNuclideData_C;
 
 procedure FreeCompoundData(_para1:PcompoundData_C);cdecl;external External_library name 'FreeCompoundData';
 
@@ -2430,6 +2477,7 @@ begin
 	end;
 	FreeCompoundDataNIST(data_C)
 end;
+
 function GetCompoundDataNISTList(): StringArray;
 var
 	list_C, temp:^Pchar;
@@ -2438,20 +2486,115 @@ var
 begin
 	new(nCompounds);
 	list_C := GetCompoundDataNISTList_C(nCompounds);
-	writeln('nCompounds: ', nCompounds^);
 	SetLength(GetCompoundDataNISTList, nCompounds^);
 	temp := list_C; 
 
 	for i := 0 to nCompounds^-1 do
 	begin
 		GetCompoundDataNISTList[i] := strpas(temp^);
-		{writeln('Compound ', i , ': ', GetCompoundDataNISTList[i]);}
 		xrlFree(temp^);
 		inc(temp);
 	end;
 	xrlFree(list_C);
 	dispose(nCompounds);
+end;
 
+function GetRadioNuclideDataByName_C(radioNuclideString:Pchar):PradioNuclideData_C;cdecl;external External_library name 'GetRadioNuclideDataByName';
+function GetRadioNuclideDataByIndex_C(radioNuclideIndex:longint):PradioNuclideData_C;cdecl;external External_library name 'GetRadioNuclideDataByIndex';
+function GetRadioNuclideDataList_C(nRadioNuclides:Plongint):PPchar;cdecl;external External_library name 'GetRadioNuclideDataList';
+procedure FreeRadioNuclideData(rnd:PradioNuclideData_C);cdecl;external External_library name 'FreeRadioNuclideData';
+
+function ConvertRadioNuclideData(data_C:PradioNuclideData_C):PradioNuclideData;
+var
+	i:longint;
+	XrayLines:^longint;
+	XrayIntensities, GammaEnergies, GammaIntensities:^double;
+begin
+
+	new(ConvertRadioNuclideData);
+
+	SetLength(ConvertRadioNuclideData^.XrayLines, data_C^.nXrays);
+	SetLength(ConvertRadioNuclideData^.XrayIntensities, data_C^.nXrays);
+	SetLength(ConvertRadioNuclideData^.GammaEnergies, data_C^.nGammas);
+	SetLength(ConvertRadioNuclideData^.GammaIntensities, data_C^.nGammas);
+	ConvertRadioNuclideData^.Z:= data_C^.Z;
+	ConvertRadioNuclideData^.A:= data_C^.A;
+	ConvertRadioNuclideData^.N:= data_C^.N;
+	ConvertRadioNuclideData^.Z_xray:= data_C^.Z_xray;
+	ConvertRadioNuclideData^.nXrays:= data_C^.nXrays;
+	ConvertRadioNuclideData^.nGammas:= data_C^.nGammas;
+	ConvertRadioNuclideData^.name := strpas(data_C^.name);
+	XrayLines := data_C^.XrayLines;
+	XrayIntensities := data_C^.XrayIntensities;
+	GammaEnergies := data_C^.GammaEnergies;
+	GammaIntensities := data_C^.GammaIntensities;
+
+	for  i := 0 to ConvertRadioNuclideData^.nXrays-1 do
+	begin
+		ConvertRadioNuclideData^.XrayLines[i] := XrayLines^;
+		ConvertRadioNuclideData^.XrayIntensities[i] := XrayIntensities^;
+		inc(XrayLines);
+		inc(XrayIntensities);
+	end;
+	for  i := 0 to ConvertRadioNuclideData^.nGammas-1 do
+	begin
+		ConvertRadioNuclideData^.GammaEnergies[i] := GammaEnergies^;
+		ConvertRadioNuclideData^.GammaIntensities[i] := GammaIntensities^;
+		inc(GammaEnergies);
+		inc(GammaIntensities);
+	end;
+	FreeRadioNuclideData(data_C)
+end;
+
+function GetRadioNuclideDataByName(radioNuclideString:string):PradioNuclideData;
+var
+	temp:Pchar;
+	data_C:PradioNuclideData_C;
+begin
+	temp := StrAlloc(length(radioNuclideString)+1); 
+	StrPCopy(temp, radioNuclideString);
+	data_C := GetRadioNuclideDataByName_C(temp);
+	StrDispose(temp);
+	if (data_C = nil) then
+	begin
+		GetRadioNuclideDataByName := nil;
+		Exit;
+	end;
+	
+	GetRadioNuclideDataByName := ConvertRadioNuclideData(data_C);
+end;
+function GetRadioNuclideDataByIndex(radioNuclideIndex:longint):PradioNuclideData;
+var
+	data_C:PradioNuclideData_C;
+begin
+	data_C := GetRadioNuclideDataByIndex_C(radioNuclideIndex);
+	if (data_C = nil) then
+	begin
+		GetRadioNuclideDataByIndex:= nil;
+		Exit;
+	end;
+	
+	GetRadioNuclideDataByIndex := ConvertRadioNuclideData(data_C);
+end;
+function GetRadioNuclideDataList():StringArray;
+var
+	list_C, temp:^Pchar;
+	nRadioNuclides:Plongint;
+	i:longint;
+begin
+	new(nRadioNuclides);
+	list_C := GetRadioNuclideDataList_C(nRadioNuclides);
+	SetLength(GetRadioNuclideDataList, nRadioNuclides^);
+	temp := list_C; 
+
+	for i := 0 to nRadioNuclides^-1 do
+	begin
+		GetRadioNuclideDataList[i] := strpas(temp^);
+		xrlFree(temp^);
+		inc(temp);
+	end;
+	xrlFree(list_C);
+	dispose(nRadioNuclides);
 end;
 
 end.

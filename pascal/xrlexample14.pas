@@ -8,6 +8,8 @@ var
 	i : longint;
 	cdn : PcompoundDataNIST;
 	nistCompounds : stringArray;
+	rnd : PradioNuclideData;
+	radioNuclides : stringArray;
 begin
 
 	SetErrorMessages(0);
@@ -113,9 +115,60 @@ begin
   		writeln('  Compound ',i,': ', nistCompounds[i]);
 	end;
  
+	writeln('');
+
+  	{ radioNuclideData tests }
+	rnd := GetRadioNuclideDataByName('109Cd');
+	writeln('109Cd');
+	writeln('  Name: ', rnd^.name);
+	writeln('  Z: ', rnd^.Z);
+	writeln('  A: ', rnd^.A);
+	writeln('  N: ', rnd^.N);
+	writeln('  Z_xray: ', rnd^.Z_xray);
+	writeln('  X-rays:');
+	for  i := 0 to rnd^.nXrays-1 do
+	begin
+		writeln('  ', LineEnergy(rnd^.Z_xray, rnd^.XrayLines[i]), ' keV -> ', rnd^.XrayIntensities[i]);
+	end;
+	writeln('  Gamma rays:');
+	for  i := 0 to rnd^.nGammas-1 do
+	begin
+		writeln('  ', rnd^.GammaEnergies[i], ' keV -> ', rnd^.GammaIntensities[i]);
+	end;
+
+	Dispose(rnd);
+
+	rnd := GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I);
+	writeln('RADIO_NUCLIDE_125I');
+	writeln('  Name: ', rnd^.name);
+	writeln('  Z: ', rnd^.Z);
+	writeln('  A: ', rnd^.A);
+	writeln('  N: ', rnd^.N);
+	writeln('  Z_xray: ', rnd^.Z_xray);
+	writeln('  X-rays:');
+	for  i := 0 to rnd^.nXrays-1 do
+	begin
+		writeln('  ', LineEnergy(rnd^.Z_xray, rnd^.XrayLines[i]), ' keV -> ', rnd^.XrayIntensities[i]);
+	end;
+	writeln('  Gamma rays:');
+	for  i := 0 to rnd^.nGammas-1 do
+	begin
+		writeln('  ', rnd^.GammaEnergies[i], ' keV -> ', rnd^.GammaIntensities[i]);
+	end;
+
+	Dispose(rnd);
+
+	radioNuclides := GetRadioNuclideDataList();
+	writeln('List of available radionuclides:');
+	for  i := 0 to Length(radioNuclides)-1 do
+	begin
+  		writeln('  Radionuclide ',i,': ', radioNuclides[i]);
+	end;
+ 
+
 
 
 	writeln('');
-	writeln('--------------------------- END OF XRLEXAMPLE1 -------------------------------');
+	writeln('--------------------------- END OF XRLEXAMPLE14 -------------------------------');
 	writeln('');
 end.
