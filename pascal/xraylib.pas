@@ -1954,6 +1954,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
         n_alloc : longint;
         crystal : ^Crystal_Struct;
       end;
+  PCrystal_Array  = ^Crystal_Array;
+  PCrystal_Atom = ^Crystal_Atom;
+  PCrystal_Struct  = ^Crystal_Struct;
   type
     compoundData = record
         nElements : longint;
@@ -2001,6 +2004,15 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
     function GetRadioNuclideDataByName(radioNuclideString:string):PradioNuclideData;
     function GetRadioNuclideDataByIndex(radioNuclideIndex:longint):PradioNuclideData;
     function GetRadioNuclideDataList():StringArray;
+
+    function Bragg_angle(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Bragg_angle';
+    function Q_scattering_amplitude(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;cdecl;external External_library name 'Q_scattering_amplitude';
+    procedure Atomic_Factors(Z:longint; energy:double; q:double; debye_factor:double; f0:Pdouble;f_primep:Pdouble; f_prime2:Pdouble);cdecl;external External_library name 'Atomic_Factors';
+    function Crystal_F_H_StructureFactor(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double):xrlComplex;cdecl;external External_library name 'Crystal_F_H_StructureFactor';
+    function Crystal_F_H_StructureFactor_Partial(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;cdecl;external External_library name 'Crystal_F_H_StructureFactor_Partial';
+    function Crystal_UnitCellVolume(crystal:PCrystal_Struct):double;cdecl;external External_library name 'Crystal_UnitCellVolume';
+    function Crystal_dSpacing(crystal:PCrystal_Struct; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Crystal_dSpacing';
+    function Crystal_GetCrystal(material:string):PCrystal_Struct;
 
 implementation
 
@@ -2481,22 +2493,20 @@ end;
 function GetCompoundDataNISTList(): StringArray;
 var
 	list_C, temp:^Pchar;
-	nCompounds:Plongint;
+	nCompounds:longint;
 	i:longint;
 begin
-	new(nCompounds);
-	list_C := GetCompoundDataNISTList_C(nCompounds);
-	SetLength(GetCompoundDataNISTList, nCompounds^);
+	list_C := GetCompoundDataNISTList_C(@nCompounds);
+	SetLength(GetCompoundDataNISTList, nCompounds);
 	temp := list_C; 
 
-	for i := 0 to nCompounds^-1 do
+	for i := 0 to nCompounds-1 do
 	begin
 		GetCompoundDataNISTList[i] := strpas(temp^);
 		xrlFree(temp^);
 		inc(temp);
 	end;
 	xrlFree(list_C);
-	dispose(nCompounds);
 end;
 
 function GetRadioNuclideDataByName_C(radioNuclideString:Pchar):PradioNuclideData_C;cdecl;external External_library name 'GetRadioNuclideDataByName';
@@ -2579,22 +2589,31 @@ end;
 function GetRadioNuclideDataList():StringArray;
 var
 	list_C, temp:^Pchar;
-	nRadioNuclides:Plongint;
+	nRadioNuclides:longint;
 	i:longint;
 begin
-	new(nRadioNuclides);
-	list_C := GetRadioNuclideDataList_C(nRadioNuclides);
-	SetLength(GetRadioNuclideDataList, nRadioNuclides^);
+	list_C := GetRadioNuclideDataList_C(@nRadioNuclides);
+	SetLength(GetRadioNuclideDataList, nRadioNuclides);
 	temp := list_C; 
 
-	for i := 0 to nRadioNuclides^-1 do
+	for i := 0 to nRadioNuclides-1 do
 	begin
 		GetRadioNuclideDataList[i] := strpas(temp^);
 		xrlFree(temp^);
 		inc(temp);
 	end;
 	xrlFree(list_C);
-	dispose(nRadioNuclides);
+end;
+
+function Crystal_GetCrystal_C(material:Pchar; c_array:PCrystal_Array):PCrystal_Struct;cdecl;external External_library name 'Crystal_GetCrystal';
+function Crystal_GetCrystal(material:string):PCrystal_Struct;
+var
+	temp:Pchar;
+begin
+	temp := StrAlloc(length(material)+1); 
+	StrPCopy(temp, material);
+	Crystal_GetCrystal := Crystal_GetCrystal_C(temp, nil);
+	StrDispose(temp);
 end;
 
 end.

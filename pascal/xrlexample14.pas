@@ -2,7 +2,6 @@ program xraylibtest;
 {$linklib libxrl}
 uses xraylib;
 var
-	Energy : Double;
 	cdtest : PcompoundData;
 	mystring : string;
 	i : longint;
@@ -10,6 +9,15 @@ var
 	nistCompounds : stringArray;
 	rnd : PradioNuclideData;
 	radioNuclides : stringArray;
+	cryst : PCrystal_Struct;
+	atom : PCrystal_Atom;
+	energy : double = 8.0;
+	debye_temp_factor : double = 1.0;
+	rel_angle : double = 1.0;
+	bragg, q, dw : double;
+	f0 , fp, fpp : double;
+	FbigH, Fbig0, FbigHbar : xrlComplex;
+
 begin
 
 	SetErrorMessages(0);
@@ -79,7 +87,112 @@ begin
 	mystring := 'CdTe';
 	writeln('CdTe mass energy-absorption cs at 40.0 keV: ', CS_Energy_CP(mystring, 40.0));
 
+  	{ Si Crystal structure }
 
+  	cryst := Crystal_GetCrystal('Si');
+  	if (cryst = nil) then
+	begin
+		Halt(1)
+	end;
+  	writeln('Si unit cell dimensions are ', cryst^.a, cryst^.b, cryst^.c);
+  	writeln('Si unit cell angles are ', cryst^.alpha, cryst^.beta, cryst^.gamma);
+  	writeln('Si unit cell volume is ', cryst^.volume);
+  	writeln('Si atoms at:');
+  	writeln('   Z  fraction    X        Y        Z');
+	for i := 0 to cryst^.n_atom-1 do
+	begin
+    		atom := @cryst^.atom[i];
+    		writeln(atom^.Zatom, atom^.fraction, atom^.x, atom^.y, atom^.z);
+	end;
+
+  	{ Si diffraction parameters }
+	writeln('');
+  	writeln('Si111 at 8 KeV. Incidence at the Bragg angle:');
+
+  	bragg := Bragg_angle(cryst, energy, 1, 1, 1);
+  	writeln('  Bragg angle: Rad: ', bragg, ' Deg: ', bragg*180/PI);
+
+  	q := Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+  	writeln('  Q Scattering amplitude: ', q);
+
+  	Atomic_Factors (14, energy, q, debye_temp_factor, @f0, @fp, @fpp);
+  	writeln('  Atomic factors (Z = 14) f0, fp, fpp: ' , f0, ', ', fp, ', i*', fpp);
+
+  	FbigH := Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  	writeln('  FH(1,1,1) structure factor: (', FbigH.re, ', ', FbigH.im, ')');
+
+  	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+
+ 	{ Diamond diffraction parameters }
+
+  	cryst := Crystal_GetCrystal('Diamond');
+	writeln('');
+  	writeln('Diamond 111 at 8 KeV. Incidence at the Bragg angle:');
+
+  	bragg := Bragg_angle (cryst, energy, 1, 1, 1);
+  	writeln('  Bragg angle: Rad: ', bragg, ' Deg: ', bragg*180/PI);
+
+  	q := Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+  	writeln('  Q Scattering amplitude: ', q);
+
+  	Atomic_Factors (6, energy, q, debye_temp_factor, @f0, @fp, @fpp);
+  	writeln('  Atomic factors (Z = 6) f0, fp, fpp: ' , f0, ', ', fp, ', i*', fpp);
+
+  	FbigH := Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  	writeln('  FH(1,1,1) structure factor: (', FbigH.re, ', ', FbigH.im, ')');
+
+  	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+
+  	FbigHbar := Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
+  	dw := 1E10 * 2 * (R_E / cryst^.volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
+                                                  sqrt(c_abs(c_mul(FbigH, FbigHbar))) / PI / sin(2*bragg);
+  	writeln('  Darwin width: ', 1e6*dw,' micro-radians');
+
+  	{ Alpha Quartz diffraction parameters }
+
+  	cryst := Crystal_GetCrystal('AlphaQuartz');
+	writeln('');
+  	writeln('Alpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:');
+
+  	bragg := Bragg_angle (cryst, energy, 0, 2, 0);
+  	writeln('  Bragg angle: Rad: ', bragg, ' Deg: ', bragg*180/PI);
+
+	q := Q_scattering_amplitude (cryst, energy, 0, 2, 0, rel_angle);
+  	writeln('  Q Scattering amplitude: ', q);
+
+  	Atomic_Factors (8, energy, q, debye_temp_factor, @f0, @fp, @fpp);
+  	writeln('  Atomic factors (Z = 8) f0, fp, fpp: ' , f0, ', ', fp, ', i*', fpp);
+
+  	FbigH := Crystal_F_H_StructureFactor (cryst, energy, 0, 2, 0, debye_temp_factor, rel_angle);
+  	writeln('  FH(0,2,0) structure factor: (', FbigH.re, ', ', FbigH.im, ')');
+
+  	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+
+  	{ Muscovite diffraction parameters }
+
+  	cryst := Crystal_GetCrystal('Muscovite');
+	writeln('');
+  	writeln('Muscovite 331 at 8 KeV. Incidence at the Bragg angle:');
+
+  	bragg := Bragg_angle (cryst, energy, 3, 3, 1);
+  	writeln('  Bragg angle: Rad: ', bragg, ' Deg: ', bragg*180/PI);
+
+  	q := Q_scattering_amplitude (cryst, energy, 3, 3, 1, rel_angle);
+  	writeln('  Q Scattering amplitude: ', q);
+
+  	Atomic_Factors (19, energy, q, debye_temp_factor, @f0, @fp, @fpp);
+  	writeln('  Atomic factors (Z = 19) f0, fp, fpp: ' , f0, ', ', fp, ', i*', fpp);
+
+  	FbigH := Crystal_F_H_StructureFactor (cryst, energy, 3, 3, 1, debye_temp_factor, rel_angle);
+  	writeln('  FH(3,3,1) structure factor: (', FbigH.re, ', ', FbigH.im, ')');
+
+  	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+
+	writeln('');
 
 	{ compoundDataNIST tests }
 	cdn := GetCompoundDataNISTByName('Uranium Monocarbide');
