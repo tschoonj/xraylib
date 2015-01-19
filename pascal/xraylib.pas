@@ -12,16 +12,16 @@ uses strings;
 }
 
   const
+{$IFDEF DARWIN}
     External_library='libxrl.7.dylib'; {Setup as you need}
+{$ENDIF}
+{$IFDEF LINUX}
+    External_library='libxrl.so.7'; {Setup as you need}
+{$ENDIF}
 
   type
   Pchar  = ^char;
   PPchar = ^Pchar;
-  type
-    xrlComplex = record
-        re : double;
-        im : double;
-      end;
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}
@@ -1910,6 +1910,12 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
   function Refractive_Index_Re(compound:string; E:double; density:double):double;
 
   function Refractive_Index_Im(compound:string; E:double; density:double):double;
+
+  type
+    xrlComplex = record
+        re : double;
+        im : double;
+      end;
 
   function Refractive_Index(compound:string; E:double; density:double):xrlComplex;
 
