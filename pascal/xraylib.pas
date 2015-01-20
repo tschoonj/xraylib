@@ -1,7 +1,9 @@
-
+{$IFDEF FPC}
+{$MODE DELPHI}
+{$ENDIF}
 unit xraylib;
 interface
-uses strings;
+uses sysutils;
 
 
 {
@@ -17,6 +19,9 @@ uses strings;
 {$ENDIF}
 {$IFDEF LINUX}
     External_library='libxrl.so.7'; {Setup as you need}
+{$ENDIF}
+{$IFDEF MSWINDOWS}
+    External_library='libxrl-7.dll'; {Setup as you need}
 {$ENDIF}
 
   type
@@ -1943,7 +1948,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
       end;
 
     Crystal_Struct = record
-        name : ^char;
+        name : string;
         a : double;
         b : double;
         c : double;
@@ -1952,15 +1957,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
         gamma : double;
         volume : double;
         n_atom : longint;
-        atom : ^Crystal_Atom;
+        atom : array of Crystal_Atom;
       end;
 
-    Crystal_Array = record
-        n_crystal : longint;
-        n_alloc : longint;
-        crystal : ^Crystal_Struct;
-      end;
-  PCrystal_Array  = ^Crystal_Array;
   PCrystal_Atom = ^Crystal_Atom;
   PCrystal_Struct  = ^Crystal_Struct;
   type
@@ -2011,14 +2010,14 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
     function GetRadioNuclideDataByIndex(radioNuclideIndex:longint):PradioNuclideData;
     function GetRadioNuclideDataList():StringArray;
 
-    function Bragg_angle(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Bragg_angle';
-    function Q_scattering_amplitude(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;cdecl;external External_library name 'Q_scattering_amplitude';
-    procedure Atomic_Factors(Z:longint; energy:double; q:double; debye_factor:double; f0:Pdouble;f_primep:Pdouble; f_prime2:Pdouble);cdecl;external External_library name 'Atomic_Factors';
-    function Crystal_F_H_StructureFactor(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double):xrlComplex;cdecl;external External_library name 'Crystal_F_H_StructureFactor';
-    function Crystal_F_H_StructureFactor_Partial(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;cdecl;external External_library name 'Crystal_F_H_StructureFactor_Partial';
-    function Crystal_UnitCellVolume(crystal:PCrystal_Struct):double;cdecl;external External_library name 'Crystal_UnitCellVolume';
-    function Crystal_dSpacing(crystal:PCrystal_Struct; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Crystal_dSpacing';
     function Crystal_GetCrystal(material:string):PCrystal_Struct;
+    procedure Atomic_Factors(Z:longint; energy:double; q:double; debye_factor:double; f0:Pdouble;f_primep:Pdouble; f_prime2:Pdouble);cdecl;external External_library name 'Atomic_Factors';
+    function Bragg_angle(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;
+    function Q_scattering_amplitude(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;
+    function Crystal_F_H_StructureFactor(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double):xrlComplex;
+    function Crystal_F_H_StructureFactor_Partial(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;
+    function Crystal_UnitCellVolume(crystal:PCrystal_Struct):double;
+    function Crystal_dSpacing(crystal:PCrystal_Struct; i_miller:longint; j_miller:longint; k_miller:longint):double;
 
 implementation
 
@@ -2096,6 +2095,7 @@ var
 	data_C:PcompoundData_C;
 	Elements:^longint;
 	massFractions:^Double;
+	rv:PcompoundData;
 begin
 	temp := StrAlloc(length(compound)+1); 
 	StrPCopy(temp, compound);
@@ -2108,23 +2108,24 @@ begin
 	end;
 	StrDispose(temp);
 
-	new(CompoundParser);
+	New(rv);
 
-	SetLength(CompoundParser^.Elements, data_C^.nElements);
-	SetLength(CompoundParser^.massFractions, data_C^.nElements);
-	CompoundParser^.nElements := data_C^.nElements;
-	CompoundParser^.nAtomsAll:= data_C^.nAtomsAll;
+	SetLength(rv^.Elements, data_C^.nElements);
+	SetLength(rv^.massFractions, data_C^.nElements);
+	rv^.nElements := data_C^.nElements;
+	rv^.nAtomsAll:= data_C^.nAtomsAll;
 	Elements := data_C^.Elements;
 	massFractions := data_C^.massFractions;
 
-	for  i := 0 to CompoundParser^.nElements-1 do
+	for  i := 0 to rv^.nElements-1 do
 	begin
-		CompoundParser^.Elements[i] := Elements^;
-		CompoundParser^.massFractions[i] := massFractions^;
+		rv^.Elements[i] := Elements^;
+		rv^.massFractions[i] := massFractions^;
 		inc(Elements);
 		inc(massFractions);
 	end;
-	FreeCompoundData(data_C)
+	FreeCompoundData(data_C);
+	CompoundParser := rv;
 end;
 
 function CS_Total_CP_C(compound:Pchar; E:double):double;cdecl;external External_library name 'CS_Total_CP';
@@ -2431,6 +2432,7 @@ var
 	data_C:PcompoundDataNIST_C;
 	Elements:^longint;
 	massFractions:^Double;
+	rv:PcompoundDataNIST;
 begin
 	temp := StrAlloc(length(compoundString)+1); 
 	StrPCopy(temp, compoundString);
@@ -2442,24 +2444,25 @@ begin
 		Exit;
 	end;
 
-	new(GetCompoundDataNISTByName);
+	new(rv);
 
-	SetLength(GetCompoundDataNISTByName^.Elements, data_C^.nElements);
-	SetLength(GetCompoundDataNISTByName^.massFractions, data_C^.nElements);
-	GetCompoundDataNISTByName^.nElements := data_C^.nElements;
-	GetCompoundDataNISTByName^.density:= data_C^.density;
-	GetCompoundDataNISTByName^.name := strpas(data_C^.name);
+	SetLength(rv^.Elements, data_C^.nElements);
+	SetLength(rv^.massFractions, data_C^.nElements);
+	rv^.nElements := data_C^.nElements;
+	rv^.density:= data_C^.density;
+	rv^.name := strpas(data_C^.name);
 	Elements := data_C^.Elements;
 	massFractions := data_C^.massFractions;
 
-	for  i := 0 to GetCompoundDataNISTByName^.nElements-1 do
+	for  i := 0 to rv^.nElements-1 do
 	begin
-		GetCompoundDataNISTByName^.Elements[i] := Elements^;
-		GetCompoundDataNISTByName^.massFractions[i] := massFractions^;
+		rv^.Elements[i] := Elements^;
+		rv^.massFractions[i] := massFractions^;
 		inc(Elements);
 		inc(massFractions);
 	end;
-	FreeCompoundDataNIST(data_C)
+	FreeCompoundDataNIST(data_C);
+	GetCompoundDataNISTByName := rv;
 end;
 
 function GetCompoundDataNISTByIndex(compoundIndex:longint):PcompoundDataNIST;
@@ -2468,6 +2471,7 @@ var
 	data_C:PcompoundDataNIST_C;
 	Elements:^longint;
 	massFractions:^Double;
+	rv:PcompoundDataNIST;
 begin
 	data_C := GetCompoundDataNISTByIndex_C(compoundIndex);
 	if (data_C = nil) then
@@ -2476,24 +2480,25 @@ begin
 		Exit;
 	end;
 
-	new(GetCompoundDataNISTByIndex);
+	new(rv);
 
-	SetLength(GetCompoundDataNISTByIndex^.Elements, data_C^.nElements);
-	SetLength(GetCompoundDataNISTByIndex^.massFractions, data_C^.nElements);
-	GetCompoundDataNISTByIndex^.nElements := data_C^.nElements;
-	GetCompoundDataNISTByIndex^.density:= data_C^.density;
-	GetCompoundDataNISTByIndex^.name := strpas(data_C^.name);
+	SetLength(rv^.Elements, data_C^.nElements);
+	SetLength(rv^.massFractions, data_C^.nElements);
+	rv^.nElements := data_C^.nElements;
+	rv^.density:= data_C^.density;
+	rv^.name := strpas(data_C^.name);
 	Elements := data_C^.Elements;
 	massFractions := data_C^.massFractions;
 
-	for  i := 0 to GetCompoundDataNISTByIndex^.nElements-1 do
+	for  i := 0 to rv^.nElements-1 do
 	begin
-		GetCompoundDataNISTByIndex^.Elements[i] := Elements^;
-		GetCompoundDataNISTByIndex^.massFractions[i] := massFractions^;
+		rv^.Elements[i] := Elements^;
+		rv^.massFractions[i] := massFractions^;
 		inc(Elements);
 		inc(massFractions);
 	end;
-	FreeCompoundDataNIST(data_C)
+	FreeCompoundDataNIST(data_C);
+	GetCompoundDataNISTByIndex := rv;
 end;
 
 function GetCompoundDataNISTList(): StringArray;
@@ -2501,18 +2506,20 @@ var
 	list_C, temp:^Pchar;
 	nCompounds:longint;
 	i:longint;
+	rv:StringArray;
 begin
 	list_C := GetCompoundDataNISTList_C(@nCompounds);
-	SetLength(GetCompoundDataNISTList, nCompounds);
+	SetLength(rv, nCompounds);
 	temp := list_C; 
 
 	for i := 0 to nCompounds-1 do
 	begin
-		GetCompoundDataNISTList[i] := strpas(temp^);
+		rv[i] := strpas(temp^);
 		xrlFree(temp^);
 		inc(temp);
 	end;
 	xrlFree(list_C);
+	GetCompoundDataNISTList := rv;
 end;
 
 function GetRadioNuclideDataByName_C(radioNuclideString:Pchar):PradioNuclideData_C;cdecl;external External_library name 'GetRadioNuclideDataByName';
@@ -2525,41 +2532,43 @@ var
 	i:longint;
 	XrayLines:^longint;
 	XrayIntensities, GammaEnergies, GammaIntensities:^double;
+	rv:PradioNuclideData;
 begin
 
-	new(ConvertRadioNuclideData);
+	new(rv);
 
-	SetLength(ConvertRadioNuclideData^.XrayLines, data_C^.nXrays);
-	SetLength(ConvertRadioNuclideData^.XrayIntensities, data_C^.nXrays);
-	SetLength(ConvertRadioNuclideData^.GammaEnergies, data_C^.nGammas);
-	SetLength(ConvertRadioNuclideData^.GammaIntensities, data_C^.nGammas);
-	ConvertRadioNuclideData^.Z:= data_C^.Z;
-	ConvertRadioNuclideData^.A:= data_C^.A;
-	ConvertRadioNuclideData^.N:= data_C^.N;
-	ConvertRadioNuclideData^.Z_xray:= data_C^.Z_xray;
-	ConvertRadioNuclideData^.nXrays:= data_C^.nXrays;
-	ConvertRadioNuclideData^.nGammas:= data_C^.nGammas;
-	ConvertRadioNuclideData^.name := strpas(data_C^.name);
+	SetLength(rv^.XrayLines, data_C^.nXrays);
+	SetLength(rv^.XrayIntensities, data_C^.nXrays);
+	SetLength(rv^.GammaEnergies, data_C^.nGammas);
+	SetLength(rv^.GammaIntensities, data_C^.nGammas);
+	rv^.Z:= data_C^.Z;
+	rv^.A:= data_C^.A;
+	rv^.N:= data_C^.N;
+	rv^.Z_xray:= data_C^.Z_xray;
+	rv^.nXrays:= data_C^.nXrays;
+	rv^.nGammas:= data_C^.nGammas;
+	rv^.name := strpas(data_C^.name);
 	XrayLines := data_C^.XrayLines;
 	XrayIntensities := data_C^.XrayIntensities;
 	GammaEnergies := data_C^.GammaEnergies;
 	GammaIntensities := data_C^.GammaIntensities;
 
-	for  i := 0 to ConvertRadioNuclideData^.nXrays-1 do
+	for  i := 0 to rv^.nXrays-1 do
 	begin
-		ConvertRadioNuclideData^.XrayLines[i] := XrayLines^;
-		ConvertRadioNuclideData^.XrayIntensities[i] := XrayIntensities^;
+		rv^.XrayLines[i] := XrayLines^;
+		rv^.XrayIntensities[i] := XrayIntensities^;
 		inc(XrayLines);
 		inc(XrayIntensities);
 	end;
-	for  i := 0 to ConvertRadioNuclideData^.nGammas-1 do
+	for  i := 0 to rv^.nGammas-1 do
 	begin
-		ConvertRadioNuclideData^.GammaEnergies[i] := GammaEnergies^;
-		ConvertRadioNuclideData^.GammaIntensities[i] := GammaIntensities^;
+		rv^.GammaEnergies[i] := GammaEnergies^;
+		rv^.GammaIntensities[i] := GammaIntensities^;
 		inc(GammaEnergies);
 		inc(GammaIntensities);
 	end;
-	FreeRadioNuclideData(data_C)
+	FreeRadioNuclideData(data_C);
+	ConvertRadioNuclideData := rv;
 end;
 
 function GetRadioNuclideDataByName(radioNuclideString:string):PradioNuclideData;
@@ -2597,29 +2606,186 @@ var
 	list_C, temp:^Pchar;
 	nRadioNuclides:longint;
 	i:longint;
+	rv:StringArray;
 begin
 	list_C := GetRadioNuclideDataList_C(@nRadioNuclides);
-	SetLength(GetRadioNuclideDataList, nRadioNuclides);
+	SetLength(rv, nRadioNuclides);
 	temp := list_C; 
 
 	for i := 0 to nRadioNuclides-1 do
 	begin
-		GetRadioNuclideDataList[i] := strpas(temp^);
+		rv[i] := strpas(temp^);
 		xrlFree(temp^);
 		inc(temp);
 	end;
 	xrlFree(list_C);
+	GetRadioNuclideDataList := rv;
 end;
-
-function Crystal_GetCrystal_C(material:Pchar; c_array:PCrystal_Array):PCrystal_Struct;cdecl;external External_library name 'Crystal_GetCrystal';
+type
+    Crystal_Struct_C = record
+        name : ^char;
+        a : double;
+        b : double;
+        c : double;
+        alpha : double;
+        beta : double;
+        gamma : double;
+        volume : double;
+        n_atom : longint;
+        atom : ^Crystal_Atom;
+      end;
+type
+    Crystal_Array = record
+        n_crystal : longint;
+        n_alloc : longint;
+        crystal : ^Crystal_Struct_C;
+      end;
+  PCrystal_Array  = ^Crystal_Array;
+  PCrystal_Struct_C = ^Crystal_Struct_C;
+function Crystal_GetCrystal_C(material:Pchar; c_array:PCrystal_Array):PCrystal_Struct_C;cdecl;external External_library name 'Crystal_GetCrystal';
 function Crystal_GetCrystal(material:string):PCrystal_Struct;
 var
 	temp:Pchar;
+	data_C:PCrystal_Struct_C;
+	rv:PCrystal_Struct;
+	i:longint;
+	atom:^Crystal_Atom;
 begin
 	temp := StrAlloc(length(material)+1); 
 	StrPCopy(temp, material);
-	Crystal_GetCrystal := Crystal_GetCrystal_C(temp, nil);
+	data_C:= Crystal_GetCrystal_C(temp, nil);
 	StrDispose(temp);
+
+	if (data_C = nil) then
+	begin
+		Crystal_GetCrystal := nil;
+		Exit;
+	end;
+
+	New(rv);
+	rv^.name := strpas(data_C^.name);
+	rv^.a := data_C^.a;
+	rv^.b := data_C^.b;
+	rv^.c := data_C^.c;
+	rv^.alpha := data_C^.alpha;
+	rv^.beta := data_C^.beta;
+	rv^.gamma := data_C^.gamma;
+	rv^.volume := data_C^.volume;
+	rv^.n_atom := data_C^.n_atom;
+	SetLength(rv^.atom, rv^.n_atom);
+	atom := data_C^.atom;
+	for  i := 0 to rv^.n_atom-1 do
+	begin
+		rv^.atom[i].Zatom := atom^.Zatom;
+		rv^.atom[i].fraction := atom^.fraction;
+		rv^.atom[i].x := atom^.x;
+		rv^.atom[i].y := atom^.y;
+		rv^.atom[i].z := atom^.z;
+		Inc(atom);
+	end;
+	Crystal_GetCrystal := rv;
 end;
+
+function Bragg_angle_C(crystal:PCrystal_Struct_C; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Bragg_angle';
+function Q_scattering_amplitude_C(crystal:PCrystal_Struct_C; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;cdecl;external External_library name 'Q_scattering_amplitude';
+function Crystal_F_H_StructureFactor_C(crystal:PCrystal_Struct_C; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double):xrlComplex;cdecl;external External_library name 'Crystal_F_H_StructureFactor';
+function Crystal_F_H_StructureFactor_Partial_C(crystal:PCrystal_Struct_C; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;cdecl;external External_library name 'Crystal_F_H_StructureFactor_Partial';
+function Crystal_UnitCellVolume_C(crystal:PCrystal_Struct_C):double;cdecl;external External_library name 'Crystal_UnitCellVolume';
+function Crystal_dSpacing_C(crystal:PCrystal_Struct_C; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Crystal_dSpacing';
+
+function ConvertCrystal_Struct(data_p:PCrystal_Struct):PCrystal_Struct_C;
+var
+	i:longint;
+	rv:PCrystal_Struct_C;
+	atom:PCrystal_Atom;
+begin
+	New(rv);
+	{name is pointless here}
+	rv^.name := nil;
+	rv^.a := data_p^.a;
+	rv^.b := data_p^.b;
+	rv^.c := data_p^.c;
+	rv^.alpha := data_p^.alpha;
+	rv^.beta := data_p^.beta;
+	rv^.gamma := data_p^.gamma;
+	rv^.volume := data_p^.volume;
+	rv^.n_atom := data_p^.n_atom;
+	GetMem(rv^.atom, SizeOf(Crystal_Atom)*rv^.n_atom);	
+	atom := rv^.atom;
+	for  i := 0 to rv^.n_atom-1 do
+	begin
+		atom^.Zatom := data_p^.atom[i].Zatom;
+		atom^.fraction := data_p^.atom[i].fraction;
+		atom^.x := data_p^.atom[i].x;
+		atom^.y := data_p^.atom[i].y;
+		atom^.z := data_p^.atom[i].z;
+		Inc(atom);
+	end;
+	ConvertCrystal_Struct := rv;
+end;
+
+function Bragg_angle(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;
+var
+	data_C:PCrystal_Struct_C;
+begin
+	data_C := ConvertCrystal_Struct(crystal);
+	Bragg_angle := Bragg_angle_C(data_C, energy, i_miller, j_miller, k_miller);
+	FreeMem(data_C^.atom);
+	Dispose(data_C);
+end;
+
+
+function Q_scattering_amplitude(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;
+var
+	data_C:PCrystal_Struct_C;
+begin
+	data_C := ConvertCrystal_Struct(crystal);
+	Q_scattering_amplitude := Q_scattering_amplitude_C(data_C, energy, i_miller, j_miller, k_miller, rel_angle);
+	FreeMem(data_C^.atom);
+	Dispose(data_C);
+end;
+
+
+function Crystal_F_H_StructureFactor(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double):xrlComplex;
+var
+	data_C:PCrystal_Struct_C;
+begin
+	data_C := ConvertCrystal_Struct(crystal);
+	Crystal_F_H_StructureFactor := Crystal_F_H_StructureFactor_C(data_C, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
+	FreeMem(data_C^.atom);
+	Dispose(data_C);
+end;
+
+function Crystal_F_H_StructureFactor_Partial(crystal:PCrystal_Struct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;
+var
+	data_C:PCrystal_Struct_C;
+begin
+	data_C := ConvertCrystal_Struct(crystal);
+	Crystal_F_H_StructureFactor_Partial := Crystal_F_H_StructureFactor_Partial_C(data_C, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+	FreeMem(data_C^.atom);
+	Dispose(data_C);
+end;
+
+function Crystal_UnitCellVolume(crystal:PCrystal_Struct):double;
+var
+	data_C:PCrystal_Struct_C;
+begin
+	data_C := ConvertCrystal_Struct(crystal);
+	Crystal_UnitCellVolume := Crystal_UnitCellVolume_C(data_C);
+	FreeMem(data_C^.atom);
+	Dispose(data_C);
+end;
+
+function Crystal_dSpacing(crystal:PCrystal_Struct; i_miller:longint; j_miller:longint; k_miller:longint):double;
+var
+	data_C:PCrystal_Struct_C;
+begin
+	data_C := ConvertCrystal_Struct(crystal);
+	Crystal_dSpacing := Crystal_dSpacing_C(data_C, i_miller, j_miller, k_miller);
+	FreeMem(data_C^.atom);
+	Dispose(data_C);
+end;
+
+
 
 end.

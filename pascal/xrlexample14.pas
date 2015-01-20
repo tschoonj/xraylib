@@ -1,5 +1,10 @@
+{$IFDEF FPC}
+{$MODE DELPHI}
+{$ENDIF}
 program xraylibtest;
+{$IFDEF FPC}
 {$linklib libxrl}
+{$ENDIF}
 uses xraylib;
 var
 	cdtest : PcompoundData;
@@ -123,6 +128,7 @@ begin
 
   	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+	Dispose(cryst);
 
  	{ Diamond diffraction parameters }
 
@@ -149,6 +155,7 @@ begin
   	dw := 1E10 * 2 * (R_E / cryst^.volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
                                                   sqrt(c_abs(c_mul(FbigH, FbigHbar))) / PI / sin(2*bragg);
   	writeln('  Darwin width: ', 1e6*dw,' micro-radians');
+	Dispose(cryst);
 
   	{ Alpha Quartz diffraction parameters }
 
@@ -170,6 +177,7 @@ begin
 
   	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+	Dispose(cryst);
 
   	{ Muscovite diffraction parameters }
 
@@ -191,6 +199,7 @@ begin
 
   	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   	writeln('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+	Dispose(cryst);
 
 	writeln('');
 
