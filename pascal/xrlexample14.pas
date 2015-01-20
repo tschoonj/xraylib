@@ -1,6 +1,3 @@
-{$IFDEF FPC}
-{$MODE DELPHI}
-{$ENDIF}
 program xraylibtest;
 {$IFDEF FPC}
 {$linklib libxrl}

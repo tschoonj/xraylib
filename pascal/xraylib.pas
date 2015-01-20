@@ -1,6 +1,3 @@
-{$IFDEF FPC}
-{$MODE DELPHI}
-{$ENDIF}
 unit xraylib;
 interface
 uses sysutils;
