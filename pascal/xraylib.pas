@@ -1,3 +1,6 @@
+{$IFDEF FPC}
+{$MODE DELPHI}
+{$ENDIF}
 unit xraylib;
 interface
 uses sysutils;
@@ -22,8 +25,9 @@ uses sysutils;
 {$ENDIF}
 
   type
-  Pchar  = ^char;
+  PDouble = ^Double;
   PPchar = ^Pchar;
+  Plongint = ^longint;
 {$IFDEF FPC}
 {$PACKRECORDS C}
 {$ENDIF}
@@ -2022,8 +2026,8 @@ type
     compoundData_C = record
         nElements : longint;
         nAtomsAll : double;
-        Elements : ^longint;
-        massFractions : ^double;
+        Elements : Plongint;
+        massFractions : Pdouble;
 end;
 PcompoundData_C  = ^compoundData_C;
 
@@ -2031,8 +2035,8 @@ type
     compoundDataNIST_C = record
         name : Pchar;
         nElements : longint;
-        Elements : ^longint;
-        massFractions : ^double;
+        Elements : Plongint;
+        massFractions : Pdouble;
         density : double;
 end;
 PcompoundDataNIST_C  = ^compoundDataNIST_C;
@@ -2045,11 +2049,11 @@ type
         N : longint;
         Z_xray : longint;
         nXrays : longint;
-        XrayLines : ^longint;
-        XrayIntensities : ^double;
+        XrayLines : Plongint;
+        XrayIntensities : Pdouble;
         nGammas : longint;
-        GammaEnergies : ^double;
-        GammaIntensities : ^double;
+        GammaEnergies : Pdouble;
+        GammaIntensities : Pdouble;
 end;
 PradioNuclideData_C  = ^radioNuclideData_C;
 
@@ -2079,7 +2083,7 @@ function SymbolToAtomicNumber(symbol:string):longint;
 var
 	temp:Pchar;
 begin
-	temp := StrAlloc(length(symbol)+1); 
+	temp := StrAlloc(length(symbol)+1);
 	StrPCopy(temp, symbol);
 	SymbolToAtomicNumber := SymbolToAtomicNumber_C(temp);
 	StrDispose(temp);
@@ -2090,11 +2094,11 @@ var
 	i:longint;
 	temp:Pchar;
 	data_C:PcompoundData_C;
-	Elements:^longint;
-	massFractions:^Double;
+	Elements:Plongint;
+	massFractions:PDouble;
 	rv:PcompoundData;
 begin
-	temp := StrAlloc(length(compound)+1); 
+	temp := StrAlloc(length(compound)+1);
 	StrPCopy(temp, compound);
 	data_C := CompoundParser_C(temp);
 	if (data_C = nil) then
@@ -2427,8 +2431,8 @@ var
 	i:longint;
 	temp:Pchar;
 	data_C:PcompoundDataNIST_C;
-	Elements:^longint;
-	massFractions:^Double;
+	Elements:Plongint;
+	massFractions:PDouble;
 	rv:PcompoundDataNIST;
 begin
 	temp := StrAlloc(length(compoundString)+1); 
@@ -2466,8 +2470,8 @@ function GetCompoundDataNISTByIndex(compoundIndex:longint):PcompoundDataNIST;
 var
 	i:longint;
 	data_C:PcompoundDataNIST_C;
-	Elements:^longint;
-	massFractions:^Double;
+	Elements:Plongint;
+	massFractions:PDouble;
 	rv:PcompoundDataNIST;
 begin
 	data_C := GetCompoundDataNISTByIndex_C(compoundIndex);
@@ -2500,7 +2504,7 @@ end;
 
 function GetCompoundDataNISTList(): StringArray;
 var
-	list_C, temp:^Pchar;
+	list_C, temp:PPchar;
 	nCompounds:longint;
 	i:longint;
 	rv:StringArray;
@@ -2527,8 +2531,8 @@ procedure FreeRadioNuclideData(rnd:PradioNuclideData_C);cdecl;external External_
 function ConvertRadioNuclideData(data_C:PradioNuclideData_C):PradioNuclideData;
 var
 	i:longint;
-	XrayLines:^longint;
-	XrayIntensities, GammaEnergies, GammaIntensities:^double;
+	XrayLines:Plongint;
+	XrayIntensities, GammaEnergies, GammaIntensities:Pdouble;
 	rv:PradioNuclideData;
 begin
 
@@ -2600,7 +2604,7 @@ begin
 end;
 function GetRadioNuclideDataList():StringArray;
 var
-	list_C, temp:^Pchar;
+	list_C, temp:PPchar;
 	nRadioNuclides:longint;
 	i:longint;
 	rv:StringArray;
@@ -2620,7 +2624,7 @@ begin
 end;
 type
     Crystal_Struct_C = record
-        name : ^char;
+        name : Pchar;
         a : double;
         b : double;
         c : double;
@@ -2629,7 +2633,7 @@ type
         gamma : double;
         volume : double;
         n_atom : longint;
-        atom : ^Crystal_Atom;
+        atom : PCrystal_Atom;
       end;
 type
     Crystal_Array = record
@@ -2646,7 +2650,7 @@ var
 	data_C:PCrystal_Struct_C;
 	rv:PCrystal_Struct;
 	i:longint;
-	atom:^Crystal_Atom;
+	atom:PCrystal_Atom;
 begin
 	temp := StrAlloc(length(material)+1); 
 	StrPCopy(temp, material);
