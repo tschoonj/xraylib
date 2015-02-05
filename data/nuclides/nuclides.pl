@@ -162,10 +162,9 @@ foreach my $nuclide_code (@nuclide_codes) {
 
 	#use curl to download the files
 	$curl->setopt(CURLOPT_URL, $url);
-	my $html_file="";
-	open(my $fileb, ">", \$html_file);
+	my $html_file;
 
-	$curl->setopt(CURLOPT_WRITEDATA, \$fileb);
+	$curl->setopt(CURLOPT_WRITEDATA, \$html_file);
 	my $rv = $curl->perform;
 	if ($rv != 0) {
 		printf "Curl error for file %s: %s\n", $url, $curl->getinfo(CURLINFO_HTTP_CODE);
