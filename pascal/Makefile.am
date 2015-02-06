@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2015, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -11,34 +10,26 @@
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-SUBDIRS = include \
-	  src \
-	  idl \
-	  python \
-	  doc \
-	  data \
-	  java \
-	  windows \
-	  perl \
-	  lua \
-	  fortran \
-	  ruby \
-	  php \
-	  pascal \
-	  example
-ACLOCAL_AMFLAGS = -I m4
+if ENABLE_PASCAL
 
-pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA=libxrl.pc
-if ENABLE_FORTRAN
-  pkgconfig_DATA += libxrlf03.pc
+all-local: xraylib.ppu xraylib.o
+
+xraylib.ppu: $(srcdir)/xraylib.pas
+	$(FPC) -FE$(builddir) -Mdelphi $(srcdir)/xraylib.pas
+
+xraylib.o: xraylib.ppu
+
+install-exec-local: xraylib.ppu xraylib.o
+	$(MKDIR_P) $(DESTDIR)$(FPC_DIR)
+	$(INSTALL) xraylib.o xraylib.ppu $(DESTDIR)$(FPC_DIR)
+
+uninstall-local:
+	rm -rf $(DESTDIR)$(FPC_DIR)/xraylib.o
+	rm -rf $(DESTDIR)$(FPC_DIR)/xraylib.ppu
+
+clean-local:
+	rm -rf xraylib.ppu xraylib.o
+
+EXTRA_DIST = xraylib.pas
+
 endif
-
-windows:
-	$(MAKE) -C windows windows
-
-
-EXTRA_DIST = xraylib.spec.in BUGS Changelog 
-DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-pascal
-
-.PHONY: windows 

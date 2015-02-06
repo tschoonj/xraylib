@@ -48,7 +48,9 @@ endif
 if ENABLE_PYTHON_NUMPY
   check_SCRIPTS += xrlexample13.sh
 endif
-
+if ENABLE_PASCAL
+  check_SCRIPTS += xrlexample14.sh
+endif
 
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
@@ -77,7 +79,7 @@ endif
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 #AM_TESTS_FD_REDIRECT = 9>&2
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php xrlexample13.py
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php xrlexample13.py xrlexample14.pas
 
 
 #test the idl bindings using this script
@@ -120,6 +122,7 @@ xrlexample10.sh: ../ruby/xraylib.la xrlexample10.rb
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" RUBYLIB=\"${top_builddir}/ruby/.libs\" $(RUBY)  ${top_srcdir}/example/xrlexample10.rb" > xrlexample10.sh
 	@chmod +x xrlexample10.sh
 
+#Testing PHP bindings
 xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 	@echo "Testing PHP bindings"
 	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
@@ -133,6 +136,15 @@ xrlexample13.sh: ../python/xraylib_np.la xrlexample13.py
 	@echo "Testing python-numpy bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample13.py" > xrlexample13.sh
 	@chmod +x xrlexample13.sh
+
+
+#testing the Pascal-Delphi bindings
+xrlexample14.sh: ../pascal/xraylib.ppu xrlexample14.pas
+	@echo "Testing Pascal bindings"
+	@echo "$(FPC) -Mdelphi -FE${builddir} -Fu${top_builddir}/pascal -Fl${top_builddir}/src/.libs ${srcdir}/xrlexample14.pas || exit 1" > xrlexample14.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./xrlexample14$(EXEEXT) || exit 1" >> xrlexample14.sh
+	@echo "rm -f xrlexample14$(EXEEXT) xrlexample14.o" >> xrlexample14.sh
+	@chmod +x xrlexample14.sh
 
 
 ../perl/xraylib.pm:
@@ -159,5 +171,8 @@ xrlexample13.sh: ../python/xraylib_np.la xrlexample13.py
 ../python/xraylib_np.la:
 	$(MAKE) -C ../python xraylib_np.la
 
+../pascal/xraylib.ppu:
+	$(MAKE) -C ../pascal xraylib.ppu
+
 clean-local:
-	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh xrlexample12.sh xrlexample13.sh
+	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh xrlexample12.sh xrlexample13.sh xrlexample14.sh
