@@ -27,7 +27,7 @@ printf("Bi M1N2 radiative rate: %f\n",Xraylib.rad_rate(83,Xraylib::M1N2_LINE))
 printf("U M3O3 Fluorescence Line Energy: %f\n",Xraylib.line_energy(92,Xraylib::M3O3_LINE))
 
 cdtest = Xraylib.compound_parser("Ca(HCO3)2")
-exit(1) if not cdtest
+exit(1) unless cdtest
 
 #puts PP.pp(cdtest, "")
 
@@ -38,7 +38,7 @@ for i in (0..cdtest['nElements']-1)
 end
 
 cdtest = Xraylib.compound_parser("SiO2")
-exit(1) if not cdtest
+exit(1) unless cdtest
 
 printf("SiO2 contains %g atoms and %i elements\n",cdtest['nAtomsAll'],cdtest['nElements'])
 
@@ -82,7 +82,7 @@ printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::cs_energy_cp
 # Si Crystal structure
 
 cryst = Xraylib.crystal_get_crystal("Si")
-exit(1) if not cryst
+exit(1) unless cryst
 
 printf("Si unit cell dimensions are %f %f %f\n", cryst["a"], cryst["b"], cryst["c"])
 printf("Si unit cell angles are %f %f %f\n", cryst["alpha"], cryst["beta"], cryst["gamma"])
@@ -118,7 +118,7 @@ printf("  F0=FH(0,0,0) structure factor: (%f, %f)\n", f0.real, f0.imag)
 
 # Diamond diffraction parameters
 cryst = Xraylib.crystal_get_crystal("Diamond")
-exit(1) if not cryst
+exit(1) unless cryst
 
 printf ("\nDiamond 111 at 8 KeV. Incidence at the Bragg angle:\n")
 
