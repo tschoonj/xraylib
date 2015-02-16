@@ -11,14 +11,14 @@
 
 require 'xraylib'
 if RUBY_VERSION < "1.9"
-require 'complex'
+  require 'complex'
 end
 
 Xraylib.SetErrorMessages(0)
 printf("Example of ruby program using xraylib\n")
 printf("Density of pure Al: %f g/cm3\n", Xraylib.ElementDensity(13))
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",
-	 Xraylib.LineEnergy(20,Xraylib::KA_LINE))
+       Xraylib.LineEnergy(20,Xraylib::KA_LINE))
 printf("Fe partial photoionization cs of L3 at 6.0 keV: %f\n",Xraylib.CS_Photo_Partial(26,Xraylib::L3_SHELL,6.0))
 printf("Zr L1 edge energy: %f\n",Xraylib.EdgeEnergy(40,Xraylib::L1_SHELL))
 printf("Pb Lalpha XRF production cs at 20.0 keV (jump approx): %f\n",Xraylib.CS_FluorLine(82,Xraylib::LA_LINE,20.0))
@@ -34,7 +34,7 @@ exit(1) if not cdtest
 printf("Ca(HCO3)2 contains %g atoms and %i elements\n",cdtest['nAtomsAll'],cdtest['nElements'])
 
 for i in (0..cdtest['nElements']-1)
-    printf("Element %i: %f %%\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0)
+  printf("Element %i: %f %%\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0)
 end
 
 cdtest = Xraylib.CompoundParser("SiO2")
@@ -43,7 +43,7 @@ exit(1) if not cdtest
 printf("SiO2 contains %g atoms and %i elements\n",cdtest['nAtomsAll'],cdtest['nElements'])
 
 for i in (0..cdtest['nElements']-1)
-    printf("Element %i: %f %%\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0)
+  printf("Element %i: %f %%\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0)
 end
 
 printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",Xraylib.CS_Rayl_CP("Ca(HCO3)2",10.0) )
@@ -79,7 +79,7 @@ printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::CS_Energy(82, 
 printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::CS_Energy_CP("CdTe", 40.0))
 
 
-# Si Crystal structure 
+# Si Crystal structure
 
 cryst = Xraylib.Crystal_GetCrystal("Si")
 exit(1) if not cryst
@@ -89,9 +89,9 @@ printf("Si unit cell angles are %f %f %f\n", cryst["alpha"], cryst["beta"], crys
 printf("Si unit cell volume is %f\n", cryst["volume"])
 printf("Si atoms at:\n")
 printf("   Z  fraction    X        Y        Z\n")
-for i in (0..cryst["n_atom"]-1) 
-    atom = cryst["atom"][i]
-    printf("  %3i %f %f %f %f\n", atom["Zatom"], atom["fraction"], atom["x"], atom["y"], atom["z"])
+for i in (0..cryst["n_atom"]-1)
+  atom = cryst["atom"][i]
+  printf("  %3i %f %f %f %f\n", atom["Zatom"], atom["fraction"], atom["x"], atom["y"], atom["z"])
 end
 
 # Si diffraction parameters
@@ -192,7 +192,7 @@ printf("Uranium Monocarbide\n")
 printf("  Name: %s\n", cdn['name'])
 printf("  Density: %f g/cm3\n", cdn['density'])
 for i in (0..cdn['nElements']-1)
-    	printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+  printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
 end
 
 cdn = Xraylib.GetCompoundDataNISTByIndex(Xraylib::NIST_COMPOUND_BRAIN_ICRP)
@@ -200,15 +200,15 @@ printf("NIST_COMPOUND_BRAIN_ICRP\n")
 printf("  Name: %s\n", cdn['name'])
 printf("  Density: %f g/cm3\n", cdn['density'])
 for i in (0..cdn['nElements']-1)
-    	printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
+  printf("  Element %i: %f %%\n",cdn['Elements'][i],cdn['massFractions'][i]*100.0)
 end
 
 nistCompounds = Xraylib.GetCompoundDataNISTList()
 counter = 0
 printf ("List of available NIST compounds:\n")
 nistCompounds.each do |nistCompound|
-	puts "  Compound #{counter}: #{nistCompound}"
-	counter = counter + 1
+  puts "  Compound #{counter}: #{nistCompound}"
+  counter = counter + 1
 end
 
 # radioNuclideData tests
@@ -221,11 +221,11 @@ printf("  N: %i\n" , rnd['N'])
 printf("  Z_xray: %i\n" , rnd['Z_xray'])
 printf("  X-rays:\n")
 for i in (0..rnd['nXrays']-1)
-	printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+  printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
 end
 printf("  Gamma rays:\n")
 for i in (0..rnd['nGammas']-1)
-	printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+  printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
 end
 
 rnd = Xraylib.GetRadioNuclideDataByIndex(Xraylib::RADIO_NUCLIDE_125I)
@@ -237,18 +237,18 @@ printf("  N: %i\n" , rnd['N'])
 printf("  Z_xray: %i\n" , rnd['Z_xray'])
 printf("  X-rays:\n")
 for i in (0..rnd['nXrays']-1)
-	printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+  printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
 end
 printf("  Gamma rays:\n")
 for i in (0..rnd['nGammas']-1)
-	printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+  printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
 end
 
 radioNuclides = Xraylib.GetRadioNuclideDataList()
 counter = 0
 printf ("List of available radionuclides:\n")
 radioNuclides.each do |radioNuclide|
-	puts "  RadioNuclide #{counter}: #{radioNuclide}"
-	counter = counter + 1
+  puts "  RadioNuclide #{counter}: #{radioNuclide}"
+  counter = counter + 1
 end
 printf("\n--------------------------- END OF XRLEXAMPLE10 -------------------------------\n")
