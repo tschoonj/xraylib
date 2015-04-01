@@ -116,7 +116,7 @@ if __name__ == '__main__' :
   
 	#notice the 3 return values!!!
 	f0, fp, fpp = xraylib.Atomic_Factors (6, energy, q, debye_temp_factor)
-	print ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f" % (f0, fp, fpp))
+	print ("  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f" % (f0, fp, fpp))
 
 	FH = xraylib.Crystal_F_H_StructureFactor (cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle)
 	print ("  FH(1,1,1) structure factor: (%f, %f)" % (FH.real, FH.imag))
