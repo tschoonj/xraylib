@@ -88,7 +88,7 @@ idl64:
 	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\msys\1.0\home\schoon\github\xraylib\include\" -I\"C:\msys\1.0\home\schoon\github\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64\" /LIBPATH:\"C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib\x64\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE, DLL_PATH=mydll" >> batch.pro
 	echo "print,mydll" >> batch.pro
 	echo "exit" >> batch.pro
-	IDL_PATH="C:\msys\1.0\home\schoon\github\xraylib\build\nsis" /C/Exelis/IDL83/bin/bin.x86_64/idl batch
+	IDL_PATH="C:\msys\1.0\home\schoon\github\xraylib\build\windows" /C/Exelis/IDL83/bin/bin.x86_64/idl batch
 
 
 

@@ -12,7 +12,7 @@ my $nist_url = "http://physics.nist.gov/cgi-bin/Star/compos.pl?matno=";
 
 my $curl = WWW::Curl::Easy->new;
 
-goto compounds;
+#goto compounds;
 
 open (OUTPUT, ">", "../densities.dat");
 for (my $i = 1 ; $i <= 98 ; $i++) {
@@ -22,10 +22,9 @@ for (my $i = 1 ; $i <= 98 ; $i++) {
 
 	#use curl to download the files
 	$curl->setopt(CURLOPT_URL, $url);
-	my $html_file="";
-	open(my $fileb, ">", \$html_file);
+	my $html_file;
 
-	$curl->setopt(CURLOPT_WRITEDATA, \$fileb);
+	$curl->setopt(CURLOPT_WRITEDATA, \$html_file);
 	my $rv = $curl->perform;
 	if ($rv != 0) {
 		printf "Curl error for file %s: %s\n", $url, $curl->getinfo(CURLINFO_HTTP_CODE);
@@ -40,8 +39,6 @@ for (my $i = 1 ; $i <= 98 ; $i++) {
 
 	#printf "Density element %i is %f g/cm3\n", $i, $density;
 	printf OUTPUT "%i\t%f\n", $i, $density;
-
-	close($fileb);
 
 } 
 close OUTPUT;
@@ -170,14 +167,13 @@ my @compoundData;
 
 for (my $i = 99 ; $i <= 278 ; $i++) {
 	my $url = sprintf("%s%03i.html", $nist_url, $i);
-	#print "URL: ".$url."\n";
+	print "URL: ".$url."\n";
 
 	#use curl to download the files
 	$curl->setopt(CURLOPT_URL, $url);
-	my $html_file="";
-	open(my $fileb, ">", \$html_file);
+	my $html_file;
 
-	$curl->setopt(CURLOPT_WRITEDATA, \$fileb);
+	$curl->setopt(CURLOPT_WRITEDATA, \$html_file);
 	my $rv = $curl->perform;
 	if ($rv != 0) {
 		printf "Curl error for file %s: %s\n", $url, $curl->getinfo(CURLINFO_HTTP_CODE);
@@ -187,6 +183,7 @@ for (my $i = 99 ; $i <= 278 ; $i++) {
 	#fix html file
 	$html_file =~ s/(<form action=\"\/cgi-bin\/Star\/compos.pl\" method=GET>)\n(<center>)/$2\n$1/gm;
 	$html_file =~ s/<a\n/\n/g;
+	$html_file =~ s/<script.+<\/script>//g;
 
 	#print $html_file;
 
