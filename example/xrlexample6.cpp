@@ -145,7 +145,7 @@ int main()
 
   xrlComplex FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
   double dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
-                                                  sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
+                                                  std::sqrt(c_abs(c_mul(FH, FHbar))) / PI / std::sin(2*bragg);
   std::printf ("  Darwin width: %f micro-radians\n", 1e6*dw);
 
   /* Alpha Quartz diffraction parameters */
