@@ -250,7 +250,6 @@ begin
     for  i := 0 to Length(radioNuclides)-1 do
       WriteLn('  Radionuclide ',i,': ', radioNuclides[i]);
 
-    ReadLn;
   except
     on E: Exception do
     begin
