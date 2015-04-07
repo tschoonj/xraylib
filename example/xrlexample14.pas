@@ -254,7 +254,6 @@ begin
     on E: Exception do
     begin
       Writeln(E.ClassName, ': ', E.Message);
-      ReadLn;
     end;
   end;
 end.
