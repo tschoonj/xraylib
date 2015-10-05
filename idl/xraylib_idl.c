@@ -16,7 +16,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xraylib.h"
 #include <string.h>
 #include <stdlib.h>
-#include "xrf_cross_sections_aux.h" 
+#include "xrf_cross_sections_aux.h"
 
 #include "idl_export.h"
 
@@ -93,8 +93,6 @@ extern IDL_VPTR IDL_CDECL IDL_DCSPb_Rayl_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_DCSPb_Compt_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Total_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Total_CP(int argc, IDL_VPTR argv[]);
-extern IDL_VPTR IDL_CDECL IDL_CS_Photo_Partial_CP(int argc, IDL_VPTR argv[]);
-extern IDL_VPTR IDL_CDECL IDL_CSb_Photo_Partial_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CS_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_CSb_Total_Kissel_CP(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Refractive_Index_Re(int argc, IDL_VPTR argv[]);
@@ -103,8 +101,8 @@ extern IDL_VPTR IDL_CDECL IDL_Refractive_Index(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ComptonProfile_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_ElectronConfig(int argc, IDL_VPTR argv[]);
-extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]); 
-extern IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]); 
+extern IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AtomicLevelWidth(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AugerRate(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_AugerYield(int argc, IDL_VPTR argv[]);
@@ -1123,7 +1121,7 @@ void release(UCHAR *memPtr) {
 }
 
 IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
-	struct compoundData *cd;	
+	struct compoundData *cd;
 	IDL_VPTR rv;
 
 	IDL_ENSURE_STRING(argv[0]);
@@ -1132,7 +1130,7 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	if ((cd = CompoundParser(IDL_VarGetString(argv[0]))) == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
-	
+
 	IDL_MEMINT array_dims[] = {1,cd->nElements};
 	IDL_MEMINT ilDims[IDL_MAX_ARRAY_DIM];
 	void *sdef;
@@ -1176,7 +1174,7 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]) {
 	int Z;
 	char *symbol;
-	
+
 	IDL_ENSURE_SCALAR(argv[0]);
 	IDL_EXCLUDE_STRING(argv[0]);
   	IDL_ENSURE_SIMPLE(argv[0]);
@@ -1187,7 +1185,7 @@ IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]) {
 	if (symbol == NULL) {
 		return IDL_StrToSTRING("");
 	}
-	
+
 	return IDL_StrToSTRING(symbol);
 
 }
@@ -1218,7 +1216,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 	}
 
 
-	// First create the CrystalAtom struct array	
+	// First create the CrystalAtom struct array
 	IDL_MEMINT array_dims_atom[] = {1, cryst->n_atom};
 	void *sdef_atom;
 
@@ -1280,7 +1278,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv = IDL_ImportArray(1, dims_cryst, IDL_TYP_STRUCT, (UCHAR *) csi, release, sdef_struct);
 	IDL_MEMINT offset = IDL_StructTagInfoByName(sdef_struct, "ATOM", IDL_MSG_LONGJMP, NULL);
 	memcpy(rv->value.arr->data+offset,cryst->atom, cryst->n_atom*sizeof(Crystal_Atom));
-	
+
 	return rv;
 }
 
@@ -1292,7 +1290,7 @@ static Crystal_Struct * Get_Crystal_Struct(IDL_VPTR arg) {
 	char *atom_data = data+offset;
 
 	Crystal_Struct *cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
-	
+
 	struct Crystal_Struct_IDL {
 		IDL_STRING name;
 		double a;
@@ -1360,7 +1358,7 @@ void IDL_CDECL IDL_Atomic_Factors(int argc, IDL_VPTR argv[]) {
 	IDL_EXCLUDE_EXPR(argv[4]);
 	IDL_EXCLUDE_EXPR(argv[5]);
 	IDL_EXCLUDE_EXPR(argv[6]);
-	
+
 	int Z = (int) IDL_LongScalar(argv[0]);
 	double energy = IDL_DoubleScalar(argv[1]);
 	double q = IDL_DoubleScalar(argv[2]);
@@ -1390,8 +1388,8 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DCOMPLEX;
 	xrlComplex F = Crystal_F_H_StructureFactor (cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
-  	rv->value.dcmp.r = F.re; 
-  	rv->value.dcmp.i = F.im; 
+  	rv->value.dcmp.r = F.re;
+  	rv->value.dcmp.i = F.im;
 
 	free(cs);
 	return rv;
@@ -1416,8 +1414,8 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR ar
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DCOMPLEX;
 	xrlComplex F = Crystal_F_H_StructureFactor_Partial(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
-  	rv->value.dcmp.r = F.re; 
-  	rv->value.dcmp.i = F.im; 
+  	rv->value.dcmp.r = F.re;
+  	rv->value.dcmp.i = F.im;
 
 	free(cs);
 	return rv;
@@ -1509,7 +1507,7 @@ IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByName(int argc, IDL_VPTR argv[]) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 
-	rv = IDL_GetCompoundDataNIST(cdn); 
+	rv = IDL_GetCompoundDataNIST(cdn);
 
 	FreeCompoundDataNIST(cdn);
 
@@ -1524,14 +1522,14 @@ IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByIndex(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	int index = (int) IDL_LongScalar(argv[0]);
-	
+
 
 	struct compoundDataNIST *cdn = GetCompoundDataNISTByIndex(index);
 	if (cdn == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 
-	rv = IDL_GetCompoundDataNIST(cdn); 
+	rv = IDL_GetCompoundDataNIST(cdn);
 
 	FreeCompoundDataNIST(cdn);
 
@@ -1571,13 +1569,13 @@ IDL_VPTR IDL_CDECL IDL_Refractive_Index(int argc, IDL_VPTR argv[]) {
   	compound = IDL_VarGetString(argv[0]);
 	double energy = IDL_DoubleScalar(argv[1]);
 	double density = IDL_DoubleScalar(argv[2]);
-	
+
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DCOMPLEX;
 	xrlComplex F = Refractive_Index(compound, energy, density);
 
-  	rv->value.dcmp.r = F.re; 
-  	rv->value.dcmp.i = F.im; 
+  	rv->value.dcmp.r = F.re;
+  	rv->value.dcmp.i = F.im;
 
 	return rv;
 }
@@ -1656,7 +1654,7 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByName(int argc, IDL_VPTR argv[]) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 
-	rv = IDL_GetRadioNuclideData(rnd); 
+	rv = IDL_GetRadioNuclideData(rnd);
 
 	FreeRadioNuclideData(rnd);
 
@@ -1671,14 +1669,14 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByIndex(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	int index = (int) IDL_LongScalar(argv[0]);
-	
+
 
 	struct radioNuclideData *rnd = GetRadioNuclideDataByIndex(index);
 	if (rnd == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 
-	rv = IDL_GetRadioNuclideData(rnd); 
+	rv = IDL_GetRadioNuclideData(rnd);
 
 	FreeRadioNuclideData(rnd);
 
@@ -1710,7 +1708,7 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataList(int argc, IDL_VPTR argv[]) {
 
 	return rv;
 }
-int IDL_Load (void) 
+int IDL_Load (void)
 {
 	return IDL_SysRtnAdd(xrl_functions, TRUE, IDL_CARRAY_ELTS(xrl_functions)) &&
                 IDL_SysRtnAdd(xrl_procedures, FALSE, IDL_CARRAY_ELTS(xrl_procedures));

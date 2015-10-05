@@ -28,14 +28,14 @@ double CS_Total_CP(const char compound[], double E) {
 			return rv;
 		}
 		else {
-			for (i = 0 ; i < cdn->nElements ; i++) 
+			for (i = 0 ; i < cdn->nElements ; i++)
 				rv += CS_Total(cdn->Elements[i], E)*cdn->massFractions[i];
 
 			FreeCompoundDataNIST(cdn);
 		}
-	} 
+	}
 	else {
-		for (i = 0 ; i < cd->nElements ; i++) 
+		for (i = 0 ; i < cd->nElements ; i++)
 			rv += CS_Total(cd->Elements[i], E)*cd->massFractions[i];
 
 		FreeCompoundData(cd);
@@ -185,7 +185,5 @@ CS_CP_FFF(DCSPb_Rayl)
 CS_CP_FFF(DCSPb_Compt)
 CS_CP_F(CS_Photo_Total)
 CS_CP_F(CSb_Photo_Total)
-CS_CP_IF(CS_Photo_Partial)
-CS_CP_IF(CSb_Photo_Partial)
 CS_CP_F(CS_Total_Kissel)
 CS_CP_F(CSb_Total_Kissel)
