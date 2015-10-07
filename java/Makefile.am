@@ -1,4 +1,4 @@
-#Copyright (c) 2010, Tom Schoonjans
+#Copyright (c) 2010-2015, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -12,36 +12,26 @@
 
 if ENABLE_JAVA
 
+AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/src
+
 #java bindings for xraylib
 xrljavadir = $(prefix)/share/xraylib/java
-xrljava_JAVA = xraylib.java xraylibConstants.java xraylibJNI.java 
-if OS_WINDOWS
-xrljava_LTLIBRARIES = xraylib.la 
-else
-xrljava_LTLIBRARIES = libxraylib.la 
-endif
-libxraylib_la_CFLAGS = -I${top_srcdir}/include $(JAVACFLAGS) $(JAVAINC)
-libxraylib_la_LIBADD = ../src/libxrl.la
-nodist_libxraylib_la_SOURCES = xraylib_wrap.c
-libxraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(JAVASO)
+xrljava_DATA = xraylib.jar
+dist_xrljava_JAVA = Xraylib.java XraylibException.java
+xrljava_JAVA = XraylibGlob.java
 
-xraylib_la_CFLAGS = -I${top_srcdir}/include $(JAVACFLAGS) $(JAVAINC)
-xraylib_la_LIBADD = ../src/libxrl.la
-nodist_xraylib_la_SOURCES = xraylib_wrap.c
-xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(JAVASO)
+noinst_PROGRAMS = prdata_java
+prdata_java_SOURCES = pr_data_java.c
+prdata_java_LDADD = ../src/libprdata.la
+prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
+xraylib.jar: Xraylib.class XraylibException.class XraylibGlob.class
+	jar cf xraylib.jar Xraylib.class XraylibException.class XraylibGlob.class
 
-
-
-xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -I${top_srcdir}/include -includeall -java -o xraylib_wrap.c ${top_srcdir}/src/xraylib.i
-
-xraylib.java: xraylib_wrap.c
-xraylibConstants.java: xraylib_wrap.c
-xraylibJNI.java: xraylib_wrap.c
+XraylibGlob.java: prdata_java$(EXEEXT)
+	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
 
 clean-local:
-	rm -rf *.java xraylib_wrap.c
+	rm -rf XraylibGlob.java xraylib.jar
 
 endif
-

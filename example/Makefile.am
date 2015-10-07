@@ -9,7 +9,7 @@
 
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#Makefile.am for the examples. These can be used to verify that the compilation went ok by typing in "make check" 
+#Makefile.am for the examples. These can be used to verify that the compilation went ok by typing in "make check"
 
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
@@ -56,7 +56,7 @@ xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 xrlexample1_CFLAGS = $(ARCHFLAGS)
 
 if ENABLE_FORTRAN
-  xrlexample3_SOURCES = xrlexample3.f90 
+  xrlexample3_SOURCES = xrlexample3.f90
   xrlexample3_LDADD = ../fortran/libxrlf03.la ../src/libxrl.la
   xrlexample3_CPPFLAGS = -I../fortran
   xrlexample3_FFLAGS = ${xrlexample3_CPPFLAGS} $(ARCHFLAGS)
@@ -87,7 +87,7 @@ xrlexample4.sh: ../idl/libxrlidl.la xrlexample4.pro
 	@echo "cp ${top_srcdir}/idl/libxrlidl.dlm ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" IDL_PATH=\"${top_srcdir}/example:${top_srcdir}/idl:<IDL_DEFAULT>\" IDL_DLM_PATH=\"${top_builddir}/idl/.libs:<IDL_DEFAULT>\" @RSIIDL_BINDIR@/idl xrlexample4" >> xrlexample4.sh
 	@echo "rm -f ${top_builddir}/idl/.libs/libxrlidl.dlm" >> xrlexample4.sh
-	@chmod +x xrlexample4.sh	
+	@chmod +x xrlexample4.sh
 
 #test the perl bindings
 xrlexample2.sh: ../perl/xraylib.pm xrlexample2.pl
@@ -102,10 +102,10 @@ xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
-xrlexample7.sh: ../java/xraylib.java xrlexample7.java
+xrlexample7.sh: ../java/xraylib.jar xrlexample7.java
 	@echo "Testing java bindings"
-	@echo "$(JAVAC) -classpath \"${top_builddir}/java:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" > xrlexample7.sh
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs:${top_builddir}/java/\" $(JAVA) -Djava.library.path=\"${top_builddir}/java/.libs\" -classpath \"${top_builddir}/java:.:..\" xrlexample7" >> xrlexample7.sh
+	@echo "$(JAVAC) -classpath \"${top_builddir}/java/xraylib.jar:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" > xrlexample7.sh
+	@echo "$(JAVA) -classpath \"${top_builddir}/java/xraylib.jar:.:..\" xrlexample7" >> xrlexample7.sh
 	@chmod +x xrlexample7.sh
 
 #test the lua bindings
@@ -113,7 +113,7 @@ xrlexample9.sh: ../lua/xraylib.la xrlexample9.lua
 	@echo "Testing lua bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" > xrlexample9.sh
 	@chmod +x xrlexample9.sh
-	
+
 #test the ruby bindings
 xrlexample10.sh: ../ruby/xraylib.la xrlexample10.rb
 	@echo "Testing ruby bindings"
@@ -145,7 +145,7 @@ xrlexample13.sh: ../python/xraylib_np.la xrlexample13.py
 	$(MAKE) -C ../python _xraylib.la
 
 ../java/xraylib.java:
-	$(MAKE) -C ../java xraylib.java
+	$(MAKE) -C ../java xraylib.jar
 
 ../lua/xraylib.la:
 	$(MAKE) -C ../lua xraylib.la

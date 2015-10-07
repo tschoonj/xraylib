@@ -12,17 +12,13 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 
 public class xrlexample7 {
-	static {
-		System.loadLibrary("xraylib");
-	}
-
-
 	public static void main(String argv[]) {
-		xraylib.XRayInit();
-		xraylib.SetErrorMessages(0);
+		//xraylib.XRayInit();
+		//xraylib.SetErrorMessages(0);
 //		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
-		System.out.println("Density of pure Al: "+xraylib.ElementDensity(13)+" g/cm3");
+		System.out.println("Atomic weight of Fe: "+Xraylib.AtomicWeight(26)+" g/mol");
+		/*System.out.println("Density of pure Al: "+xraylib.ElementDensity(13)+" g/cm3");
 		System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));
 		System.out.println("Zr L1 edge energy: "+xraylib.EdgeEnergy(40,xraylib.L1_SHELL));
@@ -31,9 +27,9 @@ public class xrlexample7 {
 		System.out.println("Bi M1N2 radiative rate: "+xraylib.RadRate(83,xraylib.M1N2_LINE));
 		System.out.println("U M3O3 Fluorescence Line Energy: "+xraylib.LineEnergy(92,xraylib.M3O3_LINE));
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
-		System.out.println("CS2 Refractive Index at 10.0 keV : "+xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");  
+		System.out.println("CS2 Refractive Index at 10.0 keV : "+xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
 		System.out.println("C16H14O3 Refractive Index at 1 keV : "+xraylib.Refractive_Index_Re("C16H14O3",(float) 1.0,(float) 1.2)+" - "+xraylib.Refractive_Index_Im("C16H14O3",(float) 1.0,(float) 1.2)+" i");
-		System.out.println("SiO2 Refractive Index at 5.0 keV : "+xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");  
+		System.out.println("SiO2 Refractive Index at 5.0 keV : "+xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");
 		System.out.println("Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile(26,(float) 1.1));
 		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.out.println("K atomic level width for Fe: "+xraylib.AtomicLevelWidth(26,xraylib.K_SHELL));
@@ -52,12 +48,10 @@ public class xrlexample7 {
 		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ xraylib.CS_Energy(13, (float) 20.0));
 		System.out.println("Pb mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy(82, (float) 40.0));
 		System.out.println("CdTe mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy_CP("CdTe", (float) 40.0));
-
+		*/
 		System.out.println("");
 		System.out.println("--------------------------- END OF XRLEXAMPLE7 -------------------------------");
 		System.out.println("");
 		System.exit(0);
 	}
 }
-
-
