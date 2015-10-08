@@ -13,16 +13,16 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 public class xrlexample7 {
 	public static void main(String argv[]) {
-		//xraylib.XRayInit();
+		Xraylib.XRayInit();
 		//xraylib.SetErrorMessages(0);
 //		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
 		System.out.println("Atomic weight of Fe: "+Xraylib.AtomicWeight(26)+" g/mol");
-		/*System.out.println("Density of pure Al: "+xraylib.ElementDensity(13)+" g/cm3");
-		System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
-  		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));
-		System.out.println("Zr L1 edge energy: "+xraylib.EdgeEnergy(40,xraylib.L1_SHELL));
-		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+xraylib.CS_FluorLine(82,xraylib.LA_LINE,(float) 20.0));
+		System.out.println("Density of pure Al: "+Xraylib.ElementDensity(13)+" g/cm3");
+		/*System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
+  		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));*/
+		System.out.println("Zr L1 edge energy: " + Xraylib.EdgeEnergy(40, Xraylib.L1_SHELL) + " keV");
+		/*System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+xraylib.CS_FluorLine(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("Bi M1N2 radiative rate: "+xraylib.RadRate(83,xraylib.M1N2_LINE));
 		System.out.println("U M3O3 Fluorescence Line Energy: "+xraylib.LineEnergy(92,xraylib.M3O3_LINE));

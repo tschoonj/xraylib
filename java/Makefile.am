@@ -18,20 +18,19 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/
 xrljavadir = $(prefix)/share/xraylib/java
 xrljava_DATA = xraylib.jar
 dist_xrljava_JAVA = Xraylib.java XraylibException.java
-xrljava_JAVA = XraylibGlob.java
 
 noinst_PROGRAMS = prdata_java
 prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-xraylib.jar: Xraylib.class XraylibException.class XraylibGlob.class
-	jar cf xraylib.jar Xraylib.class XraylibException.class XraylibGlob.class
+xraylib.jar: Xraylib.class XraylibException.class xraylib.dat
+	jar cf xraylib.jar Xraylib.class XraylibException.class xraylib.dat
 
-XraylibGlob.java: prdata_java$(EXEEXT)
+xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
 
 clean-local:
-	rm -rf XraylibGlob.java xraylib.jar
+	rm -rf XraylibGlob.java xraylib.jar xraylib.dat
 
 endif

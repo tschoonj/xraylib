@@ -104,8 +104,8 @@ xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 #test the java bindings
 xrlexample7.sh: ../java/xraylib.jar xrlexample7.java
 	@echo "Testing java bindings"
-	@echo "$(JAVAC) -classpath \"${top_builddir}/java/xraylib.jar:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java" > xrlexample7.sh
-	@echo "$(JAVA) -classpath \"${top_builddir}/java/xraylib.jar:.:..\" xrlexample7" >> xrlexample7.sh
+	@echo "$(JAVAC) -classpath \"${top_builddir}/java/xraylib.jar:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java || exit 1" > xrlexample7.sh
+	@echo "$(JAVA) -classpath \"${top_builddir}/java/xraylib.jar:.:..\" xrlexample7 || exit 1" >> xrlexample7.sh
 	@chmod +x xrlexample7.sh
 
 #test the lua bindings

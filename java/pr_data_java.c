@@ -16,10 +16,11 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 #include "xraylib.h"
 #include "xrayglob.h"
 
+
 extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
 extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 
-#define OUTFILE "XraylibGlob.java"
+#define OUTFILE "xraylib.dat"
 #define FLOAT_PER_LINE 4
 #define INT_PER_LINE 10
 #define NAME_PER_LINE 4
@@ -30,9 +31,7 @@ FILE *f;
 #define PR_MATD(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
   print_doublevec((COLMAX), ARRNAME[j]); \
-  fprintf(f, ",\n"); \
-} \
-fprintf(f, "};\n\n");
+}
 
 #define PR_MATI(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
@@ -1018,20 +1017,7 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
 
 void print_doublevec(int arrmax, double *arr)
 {
-  int i;
-  fprintf(f, "{\n");
-  for(i = 0; i < arrmax; i++) {
-    if(i < arrmax - 1) {
-      fprintf(f, "%.10E, ", arr[i]);
-    }
-    else {
-      fprintf(f, "%.10E ", arr[i]);
-    }
-
-    if(i%FLOAT_PER_LINE == (FLOAT_PER_LINE-1))
-      fprintf(f, "\n");
-  }
-  fprintf(f, "}");
+  fwrite(arr, sizeof(double), arrmax, f);
 }
 
 void print_intvec(int arrmax, int *arr)
@@ -1059,6 +1045,9 @@ int main(void)
   int i,j;
   Crystal_Struct* crystal;
   Crystal_Atom* atom;
+  int zmax = ZMAX;
+  int shellnum = SHELLNUM;
+  int transnum = TRANSNUM;
 
   XRayInit();
 
@@ -1067,14 +1056,16 @@ int main(void)
     perror("file open");
   }
 
-  fprintf(f, "/* File created from program in pr_data_java.c\n");
-  fprintf(f, "// Do not directly modify this file.*/\n\n");
 
-  fprintf(f, "public class XraylibGlob {\n\n");
+  //fprintf(f, "public static final int ZMAX = %i;\n", ZMAX);
+  //fprintf(f, "public static final int SHELLNUM = %i;\n", SHELLNUM);
+  //fprintf(f, "public static final int TRANSNUM = %i;\n", TRANSNUM);
 
-  fprintf(f, "public static final int ZMAX = %i;\n", ZMAX);
 
-  fprintf(f, "\n\n");
+
+  fwrite(&zmax, sizeof(int), 1, f);
+  fwrite(&shellnum, sizeof(int), 1, f);
+  fwrite(&transnum, sizeof(int), 1, f);
 
   /*
   fprintf(f, "#include \"xraylib-defs.h\"\n\n");
@@ -1111,35 +1102,32 @@ int main(void)
 
   fprintf(f, "Crystal_Array Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
   */
-  fprintf(f, "static protected final double[] AtomicWeight_arr =\n");
+
   print_doublevec(ZMAX+1, AtomicWeight_arr);
-  fprintf(f, ";\n\n");
 
-  /*
-  fprintf(f, "double ElementDensity_arr[ZMAX+1] =\n");
   print_doublevec(ZMAX+1, ElementDensity_arr);
-  fprintf(f, ";\n\n");
 
-  fprintf(f, "double EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
-
-  fprintf(f, "double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
+  /*
+  fprintf(f, "static protected final double[][] AtomicLevelWidth_arr = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
 
-  fprintf(f, "double LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
+  fprintf(f, "static protected final double[][] LineEnergy_arr = {\n");
   PR_MATD(ZMAX+1, LINENUM, LineEnergy_arr);
 
-  fprintf(f, "double FluorYield_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(f, "static protected final double[][] FluorYield_arr = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, FluorYield_arr);
 
-  fprintf(f, "double JumpFactor_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(f, "static protected final double[][] JumpFactor_arr = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, JumpFactor_arr);
 
-  fprintf(f, "double CosKron_arr[ZMAX+1][TRANSNUM] = {\n");
+  fprintf(f, "static protected final double[][] CosKron_arr = {\n");
   PR_MATD(ZMAX+1, TRANSNUM, CosKron_arr);
 
-  fprintf(f, "double RadRate_arr[ZMAX+1][LINENUM] = {\n");
+  fprintf(f, "static protected final double[][] RadRate_arr = {\n");
   PR_MATD(ZMAX+1, LINENUM, RadRate_arr);
+  */
+  /*
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
   PR_DYNMATD(NE_Photo, E_Photo_arr, "E_Photo_arr");
@@ -1227,8 +1215,6 @@ int main(void)
   SetHardExit(1);
   SetErrorMessages(1);
   */
-
-  fprintf(f, "}");
 
   fclose(f);
 
