@@ -12,11 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 */
 
 public class XraylibException extends RuntimeException {
-  private String message;
   public XraylibException(String message) {
-    this.message = message;
-  }
-  public String getMessage() {
-    return this.message;
+    super(message);
   }
 }

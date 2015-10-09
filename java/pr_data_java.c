@@ -43,23 +43,9 @@ fprintf(f, "};\n\n");
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
     if(NVAR[j] > 0) {\
-      fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
       print_doublevec(NVAR[j], EVAR[j]); \
     }\
-    else {\
-      fprintf(f, "static double __%s_%d[1]", ENAME, j);\
-    }\
-    fprintf(f, ";\n\n");\
-  } \
-\
-  fprintf(f, "double *%s[] =\n", ENAME);\
-  fprintf(f, "{\n"); \
-  for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "__%s_%d, ", ENAME, j);\
-    if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-      fprintf(f, "\n");\
-  }\
-  fprintf(f, "};\n\n");
+  }
 
 #define PR_DYNMATI(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
@@ -142,9 +128,7 @@ fprintf(f, "};\n\n");
   fprintf(f,"\n};\n");\
 
 #define PR_NUMVEC1D(NVAR, NNAME) \
-  fprintf(f, "int %s[] =\n", NNAME); \
-  print_intvec(ZMAX+1, NVAR); \
-  fprintf(f, ";\n\n");
+  print_intvec(ZMAX+1, NVAR);
 
 static double AugerYield_prdata(int Z, int shell) {
 
@@ -1022,20 +1006,7 @@ void print_doublevec(int arrmax, double *arr)
 
 void print_intvec(int arrmax, int *arr)
 {
-  int i;
-  fprintf(f, "{\n");
-  for(i = 0; i < arrmax; i++) {
-    if(i < arrmax - 1) {
-      fprintf(f, "%d, ", arr[i]);
-    }
-    else {
-      fprintf(f, "%d ", arr[i]);
-    }
-
-    if(i%INT_PER_LINE == (INT_PER_LINE-1))
-      fprintf(f, "\n");
-  }
-  fprintf(f, "}");
+  fwrite(arr, sizeof(int), arrmax, f);
 }
 
 
@@ -1127,13 +1098,13 @@ int main(void)
   fprintf(f, "static protected final double[][] RadRate_arr = {\n");
   PR_MATD(ZMAX+1, LINENUM, RadRate_arr);
   */
-  /*
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
   PR_DYNMATD(NE_Photo, E_Photo_arr, "E_Photo_arr");
   PR_DYNMATD(NE_Photo, CS_Photo_arr, "CS_Photo_arr");
   PR_DYNMATD(NE_Photo, CS_Photo_arr2, "CS_Photo_arr2");
 
+  /*
   PR_NUMVEC1D(NE_Rayl, "NE_Rayl");
   PR_DYNMATD(NE_Rayl, E_Rayl_arr, "E_Rayl_arr");
   PR_DYNMATD(NE_Rayl, CS_Rayl_arr, "CS_Rayl_arr");

@@ -16,8 +16,23 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
+import java.lang.Math;
 
 public class Xraylib {
+
+  private static double[][] readDoubleArrayOfArrays(int[] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
+    double [][] rv = new double[N.length][];
+
+    for (int i = 0 ; i < N.length ; i++) {
+      if (N[i] <= 0) {
+        rv[i] = null;
+        continue;
+      }
+      rv[i] = readDoubleArray(N[i], byte_buffer);
+    }
+
+    return rv;
+  }
 
   private static double[] readDoubleArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
     double[] rv = new double[n];
@@ -34,6 +49,24 @@ public class Xraylib {
 
     return rv;
   }
+
+  private static int[] readIntArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
+    int[] rv = new int[n];
+
+    for (int i = 0 ; i < n ; i++) {
+      try {
+        rv[i] = byte_buffer.getInt();
+        //System.out.println("rv["+i+"]: "+ rv[i]);
+      }
+      catch (BufferUnderflowException e) {
+        throw new BufferUnderflowException();
+      }
+    }
+
+    return rv;
+  }
+
+
 
   public static void XRayInit() {
     try {
@@ -54,9 +87,19 @@ public class Xraylib {
       ElementDensity_arr = readDoubleArray(ZMAX + 1, byte_buffer);
       EdgeEnergy_arr = readDoubleArray((ZMAX + 1) * SHELLNUM, byte_buffer);
 
+      NE_Photo_arr = readIntArray(ZMAX + 1, byte_buffer);
+      E_Photo_arr = readDoubleArrayOfArrays(NE_Photo_arr, byte_buffer);
+      CS_Photo_arr = readDoubleArrayOfArrays(NE_Photo_arr, byte_buffer);
+      CS_Photo_arr2 = readDoubleArrayOfArrays(NE_Photo_arr, byte_buffer);
+
+      //this should never happen!
+      if (byte_buffer.hasRemaining()) {
+        throw new RuntimeException("byte_buffer not empty when closing!");
+      }
+
       inputStream.close();
 	  }
-    catch (IOException | BufferUnderflowException e) {
+    catch (IOException | RuntimeException e ) {
       e.printStackTrace();
     }
   }
@@ -113,10 +156,78 @@ public class Xraylib {
     return edge_energy;
   }
 
+  private static double CS_Factory(int Z, double E, int[] NE_arr, double[][] E_arr, double[][] CS_arr, double[][] CS_arr2) throws XraylibException {
+    double ln_E, ln_sigma, sigma;
+
+    if (Z < 1 || Z > ZMAX || NE_arr[Z] < 0) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0");
+    }
+
+    ln_E = Math.log(E * 1000.0);
+
+    ln_sigma = splint(E_arr[Z], CS_arr[Z], CS_arr2[Z], NE_arr[Z], ln_E);
+
+    sigma = Math.exp(ln_sigma);
+
+    return sigma;
+  }
+
+  public static double CS_Photo(int Z, double E) {
+    try {
+      double rv = CS_Factory(Z, E, NE_Photo_arr, E_Photo_arr, CS_Photo_arr, CS_Photo_arr2);
+      return rv;
+    }
+    catch (XraylibException e) {
+      throw new XraylibException(e.getMessage());
+    }
+  }
+
+  private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
+    int klo, khi, k;
+    double h, b, a;
+
+    if (x >= xa[n-1]) {
+	    return ya[n-1];
+    }
+
+    if (x <= xa[0]) {
+      return ya[0];
+    }
+
+    klo = 0;
+    khi = n-1;
+    while (khi-klo > 1) {
+      k = (khi + klo) >> 1;
+      if (xa[k] > x) {
+        khi = k;
+      }
+      else {
+        klo = k;
+      }
+    }
+
+    h = xa[khi] - xa[klo];
+    if (h == 0.0) {
+      return (ya[klo] + ya[khi])/2.0;
+    }
+    a = (xa[khi] - x) / h;
+    b = (x - xa[klo]) / h;
+    return a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
+       + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
+  }
+
   private static double[] AtomicWeight_arr;
   private static double[] ElementDensity_arr;
   private static double[] EdgeEnergy_arr;
 
+  private static int[] NE_Photo_arr;
+  private static double[][] E_Photo_arr;
+  private static double[][] CS_Photo_arr;
+  private static double[][] CS_Photo_arr2;
 
   public static int ZMAX;
   public static int SHELLNUM;
