@@ -1104,7 +1104,7 @@ int main(void)
   PR_DYNMATD(NE_Photo, CS_Photo_arr, "CS_Photo_arr");
   PR_DYNMATD(NE_Photo, CS_Photo_arr2, "CS_Photo_arr2");
 
-  /*
+  
   PR_NUMVEC1D(NE_Rayl, "NE_Rayl");
   PR_DYNMATD(NE_Rayl, E_Rayl_arr, "E_Rayl_arr");
   PR_DYNMATD(NE_Rayl, CS_Rayl_arr, "CS_Rayl_arr");
@@ -1120,6 +1120,7 @@ int main(void)
   PR_DYNMATD(NE_Energy, CS_Energy_arr, "CS_Energy_arr");
   PR_DYNMATD(NE_Energy, CS_Energy_arr2, "CS_Energy_arr2");
 
+  /*
   PR_NUMVEC1D(Nq_Rayl, "Nq_Rayl");
   PR_DYNMATD(Nq_Rayl, q_Rayl_arr, "q_Rayl_arr");
   PR_DYNMATD(Nq_Rayl, FF_Rayl_arr, "FF_Rayl_arr");

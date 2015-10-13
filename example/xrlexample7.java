@@ -20,6 +20,10 @@ public class xrlexample7 {
 		System.out.println("Atomic weight of Fe: "+Xraylib.AtomicWeight(26)+" g/mol");
 		System.out.println("Density of pure Al: "+Xraylib.ElementDensity(13)+" g/cm3");
 		System.out.println("Photoionization cs of Fe at 10.0 keV: "+Xraylib.CS_Photo(26, 10.0)+" cm2/g");
+		System.out.println("Rayleigh scattering cs of Fe at 10.0 keV: "+Xraylib.CS_Rayl(26, 10.0)+" cm2/g");
+		System.out.println("Compton scattering cs of Fe at 10.0 keV: "+Xraylib.CS_Compt(26, 10.0)+" cm2/g");
+		System.out.println("Total cs of Fe at 10.0 keV: "+Xraylib.CS_Total(26, 10.0)+" cm2/g");
+		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ Xraylib.CS_Energy(13, 20.0));
 		/*System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));*/
 		System.out.println("Zr L1 edge energy: " + Xraylib.EdgeEnergy(40, Xraylib.L1_SHELL) + " keV");
