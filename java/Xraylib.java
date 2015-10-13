@@ -259,6 +259,62 @@ public class Xraylib {
 
     return trans_prob;
   }
+
+  public static double RadRate(int Z, int line) {
+    double rad_rate, rr;
+    int i;
+
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (line == KA_LINE) {
+      rr=0.0;
+      for (i= 0 ; i <= 2 ; i++) {
+        rr += RadRate_arr[Z*LINENUM + i];
+      }
+      if (rr == 0.0) {
+        throw new XraylibException("Line not available");
+      }
+      return rr;
+    }
+    else if (line == KB_LINE) {
+    /*
+     * we assume that RR(Ka)+RR(Kb) = 1.0
+     */
+      rr = RadRate(Z, KA_LINE);
+      if (rr == 1.0) {
+        throw new XraylibException("Line not available");
+      }
+      else if (rr == 0.0) {
+        throw new XraylibException("Line not available");
+      }
+      return 1.0-rr;
+    }
+    else if (line == LA_LINE) {
+      line = -L3M5_LINE-1;
+      rr = RadRate_arr[Z*LINENUM + line];
+      line = -L3M4_LINE-1;
+      rr += RadRate_arr[Z*LINENUM + line];
+      return rr;
+    }
+  /*
+   * in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
+   */
+
+    line = -line - 1;
+    if (line<0 || line>=LINENUM) {
+      throw new XraylibException("Line not available");
+    }
+
+    rad_rate = RadRate_arr[Z*LINENUM + line];
+    if (rad_rate < 0.) {
+      throw new XraylibException("Line not available");
+    }
+
+    return rad_rate;
+  }
+
   private static double CS_Factory(int Z, double E, int[] NE_arr, double[][] E_arr, double[][] CS_arr, double[][] CS_arr2) throws XraylibException {
     double ln_E, ln_sigma, sigma;
 
@@ -837,4 +893,57 @@ public class Xraylib {
   public static final int FM35_TRANS = 13;
   public static final int FM45_TRANS = 14;
 
+/*
+ * Siegbahn notation
+ * according to Table VIII.2 from Nomenclature system for X-ray spectroscopy
+ * Linegroups -> usage is discouraged
+ *
+ */
+  public static final int KA_LINE = 0;
+  public static final int KB_LINE = 1;
+  public static final int LA_LINE = 2;
+  public static final int LB_LINE = 3;
+
+/* single lines */
+  public static final int KA1_LINE = KL3_LINE;
+  public static final int KA2_LINE = KL2_LINE;
+  public static final int KA3_LINE = KL1_LINE;
+  public static final int KB1_LINE = KM3_LINE;
+  public static final int KB2_LINE = KN3_LINE;
+  public static final int KB3_LINE = KM2_LINE;
+  public static final int KB4_LINE = KN5_LINE;
+  public static final int KB5_LINE = KM5_LINE;
+
+  public static final int LA1_LINE = L3M5_LINE;
+  public static final int LA2_LINE = L3M4_LINE;
+  public static final int LB1_LINE = L2M4_LINE;
+  public static final int LB2_LINE = L3N5_LINE;
+  public static final int LB3_LINE = L1M3_LINE;
+  public static final int LB4_LINE = L1M2_LINE;
+  public static final int LB5_LINE = L3O45_LINE;
+  public static final int LB6_LINE = L3N1_LINE;
+  public static final int LB7_LINE = L3O1_LINE;
+  public static final int LB9_LINE = L1M5_LINE;
+  public static final int LB10_LINE = L1M4_LINE;
+  public static final int LB15_LINE = L3N4_LINE;
+  public static final int LB17_LINE = L2M3_LINE;
+  public static final int LG1_LINE = L2N4_LINE;
+  public static final int LG2_LINE = L1N2_LINE;
+  public static final int LG3_LINE = L1N3_LINE;
+  public static final int LG4_LINE = L1O3_LINE;
+  public static final int LG5_LINE = L2N1_LINE;
+  public static final int LG6_LINE = L2O4_LINE;
+  public static final int LG8_LINE = L2O1_LINE;
+  public static final int LE_LINE = L2M1_LINE;
+  public static final int LH_LINE = L2M1_LINE;
+  public static final int LL_LINE = L3M1_LINE;
+  public static final int LS_LINE = L3M3_LINE;
+  public static final int LT_LINE = L3M2_LINE;
+  public static final int LU_LINE = L3N6_LINE;
+  public static final int LV_LINE = L2N6_LINE;
+
+  public static final int MA1_LINE = M5N7_LINE;
+  public static final int MA2_LINE = M5N6_LINE;
+  public static final int MB_LINE = M4N6_LINE;
+  public static final int MG_LINE = M3N5_LINE;
 }

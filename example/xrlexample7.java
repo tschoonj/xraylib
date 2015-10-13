@@ -29,12 +29,12 @@ public class xrlexample7 {
 		System.out.println("K jumpfactor for Fe: "+Xraylib.JumpFactor(26,Xraylib.K_SHELL));
 		System.out.println("M1->M5 Coster-Kronig transition probability for Au : "+Xraylib.CosKronTransProb(79,Xraylib.FM15_TRANS));
 		System.out.println("L1->L3 Coster-Kronig transition probability for Fe : "+Xraylib.CosKronTransProb(26,Xraylib.FL13_TRANS));
+		System.out.println("Bi M1N2 radiative rate: "+Xraylib.RadRate(83,Xraylib.M1N2_LINE));
 		/*System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));*/
 		System.out.println("Zr L1 edge energy: " + Xraylib.EdgeEnergy(40, Xraylib.L1_SHELL) + " keV");
 		/*System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+xraylib.CS_FluorLine(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,(float) 20.0));
-		System.out.println("Bi M1N2 radiative rate: "+xraylib.RadRate(83,xraylib.M1N2_LINE));
 		System.out.println("U M3O3 Fluorescence Line Energy: "+xraylib.LineEnergy(92,xraylib.M3O3_LINE));
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
