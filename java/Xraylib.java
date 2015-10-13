@@ -239,6 +239,26 @@ public class Xraylib {
 
     return jump_factor;
   }
+
+  public static double CosKronTransProb(int Z, int trans) {
+    double trans_prob;
+
+    if (Z<1 || Z>ZMAX){
+      throw new XraylibException("Z out of range");
+    }
+
+    if (trans<0 || trans>=TRANSNUM) {
+      throw new XraylibException("Transition not available");
+    }
+
+    trans_prob = CosKron_arr[Z*TRANSNUM + trans];
+
+    if (trans_prob < 0.) {
+      throw new XraylibException("Transition not available");
+    }
+
+    return trans_prob;
+  }
   private static double CS_Factory(int Z, double E, int[] NE_arr, double[][] E_arr, double[][] CS_arr, double[][] CS_arr2) throws XraylibException {
     double ln_E, ln_sigma, sigma;
 
@@ -795,4 +815,26 @@ public class Xraylib {
   public static final int P2P5_LINE = -381;
   public static final int P3P4_LINE = -382;
   public static final int P3P5_LINE = -383;
+
+  public static final int F1_TRANS = 0;
+  public static final int F12_TRANS = 1;
+  public static final int F13_TRANS = 2;
+  public static final int FP13_TRANS = 3;
+  public static final int F23_TRANS = 4;
+
+  public static final int FL12_TRANS = 1;
+  public static final int FL13_TRANS = 2;
+  public static final int FLP13_TRANS = 3;
+  public static final int FL23_TRANS = 4;
+  public static final int FM12_TRANS = 5;
+  public static final int FM13_TRANS = 6;
+  public static final int FM14_TRANS = 7;
+  public static final int FM15_TRANS = 8;
+  public static final int FM23_TRANS = 9;
+  public static final int FM24_TRANS = 10;
+  public static final int FM25_TRANS = 11;
+  public static final int FM34_TRANS = 12;
+  public static final int FM35_TRANS = 13;
+  public static final int FM45_TRANS = 14;
+
 }
