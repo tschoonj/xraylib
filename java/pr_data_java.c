@@ -1019,6 +1019,7 @@ int main(void)
   int zmax = ZMAX;
   int shellnum = SHELLNUM;
   int transnum = TRANSNUM;
+  int linenum = LINENUM;
 
   XRayInit();
 
@@ -1037,6 +1038,7 @@ int main(void)
   fwrite(&zmax, sizeof(int), 1, f);
   fwrite(&shellnum, sizeof(int), 1, f);
   fwrite(&transnum, sizeof(int), 1, f);
+  fwrite(&linenum, sizeof(int), 1, f);
 
   /*
   fprintf(f, "#include \"xraylib-defs.h\"\n\n");
@@ -1079,25 +1081,18 @@ int main(void)
   print_doublevec(ZMAX+1, ElementDensity_arr);
 
   PR_MATD(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
-  /*
-  fprintf(f, "static protected final double[][] AtomicLevelWidth_arr = {\n");
+
   PR_MATD(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
 
-  fprintf(f, "static protected final double[][] LineEnergy_arr = {\n");
   PR_MATD(ZMAX+1, LINENUM, LineEnergy_arr);
 
-  fprintf(f, "static protected final double[][] FluorYield_arr = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, FluorYield_arr);
 
-  fprintf(f, "static protected final double[][] JumpFactor_arr = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, JumpFactor_arr);
 
-  fprintf(f, "static protected final double[][] CosKron_arr = {\n");
   PR_MATD(ZMAX+1, TRANSNUM, CosKron_arr);
 
-  fprintf(f, "static protected final double[][] RadRate_arr = {\n");
   PR_MATD(ZMAX+1, LINENUM, RadRate_arr);
-  */
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
   PR_DYNMATD(NE_Photo, E_Photo_arr, "E_Photo_arr");

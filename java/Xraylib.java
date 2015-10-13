@@ -35,6 +35,8 @@ public class Xraylib {
   }
 
   private static double[] readDoubleArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
+    //System.out.println("readDoubleArray n: " + n);
+
     double[] rv = new double[n];
 
     for (int i = 0 ; i < n ; i++) {
@@ -79,6 +81,7 @@ public class Xraylib {
       ZMAX = byte_buffer.getInt();
       SHELLNUM = byte_buffer.getInt();
       TRANSNUM = byte_buffer.getInt();
+      LINENUM = byte_buffer.getInt();
       //System.out.println("ZMAX: " + ZMAX);
       //System.out.println("SHELLNUM: " + SHELLNUM);
       //System.out.println("TRANSNUM: " + TRANSNUM);
@@ -86,6 +89,12 @@ public class Xraylib {
       AtomicWeight_arr = readDoubleArray(ZMAX + 1, byte_buffer);
       ElementDensity_arr = readDoubleArray(ZMAX + 1, byte_buffer);
       EdgeEnergy_arr = readDoubleArray((ZMAX + 1) * SHELLNUM, byte_buffer);
+      AtomicLevelWidth_arr = readDoubleArray((ZMAX + 1) * SHELLNUM, byte_buffer);
+      LineEnergy_arr = readDoubleArray((ZMAX + 1) * LINENUM, byte_buffer);
+      FluorYield_arr = readDoubleArray((ZMAX + 1) * SHELLNUM, byte_buffer);
+      JumpFactor_arr = readDoubleArray((ZMAX + 1) * SHELLNUM, byte_buffer);
+      CosKron_arr = readDoubleArray((ZMAX + 1) * TRANSNUM, byte_buffer);
+      RadRate_arr = readDoubleArray((ZMAX + 1) * LINENUM, byte_buffer);
 
       NE_Photo_arr = readIntArray(ZMAX + 1, byte_buffer);
       E_Photo_arr = readDoubleArrayOfArrays(NE_Photo_arr, byte_buffer);
@@ -169,6 +178,26 @@ public class Xraylib {
     }
 
     return edge_energy;
+  }
+
+  public static double AtomicLevelWidth(int Z, int shell) {
+    double atomic_level_width;
+
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (shell<0 || shell>=SHELLNUM) {
+      throw new XraylibException("Shell not available");
+    }
+
+    atomic_level_width = AtomicLevelWidth_arr[Z*SHELLNUM + shell];
+
+    if (atomic_level_width < 0.) {
+      throw new XraylibException("Shell not available");
+    }
+
+    return atomic_level_width;
   }
 
   private static double CS_Factory(int Z, double E, int[] NE_arr, double[][] E_arr, double[][] CS_arr, double[][] CS_arr2) throws XraylibException {
@@ -280,6 +309,12 @@ public class Xraylib {
   private static double[] AtomicWeight_arr;
   private static double[] ElementDensity_arr;
   private static double[] EdgeEnergy_arr;
+  private static double[] AtomicLevelWidth_arr;
+  private static double[] LineEnergy_arr;
+  private static double[] FluorYield_arr;
+  private static double[] JumpFactor_arr;
+  private static double[] CosKron_arr;
+  private static double[] RadRate_arr;
 
   private static int[] NE_Photo_arr;
   private static double[][] E_Photo_arr;
@@ -304,6 +339,7 @@ public class Xraylib {
   public static int ZMAX;
   public static int SHELLNUM;
   public static int TRANSNUM;
+  public static int LINENUM;
 
   public static final int K_SHELL = 0;
   public static final int L1_SHELL = 1;
