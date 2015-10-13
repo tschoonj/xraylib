@@ -26,6 +26,7 @@ public class xrlexample7 {
 		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ Xraylib.CS_Energy(13, 20.0));
 		System.out.println("K atomic level width for Fe: "+Xraylib.AtomicLevelWidth(26,Xraylib.K_SHELL) + " keV");
 		System.out.println("K fluorescence yield for Fe: "+Xraylib.FluorYield(26,Xraylib.K_SHELL));
+		System.out.println("K jumpfactor for Fe: "+Xraylib.JumpFactor(26,Xraylib.K_SHELL));
 		/*System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));*/
 		System.out.println("Zr L1 edge energy: " + Xraylib.EdgeEnergy(40, Xraylib.L1_SHELL) + " keV");

@@ -220,6 +220,25 @@ public class Xraylib {
     return fluor_yield;
   }
 
+  public static double JumpFactor(int Z, int shell) {
+    double jump_factor;
+
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (shell<0 || shell>=SHELLNUM) {
+      throw new XraylibException("Shell not available");
+    }
+
+    jump_factor = JumpFactor_arr[Z*SHELLNUM + shell];
+
+    if (jump_factor < 0.) {
+      throw new XraylibException("Shell not available");
+    }
+
+    return jump_factor;
+  }
   private static double CS_Factory(int Z, double E, int[] NE_arr, double[][] E_arr, double[][] CS_arr, double[][] CS_arr2) throws XraylibException {
     double ln_E, ln_sigma, sigma;
 
