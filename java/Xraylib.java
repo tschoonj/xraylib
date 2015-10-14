@@ -20,6 +20,16 @@ import java.lang.Math;
 
 public class Xraylib {
 
+  private static double[][][] readDoubleArrayOfArraysOfArrays(int[][] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
+    double[][][] rv = new double[N.length][][];
+
+    for (int i = 0 ; i < N.length ; i++) {
+      rv[i] = readDoubleArrayOfArrays(N[i], byte_buffer);
+    }
+
+    return rv;
+  }
+
   private static double[][] readDoubleArrayOfArrays(int[] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
     double [][] rv = new double[N.length][];
 
@@ -68,7 +78,20 @@ public class Xraylib {
     return rv;
   }
 
+  private static int[][] arrayReshape(int[] array, int m, int n) {
+    if (m*n != array.length)
+      throw new RuntimeException("new array dimensions incompatible with old ones");
 
+    int[][] rv = new int[m][n];
+
+    int index_old = 0;
+    for (int i = 0 ; i < m ; i++) {
+      for (int j = 0 ; j < n ; j++) {
+        rv[i][j] = array[index_old++];
+      }
+    }
+    return rv;
+  } 
 
   public static void XRayInit() throws Exception {
     try {
@@ -80,6 +103,7 @@ public class Xraylib {
       byte_buffer.order(ByteOrder.LITTLE_ENDIAN);
       ZMAX = byte_buffer.getInt();
       SHELLNUM = byte_buffer.getInt();
+      SHELLNUM_K = byte_buffer.getInt();
       TRANSNUM = byte_buffer.getInt();
       LINENUM = byte_buffer.getInt();
       RE2 = byte_buffer.getDouble();
@@ -139,6 +163,21 @@ public class Xraylib {
       E_Fii_arr = readDoubleArrayOfArrays(NE_Fii_arr, byte_buffer);
       Fii_arr = readDoubleArrayOfArrays(NE_Fii_arr, byte_buffer);
       Fii_arr2 = readDoubleArrayOfArrays(NE_Fii_arr, byte_buffer);
+
+      Electron_Config_Kissel_arr = readDoubleArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
+      EdgeEnergy_Kissel_arr = readDoubleArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
+
+      NE_Photo_Total_Kissel_arr = readIntArray(ZMAX +1, byte_buffer);
+      E_Photo_Total_Kissel_arr = readDoubleArrayOfArrays(NE_Photo_Total_Kissel_arr, byte_buffer);
+      Photo_Total_Kissel_arr = readDoubleArrayOfArrays(NE_Photo_Total_Kissel_arr, byte_buffer);
+      Photo_Total_Kissel_arr2 = readDoubleArrayOfArrays(NE_Photo_Total_Kissel_arr, byte_buffer);
+
+      //NE_Photo_Partial_Kissel_arr = readIntArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
+      int[] temp_arr = readIntArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
+      NE_Photo_Partial_Kissel_arr = arrayReshape(temp_arr, ZMAX+1, SHELLNUM_K);
+      E_Photo_Partial_Kissel_arr = readDoubleArrayOfArraysOfArrays(NE_Photo_Partial_Kissel_arr, byte_buffer);
+      Photo_Partial_Kissel_arr = readDoubleArrayOfArraysOfArrays(NE_Photo_Partial_Kissel_arr, byte_buffer);
+      Photo_Partial_Kissel_arr2 = readDoubleArrayOfArraysOfArrays(NE_Photo_Partial_Kissel_arr, byte_buffer);
 
       //this should never happen!
       if (byte_buffer.hasRemaining()) {
@@ -526,7 +565,6 @@ public class Xraylib {
     return sigma;
   }
 
-
   public static double ComptonEnergy(double E0, double theta) {
     double cos_theta, alpha;
 
@@ -538,6 +576,86 @@ public class Xraylib {
     alpha = E0/MEC2;
 
     return E0 / (1 + alpha*(1 - cos_theta));
+  }
+
+  public static double CSb_Photo_Total(int Z, double E) {
+    int shell;
+    double rv = 0.0;
+
+    if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel_arr[Z]<0) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    for (shell = K_SHELL ; shell <= Q3_SHELL ; shell++) {
+      if (Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell] > 1.0E-06 && E >= EdgeEnergy_arr[Z*SHELLNUM + shell] ) {
+        rv += CSb_Photo_Partial(Z,shell,E)*Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell];
+      }
+    }
+    return rv;
+  }
+
+  public static double CS_Photo_Total(int Z, double E) {
+    return CSb_Photo_Total(Z, E)*AVOGNUM/AtomicWeight_arr[Z];
+  }
+
+  public static double CSb_Photo_Partial(int Z, int shell, double E) {
+    double ln_E, ln_sigma, sigma;
+    double x0, x1, y0, y1;
+    double m;
+
+    if (Z < 1 || Z > ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (shell < 0 || shell >= SHELLNUM_K) {
+      throw new XraylibException("shell out of range");
+    }
+
+    if (E <= 0.0) {
+      throw new XraylibException("Energy <= 0.0 not allowed");
+    }
+
+    if (Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell] < 1.0E-06){
+      throw new XraylibException("selected orbital is unoccupied");
+    } 
+  
+    if (EdgeEnergy_arr[Z*SHELLNUM + shell] > E) {
+      throw new XraylibException("selected energy cannot excite the orbital: energy must be greater than the absorption edge energy");
+    } 
+    else {
+      ln_E = Math.log(E);
+      if (EdgeEnergy_Kissel_arr[Z*SHELLNUM_K + shell] > EdgeEnergy_arr[Z*SHELLNUM + shell] && E < EdgeEnergy_Kissel_arr[Z*SHELLNUM_K + shell]) {
+   	/*
+	 * use log-log extrapolation 
+	 */
+	x0 = E_Photo_Partial_Kissel_arr[Z][shell][0];
+	x1 = E_Photo_Partial_Kissel_arr[Z][shell][1];
+	y0 = Photo_Partial_Kissel_arr[Z][shell][0];
+	y1 = Photo_Partial_Kissel_arr[Z][shell][1];
+	/*
+	 * do not allow "extreme" slopes... force them to be within -1;1
+	 */
+	m = (y1-y0)/(x1-x0);
+	if (m > 1.0)
+	  m=1.0;
+	else if (m < -1.0)
+	  m=-1.0;
+	ln_sigma = y0+m*(ln_E-x0);
+      }
+      else {
+        ln_sigma = splint(E_Photo_Partial_Kissel_arr[Z][shell], Photo_Partial_Kissel_arr[Z][shell], Photo_Partial_Kissel_arr2[Z][shell],NE_Photo_Partial_Kissel_arr[Z][shell], ln_E);
+      }
+      sigma = Math.exp(ln_sigma);
+    }
+    return sigma; 
+  }
+
+  public static double CS_Photo_Partial(int Z, int shell, double E) {
+    return CSb_Photo_Partial(Z, shell, E)*Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell]*AVOGNUM/AtomicWeight_arr[Z];
   }
 
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
@@ -624,8 +742,23 @@ public class Xraylib {
   private static double[][] Fii_arr;
   private static double[][] Fii_arr2;
 
+  private static int[] NE_Photo_Total_Kissel_arr;
+  private static double[][] E_Photo_Total_Kissel_arr;
+  private static double[][] Photo_Total_Kissel_arr;
+  private static double[][] Photo_Total_Kissel_arr2;
+
+  private static double[] Electron_Config_Kissel_arr;
+  private static double[] EdgeEnergy_Kissel_arr;
+
+  private static int[][] NE_Photo_Partial_Kissel_arr;
+  private static double[][][] E_Photo_Partial_Kissel_arr;
+  private static double[][][] Photo_Partial_Kissel_arr;
+  private static double[][][] Photo_Partial_Kissel_arr2;
+
+
   public static int ZMAX;
   public static int SHELLNUM;
+  public static int SHELLNUM_K;
   public static int TRANSNUM;
   public static int LINENUM;
   public static double RE2;

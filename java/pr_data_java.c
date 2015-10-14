@@ -36,9 +36,7 @@ for(j = 0; j < (ROWMAX); j++) { \
 #define PR_MATI(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
   print_intvec((COLMAX), ARRNAME[j]); \
-  fprintf(f, ",\n"); \
-} \
-fprintf(f, "};\n\n");
+}
 
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
@@ -72,27 +70,10 @@ fprintf(f, "};\n\n");
   for (i = 0; i < ZMAX+1; i++) { \
     for (j = 0; j < SHELLNUM_K; j++) {\
       if(NVAR2D[i][j] > 0) {\
-        fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
         print_doublevec(NVAR2D[i][j], EVAR[i][j]);\
       }\
-      else {\
-        fprintf(f, "static double __%s_%i_%i[1]", ENAME, i, j);\
-      }\
-      fprintf(f, ";\n\n");\
     }\
-  }\
-\
-  fprintf(f, "double *%s[ZMAX+1][SHELLNUM_K] = {\n", ENAME);\
-  for (i = 0; i < ZMAX+1; i++) {\
-    fprintf(f,"{\n");\
-    for (j = 0; j < SHELLNUM_K; j++) {\
-      fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
-      if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-        fprintf(f, "\n");\
-    }\
-    fprintf(f,"},\n");\
-  }\
-  fprintf(f,"\n};\n");\
+  }
 
 #define PR_DYNMAT_3DD_C(NVAR2D, NVAR2D2, NVAR2D3, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1 ; i++) { \
@@ -1018,6 +999,7 @@ int main(void)
   Crystal_Atom* atom;
   int zmax = ZMAX;
   int shellnum = SHELLNUM;
+  int shellnum_k = SHELLNUM_K;
   int transnum = TRANSNUM;
   int linenum = LINENUM;
   double re2 = RE2;
@@ -1041,6 +1023,7 @@ int main(void)
 
   fwrite(&zmax, sizeof(int), 1, f);
   fwrite(&shellnum, sizeof(int), 1, f);
+  fwrite(&shellnum_k, sizeof(int), 1, f);
   fwrite(&transnum, sizeof(int), 1, f);
   fwrite(&linenum, sizeof(int), 1, f);
   fwrite(&re2, sizeof(double), 1, f);
@@ -1144,11 +1127,8 @@ int main(void)
   PR_DYNMATD(NE_Fii, Fii_arr, "Fii_arr");
   PR_DYNMATD(NE_Fii, Fii_arr2, "Fii_arr2");
 
-  /*
-  fprintf(f, "double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
 
-  fprintf(f, "double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_K, EdgeEnergy_Kissel);
 
   PR_NUMVEC1D(NE_Photo_Total_Kissel, "NE_Photo_Total_Kissel");
@@ -1156,13 +1136,12 @@ int main(void)
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel,"Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel2,"Photo_Total_Kissel2");
 
-  fprintf(f, "int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATI(ZMAX+1, SHELLNUM_K, NE_Photo_Partial_Kissel);
-
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel");
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel");
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2");
 
+  /*
   PR_NUMVEC1D(NShells_ComptonProfiles, "NShells_ComptonProfiles");
   PR_NUMVEC1D(Npz_ComptonProfiles, "Npz_ComptonProfiles");
   PR_DYNMATD(NShells_ComptonProfiles,UOCCUP_ComptonProfiles,"UOCCUP_ComptonProfiles");
