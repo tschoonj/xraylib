@@ -179,6 +179,39 @@ public class Xraylib {
       Photo_Partial_Kissel_arr = readDoubleArrayOfArraysOfArrays(NE_Photo_Partial_Kissel_arr, byte_buffer);
       Photo_Partial_Kissel_arr2 = readDoubleArrayOfArraysOfArrays(NE_Photo_Partial_Kissel_arr, byte_buffer);
 
+      NShells_ComptonProfiles_arr = readIntArray(ZMAX +1, byte_buffer);
+      Npz_ComptonProfiles_arr = readIntArray(ZMAX +1, byte_buffer);
+      UOCCUP_ComptonProfiles_arr = readDoubleArrayOfArrays(NShells_ComptonProfiles_arr, byte_buffer);
+      pz_ComptonProfiles_arr = readDoubleArrayOfArrays(Npz_ComptonProfiles_arr, byte_buffer);
+      Total_ComptonProfiles_arr = readDoubleArrayOfArrays(Npz_ComptonProfiles_arr, byte_buffer);
+      Total_ComptonProfiles_arr2 = readDoubleArrayOfArrays(Npz_ComptonProfiles_arr, byte_buffer);
+
+      Partial_ComptonProfiles_arr = new double[ZMAX+1][][];
+      Partial_ComptonProfiles_arr2 = new double[ZMAX+1][][];
+
+      for (int i = 0 ; i < ZMAX+1 ; i++) {
+        if (NShells_ComptonProfiles_arr[i] <= 0) {
+          continue;
+        }
+        Partial_ComptonProfiles_arr[i] = new double[NShells_ComptonProfiles_arr[i]][];
+        for (int j = 0 ; j < NShells_ComptonProfiles_arr[i] ; j++) {
+	  if (Npz_ComptonProfiles_arr[i] > 0 && UOCCUP_ComptonProfiles_arr[i][j] > 0) {
+            Partial_ComptonProfiles_arr[i][j] = readDoubleArray(Npz_ComptonProfiles_arr[i], byte_buffer);
+          }
+        }
+      }
+      for (int i = 0 ; i < ZMAX+1 ; i++) {
+        if (NShells_ComptonProfiles_arr[i] <= 0) {
+          continue;
+        }
+        Partial_ComptonProfiles_arr2[i] = new double[NShells_ComptonProfiles_arr[i]][];
+        for (int j = 0 ; j < NShells_ComptonProfiles_arr[i] ; j++) {
+	  if (Npz_ComptonProfiles_arr[i] > 0 && UOCCUP_ComptonProfiles_arr[i][j] > 0) {
+            Partial_ComptonProfiles_arr2[i][j] = readDoubleArray(Npz_ComptonProfiles_arr[i], byte_buffer);
+          }
+        }
+      }
+
       //this should never happen!
       if (byte_buffer.hasRemaining()) {
         throw new RuntimeException("byte_buffer not empty when closing!");
@@ -187,6 +220,7 @@ public class Xraylib {
       inputStream.close();
     }
     catch (IOException | RuntimeException e ) {
+      e.printStackTrace();	
       throw new Exception(e.getMessage());
     }
   }
@@ -658,6 +692,94 @@ public class Xraylib {
     return CSb_Photo_Partial(Z, shell, E)*Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell]*AVOGNUM/AtomicWeight_arr[Z];
   }
 
+  public static double CS_Total_Kissel(int Z, double E) { 
+
+    if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel_arr[Z]<0 || NE_Rayl_arr[Z]<0 || NE_Compt_arr[Z]<0) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    return CS_Photo_Total(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
+  }
+
+  public static double CSb_Total_Kissel(int Z, double E) {
+    return CS_Total_Kissel(Z,E)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double ElectronConfig(int Z, int shell) {
+
+    if (Z<1 || Z>ZMAX  ) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (shell < 0 || shell >= SHELLNUM_K) {
+      throw new XraylibException("shell out of range");
+    }
+
+    return Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell]; 
+  }
+
+  public static double ComptonProfile(int Z, double pz) {
+    double q, ln_q;
+    double ln_pz;
+
+    if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles_arr[Z] < 0) {
+      throw new XraylibException("Z out of range");
+    }  
+
+    if (pz < 0.0) {
+      throw new XraylibException("pz < 0 is not allowed");
+    }
+	
+    ln_pz = Math.log(pz + 1.0);
+
+    ln_q = splint(pz_ComptonProfiles_arr[Z], Total_ComptonProfiles_arr[Z], Total_ComptonProfiles_arr2[Z],  Npz_ComptonProfiles_arr[Z], ln_pz);
+
+    q = Math.exp(ln_q); 
+
+    return q;
+  }
+
+  public static double ComptonProfile_Partial(int Z, int shell, double pz) {
+    double q, ln_q;
+    double ln_pz;
+
+    if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles_arr[Z] < 1) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (shell >= NShells_ComptonProfiles_arr[Z] || shell < K_SHELL || UOCCUP_ComptonProfiles_arr[Z][shell] == 0.0 ) {
+      throw new XraylibException("Shell unavailable");
+    }
+
+    if (pz < 0.0) {
+      throw new XraylibException("pz < 0 is not allowed");
+    }
+	
+    ln_pz = Math.log(pz + 1.0);
+
+    ln_q = splint(pz_ComptonProfiles_arr[Z], Partial_ComptonProfiles_arr[Z][shell], Partial_ComptonProfiles_arr2[Z][shell], Npz_ComptonProfiles_arr[Z],ln_pz);
+
+    q = Math.exp(ln_q); 
+
+    return q;
+  }
+
+  public static double ElectronConfig_Biggs(int Z, int shell) {
+    if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles_arr[Z] < 0) {
+      throw new XraylibException("Z out of range");
+    }  
+	
+    if (shell >= NShells_ComptonProfiles_arr[Z] || UOCCUP_ComptonProfiles_arr[Z][shell] == 0.0 ) {
+      throw new XraylibException("Shell unavailable");
+    }
+
+    return UOCCUP_ComptonProfiles_arr[Z][shell]; 
+  }
+
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
@@ -755,6 +877,14 @@ public class Xraylib {
   private static double[][][] Photo_Partial_Kissel_arr;
   private static double[][][] Photo_Partial_Kissel_arr2;
 
+  private static int[] NShells_ComptonProfiles_arr;
+  private static int[] Npz_ComptonProfiles_arr;
+  private static double[][] UOCCUP_ComptonProfiles_arr;
+  private static double[][] pz_ComptonProfiles_arr;
+  private static double[][] Total_ComptonProfiles_arr;
+  private static double[][] Total_ComptonProfiles_arr2;
+  private static double[][][] Partial_ComptonProfiles_arr;
+  private static double[][][] Partial_ComptonProfiles_arr2;
 
   public static int ZMAX;
   public static int SHELLNUM;

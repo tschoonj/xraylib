@@ -80,33 +80,11 @@ for(j = 0; j < (ROWMAX); j++) { \
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       if (UOCCUP_ComptonProfiles[i][j] > 0.0) {\
         if(NVAR2D[i] > 0) {\
-          fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
          print_doublevec(NVAR2D[i], EVAR[i][j]);\
         }\
-        else {\
-          fprintf(f, "static double __%s_%i_%i[1]", ENAME, i, j);\
-        }\
-      	fprintf(f, ";\n\n");\
-      }\
-      else {\
-      	fprintf(f, "static double __%s_%i_%i[1];\n", ENAME, i, j);\
       }\
     }\
-  }\
-  fprintf(f, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
-  for (i = 0; i < ZMAX+1 ; i++) {\
-    fprintf(f,"{\n");\
-    for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
-      fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
-      if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-        fprintf(f, "\n");\
-    }\
-    if (NShells_ComptonProfiles[i] < 1) { \
-        fprintf(f, "NULL\n");\
-    }\
-    fprintf(f,"},\n");\
-  }\
-  fprintf(f,"\n};\n");\
+  }
 
 #define PR_NUMVEC1D(NVAR, NNAME) \
   print_intvec(ZMAX+1, NVAR);
@@ -1141,7 +1119,6 @@ int main(void)
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel");
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2");
 
-  /*
   PR_NUMVEC1D(NShells_ComptonProfiles, "NShells_ComptonProfiles");
   PR_NUMVEC1D(Npz_ComptonProfiles, "Npz_ComptonProfiles");
   PR_DYNMATD(NShells_ComptonProfiles,UOCCUP_ComptonProfiles,"UOCCUP_ComptonProfiles");
@@ -1151,6 +1128,7 @@ int main(void)
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
+  /*
   SetHardExit(0);
   SetErrorMessages(0);
 

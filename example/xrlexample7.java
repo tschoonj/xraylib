@@ -29,6 +29,7 @@ public class xrlexample7 {
 		System.out.println("Rayleigh scattering cs of Fe at 10.0 keV: "+Xraylib.CS_Rayl(26, 10.0)+" cm2/g");
 		System.out.println("Compton scattering cs of Fe at 10.0 keV: "+Xraylib.CS_Compt(26, 10.0)+" cm2/g");
 		System.out.println("Total cs of Fe at 10.0 keV: "+Xraylib.CS_Total(26, 10.0)+" cm2/g");
+		System.out.println("Total cs (Kissel) of Fe at 10.0 keV: "+Xraylib.CS_Total_Kissel(26, 10.0)+" cm2/g");
 		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ Xraylib.CS_Energy(13, 20.0));
 		System.out.println("K atomic level width for Fe: "+Xraylib.AtomicLevelWidth(26,Xraylib.K_SHELL) + " keV");
 		System.out.println("K fluorescence yield for Fe: "+Xraylib.FluorYield(26,Xraylib.K_SHELL));
@@ -50,6 +51,10 @@ public class xrlexample7 {
 		System.out.println("Photon energy after Compton scattering at 10 keV and 45 deg angle: " + Xraylib.ComptonEnergy(10.0, 45.0*Math.PI/180.0));
 		System.out.println("Photoionization cs of Fe (Kissel) at 10.0 keV: "+Xraylib.CS_Photo_Total(26, 10.0)+" cm2/g");
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+Xraylib.CS_Photo_Partial(26,Xraylib.L3_SHELL, 6.0));
+		System.out.println("ElectronConfig (Kissel) of Fe L3-shell: " + Xraylib.ElectronConfig(26, Xraylib.L3_SHELL));
+		System.out.println("ElectronConfig (Biggs) of Fe L3-shell: " + Xraylib.ElectronConfig_Biggs(26, Xraylib.L3_SHELL));
+		System.out.println("Compton profile for Fe at pz = 1.1: "+Xraylib.ComptonProfile(26,(float) 1.1));
+		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+Xraylib.ComptonProfile_Partial(26,Xraylib.M5_SHELL, 1.1));
 		/*System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+xraylib.CS_FluorLine(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("U M3O3 Fluorescence Line Energy: "+xraylib.LineEnergy(92,xraylib.M3O3_LINE));
@@ -57,8 +62,6 @@ public class xrlexample7 {
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
 		System.out.println("C16H14O3 Refractive Index at 1 keV : "+xraylib.Refractive_Index_Re("C16H14O3",(float) 1.0,(float) 1.2)+" - "+xraylib.Refractive_Index_Im("C16H14O3",(float) 1.0,(float) 1.2)+" i");
 		System.out.println("SiO2 Refractive Index at 5.0 keV : "+xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");
-		System.out.println("Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile(26,(float) 1.1));
-		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+xraylib.ComptonProfile_Partial(26,xraylib.M5_SHELL,(float) 1.1));
 		System.out.println("Bi L2-M5M5 Auger non-radiative rate: "+xraylib.AugerRate(86,xraylib.L2_M5M5_AUGER));
 		System.out.println("Bi L3 Auger yield: "+xraylib.AugerYield(86, xraylib.L3_SHELL));
 		System.out.println("Au Ma1 XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MA1_LINE,(float) 10.0));
