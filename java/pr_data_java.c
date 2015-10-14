@@ -978,8 +978,10 @@ int main(void)
   int zmax = ZMAX;
   int shellnum = SHELLNUM;
   int shellnum_k = SHELLNUM_K;
+  int shellnum_a = SHELLNUM_A;
   int transnum = TRANSNUM;
   int linenum = LINENUM;
+  int augernum = AUGERNUM;
   double re2 = RE2;
   double mec2 = MEC2;
   double avognum = AVOGNUM;
@@ -1002,8 +1004,10 @@ int main(void)
   fwrite(&zmax, sizeof(int), 1, f);
   fwrite(&shellnum, sizeof(int), 1, f);
   fwrite(&shellnum_k, sizeof(int), 1, f);
+  fwrite(&shellnum_a, sizeof(int), 1, f);
   fwrite(&transnum, sizeof(int), 1, f);
   fwrite(&linenum, sizeof(int), 1, f);
+  fwrite(&augernum, sizeof(int), 1, f);
   fwrite(&re2, sizeof(double), 1, f);
   fwrite(&mec2, sizeof(double), 1, f);
   fwrite(&avognum, sizeof(double), 1, f);
@@ -1128,7 +1132,6 @@ int main(void)
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
-  /*
   SetHardExit(0);
   SetErrorMessages(0);
 
@@ -1140,14 +1143,11 @@ int main(void)
 	for (j = K_SHELL ; j <= M5_SHELL ; j++)
 		Auger_Yields[i][j] = AugerYield_prdata(i, j);
   }
-  fprintf(f, "double Auger_Yields[ZMAX+1][SHELLNUM_A] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Yields);
-  fprintf(f, "double Auger_Rates[ZMAX+1][AUGERNUM] = {\n");
   PR_MATD(ZMAX+1, AUGERNUM, Auger_Rates);
 
   SetHardExit(1);
   SetErrorMessages(1);
-  */
 
   fclose(f);
 
