@@ -13,7 +13,13 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 public class xrlexample7 {
 	public static void main(String argv[]) {
-		Xraylib.XRayInit();
+		try {
+			Xraylib.XRayInit();
+		}
+		catch (Exception e){
+			e.printStackTrace();	
+			System.exit(1);
+		}
 		//xraylib.SetErrorMessages(0);
 //		xraylib.SetHardExit(1);
 		System.out.println("Example of java program using xraylib");
@@ -33,6 +39,15 @@ public class xrlexample7 {
 		/*System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
   		System.out.println("Fe partial photoionization cs of L3 at 6.0 keV: "+xraylib.CS_Photo_Partial(26,xraylib.L3_SHELL,(float) 6.0));*/
 		System.out.println("Zr L1 edge energy: " + Xraylib.EdgeEnergy(40, Xraylib.L1_SHELL) + " keV");
+		System.out.println("Fe atomic form factor: " + Xraylib.FF_Rayl(26, 1.0));
+		System.out.println("Ni scattering form factor: " + Xraylib.SF_Compt(28, 1.0));
+		System.out.println("Differential Thomson cross section at 45 deg: " + Xraylib.DCS_Thoms(45.0*Math.PI/180.0) + " cm2/g");
+		System.out.println("Differential Klein-Nishina cross section at 10 keV and 45 deg: " + Xraylib.DCS_KN(10.0, 45.0*Math.PI/180.0) + " cm2/g");
+		System.out.println("Differential Rayleigh cross section for Zn at 10 keV and 45 deg: " + Xraylib.DCS_Rayl(30, 10.0, 45.0*Math.PI/180.0) + " cm2/g");
+		System.out.println("Differential Compton cross section for Zn at 10 keV and 45 deg: " + Xraylib.DCS_Compt(30, 10.0, 45.0*Math.PI/180.0) + " cm2/g");
+		System.out.println("Moment transfer function at 10 keV and 45 deg: " + Xraylib.MomentTransf(10.0, 45.0*Math.PI/180.0));
+		System.out.println("Klein-Nishina cross section at 10 keV: " + Xraylib.CS_KN(10.0) + " cm2/g");
+		System.out.println("Photon energy after Compton scattering at 10 keV and 45 deg angle: " + Xraylib.ComptonEnergy(10.0, 45.0*Math.PI/180.0));
 		/*System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+xraylib.CS_FluorLine(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,(float) 20.0));
 		System.out.println("U M3O3 Fluorescence Line Energy: "+xraylib.LineEnergy(92,xraylib.M3O3_LINE));

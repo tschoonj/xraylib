@@ -70,7 +70,7 @@ public class Xraylib {
 
 
 
-  public static void XRayInit() {
+  public static void XRayInit() throws Exception {
     try {
       DataInputStream inputStream = new DataInputStream(Xraylib.class.getClassLoader().getResourceAsStream("xraylib.dat"));
       int bytes_total = inputStream.available();
@@ -82,6 +82,10 @@ public class Xraylib {
       SHELLNUM = byte_buffer.getInt();
       TRANSNUM = byte_buffer.getInt();
       LINENUM = byte_buffer.getInt();
+      RE2 = byte_buffer.getDouble();
+      MEC2 = byte_buffer.getDouble();
+      AVOGNUM = byte_buffer.getDouble();
+      KEV2ANGST = byte_buffer.getDouble();
       //System.out.println("ZMAX: " + ZMAX);
       //System.out.println("SHELLNUM: " + SHELLNUM);
       //System.out.println("TRANSNUM: " + TRANSNUM);
@@ -116,15 +120,35 @@ public class Xraylib {
       CS_Energy_arr = readDoubleArrayOfArrays(NE_Energy_arr, byte_buffer);
       CS_Energy_arr2 = readDoubleArrayOfArrays(NE_Energy_arr, byte_buffer);
 
+      Nq_Rayl_arr = readIntArray(ZMAX +1, byte_buffer);
+      q_Rayl_arr = readDoubleArrayOfArrays(Nq_Rayl_arr, byte_buffer);
+      FF_Rayl_arr = readDoubleArrayOfArrays(Nq_Rayl_arr, byte_buffer);
+      FF_Rayl_arr2 = readDoubleArrayOfArrays(Nq_Rayl_arr, byte_buffer);
+
+      Nq_Compt_arr = readIntArray(ZMAX +1, byte_buffer);
+      q_Compt_arr = readDoubleArrayOfArrays(Nq_Compt_arr, byte_buffer);
+      SF_Compt_arr = readDoubleArrayOfArrays(Nq_Compt_arr, byte_buffer);
+      SF_Compt_arr2 = readDoubleArrayOfArrays(Nq_Compt_arr, byte_buffer);
+
+      NE_Fi_arr = readIntArray(ZMAX +1, byte_buffer);
+      E_Fi_arr = readDoubleArrayOfArrays(NE_Fi_arr, byte_buffer);
+      Fi_arr = readDoubleArrayOfArrays(NE_Fi_arr, byte_buffer);
+      Fi_arr2 = readDoubleArrayOfArrays(NE_Fi_arr, byte_buffer);
+
+      NE_Fii_arr = readIntArray(ZMAX +1, byte_buffer);
+      E_Fii_arr = readDoubleArrayOfArrays(NE_Fii_arr, byte_buffer);
+      Fii_arr = readDoubleArrayOfArrays(NE_Fii_arr, byte_buffer);
+      Fii_arr2 = readDoubleArrayOfArrays(NE_Fii_arr, byte_buffer);
+
       //this should never happen!
       if (byte_buffer.hasRemaining()) {
         throw new RuntimeException("byte_buffer not empty when closing!");
       }
 
       inputStream.close();
-	  }
+    }
     catch (IOException | RuntimeException e ) {
-      e.printStackTrace();
+      throw new Exception(e.getMessage());
     }
   }
 
@@ -387,6 +411,135 @@ public class Xraylib {
     return CS_Photo(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
   }
 
+  public static double FF_Rayl(int Z, double q) {
+    double FF;
+
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (q == 0) return Z;
+
+    if (q < 0.) {
+      throw new XraylibException("q < 0 is not allowed");
+    }
+
+    FF = splint(q_Rayl_arr[Z], FF_Rayl_arr[Z], FF_Rayl_arr2[Z], Nq_Rayl_arr[Z], q);
+
+    return FF;
+  }
+
+
+  public static double SF_Compt(int Z, double q) {
+    double SF;
+
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (q <= 0.) {
+      throw new XraylibException("q <=0 is not allowed");
+    }
+
+    SF = splint(q_Compt_arr[Z], SF_Compt_arr[Z], SF_Compt_arr2[Z], Nq_Compt_arr[Z], q);
+
+    return SF;
+  }
+
+  public static double DCS_Thoms(double theta) { 
+    double cos_theta;
+
+    cos_theta = Math.cos(theta);
+
+    return (RE2/2.0) * (1.0 + cos_theta*cos_theta);
+  }
+
+  public static double  DCS_KN(double E, double theta) { 
+    double cos_theta, t1, t2;
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    cos_theta = Math.cos(theta);
+    t1 = (1.0 - cos_theta) * E / MEC2 ;
+    t2 = 1.0 + t1;
+  
+    return (RE2/2.) * (1.0 + cos_theta*cos_theta + t1*t1/t2) /t2 /t2;
+  }
+
+  public static double DCS_Rayl(int Z, double E, double theta) {
+    double F, q ;                                                      
+                                                        
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    q = MomentTransf(E, theta);
+    F = FF_Rayl(Z, q);
+    return  AVOGNUM / AtomicWeight_arr[Z] * F*F * DCS_Thoms(theta);
+  }
+
+  public static double DCS_Compt(int Z, double E, double theta) { 
+    double S, q ;                                                      
+                                                        
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    q = MomentTransf(E, theta);
+    S = SF_Compt(Z, q);
+    return  AVOGNUM / AtomicWeight_arr[Z] * S * DCS_KN(E, theta);
+  }
+
+  public static double MomentTransf(double E, double theta) {
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+  
+    return E / KEV2ANGST * Math.sin(theta / 2.0) ;
+  }
+
+  public static double CS_KN(double E) {
+    double a, a3, b, b2, lb;
+    double sigma;
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    a = E / MEC2;
+    a3 = a*a*a;
+    b = 1 + 2*a;
+    b2 = b*b;
+    lb = Math.log(b);
+
+    sigma = 2*Math.PI*RE2*( (1+a)/a3*(2*a*(1+a)/b-lb) + 0.5*lb/a - (1+3*a)/b2); 
+    return sigma;
+  }
+
+
+  public static double ComptonEnergy(double E0, double theta) {
+    double cos_theta, alpha;
+
+    if (E0 <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    cos_theta = Math.cos(theta);
+    alpha = E0/MEC2;
+
+    return E0 / (1 + alpha*(1 - cos_theta));
+  }
+
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
@@ -451,10 +604,34 @@ public class Xraylib {
   private static double[][] CS_Energy_arr;
   private static double[][] CS_Energy_arr2;
 
+  private static int[] Nq_Rayl_arr;
+  private static double[][] q_Rayl_arr;
+  private static double[][] FF_Rayl_arr;
+  private static double[][] FF_Rayl_arr2;
+
+  private static int[] Nq_Compt_arr;
+  private static double[][] q_Compt_arr;
+  private static double[][] SF_Compt_arr;
+  private static double[][] SF_Compt_arr2;
+
+  private static int[] NE_Fi_arr;
+  private static double[][] E_Fi_arr;
+  private static double[][] Fi_arr;
+  private static double[][] Fi_arr2;
+
+  private static int[] NE_Fii_arr;
+  private static double[][] E_Fii_arr;
+  private static double[][] Fii_arr;
+  private static double[][] Fii_arr2;
+
   public static int ZMAX;
   public static int SHELLNUM;
   public static int TRANSNUM;
   public static int LINENUM;
+  public static double RE2;
+  public static double MEC2;
+  public static double AVOGNUM;
+  public static double KEV2ANGST;
 
   public static final int K_SHELL = 0;
   public static final int L1_SHELL = 1;

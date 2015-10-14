@@ -1020,6 +1020,10 @@ int main(void)
   int shellnum = SHELLNUM;
   int transnum = TRANSNUM;
   int linenum = LINENUM;
+  double re2 = RE2;
+  double mec2 = MEC2;
+  double avognum = AVOGNUM;
+  double kev2angst = KEV2ANGST;
 
   XRayInit();
 
@@ -1039,6 +1043,10 @@ int main(void)
   fwrite(&shellnum, sizeof(int), 1, f);
   fwrite(&transnum, sizeof(int), 1, f);
   fwrite(&linenum, sizeof(int), 1, f);
+  fwrite(&re2, sizeof(double), 1, f);
+  fwrite(&mec2, sizeof(double), 1, f);
+  fwrite(&avognum, sizeof(double), 1, f);
+  fwrite(&kev2angst, sizeof(double), 1, f);
 
   /*
   fprintf(f, "#include \"xraylib-defs.h\"\n\n");
@@ -1115,7 +1123,7 @@ int main(void)
   PR_DYNMATD(NE_Energy, CS_Energy_arr, "CS_Energy_arr");
   PR_DYNMATD(NE_Energy, CS_Energy_arr2, "CS_Energy_arr2");
 
-  /*
+  
   PR_NUMVEC1D(Nq_Rayl, "Nq_Rayl");
   PR_DYNMATD(Nq_Rayl, q_Rayl_arr, "q_Rayl_arr");
   PR_DYNMATD(Nq_Rayl, FF_Rayl_arr, "FF_Rayl_arr");
@@ -1136,6 +1144,7 @@ int main(void)
   PR_DYNMATD(NE_Fii, Fii_arr, "Fii_arr");
   PR_DYNMATD(NE_Fii, Fii_arr2, "Fii_arr2");
 
+  /*
   fprintf(f, "double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
 
