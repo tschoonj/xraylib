@@ -20,9 +20,9 @@ public class xrlexample7 {
 			e.printStackTrace();	
 			System.exit(1);
 		}
-		//xraylib.SetErrorMessages(0);
-//		xraylib.SetHardExit(1);
-		System.out.println("Example of java program using xraylib");
+		//Xraylib.SetErrorMessages(0);
+//		Xraylib.SetHardExit(1);
+		System.out.println("Example of java program using Xraylib");
 		System.out.println("Atomic weight of Fe: "+Xraylib.AtomicWeight(26)+" g/mol");
 		System.out.println("Density of pure Al: "+Xraylib.ElementDensity(13)+" g/cm3");
 		System.out.println("Photoionization cs of Fe at 10.0 keV: "+Xraylib.CS_Photo(26, 10.0)+" cm2/g");
@@ -37,8 +37,6 @@ public class xrlexample7 {
 		System.out.println("M1->M5 Coster-Kronig transition probability for Au : "+Xraylib.CosKronTransProb(79,Xraylib.FM15_TRANS));
 		System.out.println("L1->L3 Coster-Kronig transition probability for Fe : "+Xraylib.CosKronTransProb(26,Xraylib.FL13_TRANS));
 		System.out.println("Bi M1N2 radiative rate: "+Xraylib.RadRate(83,Xraylib.M1N2_LINE));
-		/*System.out.println("Ca K-alpha Fluorescence Line Energy: "+xraylib.LineEnergy(20,xraylib.KA_LINE));
-		*/
 		System.out.println("Zr L1 edge energy: " + Xraylib.EdgeEnergy(40, Xraylib.L1_SHELL) + " keV");
 		System.out.println("Fe atomic form factor: " + Xraylib.FF_Rayl(26, 1.0));
 		System.out.println("Ni scattering form factor: " + Xraylib.SF_Compt(28, 1.0));
@@ -57,24 +55,26 @@ public class xrlexample7 {
 		System.out.println("M5 Partial Compton profile for Fe at pz = 1.1: "+Xraylib.ComptonProfile_Partial(26,Xraylib.M5_SHELL, 1.1));
 		System.out.println("Bi L2-M5M5 Auger non-radiative rate: "+Xraylib.AugerRate(86,Xraylib.L2_M5M5_AUGER));
 		System.out.println("Bi L3 Auger yield: "+Xraylib.AugerYield(86, Xraylib.L3_SHELL));
-		/*System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+xraylib.CS_FluorLine(82,xraylib.LA_LINE,(float) 20.0));
-		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(82,xraylib.LA_LINE,(float) 20.0));
-		System.out.println("U M3O3 Fluorescence Line Energy: "+xraylib.LineEnergy(92,xraylib.M3O3_LINE));
-		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
-		System.out.println("CS2 Refractive Index at 10.0 keV : "+xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
-		System.out.println("C16H14O3 Refractive Index at 1 keV : "+xraylib.Refractive_Index_Re("C16H14O3",(float) 1.0,(float) 1.2)+" - "+xraylib.Refractive_Index_Im("C16H14O3",(float) 1.0,(float) 1.2)+" i");
-		System.out.println("SiO2 Refractive Index at 5.0 keV : "+xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");
-		System.out.println("Au Ma1 XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MA1_LINE,(float) 10.0));
-		System.out.println("Au Mb XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MB_LINE,(float) 10.0));
-		System.out.println("Au Mg XRF production cs at 10.0 keV (Kissel): "+xraylib.CS_FluorLine_Kissel(79,xraylib.MG_LINE,(float) 10.0));
-		System.out.println("Pb Malpha XRF production cs at 20.0 keV with cascade effect: "+xraylib.CS_FluorLine_Kissel(82,xraylib.MA1_LINE,(float) 20.0));
-		System.out.println("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
-	System.out.println("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: "+xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
-		System.out.println("Pb Malpha XRF production cs at 20.0 keV without cascade effect: "+xraylib.CS_FluorLine_Kissel_no_Cascade(82,xraylib.MA1_LINE,(float) 20.0));
+		System.out.println("Ca K-alpha Fluorescence Line Energy: "+Xraylib.LineEnergy(20,Xraylib.KA_LINE));
+		System.out.println("U M3O3 Fluorescence Line Energy: "+Xraylib.LineEnergy(92,Xraylib.M3O3_LINE));
+                System.out.println("Pb Lalpha XRF production cs at 20.0 keV (jump approx): "+Xraylib.CS_FluorLine(82, Xraylib.LA_LINE, 20.0));
+		System.out.println("Pb Lalpha XRF production cs at 20.0 keV (Kissel): "+Xraylib.CS_FluorLine_Kissel(82, Xraylib.LA_LINE, 20.0));
+		System.out.println("Au Ma1 XRF production cs at 10.0 keV (Kissel): "+Xraylib.CS_FluorLine_Kissel(79,Xraylib.MA1_LINE,(float) 10.0));
+		System.out.println("Au Mb XRF production cs at 10.0 keV (Kissel): "+Xraylib.CS_FluorLine_Kissel(79,Xraylib.MB_LINE,(float) 10.0));
+		System.out.println("Au Mg XRF production cs at 10.0 keV (Kissel): "+Xraylib.CS_FluorLine_Kissel(79,Xraylib.MG_LINE,(float) 10.0));
+		System.out.println("Pb Malpha XRF production cs at 20.0 keV with cascade effect: "+Xraylib.CS_FluorLine_Kissel(82,Xraylib.MA1_LINE,(float) 20.0));
+		System.out.println("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: "+Xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82,Xraylib.MA1_LINE,(float) 20.0));
+	System.out.println("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: "+Xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82,Xraylib.MA1_LINE,(float) 20.0));
+		System.out.println("Pb Malpha XRF production cs at 20.0 keV without cascade effect: "+Xraylib.CS_FluorLine_Kissel_no_Cascade(82,Xraylib.MA1_LINE,(float) 20.0));
 
-		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ xraylib.CS_Energy(13, (float) 20.0));
-		System.out.println("Pb mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy(82, (float) 40.0));
-		System.out.println("CdTe mass energy-absorption cs at 40.0 keV: "+ xraylib.CS_Energy_CP("CdTe", (float) 40.0));
+		/*
+		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+Xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
+		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
+		System.out.println("C16H14O3 Refractive Index at 1 keV : "+Xraylib.Refractive_Index_Re("C16H14O3",(float) 1.0,(float) 1.2)+" - "+Xraylib.Refractive_Index_Im("C16H14O3",(float) 1.0,(float) 1.2)+" i");
+		System.out.println("SiO2 Refractive Index at 5.0 keV : "+Xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+Xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");
+		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ Xraylib.CS_Energy(13, (float) 20.0));
+		System.out.println("Pb mass energy-absorption cs at 40.0 keV: "+ Xraylib.CS_Energy(82, (float) 40.0));
+		System.out.println("CdTe mass energy-absorption cs at 40.0 keV: "+ Xraylib.CS_Energy_CP("CdTe", (float) 40.0));
 		*/
 		System.out.println("");
 		System.out.println("--------------------------- END OF XRLEXAMPLE7 -------------------------------");

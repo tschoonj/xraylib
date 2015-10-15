@@ -48,7 +48,7 @@ double JumpFactor(int Z, int shell)
   }
 
   jump_factor = JumpFactor_arr[Z][shell];
-  if (jump_factor < 0.) {
+  if (jump_factor <= 0.) {
     ErrorExit("Shell not available in function JumpFactor");
     return 0;
   }

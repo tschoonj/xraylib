@@ -47,7 +47,7 @@ double EdgeEnergy(int Z, int shell)
   }
   edge_energy = EdgeEnergy_arr[Z][shell];
 
-  if (edge_energy < 0.) {
+  if (edge_energy <= 0.) {
     ErrorExit("Shell not available in function EdgeEnergy");
     return 0;
   }
