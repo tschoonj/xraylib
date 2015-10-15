@@ -3919,6 +3919,133 @@ public class Xraylib {
     return line_energy;
   }
 
+  public static double CSb_Total(int Z, double E) {
+    return CS_Total(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double CSb_Photo(int Z, double E) {
+    return CS_Photo(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double CSb_Rayl(int Z, double E) {
+    return CS_Rayl(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double CSb_Compt(int Z, double E) {
+    return CS_Compt(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double CSb_FluorLine(int Z, int line, double E) {
+    return CS_FluorLine(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double DCSb_Rayl(int Z, double E, double theta) {
+    return DCS_Rayl(Z, E, theta)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double DCSb_Compt(int Z, double E, double theta) {
+    return DCS_Compt(Z, E, theta)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double DCSPb_Rayl(int Z, double E, double theta, double phi) {
+    return DCSP_Rayl(Z, E, theta, phi)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double DCSPb_Compt(int Z, double E, double theta, double phi) {
+    return DCSP_Compt(Z, E, theta, phi)*AtomicWeight_arr[Z]/AVOGNUM;
+  }
+
+  public static double Fi(int Z, double E) {
+    double fi;
+
+    if (Z<1 || Z>ZMAX || NE_Fi_arr[Z]<0) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    fi = splint(E_Fi_arr[Z], Fi_arr[Z], Fi_arr2[Z], NE_Fii_arr[Z], E);
+
+    return fi;
+  }
+
+  public static double Fii(int Z, double E) {
+    double fii;
+
+    if (Z<1 || Z>ZMAX || NE_Fii_arr[Z]<0) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    fii = splint(E_Fii_arr[Z], Fii_arr[Z], Fii_arr2[Z], NE_Fii_arr[Z], E);
+
+    return fii;
+  }
+
+  public static double DCSP_Rayl(int Z, double E, double theta, double phi) {
+    double F, q;                                                      
+                                                        
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    q = MomentTransf(E , theta);
+    F = FF_Rayl(Z, q);
+    return  AVOGNUM / AtomicWeight(Z) * F*F * DCSP_Thoms(theta, phi);
+  }
+
+  public static double DCSP_Compt(int Z, double E, double theta, double phi) { 
+    double S, q;                                                      
+                                                        
+    if (Z<1 || Z>ZMAX) {
+      throw new XraylibException("Z out of range");
+    }
+
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    q = MomentTransf(E, theta);
+    S = SF_Compt(Z, q);
+    return  AVOGNUM / AtomicWeight(Z) * S * DCSP_KN(E, theta, phi);
+  }
+
+  public static double DCSP_KN(double E, double theta, double phi) {
+    double k0_k, k_k0, k_k0_2, cos_th, sin_th, cos_phi;
+  
+    if (E <= 0.) {
+      throw new XraylibException("Energy <=0 is not allowed");
+    }
+
+    cos_th = Math.cos(theta);
+    sin_th = Math.sin(theta);
+    cos_phi = Math.cos(phi);
+  
+    k0_k = 1.0 + (1.0 - cos_th) * E / MEC2 ;
+    k_k0 = 1.0 / k0_k;
+    k_k0_2 = k_k0 * k_k0;
+  
+    return (RE2/2.) * k_k0_2 * (k_k0 + k0_k - 2 * sin_th * sin_th 
+			      * cos_phi * cos_phi);
+  } 
+
+  public static double DCSP_Thoms(double theta, double phi) {
+    double sin_th, cos_phi ;
+
+    sin_th = Math.sin(theta) ;
+    cos_phi = Math.cos(phi);
+    return RE2 * (1.0 - sin_th * sin_th * cos_phi * cos_phi);
+  }
+
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
