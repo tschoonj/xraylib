@@ -4046,6 +4046,26 @@ public class Xraylib {
     return RE2 * (1.0 - sin_th * sin_th * cos_phi * cos_phi);
   }
 
+  public static String AtomicNumberToSymbol(int Z) {
+    if (Z < 1 || Z > MendelArray.length) {
+      throw new XraylibException("Z out of range");
+    }
+
+    return MendelArray[Z];
+  }
+
+  public static int SymbolToAtomicNumber(String symbol) {
+    int i;
+
+    for (i=1 ; i < MendelArray.length ; i++) {
+      if (symbol == MendelArray[i]) {
+        return i;
+      }
+    }
+
+    throw new XraylibException("unknown symbol");
+  }
+
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
@@ -5654,4 +5674,21 @@ public class Xraylib {
   public static final int  M4_M5Q1_AUGER =  993;
   public static final int  M4_M5Q2_AUGER =  994;
   public static final int  M4_M5Q3_AUGER =  995;
+
+  private static final String[] MendelArray = { "",
+    "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne",
+    "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",
+    "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn",
+    "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr",
+    "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn",
+    "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd",
+    "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb",
+    "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg",
+    "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th",
+    "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm",
+    "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh"
+  };
+
+
+
 }

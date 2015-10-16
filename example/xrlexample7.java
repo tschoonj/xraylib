@@ -68,6 +68,8 @@ public class xrlexample7 {
 		System.out.println("Pb Malpha XRF production cs at 20.0 keV without cascade effect: "+Xraylib.CS_FluorLine_Kissel_no_Cascade(82,Xraylib.MA1_LINE,(float) 20.0));
 		System.out.println("Sr anomalous scattering factor Fi at 10.0 keV: " + Xraylib.Fi(38, 10.0));
 		System.out.println("Sr anomalous scattering factor Fii at 10.0 keV: " + Xraylib.Fii(38, 10.0));
+		System.out.println("Symbol of element 26 is: " + Xraylib.AtomicNumberToSymbol(26));
+		System.out.println("Number of element Fe is: " + Xraylib.SymbolToAtomicNumber("Fe"));
 		/*
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+Xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
