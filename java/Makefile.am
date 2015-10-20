@@ -24,8 +24,8 @@ prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-xraylib.jar: Xraylib.class XraylibException.class xraylib.dat
-	jar cf xraylib.jar Xraylib.class XraylibException.class compoundData.class xraylib.dat
+xraylib.jar: xraylib.dat Xraylib.class XraylibException.class compoundData.class
+	jar cf xraylib.jar xraylib.dat *.class 
 
 xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)

@@ -4058,12 +4058,16 @@ public class Xraylib {
     int i;
 
     for (i=1 ; i < MendelArray.length ; i++) {
-      if (symbol == MendelArray[i]) {
+      if (symbol.equals(MendelArray[i])) {
         return i;
       }
     }
 
     throw new XraylibException("unknown symbol");
+  }
+
+  public static compoundData CompoundParser(String compoundString) {
+    return new compoundData(compoundString);
   }
 
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {

@@ -70,6 +70,10 @@ public class xrlexample7 {
 		System.out.println("Sr anomalous scattering factor Fii at 10.0 keV: " + Xraylib.Fii(38, 10.0));
 		System.out.println("Symbol of element 26 is: " + Xraylib.AtomicNumberToSymbol(26));
 		System.out.println("Number of element Fe is: " + Xraylib.SymbolToAtomicNumber("Fe"));
+		System.out.println(Xraylib.CompoundParser("Ca(HCO3)2"));
+		System.out.println(Xraylib.CompoundParser("SiO2"));
+		System.out.println(Xraylib.CompoundParser("Ca5(PO4)OH"));
+		System.out.println(Xraylib.CompoundParser("Fe0.6Mn0.4SiO3"));
 		/*
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+Xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");

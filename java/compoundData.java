@@ -12,17 +12,27 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 */
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Locale.Category;
 import java.lang.Double;
 
 public class compoundData {
-  public int nElements;
-  public double nAtomsAll;
-  public int[] Elements;
-  public double[] massFractions;  
-  
+  public final int nElements;
+  public final double nAtomsAll;
+  public final int[] Elements;
+  public final double[] massFractions;  
+  private final String compoundString;
+  private final String formattedCompoundString;
+ 
+  @Override
+  public String toString() {
+    return formattedCompoundString;
+  }
+ 
   public compoundData(String compoundString) {
+    this.compoundString = compoundString;
     ArrayList<compoundAtom> ca = new ArrayList<>();
    
     Locale old_locale = Locale.getDefault(Locale.Category.FORMAT); 
@@ -30,16 +40,41 @@ public class compoundData {
 
     try {
       CompoundParserSimple(compoundString, ca);
+      Collections.sort(ca, new compoundAtomComparator());
+      nElements = ca.size();
+      double nAtomsAll= 0.0;
+      Elements = new int[nElements];
+      massFractions = new double[nElements];
+
+      double sum = 0.0;
+
+      for (compoundAtom cas : ca) {
+        sum += Xraylib.AtomicWeight(cas.Element)*cas.nAtoms;	
+        nAtomsAll+= cas.nAtoms; 
+      }
+
+      String formattedCompoundString = String.format("%s contains %g atoms and %d elements\n", compoundString, nAtomsAll, nElements);
+
+      for (int i = 0 ; i < nElements ; i++) {
+        Elements[i] = ca.get(i).Element;
+        massFractions[i] = Xraylib.AtomicWeight(ca.get(i).Element)*ca.get(i).nAtoms/sum;
+        formattedCompoundString += String.format("Element %d: %f %%\n", Elements[i], massFractions[i]*100.0);
+      }
+      this.nAtomsAll = nAtomsAll;
+      this.formattedCompoundString = formattedCompoundString;
     }
     catch (XraylibException e) {
-      throw new XraylibException(e.getMessage());
+      throw e;
     }
-
-    Locale.setDefault(Locale.Category.FORMAT, old_locale);
+    finally {
+      Locale.setDefault(Locale.Category.FORMAT, old_locale);
+    }
   }
 
   private static void CompoundParserSimple(String compoundString, ArrayList<compoundAtom> ca) {
-    char[] csa = compoundString.toCharArray();
+    //the %% is added to allow checking characters after the end of the compoundString
+    //the C-version relies on the null char for this
+    char[] csa = (compoundString+"%%").toCharArray();
     int nbrackets=0;
     int nuppers=0;
     int i,j;
@@ -62,7 +97,8 @@ public class compoundData {
       throw new XraylibException("invalid chemical formula. Found a lowercase character or digit where not allowed");
     }
 
-    for (i = 0 ; i < csa.length ; i++) {
+    // the -2 is necessary to avoid evaluating the %% in the compoundString
+    for (i = 0 ; i < csa.length-2 ; i++) {
       if (csa[i] == '(') {
         nbrackets++;
         if (nbrackets == 1) {
@@ -127,6 +163,7 @@ public class compoundData {
             ndots++;
           }
         }
+        
         if (ndots > 1) {
           throw new XraylibException("only one dot allowed in subscripts of the chemical formula");
         }
@@ -168,6 +205,7 @@ public class compoundData {
             ndots++;
           }
         }
+ 
         if (ndots > 1) {
 	  throw new XraylibException("only one dot allowed in subscripts of the chemical formula");
         }
@@ -216,7 +254,8 @@ public class compoundData {
       /*check if the brackets pair is followed by a subscript */
       j=1;
       ndots=0;
-      while (isDigit(csa[brackets_end_locs.get(i)+j]) || csa[brackets_end_locs.get(i)+j] == '.') {
+      while (Character.isDigit(csa[brackets_end_locs.get(i)+j]) ||
+             csa[brackets_end_locs.get(i)+j] == '.') {
         j++;
         if (csa[brackets_end_locs.get(i)+j] == '.') {
           ndots++;
@@ -229,7 +268,7 @@ public class compoundData {
         tempnAtoms = 1.0;				
       }
       else {
-        tempSubstring = compoundString.substring(upper_locs.get(i)+1, upper_locs.get(i)+1+j-1);
+        tempSubstring = compoundString.substring(brackets_end_locs.get(i)+1, brackets_end_locs.get(i)+1+j-1);
         try {
           tempnAtoms = Double.parseDouble(tempSubstring);
         }
@@ -243,46 +282,35 @@ public class compoundData {
         }
       }
 
-		/*add them to the array... */
-		if (ca->nElements == 0) {
-			/*array is empty */
-			ca->nElements = tempBracketAtoms->nElements;
-			ca->singleElements = tempBracketAtoms->singleElements;
-			for (j = 0 ; j < ca->nElements ; j++) 
-				ca->singleElements[j].nAtoms *= tempnAtoms;
-		}
-		else {
-			for (j = 0 ; j < tempBracketAtoms->nElements ; j++) {
-				key2.Element = tempBracketAtoms->singleElements[j].Element;
-				res2 = bsearch(&key2,ca->singleElements,ca->nElements,sizeof(struct compoundAtom),compareCompoundAtoms);
-				if (res2 == NULL) {
-					/*element not in array -> add it */
-					ca->singleElements = (struct compoundAtom *) realloc((struct compoundAtom *) ca->singleElements,(++ca->nElements)*sizeof(struct compoundAtom));
-					ca->singleElements[ca->nElements-1].Element = key2.Element; 
-					ca->singleElements[ca->nElements-1].nAtoms = tempBracketAtoms->singleElements[j].nAtoms*tempnAtoms; 
-					/*sort array */
-					qsort(ca->singleElements,ca->nElements,sizeof(struct compoundAtom), compareCompoundAtoms);
-				}
-				else {
-					/*element is in array -> update it */
-					res2->nAtoms +=tempBracketAtoms->singleElements[j].nAtoms*tempnAtoms;
-				}
-			}
-			free(tempBracketAtoms->singleElements);
-			free(tempBracketAtoms);
-		}
-	} 	
-
-
+      /*add them to the array... */
+      for (j = 0 ; j < tempBracketAtoms.size() ; j++) {
+        try {
+          res2 = ca.get(ca.indexOf(new compoundAtom(tempBracketAtoms.get(j).Element, 0.0)));
+          res2.nAtoms += tempBracketAtoms.get(j).nAtoms*tempnAtoms;
+        }
+        catch (IndexOutOfBoundsException e) {
+          /*element not in array -> add it */
+          ca.add(new compoundAtom(tempBracketAtoms.get(j).Element, tempBracketAtoms.get(j).nAtoms*tempnAtoms));
+        }
+      }
+    }
   }
 
-  static class compoundAtom {
+  static class compoundAtomComparator implements Comparator<compoundAtom> {
+    @Override
+    public int compare(compoundAtom ca1, compoundAtom ca2) {
+      return ca1.Element - ca2.Element;
+    }
+  }
+
+  static class compoundAtom  {
     int Element;
     double nAtoms;
     public compoundAtom(int Element, double nAtoms) {
       this.Element = Element;
       this.nAtoms = nAtoms;
-    } 
+    }
+
     @Override
     public boolean equals(Object object2) {
       if (object2 == null) {
@@ -300,19 +328,4 @@ public class compoundData {
       return false; 
     }
   } 
-
-  private static final String[] MendelArray = { "",
-    "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne",
-    "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",
-    "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn",
-    "Ga", "Ge", "As", "Se", "Br", "Kr", "Rb", "Sr", "Y", "Zr",
-    "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn",
-    "Sb", "Te", "I", "Xe", "Cs", "Ba", "La", "Ce", "Pr", "Nd",
-    "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb",
-    "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg",
-    "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra", "Ac", "Th",
-    "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm",
-    "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh"
-  };
-
 }
