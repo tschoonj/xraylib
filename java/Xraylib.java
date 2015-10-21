@@ -18,7 +18,18 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.lang.Math;
 
+
 public class Xraylib {
+
+  static {
+    try {
+      XRayInit();
+    }
+    catch (Exception e){
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
 
   private static double[][][] readDoubleArrayOfArraysOfArrays(int[][] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
     double[][][] rv = new double[N.length][][];
@@ -93,7 +104,7 @@ public class Xraylib {
     return rv;
   } 
 
-  public static void XRayInit() throws Exception {
+  private static void XRayInit() throws Exception {
     try {
       DataInputStream inputStream = new DataInputStream(Xraylib.class.getClassLoader().getResourceAsStream("xraylib.dat"));
       int bytes_total = inputStream.available();

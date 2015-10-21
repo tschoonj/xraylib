@@ -13,13 +13,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 public class xrlexample7 {
 	public static void main(String argv[]) {
-		try {
-			Xraylib.XRayInit();
-		}
-		catch (Exception e){
-			e.printStackTrace();	
-			System.exit(1);
-		}
 		//Xraylib.SetErrorMessages(0);
 //		Xraylib.SetHardExit(1);
 		System.out.println("Example of java program using Xraylib");
