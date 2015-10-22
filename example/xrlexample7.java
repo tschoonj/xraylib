@@ -67,6 +67,31 @@ public class xrlexample7 {
 		System.out.println(Xraylib.CompoundParser("SiO2"));
 		System.out.println(Xraylib.CompoundParser("Ca5(PO4)OH"));
 		System.out.println(Xraylib.CompoundParser("Fe0.6Mn0.4SiO3"));
+		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CS_Total_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Total_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Rayleigh cs of SiO2 at 10.0 keV: "+Xraylib.CS_Rayl_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Rayleigh cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Rayl_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Compton cs of SiO2 at 10.0 keV: "+Xraylib.CS_Compt_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Compton cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Compt_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Photoionization cs of SiO2 at 10.0 keV: "+Xraylib.CS_Photo_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Photoionization cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Photo_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCS_Rayl_CP("SiO2", 10.0, Math.PI/4.0)+" cm2/g/sterad");
+		System.out.println("Differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCSb_Rayl_CP("SiO2", 10.0, Math.PI/4.0)+" barns/atom/sterad");
+		System.out.println("Differential Compton cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCS_Compt_CP("SiO2", 10.0, Math.PI/4.0)+" cm2/g/sterad");
+		System.out.println("Differential Compton cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCSb_Compt_CP("SiO2", 10.0, Math.PI/4.0)+" barns/atom/sterad");
+		System.out.println("Polarized differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSP_Rayl_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" cm2/g/sterad");
+		System.out.println("Polarized differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSPb_Rayl_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" barns/atom/sterad");
+		System.out.println("Polarized differential Compton cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSP_Compt_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" cm2/g/sterad");
+		System.out.println("Polarized differential Compton cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSPb_Compt_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" barns/atom/sterad");
+
+		try {
+			// the following line should throw an exception
+			double testvalue = Xraylib.DCSb_Compt_CP("SiO2)", 10.0, Math.PI/4.0);
+			System.exit(1);
+		}
+		catch (XraylibException e) {}
+
+
 		/*
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+Xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");

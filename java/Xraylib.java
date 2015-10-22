@@ -17,6 +17,9 @@ import java.nio.ByteBuffer;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.lang.Math;
+import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 
 public class Xraylib {
@@ -4079,6 +4082,125 @@ public class Xraylib {
 
   public static compoundData CompoundParser(String compoundString) {
     return new compoundData(compoundString);
+  }
+
+  public static double CS_Total_CP(String compound, double energy) {
+    return call_function_CP("CS_Total", compound, energy);
+  }
+
+  public static double CS_Total_Kissel_CP(String compound, double energy) {
+    return call_function_CP("CS_Total_Kissel", compound, energy);
+  }
+
+  public static double CS_Rayl_CP(String compound, double energy) {
+    return call_function_CP("CS_Rayl", compound, energy);
+  }
+
+  public static double CS_Compt_CP(String compound, double energy) {
+    return call_function_CP("CS_Compt", compound, energy);
+  }
+
+  public static double CS_Photo_CP(String compound, double energy) {
+    return call_function_CP("CS_Photo", compound, energy);
+  }
+
+  public static double CS_Photo_Total_CP(String compound, double energy) {
+    return call_function_CP("CS_Photo_Total", compound, energy);
+  }
+
+  public static double CSb_Total_CP(String compound, double energy) {
+    return call_function_CP("CSb_Total", compound, energy);
+  }
+
+  public static double CSb_Total_Kissel_CP(String compound, double energy) {
+    return call_function_CP("CSb_Total_Kissel", compound, energy);
+  }
+
+  public static double CSb_Rayl_CP(String compound, double energy) {
+    return call_function_CP("CSb_Rayl", compound, energy);
+  }
+
+  public static double CSb_Compt_CP(String compound, double energy) {
+    return call_function_CP("CSb_Compt", compound, energy);
+  }
+
+  public static double CSb_Photo_CP(String compound, double energy) {
+    return call_function_CP("CSb_Photo", compound, energy);
+  }
+
+  public static double CSb_Photo_Total_CP(String compound, double energy) {
+    return call_function_CP("CSb_Photo_Total", compound, energy);
+  }
+
+  public static double DCS_Rayl_CP(String compound, double energy, double theta) {
+    return call_function_CP("DCS_Rayl", compound, energy, theta);
+  }
+
+  public static double DCS_Compt_CP(String compound, double energy, double theta) {
+    return call_function_CP("DCS_Compt", compound, energy, theta);
+  }
+
+  public static double DCSb_Rayl_CP(String compound, double energy, double theta) {
+    return call_function_CP("DCSb_Rayl", compound, energy, theta);
+  }
+
+  public static double DCSb_Compt_CP(String compound, double energy, double theta) {
+    return call_function_CP("DCSb_Compt", compound, energy, theta);
+  }
+
+  public static double DCSP_Rayl_CP(String compound, double energy, double theta, double phi) {
+    return call_function_CP("DCSP_Rayl", compound, energy, theta, phi);
+  }
+
+  public static double DCSP_Compt_CP(String compound, double energy, double theta, double phi) {
+    return call_function_CP("DCSP_Compt", compound, energy, theta, phi);
+  }
+
+  public static double DCSPb_Rayl_CP(String compound, double energy, double theta, double phi) {
+    return call_function_CP("DCSPb_Rayl", compound, energy, theta, phi);
+  }
+
+  public static double DCSPb_Compt_CP(String compound, double energy, double theta, double phi) {
+    return call_function_CP("DCSPb_Compt", compound, energy, theta, phi);
+  }
+
+  private static double call_function_CP(String function_name, String compound, Object... args) {
+    try {
+      //Method method = Xraylib.class.getMethod(function_name, new Class[] {Integer.TYPE, Double.TYPE});
+      Method[] methods = Xraylib.class.getMethods();
+      Method our_method = null;
+      for (Method method : methods) {
+        if (method.getName().equals(function_name)) {
+          our_method = method;
+          break;
+        }
+      }
+
+      if (our_method == null) {
+        throw new NoSuchMethodException();
+      }
+
+      compoundData cd = CompoundParser(compound);
+
+      double rv = 0.0;
+
+      for (int i = 0 ; i < cd.nElements ; i++) {
+        ArrayList<Object> new_args = new ArrayList<>();
+        new_args.add(cd.Elements[i]);
+        for (Object arg : args) {
+          new_args.add(arg);
+        }
+        rv += cd.massFractions[i] * (Double) our_method.invoke(null, new_args.toArray());
+      }
+
+      return rv;
+    }
+    catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+      throw new XraylibException("call_function_CP could not find requested function");
+    }
+    catch (XraylibException e) {
+      throw e;
+    }
   }
 
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
