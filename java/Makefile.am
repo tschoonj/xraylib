@@ -17,14 +17,14 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/
 #java bindings for xraylib
 xrljavadir = $(prefix)/share/xraylib/java
 xrljava_DATA = xraylib.jar
-dist_xrljava_JAVA = Xraylib.java XraylibException.java compoundData.java
+dist_xrljava_JAVA = Xraylib.java XraylibException.java compoundData.java compoundDataNIST.java
 
 noinst_PROGRAMS = prdata_java
 prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-xraylib.jar: xraylib.dat xraylib/Xraylib.class xraylib/XraylibException.class xraylib/compoundData.class
+xraylib.jar: xraylib.dat xraylib/Xraylib.class xraylib/XraylibException.class xraylib/compoundData.class xraylib/compoundDataNIST.class
 	jar cf xraylib.jar xraylib.dat xraylib 
 
 xraylib.dat: prdata_java$(EXEEXT)

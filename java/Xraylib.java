@@ -22,6 +22,8 @@ import java.lang.Math;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
 
 
 public class Xraylib {
@@ -36,7 +38,23 @@ public class Xraylib {
     }
   }
 
-  private static double[][][] readDoubleArrayOfArraysOfArrays(int[][] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
+  protected static String readString(ByteBuffer byte_buffer) {
+    ArrayList<Byte> al = new ArrayList<>();
+    while (true) {
+      byte my_char = byte_buffer.get();
+      if (my_char == 0)
+        break;
+      al.add(my_char);
+    }
+    byte[] temp = new byte[al.size()];
+    Iterator<Byte> iterator = al.iterator();
+    for (int i = 0 ; i < temp.length ; i++) {
+      temp[i] = iterator.next().byteValue();
+    }
+    return new String(temp, StandardCharsets.US_ASCII);
+  }
+
+  protected static double[][][] readDoubleArrayOfArraysOfArrays(int[][] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
     double[][][] rv = new double[N.length][][];
 
     for (int i = 0 ; i < N.length ; i++) {
@@ -46,7 +64,7 @@ public class Xraylib {
     return rv;
   }
 
-  private static double[][] readDoubleArrayOfArrays(int[] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
+  protected static double[][] readDoubleArrayOfArrays(int[] N, ByteBuffer byte_buffer) throws BufferUnderflowException {
     double [][] rv = new double[N.length][];
 
     for (int i = 0 ; i < N.length ; i++) {
@@ -60,7 +78,7 @@ public class Xraylib {
     return rv;
   }
 
-  private static double[] readDoubleArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
+  protected static double[] readDoubleArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
     //System.out.println("readDoubleArray n: " + n);
 
     double[] rv = new double[n];
@@ -78,7 +96,7 @@ public class Xraylib {
     return rv;
   }
 
-  private static int[] readIntArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
+  protected static int[] readIntArray(int n, ByteBuffer byte_buffer) throws BufferUnderflowException {
     int[] rv = new int[n];
 
     for (int i = 0 ; i < n ; i++) {
@@ -94,7 +112,7 @@ public class Xraylib {
     return rv;
   }
 
-  private static int[][] arrayReshape(int[] array, int m, int n) {
+  protected static int[][] arrayReshape(int[] array, int m, int n) {
     if (m*n != array.length)
       throw new RuntimeException("new array dimensions incompatible with old ones");
 
@@ -232,6 +250,12 @@ public class Xraylib {
 
       Auger_Yields_arr = readDoubleArray((ZMAX + 1)*SHELLNUM_A, byte_buffer);
       Auger_Rates_arr = readDoubleArray((ZMAX + 1)*AUGERNUM, byte_buffer);
+
+      int nCompoundDataNISTList = byte_buffer.getInt();
+      compoundDataNISTList = new compoundDataNIST[nCompoundDataNISTList];
+      for (int i = 0 ; i < nCompoundDataNISTList ; i++) {
+        compoundDataNISTList[i] = new compoundDataNIST(byte_buffer);
+      }
 
       //this should never happen!
       if (byte_buffer.hasRemaining()) {
@@ -4167,10 +4191,10 @@ public class Xraylib {
   }
 
   private static double call_function_CP(String function_name, String compound, Object... args) {
+    Method our_method = null;
     try {
       //Method method = Xraylib.class.getMethod(function_name, new Class[] {Integer.TYPE, Double.TYPE});
       Method[] methods = Xraylib.class.getMethods();
-      Method our_method = null;
       for (Method method : methods) {
         if (method.getName().equals(function_name)) {
           our_method = method;
@@ -4181,30 +4205,79 @@ public class Xraylib {
       if (our_method == null) {
         throw new NoSuchMethodException();
       }
-
-      compoundData cd = CompoundParser(compound);
-
-      double rv = 0.0;
-
-      for (int i = 0 ; i < cd.nElements ; i++) {
-        ArrayList<Object> new_args = new ArrayList<>();
-        new_args.add(cd.Elements[i]);
-        for (Object arg : args) {
-          new_args.add(arg);
-        }
-        rv += cd.massFractions[i] * (Double) our_method.invoke(null, new_args.toArray());
-      }
-
-      return rv;
     }
-    catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+    catch (NoSuchMethodException e) {
       throw new XraylibException("call_function_CP could not find requested function");
     }
-    catch (XraylibException e) {
-      throw e;
+
+    int[] Elements;
+    double[] massFractions;
+    compoundDataNIST cdn = null;
+    compoundData cd = null;
+
+    try {
+      cdn = GetCompoundDataNISTByName(compound);
+      Elements = cdn.Elements;
+      massFractions = cdn.massFractions;
     }
+    catch (XraylibException e) {
+      //not NIST, lets see if it's a chemical formula
+      try {
+        cd = CompoundParser(compound);
+        Elements = cd.Elements;
+        massFractions = cd.massFractions;
+      }
+      catch (XraylibException e2) {
+        //not a chemical formula either...
+        throw new XraylibException("compound not found in NIST database and not a valid chemical formula");
+      }
+    }
+
+    double rv = 0.0;
+
+    for (int i = 0 ; i < Elements.length ; i++) {
+      ArrayList<Object> new_args = new ArrayList<>();
+      new_args.add(Elements[i]);
+      for (Object arg : args) {
+        new_args.add(arg);
+      }
+      try {
+        rv += massFractions[i] * (Double) our_method.invoke(null, new_args.toArray());
+      }
+      catch (IllegalAccessException | InvocationTargetException e) {
+        throw new XraylibException("call_function_CP could not call requested function");
+      }
+    }
+
+    return rv;
   }
 
+
+  public static compoundDataNIST GetCompoundDataNISTByName(String compoundString) {
+    for (compoundDataNIST cdn : compoundDataNISTList) {
+      if (cdn.name.equals(compoundString))
+        return new compoundDataNIST(cdn);
+    }
+    throw new XraylibException("compound not available in NIST database");
+  }
+
+  public static compoundDataNIST GetCompoundDataNISTByIndex(int compoundIndex) {
+    if (compoundIndex < 0 || compoundIndex >= compoundDataNISTList.length) {
+      throw new XraylibException("compound not available in NIST database");
+    }
+    return new compoundDataNIST(compoundDataNISTList[compoundIndex]);
+  }
+ 
+  
+  public static String[] GetCompoundDataNISTList() {
+    String[] rv = new String[compoundDataNISTList.length];
+    int i = 0;
+    for (compoundDataNIST cdn : compoundDataNISTList) {
+      rv[i++] = new String(cdn.name);
+    }
+    return rv;
+  }
+ 
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
@@ -4313,6 +4386,8 @@ public class Xraylib {
 
   private static double[] Auger_Yields_arr;
   private static double[] Auger_Rates_arr;
+
+  private static compoundDataNIST[] compoundDataNISTList;
 
   public static int ZMAX;
   public static int SHELLNUM;
@@ -5813,6 +5888,187 @@ public class Xraylib {
   public static final int  M4_M5Q1_AUGER =  993;
   public static final int  M4_M5Q2_AUGER =  994;
   public static final int  M4_M5Q3_AUGER =  995;
+
+  public static final int NIST_COMPOUND_A_150_TISSUE_EQUIVALENT_PLASTIC = 0;
+  public static final int NIST_COMPOUND_ACETONE = 1;
+  public static final int NIST_COMPOUND_ACETYLENE = 2;
+  public static final int NIST_COMPOUND_ADENINE = 3;
+  public static final int NIST_COMPOUND_ADIPOSE_TISSUE_ICRP = 4;
+  public static final int NIST_COMPOUND_AIR_DRY_NEAR_SEA_LEVEL = 5;
+  public static final int NIST_COMPOUND_ALANINE = 6;
+  public static final int NIST_COMPOUND_ALUMINUM_OXIDE = 7;
+  public static final int NIST_COMPOUND_AMBER = 8;
+  public static final int NIST_COMPOUND_AMMONIA = 9;
+  public static final int NIST_COMPOUND_ANILINE = 10;
+  public static final int NIST_COMPOUND_ANTHRACENE = 11;
+  public static final int NIST_COMPOUND_B_100_BONE_EQUIVALENT_PLASTIC = 12;
+  public static final int NIST_COMPOUND_BAKELITE = 13;
+  public static final int NIST_COMPOUND_BARIUM_FLUORIDE = 14;
+  public static final int NIST_COMPOUND_BARIUM_SULFATE = 15;
+  public static final int NIST_COMPOUND_BENZENE = 16;
+  public static final int NIST_COMPOUND_BERYLLIUM_OXIDE = 17;
+  public static final int NIST_COMPOUND_BISMUTH_GERMANIUM_OXIDE = 18;
+  public static final int NIST_COMPOUND_BLOOD_ICRP = 19;
+  public static final int NIST_COMPOUND_BONE_COMPACT_ICRU = 20;
+  public static final int NIST_COMPOUND_BONE_CORTICAL_ICRP = 21;
+  public static final int NIST_COMPOUND_BORON_CARBIDE = 22;
+  public static final int NIST_COMPOUND_BORON_OXIDE = 23;
+  public static final int NIST_COMPOUND_BRAIN_ICRP = 24;
+  public static final int NIST_COMPOUND_BUTANE = 25;
+  public static final int NIST_COMPOUND_N_BUTYL_ALCOHOL = 26;
+  public static final int NIST_COMPOUND_C_552_AIR_EQUIVALENT_PLASTIC = 27;
+  public static final int NIST_COMPOUND_CADMIUM_TELLURIDE = 28;
+  public static final int NIST_COMPOUND_CADMIUM_TUNGSTATE = 29;
+  public static final int NIST_COMPOUND_CALCIUM_CARBONATE = 30;
+  public static final int NIST_COMPOUND_CALCIUM_FLUORIDE = 31;
+  public static final int NIST_COMPOUND_CALCIUM_OXIDE = 32;
+  public static final int NIST_COMPOUND_CALCIUM_SULFATE = 33;
+  public static final int NIST_COMPOUND_CALCIUM_TUNGSTATE = 34;
+  public static final int NIST_COMPOUND_CARBON_DIOXIDE = 35;
+  public static final int NIST_COMPOUND_CARBON_TETRACHLORIDE = 36;
+  public static final int NIST_COMPOUND_CELLULOSE_ACETATE_CELLOPHANE = 37;
+  public static final int NIST_COMPOUND_CELLULOSE_ACETATE_BUTYRATE = 38;
+  public static final int NIST_COMPOUND_CELLULOSE_NITRATE = 39;
+  public static final int NIST_COMPOUND_CERIC_SULFATE_DOSIMETER_SOLUTION = 40;
+  public static final int NIST_COMPOUND_CESIUM_FLUORIDE = 41;
+  public static final int NIST_COMPOUND_CESIUM_IODIDE = 42;
+  public static final int NIST_COMPOUND_CHLOROBENZENE = 43;
+  public static final int NIST_COMPOUND_CHLOROFORM = 44;
+  public static final int NIST_COMPOUND_CONCRETE_PORTLAND = 45;
+  public static final int NIST_COMPOUND_CYCLOHEXANE = 46;
+  public static final int NIST_COMPOUND_12_DDIHLOROBENZENE = 47;
+  public static final int NIST_COMPOUND_DICHLORODIETHYL_ETHER = 48;
+  public static final int NIST_COMPOUND_12_DICHLOROETHANE = 49;
+  public static final int NIST_COMPOUND_DIETHYL_ETHER = 50;
+  public static final int NIST_COMPOUND_NN_DIMETHYL_FORMAMIDE = 51;
+  public static final int NIST_COMPOUND_DIMETHYL_SULFOXIDE = 52;
+  public static final int NIST_COMPOUND_ETHANE = 53;
+  public static final int NIST_COMPOUND_ETHYL_ALCOHOL = 54;
+  public static final int NIST_COMPOUND_ETHYL_CELLULOSE = 55;
+  public static final int NIST_COMPOUND_ETHYLENE = 56;
+  public static final int NIST_COMPOUND_EYE_LENS_ICRP = 57;
+  public static final int NIST_COMPOUND_FERRIC_OXIDE = 58;
+  public static final int NIST_COMPOUND_FERROBORIDE = 59;
+  public static final int NIST_COMPOUND_FERROUS_OXIDE = 60;
+  public static final int NIST_COMPOUND_FERROUS_SULFATE_DOSIMETER_SOLUTION = 61;
+  public static final int NIST_COMPOUND_FREON_12 = 62;
+  public static final int NIST_COMPOUND_FREON_12B2 = 63;
+  public static final int NIST_COMPOUND_FREON_13 = 64;
+  public static final int NIST_COMPOUND_FREON_13B1 = 65;
+  public static final int NIST_COMPOUND_FREON_13I1 = 66;
+  public static final int NIST_COMPOUND_GADOLINIUM_OXYSULFIDE = 67;
+  public static final int NIST_COMPOUND_GALLIUM_ARSENIDE = 68;
+  public static final int NIST_COMPOUND_GEL_IN_PHOTOGRAPHIC_EMULSION = 69;
+  public static final int NIST_COMPOUND_GLASS_PYREX = 70;
+  public static final int NIST_COMPOUND_GLASS_LEAD = 71;
+  public static final int NIST_COMPOUND_GLASS_PLATE = 72;
+  public static final int NIST_COMPOUND_GLUCOSE = 73;
+  public static final int NIST_COMPOUND_GLUTAMINE = 74;
+  public static final int NIST_COMPOUND_GLYCEROL = 75;
+  public static final int NIST_COMPOUND_GUANINE = 76;
+  public static final int NIST_COMPOUND_GYPSUM_PLASTER_OF_PARIS = 77;
+  public static final int NIST_COMPOUND_N_HEPTANE = 78;
+  public static final int NIST_COMPOUND_N_HEXANE = 79;
+  public static final int NIST_COMPOUND_KAPTON_POLYIMIDE_FILM = 80;
+  public static final int NIST_COMPOUND_LANTHANUM_OXYBROMIDE = 81;
+  public static final int NIST_COMPOUND_LANTHANUM_OXYSULFIDE = 82;
+  public static final int NIST_COMPOUND_LEAD_OXIDE = 83;
+  public static final int NIST_COMPOUND_LITHIUM_AMIDE = 84;
+  public static final int NIST_COMPOUND_LITHIUM_CARBONATE = 85;
+  public static final int NIST_COMPOUND_LITHIUM_FLUORIDE = 86;
+  public static final int NIST_COMPOUND_LITHIUM_HYDRIDE = 87;
+  public static final int NIST_COMPOUND_LITHIUM_IODIDE = 88;
+  public static final int NIST_COMPOUND_LITHIUM_OXIDE = 89;
+  public static final int NIST_COMPOUND_LITHIUM_TETRABORATE = 90;
+  public static final int NIST_COMPOUND_LUNG_ICRP = 91;
+  public static final int NIST_COMPOUND_M3_WAX = 92;
+  public static final int NIST_COMPOUND_MAGNESIUM_CARBONATE = 93;
+  public static final int NIST_COMPOUND_MAGNESIUM_FLUORIDE = 94;
+  public static final int NIST_COMPOUND_MAGNESIUM_OXIDE = 95;
+  public static final int NIST_COMPOUND_MAGNESIUM_TETRABORATE = 96;
+  public static final int NIST_COMPOUND_MERCURIC_IODIDE = 97;
+  public static final int NIST_COMPOUND_METHANE = 98;
+  public static final int NIST_COMPOUND_METHANOL = 99;
+  public static final int NIST_COMPOUND_MIX_D_WAX = 100;
+  public static final int NIST_COMPOUND_MS20_TISSUE_SUBSTITUTE = 101;
+  public static final int NIST_COMPOUND_MUSCLE_SKELETAL = 102;
+  public static final int NIST_COMPOUND_MUSCLE_STRIATED = 103;
+  public static final int NIST_COMPOUND_MUSCLE_EQUIVALENT_LIQUID_WITH_SUCROSE = 104;
+  public static final int NIST_COMPOUND_MUSCLE_EQUIVALENT_LIQUID_WITHOUT_SUCROSE = 105;
+  public static final int NIST_COMPOUND_NAPHTHALENE = 106;
+  public static final int NIST_COMPOUND_NITROBENZENE = 107;
+  public static final int NIST_COMPOUND_NITROUS_OXIDE = 108;
+  public static final int NIST_COMPOUND_NYLON_DU_PONT_ELVAMIDE_8062 = 109;
+  public static final int NIST_COMPOUND_NYLON_TYPE_6_AND_TYPE_66 = 110;
+  public static final int NIST_COMPOUND_NYLON_TYPE_610 = 111;
+  public static final int NIST_COMPOUND_NYLON_TYPE_11_RILSAN = 112;
+  public static final int NIST_COMPOUND_OCTANE_LIQUID = 113;
+  public static final int NIST_COMPOUND_PARAFFIN_WAX = 114;
+  public static final int NIST_COMPOUND_N_PENTANE = 115;
+  public static final int NIST_COMPOUND_PHOTOGRAPHIC_EMULSION = 116;
+  public static final int NIST_COMPOUND_PLASTIC_SCINTILLATOR_VINYLTOLUENE_BASED = 117;
+  public static final int NIST_COMPOUND_PLUTONIUM_DIOXIDE = 118;
+  public static final int NIST_COMPOUND_POLYACRYLONITRILE = 119;
+  public static final int NIST_COMPOUND_POLYCARBONATE_MAKROLON_LEXAN = 120;
+  public static final int NIST_COMPOUND_POLYCHLOROSTYRENE = 121;
+  public static final int NIST_COMPOUND_POLYETHYLENE = 122;
+  public static final int NIST_COMPOUND_POLYETHYLENE_TEREPHTHALATE_MYLAR = 123;
+  public static final int NIST_COMPOUND_POLYMETHYL_METHACRALATE_LUCITE_PERSPEX = 124;
+  public static final int NIST_COMPOUND_POLYOXYMETHYLENE = 125;
+  public static final int NIST_COMPOUND_POLYPROPYLENE = 126;
+  public static final int NIST_COMPOUND_POLYSTYRENE = 127;
+  public static final int NIST_COMPOUND_POLYTETRAFLUOROETHYLENE_TEFLON = 128;
+  public static final int NIST_COMPOUND_POLYTRIFLUOROCHLOROETHYLENE = 129;
+  public static final int NIST_COMPOUND_POLYVINYL_ACETATE = 130;
+  public static final int NIST_COMPOUND_POLYVINYL_ALCOHOL = 131;
+  public static final int NIST_COMPOUND_POLYVINYL_BUTYRAL = 132;
+  public static final int NIST_COMPOUND_POLYVINYL_CHLORIDE = 133;
+  public static final int NIST_COMPOUND_POLYVINYLIDENE_CHLORIDE_SARAN = 134;
+  public static final int NIST_COMPOUND_POLYVINYLIDENE_FLUORIDE = 135;
+  public static final int NIST_COMPOUND_POLYVINYL_PYRROLIDONE = 136;
+  public static final int NIST_COMPOUND_POTASSIUM_IODIDE = 137;
+  public static final int NIST_COMPOUND_POTASSIUM_OXIDE = 138;
+  public static final int NIST_COMPOUND_PROPANE = 139;
+  public static final int NIST_COMPOUND_PROPANE_LIQUID = 140;
+  public static final int NIST_COMPOUND_N_PROPYL_ALCOHOL = 141;
+  public static final int NIST_COMPOUND_PYRIDINE = 142;
+  public static final int NIST_COMPOUND_RUBBER_BUTYL = 143;
+  public static final int NIST_COMPOUND_RUBBER_NATURAL = 144;
+  public static final int NIST_COMPOUND_RUBBER_NEOPRENE = 145;
+  public static final int NIST_COMPOUND_SILICON_DIOXIDE = 146;
+  public static final int NIST_COMPOUND_SILVER_BROMIDE = 147;
+  public static final int NIST_COMPOUND_SILVER_CHLORIDE = 148;
+  public static final int NIST_COMPOUND_SILVER_HALIDES_IN_PHOTOGRAPHIC_EMULSION = 149;
+  public static final int NIST_COMPOUND_SILVER_IODIDE = 150;
+  public static final int NIST_COMPOUND_SKIN_ICRP = 151;
+  public static final int NIST_COMPOUND_SODIUM_CARBONATE = 152;
+  public static final int NIST_COMPOUND_SODIUM_IODIDE = 153;
+  public static final int NIST_COMPOUND_SODIUM_MONOXIDE = 154;
+  public static final int NIST_COMPOUND_SODIUM_NITRATE = 155;
+  public static final int NIST_COMPOUND_STILBENE = 156;
+  public static final int NIST_COMPOUND_SUCROSE = 157;
+  public static final int NIST_COMPOUND_TERPHENYL = 158;
+  public static final int NIST_COMPOUND_TESTES_ICRP = 159;
+  public static final int NIST_COMPOUND_TETRACHLOROETHYLENE = 160;
+  public static final int NIST_COMPOUND_THALLIUM_CHLORIDE = 161;
+  public static final int NIST_COMPOUND_TISSUE_SOFT_ICRP = 162;
+  public static final int NIST_COMPOUND_TISSUE_SOFT_ICRU_FOUR_COMPONENT = 163;
+  public static final int NIST_COMPOUND_TISSUE_EQUIVALENT_GAS_METHANE_BASED = 164;
+  public static final int NIST_COMPOUND_TISSUE_EQUIVALENT_GAS_PROPANE_BASED = 165;
+  public static final int NIST_COMPOUND_TITANIUM_DIOXIDE = 166;
+  public static final int NIST_COMPOUND_TOLUENE = 167;
+  public static final int NIST_COMPOUND_TRICHLOROETHYLENE = 168;
+  public static final int NIST_COMPOUND_TRIETHYL_PHOSPHATE = 169;
+  public static final int NIST_COMPOUND_TUNGSTEN_HEXAFLUORIDE = 170;
+  public static final int NIST_COMPOUND_URANIUM_DICARBIDE = 171;
+  public static final int NIST_COMPOUND_URANIUM_MONOCARBIDE = 172;
+  public static final int NIST_COMPOUND_URANIUM_OXIDE = 173;
+  public static final int NIST_COMPOUND_UREA = 174;
+  public static final int NIST_COMPOUND_VALINE = 175;
+  public static final int NIST_COMPOUND_VITON_FLUOROELASTOMER = 176;
+  public static final int NIST_COMPOUND_WATER_LIQUID = 177;
+  public static final int NIST_COMPOUND_WATER_VAPOR = 178;
+  public static final int NIST_COMPOUND_XYLENE = 179;
 
   private static final String[] MendelArray = { "",
     "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne",

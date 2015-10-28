@@ -85,6 +85,7 @@ public class xrlexample7 {
 		System.out.println("Polarized differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSPb_Rayl_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" barns/atom/sterad");
 		System.out.println("Polarized differential Compton cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSP_Compt_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" cm2/g/sterad");
 		System.out.println("Polarized differential Compton cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSPb_Compt_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" barns/atom/sterad");
+		System.out.println("Total cs of Polymethyl Methacralate (Lucite, Perspex) at 10.0 keV: "+Xraylib.CS_Total_CP("Polymethyl Methacralate (Lucite, Perspex)", 10.0)+" cm2/g");
 
 		try {
 			// the following line should throw an exception
@@ -92,6 +93,15 @@ public class xrlexample7 {
 			System.exit(1);
 		}
 		catch (XraylibException e) {}
+
+		System.out.println("\n" + Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide"));
+		System.out.println(Xraylib.GetCompoundDataNISTByIndex(Xraylib.NIST_COMPOUND_BRAIN_ICRP));
+                String[] nistCompounds = Xraylib.GetCompoundDataNISTList();
+
+		System.out.println("List of available NIST compounds:");
+		for (int i = 0 ; i < nistCompounds.length ; i++) {
+			System.out.format("  Compound %d: %s\n", i, nistCompounds[i]);
+		}
 
 
 		/*
