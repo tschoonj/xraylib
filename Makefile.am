@@ -38,6 +38,6 @@ windows:
 
 
 EXTRA_DIST = xraylib.spec.in BUGS Changelog 
-#DISTCHECK_CONFIGURE_FLAGS = --disable-idl --enable-php
+#DISTCHECK_CONFIGURE_FLAGS = --enable-php
 
 .PHONY: windows 
