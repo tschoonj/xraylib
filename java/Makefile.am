@@ -25,7 +25,7 @@ prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
 xraylib.jar: xraylib.dat xraylib/Xraylib.class xraylib/XraylibException.class xraylib/compoundData.class xraylib/compoundDataNIST.class
-	jar cf xraylib.jar xraylib.dat xraylib 
+	jar cfm xraylib.jar OSGI-MANIFEST xraylib.dat xraylib
 
 xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
@@ -34,3 +34,4 @@ clean-local:
 	rm -rf xraylib.jar xraylib.dat xraylib
 
 endif
+EXTRA_DIST = OSGI-MANIFEST.in

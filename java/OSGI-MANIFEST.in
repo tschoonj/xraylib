@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Created-By: Tom Schoonjans
+Bundle-ManifestVersion: 2
+Bundle-Name: xraylib
+Bundle-Version: @VERSION@
+Export-Package: xraylib
+
