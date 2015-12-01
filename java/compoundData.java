@@ -55,12 +55,12 @@ public class compoundData {
         nAtomsAll+= cas.nAtoms; 
       }
 
-      String formattedCompoundString = String.format("%s contains %g atoms and %d elements\n", compoundString, nAtomsAll, nElements);
+      String formattedCompoundString = String.format("%s contains %g atoms and %d elements", compoundString, nAtomsAll, nElements);
 
       for (int i = 0 ; i < nElements ; i++) {
         Elements[i] = ca.get(i).Element;
         massFractions[i] = Xraylib.AtomicWeight(ca.get(i).Element)*ca.get(i).nAtoms/sum;
-        formattedCompoundString += String.format("Element %d: %f %%\n", Elements[i], massFractions[i]*100.0);
+        formattedCompoundString += String.format("\nElement %d: %f %%", Elements[i], massFractions[i]*100.0);
       }
       this.nAtomsAll = nAtomsAll;
       this.formattedCompoundString = formattedCompoundString;

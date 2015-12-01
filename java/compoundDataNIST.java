@@ -31,11 +31,11 @@ public class compoundDataNIST {
     massFractions = Xraylib.readDoubleArray(nElements, byte_buffer); 
     density = byte_buffer.getDouble();
 
-    String formattedNISTCompoundString = String.format("%s contains %d elements\n", name, nElements);
+    String formattedNISTCompoundString = String.format("%s contains %d elements", name, nElements);
     for (int i = 0 ; i < nElements ; i++) {
-      formattedNISTCompoundString += String.format("Element %d: %f %%\n", Elements[i], massFractions[i]*100.0);
+      formattedNISTCompoundString += String.format("\nElement %d: %f %%", Elements[i], massFractions[i]*100.0);
     }
-    formattedNISTCompoundString += String.format("Density: %f g/cm3\n", density);
+    formattedNISTCompoundString += String.format("\nDensity: %f g/cm3", density);
     this.formattedNISTCompoundString = formattedNISTCompoundString;
   }
 
