@@ -717,7 +717,7 @@ elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BIND
 			CFLAGS="$LUA_INCLUDE"
 			LIBS="$LUA_LIB"
 	       		AC_LANG_PUSH([C])
-			AC_TRY_LINK([
+			AC_TRY_COMPILE([
 			#include <lua.h>
 			#include "lauxlib.h"
 			],[
@@ -810,7 +810,7 @@ elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BIN
 			CC="$RUBY_EXT_CC"
 	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
 	        	AC_LANG_PUSH([C])
-			AC_TRY_LINK([
+			AC_TRY_COMPILE([
 			#include <ruby.h>
 			],[
 			ruby_init();
