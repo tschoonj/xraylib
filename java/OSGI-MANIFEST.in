@@ -4,7 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: xraylib
 Bundle-Version: @VERSION@
 Export-Package: xraylib
-Bundle-SymbolicName: xraylib
+Bundle-SymbolicName: com.github.tschoonj.xraylib
 Bundle-Vendor: Tom Schoonjans
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 
