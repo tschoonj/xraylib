@@ -3,7 +3,7 @@ Created-By: Tom Schoonjans
 Bundle-ManifestVersion: 2
 Bundle-Name: xraylib
 Bundle-Version: @VERSION@
-Export-Package: xraylib
+Export-Package: com.github.tschoonj.xraylib
 Bundle-SymbolicName: com.github.tschoonj.xraylib
 Bundle-Vendor: Tom Schoonjans
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
