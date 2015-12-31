@@ -6,7 +6,7 @@ AtomicWeight
 //          Z : atomic number                                       //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float AtomicWeight(int Z)
+>>> double AtomicWeight(int Z)
 
 ElementDensity
 //////////////////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ ElementDensity
 //          Z : atomic number                                       //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float ElementDensity(int Z)
+>>> double ElementDensity(int Z)
 
 CosKronTransProb
 //////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ CosKronTransProb
 //            F23_TRANS 4                                           //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CosKronTransProb(int Z, int trans)
+>>> double CosKronTransProb(int Z, int trans)
 
 CS_FluorLine
 //////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ CS_FluorLine
 //            MA_LINE 6                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_FluorLine(int Z, int line, float E)
+>>> double CS_FluorLine(int Z, int line, double E)
 
 EdgeEnergy
 //////////////////////////////////////////////////////////////////////
@@ -71,7 +71,7 @@ EdgeEnergy
 //            M5_SHELL 8                                            //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float EdgeEnergy(int Z, int shell)
+>>> double EdgeEnergy(int Z, int shell)
 
 LineEnergy
 //////////////////////////////////////////////////////////////////////
@@ -89,7 +89,7 @@ LineEnergy
 //            MA_LINE 6                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float LineEnergy(int Z, int line)
+>>> double LineEnergy(int Z, int line)
 
 FluorYield
 //////////////////////////////////////////////////////////////////////
@@ -109,7 +109,7 @@ FluorYield
 //            M5_SHELL 8                                            //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float FluorYield(int Z, int shell)
+>>> double FluorYield(int Z, int shell)
 
 JumpFactor
 //////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ JumpFactor
 //            M5_SHELL 8                                            //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float JumpFactor(int Z, int shell)
+>>> double JumpFactor(int Z, int shell)
 
 DCSP_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ DCSP_Rayl
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSP_Rayl(int Z, float E, float theta, float phi)
+>>> double DCSP_Rayl(int Z, double E, double theta, double phi)
 
 DCSP_Compt
 //////////////////////////////////////////////////////////////////////
@@ -156,7 +156,7 @@ DCSP_Compt
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSP_Compt(int Z, float E, float theta, float phi)
+>>> double DCSP_Compt(int Z, double E, double theta, double phi)
 
 DCSP_KN
 //////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ DCSP_KN
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSP_KN(float E, float theta, float phi)
+>>> double DCSP_KN(double E, double theta, double phi)
 
 DCSP_Thoms
 //////////////////////////////////////////////////////////////////////
@@ -181,7 +181,7 @@ DCSP_Thoms
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSP_Thoms(float theta, float phi)
+>>> double DCSP_Thoms(double theta, double phi)
 
 RadRate
 //////////////////////////////////////////////////////////////////////
@@ -199,7 +199,7 @@ RadRate
 //            MA_LINE 6                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float RadRate(int Z, int line)
+>>> double RadRate(int Z, int line)
 
 FF_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -210,7 +210,7 @@ FF_Rayl
 //          q : momentum transfer                                   //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float FF_Rayl(int Z, float q)
+>>> double FF_Rayl(int Z, double q)
 
 SF_Compt
 //////////////////////////////////////////////////////////////////////
@@ -221,7 +221,7 @@ SF_Compt
 //          q : momentum transfer                                   //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float SF_Compt(int Z, float q)
+>>> double SF_Compt(int Z, double q)
 
 DCS_Thoms
 //////////////////////////////////////////////////////////////////////
@@ -231,7 +231,7 @@ DCS_Thoms
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCS_Thoms(float theta)
+>>> double DCS_Thoms(double theta)
 
 DCS_KN
 //////////////////////////////////////////////////////////////////////
@@ -242,7 +242,7 @@ DCS_KN
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCS_KN(float E, float theta)
+>>> double DCS_KN(double E, double theta)
 
 DCS_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -254,7 +254,7 @@ DCS_Rayl
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCS_Rayl(int Z, float E, float theta)
+>>> double DCS_Rayl(int Z, double E, double theta)
 
 DCS_Compt
 //////////////////////////////////////////////////////////////////////
@@ -266,7 +266,7 @@ DCS_Compt
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCS_Compt(int Z, float E, float theta)
+>>> double DCS_Compt(int Z, double E, double theta)
 
 MomentTransf
 //////////////////////////////////////////////////////////////////////
@@ -277,7 +277,7 @@ MomentTransf
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float MomentTransf(float E, float theta)
+>>> double MomentTransf(double E, double theta)
 
 CS_KN
 //////////////////////////////////////////////////////////////////////
@@ -287,7 +287,7 @@ CS_KN
 //          E : Energy (keV)                                        //   
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_KN(float E)
+>>> double CS_KN(double E)
 
 ComptonEnergy
 //////////////////////////////////////////////////////////////////////
@@ -298,7 +298,7 @@ ComptonEnergy
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float ComptonEnergy(float E0, float theta)
+>>> double ComptonEnergy(double E0, double theta)
 
 CS_Total
 //////////////////////////////////////////////////////////////////////
@@ -310,7 +310,7 @@ CS_Total
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Total(int Z, float E)
+>>> double CS_Total(int Z, double E)
 
 CS_Photo
 //////////////////////////////////////////////////////////////////////
@@ -321,7 +321,7 @@ CS_Photo
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Photo(int Z, float E)
+>>> double CS_Photo(int Z, double E)
 
 CS_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -332,7 +332,7 @@ CS_Rayl
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Rayl(int Z, float E)
+>>> double CS_Rayl(int Z, double E)
 
 CS_Compt
 //////////////////////////////////////////////////////////////////////
@@ -343,7 +343,7 @@ CS_Compt
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Compt(int Z, float E) 
+>>> double CS_Compt(int Z, double E) 
 
 CSb_FluorLine
 //////////////////////////////////////////////////////////////////////
@@ -362,7 +362,7 @@ CSb_FluorLine
 //            MA_LINE 6                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_FluorLine(int Z, int line, float E)
+>>> double CSb_FluorLine(int Z, int line, double E)
 
 CSb_Total
 //////////////////////////////////////////////////////////////////////
@@ -374,7 +374,7 @@ CSb_Total
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Total(int Z, float E)
+>>> double CSb_Total(int Z, double E)
 
 CSb_Photo
 //////////////////////////////////////////////////////////////////////
@@ -385,7 +385,7 @@ CSb_Photo
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Photo(int Z, float E)
+>>> double CSb_Photo(int Z, double E)
 
 CSb_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -396,7 +396,7 @@ CSb_Rayl
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Rayl(int Z, float E)
+>>> double CSb_Rayl(int Z, double E)
 
 CSb_Compt
 //////////////////////////////////////////////////////////////////////
@@ -407,7 +407,7 @@ CSb_Compt
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Compt(int Z, float E) 
+>>> double CSb_Compt(int Z, double E) 
 
 DCSb_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -419,7 +419,7 @@ DCSb_Rayl
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSb_Rayl(int Z, float E, float theta)
+>>> double DCSb_Rayl(int Z, double E, double theta)
 
 DCSb_Compt
 //////////////////////////////////////////////////////////////////////
@@ -431,7 +431,7 @@ DCSb_Compt
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSb_Compt(int Z, float E, float theta)
+>>> double DCSb_Compt(int Z, double E, double theta)
 
 DCSPb_Rayl
 //////////////////////////////////////////////////////////////////////
@@ -445,7 +445,7 @@ DCSPb_Rayl
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSPb_Rayl(int Z, float E, float theta, float phi)
+>>> double DCSPb_Rayl(int Z, double E, double theta, double phi)
 
 DCSPb_Compt
 //////////////////////////////////////////////////////////////////////
@@ -458,7 +458,7 @@ DCSPb_Compt
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSPb_Compt(int Z, float E, float theta, float phi)
+>>> double DCSPb_Compt(int Z, double E, double theta, double phi)
 
 Fi
 //////////////////////////////////////////////////////////////////////
@@ -469,7 +469,7 @@ Fi
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float Fi(int Z, float E)
+>>> double Fi(int Z, double E)
 
 Fii
 //////////////////////////////////////////////////////////////////////
@@ -480,7 +480,7 @@ Fii
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float Fii(int Z, float E)
+>>> double Fii(int Z, double E)
 
 CSb_Photo_Total
 ///////////////////////////////////////////////////////////
@@ -492,7 +492,7 @@ CSb_Photo_Total
 //    E : energy (keV)                                   //
 //                                                       //
 ///////////////////////////////////////////////////////////
->>> float CSb_Photo_Total(int Z, float E)
+>>> double CSb_Photo_Total(int Z, double E)
 
 CS_Photo_Total
 ///////////////////////////////////////////////////////////
@@ -504,7 +504,7 @@ CS_Photo_Total
 //    E : energy (keV)                                   //
 //                                                       //
 ///////////////////////////////////////////////////////////
->>> float CS_Photo_Total(int Z, float E)
+>>> double CS_Photo_Total(int Z, double E)
 
 CSb_Photo_Partial
 ///////////////////////////////////////////////////////////
@@ -517,7 +517,7 @@ CSb_Photo_Partial
 //    E : energy (keV)                                   //
 //                                                       //
 ///////////////////////////////////////////////////////////
->>> float CSb_Photo_Partial(int Z, int shell, float E)
+>>> double CSb_Photo_Partial(int Z, int shell, double E)
 
 CS_Photo_Partial
 ///////////////////////////////////////////////////////////
@@ -530,7 +530,7 @@ CS_Photo_Partial
 //    E : energy (keV)                                   //
 //                                                       //
 ///////////////////////////////////////////////////////////
->>> float CS_Photo_Partial(int Z, int shell, float E)
+>>> double CS_Photo_Partial(int Z, int shell, double E)
 
 CS_FluorLine_Kissel
 //////////////////////////////////////////////////////////////////////
@@ -546,7 +546,7 @@ CS_FluorLine_Kissel
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_FluorLine_Kissel(int Z, int line, float E)
+>>> double CS_FluorLine_Kissel(int Z, int line, double E)
 
 CSb_FluorLine_Kissel
 //////////////////////////////////////////////////////////////////////
@@ -562,7 +562,7 @@ CSb_FluorLine_Kissel
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_FluorLine_Kissel(int Z, int line, float E)
+>>> double CSb_FluorLine_Kissel(int Z, int line, double E)
 
 CS_Total_Kissel
 //////////////////////////////////////////////////////////////////////
@@ -574,7 +574,7 @@ CS_Total_Kissel
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Total_Kissel(int Z, float E) 
+>>> double CS_Total_Kissel(int Z, double E) 
 
 CSb_Total_Kissel
 //////////////////////////////////////////////////////////////////////
@@ -586,7 +586,7 @@ CSb_Total_Kissel
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Total_Kissel(int Z, float E)
+>>> double CSb_Total_Kissel(int Z, double E)
 
 CS_Total_CP
 //////////////////////////////////////////////////////////////////////
@@ -598,7 +598,7 @@ CS_Total_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Total_CP(const char compound[], float E);
+>>> double CS_Total_CP(const char compound[], double E);
 
 
 CS_Photo_CP
@@ -610,7 +610,7 @@ CS_Photo_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Photo_CP(const char compound[], float E);
+>>> double CS_Photo_CP(const char compound[], double E);
 
 
 CS_Rayl_CP
@@ -622,7 +622,7 @@ CS_Rayl_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Rayl_CP(const char compound[], float E);
+>>> double CS_Rayl_CP(const char compound[], double E);
 
 CS_Compt_CP
 //////////////////////////////////////////////////////////////////////
@@ -633,7 +633,7 @@ CS_Compt_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Compt_CP(const char compound[], float E); 
+>>> double CS_Compt_CP(const char compound[], double E); 
 
 
 CSb_Total_CP
@@ -646,7 +646,7 @@ CSb_Total_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Total_CP(const char compound[], float E);
+>>> double CSb_Total_CP(const char compound[], double E);
 
 CSb_Photo_CP
 //////////////////////////////////////////////////////////////////////
@@ -657,7 +657,7 @@ CSb_Photo_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Photo_CP(const char compound[], float E);
+>>> double CSb_Photo_CP(const char compound[], double E);
 
 CSb_Rayl_CP
 //////////////////////////////////////////////////////////////////////
@@ -668,7 +668,7 @@ CSb_Rayl_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Rayl_CP(const char compound[], float E);
+>>> double CSb_Rayl_CP(const char compound[], double E);
 
 CSb_Compt_CP
 //////////////////////////////////////////////////////////////////////
@@ -679,7 +679,7 @@ CSb_Compt_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Compt_CP(const char compound[], float E); 
+>>> double CSb_Compt_CP(const char compound[], double E); 
 
 DCS_Rayl_CP
 //////////////////////////////////////////////////////////////////////
@@ -691,7 +691,7 @@ DCS_Rayl_CP
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCS_Rayl_CP(const char compound[], float E, float theta);
+>>> double DCS_Rayl_CP(const char compound[], double E, double theta);
 
 DCS_Compt_CP
 //////////////////////////////////////////////////////////////////////
@@ -703,7 +703,7 @@ DCS_Compt_CP
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCS_Compt_CP(const char compound[], float E, float theta);
+>>> double DCS_Compt_CP(const char compound[], double E, double theta);
 
 DCSb_Rayl_CP
 //////////////////////////////////////////////////////////////////////
@@ -715,7 +715,7 @@ DCSb_Rayl_CP
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSb_Rayl_CP(const char compound[], float E, float theta);
+>>> double DCSb_Rayl_CP(const char compound[], double E, double theta);
 
 DCSb_Compt_CP
 //////////////////////////////////////////////////////////////////////
@@ -727,7 +727,7 @@ DCSb_Compt_CP
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSb_Compt_CP(const char compound[], float E, float theta);
+>>> double DCSb_Compt_CP(const char compound[], double E, double theta);
 
 DCSP_Rayl_CP
 //////////////////////////////////////////////////////////////////////
@@ -741,7 +741,7 @@ DCSP_Rayl_CP
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSP_Rayl_CP(const char compound[], float E, float theta, float phi);
+>>> double DCSP_Rayl_CP(const char compound[], double E, double theta, double phi);
 
 DCSP_Compt_CP
 //////////////////////////////////////////////////////////////////////
@@ -755,7 +755,7 @@ DCSP_Compt_CP
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSP_Compt_CP(const char compound[], float E, float theta, float phi);
+>>> double DCSP_Compt_CP(const char compound[], double E, double theta, double phi);
 
 DCSPb_Rayl_CP
 //////////////////////////////////////////////////////////////////////
@@ -769,7 +769,7 @@ DCSPb_Rayl_CP
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSPb_Rayl_CP(const char compound[], float E, float theta, float phi);
+>>> double DCSPb_Rayl_CP(const char compound[], double E, double theta, double phi);
 
 
 DCSPb_Compt_CP
@@ -784,7 +784,7 @@ DCSPb_Compt_CP
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 //////////////////////////////////////////////////// /////////////////
->>> float DCSPb_Compt_CP(const char compound[], float E, float theta, float phi);
+>>> double DCSPb_Compt_CP(const char compound[], double E, double theta, double phi);
 
 CS_Photo_Total_CP
 ///////////////////////////////////////////////////////////
@@ -796,7 +796,7 @@ CS_Photo_Total_CP
 //    	    E : energy (keV)                             //
 //                                                       //
 ///////////////////////////////////////////////////////////
->>> float CS_Photo_Total_CP(const char compound[], float E);
+>>> double CS_Photo_Total_CP(const char compound[], double E);
 
 CSb_Photo_Total_CP
 ///////////////////////////////////////////////////////////
@@ -808,7 +808,7 @@ CSb_Photo_Total_CP
 //    	    E : energy (keV)                             //
 //                                                       //
 ///////////////////////////////////////////////////////////
->>> float CSb_Photo_Total_CP(const char compound[], float E);
+>>> double CSb_Photo_Total_CP(const char compound[], double E);
 
 CS_Total_Kissel_CP
 //////////////////////////////////////////////////////////////////////
@@ -820,7 +820,7 @@ CS_Total_Kissel_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Total_Kissel_CP(const char compound[], float E); 
+>>> double CS_Total_Kissel_CP(const char compound[], double E); 
 
 CSb_Total_Kissel_CP
 //////////////////////////////////////////////////////////////////////
@@ -832,7 +832,7 @@ CSb_Total_Kissel_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_Total_Kissel_CP(const char compound[], float E); 
+>>> double CSb_Total_Kissel_CP(const char compound[], double E); 
 
 Refractive_Index_Re
 //////////////////////////////////////////////////////////////////////
@@ -879,7 +879,7 @@ ComptonProfile
 //          pz : momentum                                           //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float ComptonProfile(int Z, float pz);
+>>> double ComptonProfile(int Z, double pz);
 
 ComptonProfile_Partial
 //////////////////////////////////////////////////////////////////////
@@ -891,7 +891,7 @@ ComptonProfile_Partial
 //          pz : momentum                                           //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float ComptonProfile_Partial(int Z, int shell, float pz);
+>>> double ComptonProfile_Partial(int Z, int shell, double pz);
 
 AugerRate
 //////////////////////////////////////////////////////////////////////
@@ -904,7 +904,7 @@ AugerRate
 //              ejected electrons                                   //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float AugerRate(int Z, int auger_trans);
+>>> double AugerRate(int Z, int auger_trans);
 
 AugerYield
 //////////////////////////////////////////////////////////////////////
@@ -915,7 +915,7 @@ AugerYield
 //          shell : shell macro                                     // 
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float AugerRate(int Z, int auger_trans);
+>>> double AugerRate(int Z, int auger_trans);
 
 AtomicLevelWidth
 //////////////////////////////////////////////////////////////////////
@@ -936,7 +936,7 @@ AtomicLevelWidth
 //             .......                                              //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float AtomicLevelWidth(int Z, int shell);
+>>> double AtomicLevelWidth(int Z, int shell);
 
 ElectronConfig
 //////////////////////////////////////////////////////////////////////
@@ -948,7 +948,7 @@ ElectronConfig
 //          shell : shell macro                                     //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float ElectronConfig(int Z, int shell);
+>>> double ElectronConfig(int Z, int shell);
 
 CS_FluorLine_Kissel_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -965,7 +965,7 @@ CS_FluorLine_Kissel_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_FluorLine_Kissel_Cascade(int Z, int line, float E)
+>>> double CS_FluorLine_Kissel_Cascade(int Z, int line, double E)
 
 CSb_FluorLine_Kissel_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -982,7 +982,7 @@ CSb_FluorLine_Kissel_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_FluorLine_Kissel_Cascade(int Z, int line, float E)
+>>> double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E)
 
 CS_FluorLine_Kissel_Radiative_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -999,7 +999,7 @@ CS_FluorLine_Kissel_Radiative_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E)
+>>> double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E)
 
 CSb_FluorLine_Kissel_Radiative_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -1016,7 +1016,7 @@ CSb_FluorLine_Kissel_Radiative_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, float E)
+>>> double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E)
 
 CS_FluorLine_Kissel_Nonradiative_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -1033,7 +1033,7 @@ CS_FluorLine_Kissel_Nonradiative_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E)
+>>> double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E)
 
 CSb_FluorLine_Kissel_Nonradiative_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -1050,7 +1050,7 @@ CSb_FluorLine_Kissel_Nonradiative_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, float E)
+>>> double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E)
 
 CS_FluorLine_Kissel_no_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -1067,7 +1067,7 @@ CS_FluorLine_Kissel_no_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_FluorLine_Kissel_no_Cascade(int Z, int line, float E)
+>>> double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E)
 
 CSb_FluorLine_Kissel_no_Cascade
 //////////////////////////////////////////////////////////////////////
@@ -1084,7 +1084,7 @@ CSb_FluorLine_Kissel_no_Cascade
 //            LB_LINE 3                                             //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CSb_FluorLine_Kissel_no_Cascade(int Z, int line, float E)
+>>> double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E)
 
 Crystal_ArrayInit
 //////////////////////////////////////////////////////////////////////
@@ -1150,7 +1150,7 @@ Bragg_angle
 //		x_miller : Miller indices			    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> float Bragg_angle (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller)
+>>> double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller)
 
 Q_scattering_amplitude
 //////////////////////////////////////////////////////////////////////
@@ -1164,7 +1164,7 @@ Q_scattering_amplitude
 //		x_miller : Miller indices			    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> float Q_scattering_amplitude(Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float rel_angle)
+>>> double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double rel_angle)
 
 Atomic_factors
 //////////////////////////////////////////////////////////////////////
@@ -1173,12 +1173,12 @@ Atomic_factors
 //		for a given element Z, incidence energy		    //
 //		and Debye factor				    //
 //								    //
-//		f0, f_primep and f_prime2 : pointers to floats in C //
+//		f0, f_primep and f_prime2 : pointers to doubles in C //
 //		fortran and IDL BUT return values in Perl, Python   //
 //		and Lua!!!					    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> Atomic_Factors (int Z, float energy, float q, float debye_factor, float* f0, float* f_primep, float* f_prime2)
+>>> Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_primep, double* f_prime2)
 
 Crystal_F_H_StructureFactor
 //////////////////////////////////////////////////////////////////////
@@ -1188,7 +1188,7 @@ Crystal_F_H_StructureFactor
 //		The return value is a complex number		    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle)
+>>> xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle)
 
 Crystal_F_H_StructureFactor_Partial
 //////////////////////////////////////////////////////////////////////
@@ -1204,7 +1204,7 @@ Crystal_F_H_StructureFactor_Partial
 //		*_flag = 2 --> Set this term to the value given	    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, float energy, int i_miller, int j_miller, int k_miller, float debye_factor, float rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag)
+>>> xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag)
 
 Crystal_UnitCellVolume
 //////////////////////////////////////////////////////////////////////
@@ -1214,7 +1214,7 @@ Crystal_UnitCellVolume
 //		official array will have their volume in .volume    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> float Crystal_UnitCellVolume (Crystal_Struct* crystal)
+>>> double Crystal_UnitCellVolume (Crystal_Struct* crystal)
 
 Crystal_dSpacing
 //////////////////////////////////////////////////////////////////////
@@ -1226,7 +1226,7 @@ Crystal_dSpacing
 //		If (i,j,k) = (0,0,0) then zero is returned	    //
 //								    //
 //////////////////////////////////////////////////////////////////////
->>> float Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller)
+>>> double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller)
 
 Crystal_AddCrystal
 //////////////////////////////////////////////////////////////////////
@@ -1264,7 +1264,7 @@ CS_Energy
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Energy(int Z, float E)
+>>> double CS_Energy(int Z, double E)
 
 CS_Energy_CP
 //////////////////////////////////////////////////////////////////////
@@ -1275,7 +1275,7 @@ CS_Energy_CP
 //          E : energy (keV)                                        //
 //                                                                  //
 //////////////////////////////////////////////////////////////////////
->>> float CS_Energy_CP(const char compound[], float E);
+>>> double CS_Energy_CP(const char compound[], double E);
 
 CompoundParser
 //////////////////////////////////////////////////////////////////////

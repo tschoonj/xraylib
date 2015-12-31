@@ -68,3 +68,4 @@ src/prdata
 src/xraylib.i
 stamp-h1
 xraylib.spec
+.tags
