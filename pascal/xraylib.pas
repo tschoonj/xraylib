@@ -1,4 +1,5 @@
-{
+
+  {
 Copyright (c) 2015, Tom Schoonjans & Matthew Wormington
 All rights reserved.
 
@@ -1777,127 +1778,127 @@ const
   RADIO_NUCLIDE_241AM = 8;
   RADIO_NUCLIDE_244CM = 9;
 
-procedure XRayInit;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'XRayInit';
+procedure XRayInit;cdecl;external External_library name 'XRayInit';
 
-procedure SetHardExit(hard_exit:longint);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'SetHardExit';
+procedure SetHardExit(hard_exit:longint);cdecl;external External_library name 'SetHardExit';
 
-procedure SetExitStatus(exit_status:longint);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'SetExitStatus';
+procedure SetExitStatus(exit_status:longint);cdecl;external External_library name 'SetExitStatus';
 
-function GetExitStatus:longint;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetExitStatus';
+function GetExitStatus:longint;cdecl;external External_library name 'GetExitStatus';
 
-procedure SetErrorMessages(status:longint);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'SetErrorMessages';
+procedure SetErrorMessages(status:longint);cdecl;external External_library name 'SetErrorMessages';
 
-function GetErrorMessages:longint;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetErrorMessages';
+function GetErrorMessages:longint;cdecl;external External_library name 'GetErrorMessages';
 
-function AtomicWeight(Z:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'AtomicWeight';
+function AtomicWeight(Z:longint):double;cdecl;external External_library name 'AtomicWeight';
 
-function ElementDensity(Z:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'ElementDensity';
+function ElementDensity(Z:longint):double;cdecl;external External_library name 'ElementDensity';
 
-function CS_Total(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Total';
+function CS_Total(Z:longint; E:double):double;cdecl;external External_library name 'CS_Total';
 
-function CS_Photo(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Photo';
+function CS_Photo(Z:longint; E:double):double;cdecl;external External_library name 'CS_Photo';
 
-function CS_Rayl(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Rayl';
+function CS_Rayl(Z:longint; E:double):double;cdecl;external External_library name 'CS_Rayl';
 
-function CS_Compt(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Compt';
+function CS_Compt(Z:longint; E:double):double;cdecl;external External_library name 'CS_Compt';
 
-function CS_KN(E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_KN';
+function CS_KN(E:double):double;cdecl;external External_library name 'CS_KN';
 
-function CS_Energy(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Energy';
+function CS_Energy(Z:longint; E:double):double;cdecl;external External_library name 'CS_Energy';
 
-function CSb_Total(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Total';
+function CSb_Total(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Total';
 
-function CSb_Photo(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Photo';
+function CSb_Photo(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Photo';
 
-function CSb_Rayl(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Rayl';
+function CSb_Rayl(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Rayl';
 
-function CSb_Compt(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Compt';
+function CSb_Compt(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Compt';
 
-function DCS_Thoms(theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCS_Thoms';
+function DCS_Thoms(theta:double):double;cdecl;external External_library name 'DCS_Thoms';
 
-function DCS_KN(E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCS_KN';
+function DCS_KN(E:double; theta:double):double;cdecl;external External_library name 'DCS_KN';
 
-function DCS_Rayl(Z:longint; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCS_Rayl';
+function DCS_Rayl(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCS_Rayl';
 
-function DCS_Compt(Z:longint; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCS_Compt';
+function DCS_Compt(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCS_Compt';
 
-function DCSb_Rayl(Z:longint; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSb_Rayl';
+function DCSb_Rayl(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Rayl';
 
-function DCSb_Compt(Z:longint; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSb_Compt';
+function DCSb_Compt(Z:longint; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Compt';
 
-function DCSP_Thoms(theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSP_Thoms';
+function DCSP_Thoms(theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Thoms';
 
-function DCSP_KN(E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSP_KN';
+function DCSP_KN(E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_KN';
 
-function DCSP_Rayl(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSP_Rayl';
+function DCSP_Rayl(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Rayl';
 
-function DCSP_Compt(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSP_Compt';
+function DCSP_Compt(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Compt';
 
-function DCSPb_Rayl(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSPb_Rayl';
+function DCSPb_Rayl(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Rayl';
 
-function DCSPb_Compt(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSPb_Compt';
+function DCSPb_Compt(Z:longint; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Compt';
 
-function FF_Rayl(Z:longint; q:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'FF_Rayl';
+function FF_Rayl(Z:longint; q:double):double;cdecl;external External_library name 'FF_Rayl';
 
-function SF_Compt(Z:longint; q:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'SF_Compt';
+function SF_Compt(Z:longint; q:double):double;cdecl;external External_library name 'SF_Compt';
 
-function MomentTransf(E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'MomentTransf';
+function MomentTransf(E:double; theta:double):double;cdecl;external External_library name 'MomentTransf';
 
-function LineEnergy(Z:longint; line:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'LineEnergy';
+function LineEnergy(Z:longint; line:longint):double;cdecl;external External_library name 'LineEnergy';
 
-function FluorYield(Z:longint; shell:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'FluorYield';
+function FluorYield(Z:longint; shell:longint):double;cdecl;external External_library name 'FluorYield';
 
-function CosKronTransProb(Z:longint; trans:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CosKronTransProb';
+function CosKronTransProb(Z:longint; trans:longint):double;cdecl;external External_library name 'CosKronTransProb';
 
-function EdgeEnergy(Z:longint; shell:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'EdgeEnergy';
+function EdgeEnergy(Z:longint; shell:longint):double;cdecl;external External_library name 'EdgeEnergy';
 
-function JumpFactor(Z:longint; shell:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'JumpFactor';
+function JumpFactor(Z:longint; shell:longint):double;cdecl;external External_library name 'JumpFactor';
 
-function CS_FluorLine(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_FluorLine';
+function CS_FluorLine(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine';
 
-function CSb_FluorLine(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_FluorLine';
+function CSb_FluorLine(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine';
 
-function RadRate(Z:longint; line:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'RadRate';
+function RadRate(Z:longint; line:longint):double;cdecl;external External_library name 'RadRate';
 
-function ComptonEnergy(E0:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'ComptonEnergy';
+function ComptonEnergy(E0:double; theta:double):double;cdecl;external External_library name 'ComptonEnergy';
 
-function Fi(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Fi';
+function Fi(Z:longint; E:double):double;cdecl;external External_library name 'Fi';
 
-function Fii(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Fii';
+function Fii(Z:longint; E:double):double;cdecl;external External_library name 'Fii';
 
-function CS_Photo_Total(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Photo_Total';
+function CS_Photo_Total(Z:longint; E:double):double;cdecl;external External_library name 'CS_Photo_Total';
 
-function CSb_Photo_Total(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Photo_Total';
+function CSb_Photo_Total(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Photo_Total';
 
-function CS_Photo_Partial(Z:longint; shell:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Photo_Partial';
+function CS_Photo_Partial(Z:longint; shell:longint; E:double):double;cdecl;external External_library name 'CS_Photo_Partial';
 
-function CSb_Photo_Partial(Z:longint; shell:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Photo_Partial';
+function CSb_Photo_Partial(Z:longint; shell:longint; E:double):double;cdecl;external External_library name 'CSb_Photo_Partial';
 
-function CS_FluorLine_Kissel(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_FluorLine_Kissel';
+function CS_FluorLine_Kissel(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel';
 
-function CSb_FluorLine_Kissel(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_FluorLine_Kissel';
+function CSb_FluorLine_Kissel(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel';
 
-function CS_FluorLine_Kissel_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_FluorLine_Kissel_Cascade';
+function CS_FluorLine_Kissel_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Cascade';
 
-function CSb_FluorLine_Kissel_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_FluorLine_Kissel_Cascade';
+function CSb_FluorLine_Kissel_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Cascade';
 
-function CS_FluorLine_Kissel_Nonradiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_FluorLine_Kissel_Nonradiative_Cascade';
+function CS_FluorLine_Kissel_Nonradiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Nonradiative_Cascade';
 
-function CSb_FluorLine_Kissel_Nonradiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_FluorLine_Kissel_Nonradiative_Cascade';
+function CSb_FluorLine_Kissel_Nonradiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Nonradiative_Cascade';
 
-function CS_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_FluorLine_Kissel_Radiative_Cascade';
+function CS_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_Radiative_Cascade';
 
-function CSb_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_FluorLine_Kissel_Radiative_Cascade';
+function CSb_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_Radiative_Cascade';
 
-function CS_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_FluorLine_Kissel_no_Cascade';
+function CS_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CS_FluorLine_Kissel_no_Cascade';
 
-function CSb_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_FluorLine_Kissel_no_Cascade';
+function CSb_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;cdecl;external External_library name 'CSb_FluorLine_Kissel_no_Cascade';
 
-function CS_Total_Kissel(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Total_Kissel';
+function CS_Total_Kissel(Z:longint; E:double):double;cdecl;external External_library name 'CS_Total_Kissel';
 
-function CSb_Total_Kissel(Z:longint; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Total_Kissel';
+function CSb_Total_Kissel(Z:longint; E:double):double;cdecl;external External_library name 'CSb_Total_Kissel';
 
-function ElectronConfig(Z:longint; shell:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'ElectronConfig';
+function ElectronConfig(Z:longint; shell:longint):double;cdecl;external External_library name 'ElectronConfig';
 
 function CS_Total_CP(compound:string; E:double):double;
 
@@ -1951,21 +1952,21 @@ type
     im : double;
   end;
 
-function c_abs(x:xrlComplex):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'c_abs';
+function c_abs(x:xrlComplex):double;cdecl;external External_library name 'c_abs';
 
 function c_mul(x:xrlComplex; y:xrlComplex):xrlComplex;
 
 function Refractive_Index(compound:string; E:double; density:double):xrlComplex;
 
-function ComptonProfile(Z:longint; pz:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'ComptonProfile';
+function ComptonProfile(Z:longint; pz:double):double;cdecl;external External_library name 'ComptonProfile';
 
-function ComptonProfile_Partial(Z:longint; shell:longint; pz:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'ComptonProfile_Partial';
+function ComptonProfile_Partial(Z:longint; shell:longint; pz:double):double;cdecl;external External_library name 'ComptonProfile_Partial';
 
-function AtomicLevelWidth(Z:longint; shell:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'AtomicLevelWidth';
+function AtomicLevelWidth(Z:longint; shell:longint):double;cdecl;external External_library name 'AtomicLevelWidth';
 
-function AugerRate(Z:longint; auger_trans:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'AugerRate';
+function AugerRate(Z:longint; auger_trans:longint):double;cdecl;external External_library name 'AugerRate';
 
-function AugerYield(Z:longint; shell:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'AugerYield';
+function AugerYield(Z:longint; shell:longint):double;cdecl;external External_library name 'AugerYield';
 
 type
   PCrystalAtom = ^TCrystalAtom;
@@ -2028,37 +2029,37 @@ type
   function AtomicNumberToSymbol(Z:longint):string;
   function SymbolToAtomicNumber(symbol:string):longint;
   function CompoundParser(compound:string):PCompoundData;
-  procedure FreeCompoundData(data:PCompoundData);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'FreeCompoundData';
+  procedure FreeCompoundData(data:PCompoundData);cdecl;external External_library name 'FreeCompoundData';
 
   function GetCompoundDataNISTByName(compoundString:string):PCompoundDataNIST;
-  function GetCompoundDataNISTByIndex(compoundIndex:longint):PCompoundDataNIST;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetCompoundDataNISTByIndex';
-  procedure FreeCompoundDataNIST(compoundData:PCompoundDataNIST);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'FreeCompoundDataNIST';
+  function GetCompoundDataNISTByIndex(compoundIndex:longint):PCompoundDataNIST;cdecl;external External_library name 'GetCompoundDataNISTByIndex';
+  procedure FreeCompoundDataNIST(compoundData:PCompoundDataNIST);cdecl;external External_library name 'FreeCompoundDataNIST';
   function GetCompoundDataNISTList:TStringArray;
 
   function GetRadioNuclideDataByName(radioNuclideString:string):PRadioNuclideData;
-  function GetRadioNuclideDataByIndex(radioNuclideIndex:longint):PRadioNuclideData;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetRadioNuclideDataByIndex';
+  function GetRadioNuclideDataByIndex(radioNuclideIndex:longint):PRadioNuclideData;cdecl;external External_library name 'GetRadioNuclideDataByIndex';
   function GetRadioNuclideDataList():TStringArray;
-  procedure FreeRadioNuclideData(rnd:PRadioNuclideData);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'FreeRadioNuclideData';
+  procedure FreeRadioNuclideData(rnd:PRadioNuclideData);cdecl;external External_library name 'FreeRadioNuclideData';
 
   function Crystal_GetCrystal(material:string):PCrystalStruct;
-  procedure Crystal_Free(cryst:PCrystalStruct);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Crystal_Free';
-  procedure Atomic_Factors(Z:longint; energy:double; q:double; debye_factor:double; var f0, f_primep, f_prime2:double);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Atomic_Factors';
-  function Bragg_angle(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Bragg_angle';
-  function Q_scattering_amplitude(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Q_scattering_amplitude';
+  procedure Crystal_Free(cryst:PCrystalStruct);cdecl;external External_library name 'Crystal_Free';
+  procedure Atomic_Factors(Z:longint; energy:double; q:double; debye_factor:double; var f0, f_primep, f_prime2:double);cdecl;external External_library name 'Atomic_Factors';
+  function Bragg_angle(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Bragg_angle';
+  function Q_scattering_amplitude(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;rel_angle:double):double;cdecl;external External_library name 'Q_scattering_amplitude';
   function Crystal_F_H_StructureFactor(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double):xrlComplex;
   function Crystal_F_H_StructureFactor_Partial(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;
-  function Crystal_UnitCellVolume(crystal:PCrystalStruct):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Crystal_UnitCellVolume';
-  function Crystal_dSpacing(crystal:PCrystalStruct; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Crystal_dSpacing';
+  function Crystal_UnitCellVolume(crystal:PCrystalStruct):double;cdecl;external External_library name 'Crystal_UnitCellVolume';
+  function Crystal_dSpacing(crystal:PCrystalStruct; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Crystal_dSpacing';
 
 implementation
 
-function CompoundParser_C(compoundString:PAnsiChar):PCompoundData;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CompoundParser';
+function CompoundParser_C(compoundString:PAnsiChar):PCompoundData;cdecl;external External_library name 'CompoundParser';
 
-function AtomicNumberToSymbol_C(Z:longint):PAnsiChar;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'AtomicNumberToSymbol';
+function AtomicNumberToSymbol_C(Z:longint):PAnsiChar;cdecl;external External_library name 'AtomicNumberToSymbol';
 
-function SymbolToAtomicNumber_C(symbol:PAnsiChar):longint;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'SymbolToAtomicNumber';
+function SymbolToAtomicNumber_C(symbol:PAnsiChar):longint;cdecl;external External_library name 'SymbolToAtomicNumber';
 
-procedure xrlFree(p:pointer);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'xrlFree';
+procedure xrlFree(p:pointer);cdecl;external External_library name 'xrlFree';
 
 function AtomicNumberToSymbol(Z:longint):string;
 begin
@@ -2081,47 +2082,47 @@ begin
  	Result := CompoundParser_C(temp);
 end;
 
-function CS_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Total_CP';
+function CS_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Total_CP';
 
-function CS_Photo_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Photo_CP';
+function CS_Photo_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Photo_CP';
 
-function CS_Rayl_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Rayl_CP';
+function CS_Rayl_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Rayl_CP';
 
-function CS_Compt_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Compt_CP';
+function CS_Compt_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Compt_CP';
 
-function CSb_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Total_CP';
+function CSb_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CSb_Total_CP';
 
-function CSb_Photo_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Photo_CP';
+function CSb_Photo_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CSb_Photo_CP';
 
-function CSb_Rayl_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Rayl_CP';
+function CSb_Rayl_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CSb_Rayl_CP';
 
-function CSb_Compt_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Compt_CP';
+function CSb_Compt_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CSb_Compt_CP';
 
-function DCS_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCS_Rayl_CP';
+function DCS_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name 'DCS_Rayl_CP';
 
-function DCS_Compt_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCS_Compt_CP';
+function DCS_Compt_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name 'DCS_Compt_CP';
 
-function DCSb_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSb_Rayl_CP';
+function DCSb_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Rayl_CP';
 
-function DCSb_Compt_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSb_Compt_CP';
+function DCSb_Compt_CP_C(compound:PAnsiChar; E:double; theta:double):double;cdecl;external External_library name 'DCSb_Compt_CP';
 
-function DCSP_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSP_Rayl_CP';
+function DCSP_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Rayl_CP';
 
-function DCSP_Compt_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSP_Compt_CP';
+function DCSP_Compt_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSP_Compt_CP';
 
-function DCSPb_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSPb_Rayl_CP';
+function DCSPb_Rayl_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Rayl_CP';
 
-function DCSPb_Compt_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'DCSPb_Compt_CP';
+function DCSPb_Compt_CP_C(compound:PAnsiChar; E:double; theta:double; phi:double):double;cdecl;external External_library name 'DCSPb_Compt_CP';
 
-function CS_Photo_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Photo_Total_CP';
+function CS_Photo_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Photo_Total_CP';
 
-function CSb_Photo_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Photo_Total_CP';
+function CSb_Photo_Total_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CSb_Photo_Total_CP';
 
-function CS_Total_Kissel_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Total_Kissel_CP';
+function CS_Total_Kissel_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Total_Kissel_CP';
 
-function CSb_Total_Kissel_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CSb_Total_Kissel_CP';
+function CSb_Total_Kissel_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CSb_Total_Kissel_CP';
 
-function CS_Energy_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'CS_Energy_CP';
+function CS_Energy_CP_C(compound:PAnsiChar; E:double):double;cdecl;external External_library name 'CS_Energy_CP';
 
 function CS_Total_CP(compound:string; E:double):double;
 var
@@ -2291,11 +2292,11 @@ begin
 	CS_Energy_CP := CS_Energy_CP_C(temp, E);
 end;
 
-function Refractive_Index_Re_C(compound:PAnsiChar; E:double; density:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Refractive_Index_Re';
+function Refractive_Index_Re_C(compound:PAnsiChar; E:double; density:double):double;cdecl;external External_library name 'Refractive_Index_Re';
 
-function Refractive_Index_Im_C(compound:PAnsiChar; E:double; density:double):double;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Refractive_Index_Im';
+function Refractive_Index_Im_C(compound:PAnsiChar; E:double; density:double):double;cdecl;external External_library name 'Refractive_Index_Im';
 
-procedure Refractive_Index_C2(compound:PAnsiChar; E:double; density:double; var z:xrlComplex);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Refractive_Index2';
+procedure Refractive_Index_C2(compound:PAnsiChar; E:double; density:double; var z:xrlComplex);cdecl;external External_library name 'Refractive_Index2';
 
 function Refractive_Index_Re(compound:string; E:double; density:double):double;
 var
@@ -2321,9 +2322,9 @@ begin
 	Refractive_Index_C2(temp, E, density, Result);
 end;
 
-function GetCompoundDataNISTList_C(var n:longint): PPAnsiChar;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetCompoundDataNISTList';
+function GetCompoundDataNISTList_C(var n:longint): PPAnsiChar;cdecl;external External_library name 'GetCompoundDataNISTList';
 
-function GetCompoundDataNISTByName_C(compoundString:PAnsiChar):PCompoundDataNIST;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetCompoundDataNISTByName';
+function GetCompoundDataNISTByName_C(compoundString:PAnsiChar):PCompoundDataNIST;cdecl;external External_library name 'GetCompoundDataNISTByName';
 
 function GetCompoundDataNISTByName(compoundString:string):PCompoundDataNIST;
 var
@@ -2352,9 +2353,9 @@ begin
 	xrlFree(list_C);
 end;
 
-function GetRadioNuclideDataByName_C(radioNuclideString:PAnsiChar):PRadioNuclideData;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetRadioNuclideDataByName';
+function GetRadioNuclideDataByName_C(radioNuclideString:PAnsiChar):PRadioNuclideData;cdecl;external External_library name 'GetRadioNuclideDataByName';
 
-function GetRadioNuclideDataList_C(var nRadioNuclides:longint):PPAnsiChar;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'GetRadioNuclideDataList';
+function GetRadioNuclideDataList_C(var nRadioNuclides:longint):PPAnsiChar;cdecl;external External_library name 'GetRadioNuclideDataList';
 
 function GetRadioNuclideDataByName(radioNuclideString:string):PRadioNuclideData;
 var
@@ -2383,11 +2384,11 @@ begin
 	xrlFree(list_C);
 end;
 
-function Crystal_GetCrystal_C(material:PAnsiChar; p:Pointer):PCrystalStruct;cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Crystal_GetCrystal';
+function Crystal_GetCrystal_C(material:PAnsiChar; p:Pointer):PCrystalStruct;cdecl;external External_library name 'Crystal_GetCrystal';
 
-procedure Crystal_F_H_StructureFactor2(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; var z:xrlComplex);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Crystal_F_H_StructureFactor2';
+procedure Crystal_F_H_StructureFactor2(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; var z:xrlComplex);cdecl;external External_library name 'Crystal_F_H_StructureFactor2';
 
-procedure Crystal_F_H_StructureFactor_Partial2(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint; var z:xrlComplex);cdecl;external External_library name {$IFDEF MACOS}'_'+{$ENDIF}'Crystal_F_H_StructureFactor_Partial2';
+procedure Crystal_F_H_StructureFactor_Partial2(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint; var z:xrlComplex);cdecl;external External_library name 'Crystal_F_H_StructureFactor_Partial2';
 
 function Crystal_GetCrystal(material:string):PCrystalStruct;
 var
