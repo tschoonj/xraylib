@@ -84,7 +84,7 @@ double RadRate(int Z, int line)
   }
 
   rad_rate = RadRate_arr[Z][line];
-  if (rad_rate < 0.) {
+  if (rad_rate <= 0.) {
     ErrorExit("Line not available in function RadRate");
     return 0;
   }

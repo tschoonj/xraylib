@@ -1,4 +1,4 @@
-#Copyright (c) 2010-2015, Tom Schoonjans
+#Copyright (c) 2015, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -10,27 +10,26 @@
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-if ENABLE_JAVA
+if ENABLE_PASCAL
 
-AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/src
+all-local: xraylib.ppu xraylib.o
 
-#java bindings for xraylib
-xrljavadir = $(prefix)/share/xraylib/java
-xrljava_DATA = xraylib.jar
-dist_xrljava_JAVA = Xraylib.java XraylibException.java
+xraylib.ppu: $(srcdir)/xraylib.pas
+	$(FPC) -FE$(builddir) -Mdelphi $(srcdir)/xraylib.pas
 
-noinst_PROGRAMS = prdata_java
-prdata_java_SOURCES = pr_data_java.c
-prdata_java_LDADD = ../src/libprdata.la
-prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
+xraylib.o: xraylib.ppu
 
-xraylib.jar: Xraylib.class XraylibException.class xraylib.dat
-	jar cf xraylib.jar Xraylib.class XraylibException.class xraylib.dat
+install-exec-local: xraylib.ppu xraylib.o
+	$(MKDIR_P) $(DESTDIR)$(FPC_DIR)
+	$(INSTALL) xraylib.o xraylib.ppu $(DESTDIR)$(FPC_DIR)
 
-xraylib.dat: prdata_java$(EXEEXT)
-	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
+uninstall-local:
+	rm -rf $(DESTDIR)$(FPC_DIR)/xraylib.o
+	rm -rf $(DESTDIR)$(FPC_DIR)/xraylib.ppu
 
 clean-local:
-	rm -rf XraylibGlob.java xraylib.jar xraylib.dat
+	rm -rf xraylib.ppu xraylib.o
+
+EXTRA_DIST = xraylib.pas
 
 endif

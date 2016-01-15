@@ -48,7 +48,7 @@ double FluorYield(int Z, int shell)
   }
 
   fluor_yield = FluorYield_arr[Z][shell];
-  if (fluor_yield < 0.) {
+  if (fluor_yield <= 0.) {
     ErrorExit("Shell not available in function FluorYield");
     return 0;
   }

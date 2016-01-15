@@ -70,6 +70,8 @@ common:
 	unix2dos -n ${top_srcdir}/idl/xraylib_auger.pro xraylib_auger.pro 
 	unix2dos -n ${top_srcdir}/idl/xraylib_nist_compounds.pro xraylib_nist_compounds.pro 
 	unix2dos -n ${top_srcdir}/idl/xraylib_radionuclides.pro xraylib_radionuclides.pro 
+	unix2dos -n ${top_srcdir}/pascal/xraylib.pas xraylib.pas
+	unix2dos -n ${top_srcdir}/example/xrlexample14.pas xrlexample14.pas
 
 idl32:
 	cp ${top_srcdir}/idl/xraylib_idl.c .

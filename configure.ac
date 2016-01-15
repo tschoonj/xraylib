@@ -932,6 +932,42 @@ AC_SUBST(PHP_LDFLAGS)
 AC_SUBST(PHP_CFLAGS)
 AC_SUBST(PHP_DIR)
 
+#
+# Pascal bindings -> look for fpc
+#
+AC_ARG_ENABLE([pascal],[AS_HELP_STRING([--disable-pascal],[build without the pascal bindings])],[enable_pascal=$enableval],[enable_pascal=check])
+
+VALID_PASCAL=
+
+AC_ARG_VAR(FPC, [the Free Pascal compiler])
+if test "x$enable_pascal" = xyes && test "x$DISABLE_BINDINGS" = xno ; then
+	AC_CHECK_PROGS(FPC, [fpc], [nofpc])
+
+	if test "x$FPC" = xnofpc ; then
+		AC_MSG_ERROR([--enable-pascal was given as an option but Free Pascal was not found on the system.])
+		VALID_PASCAL=no
+	else
+		#check for version
+		AC_MSG_CHECKING([for Free Pascal compiler version])
+		FPC_VERSION=`[$FPC -iW]`
+		AC_MSG_RESULT([$FPC_VERSION])
+		AC_MSG_CHECKING([for Free Pascal compiler host processor])
+		FPC_HOST=`[$FPC -iSP]`
+		AC_MSG_RESULT([$FPC_HOST])
+		AC_MSG_CHECKING([for Free Pascal compiler operating system])
+		FPC_OS=`[$FPC -iSO]`
+		AC_MSG_RESULT([$FPC_OS])
+		# some version checking may become necessary here... some old fpc compilers are really buggy like the one that ships with centos6
+		FPC_DIR=${libdir}/fpc/$FPC_VERSION/units/$FPC_HOST-$FPC_OS/
+		AC_SUBST(FPC_DIR)
+		VALID_PASCAL=yes
+	fi
+
+
+fi
+
+AM_CONDITIONAL([ENABLE_PASCAL],[test x$VALID_PASCAL = xyes])
+
 AC_CONFIG_FILES([Makefile
 				 src/Makefile
 				 include/Makefile
@@ -969,6 +1005,7 @@ AC_CONFIG_FILES([Makefile
 				 windows/python/python3.4/xrlsetup.py
 				 ruby/Makefile
 				 php/Makefile
+				 pascal/Makefile
 ])
 
 
@@ -994,7 +1031,7 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([])
-if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes || test "$VALID_PYTHON_NUMPY" = yes || test "$VALID_PHP" = "yes" ; then
+if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PERL" = "yes" || test "$VALID_PYTHON" = "yes" || test "$VALID_JAVA" = "yes" || test "$VALID_LUA" = "yes" || test "$VALID_RUBY" = yes || test "$VALID_PYTHON_NUMPY" = yes || test "$VALID_PHP" = "yes" || test "VALID_PASCAL" = "yes" ; then
 	AC_MSG_NOTICE([Building xraylib with bindings for:])
 	if test "$VALID_FORTRAN" = "yes" ; then
 		AC_MSG_NOTICE([Fortran 2003])
@@ -1022,6 +1059,9 @@ if test "$VALID_FORTRAN" = "yes" || test "$VALID_IDL" = "yes" || test "$VALID_PE
 	fi
 	if test "$VALID_PHP" = yes ; then
 		AC_MSG_NOTICE([PHP])
+	fi
+	if test "$VALID_PASCAL" = yes ; then
+		AC_MSG_NOTICE([Pascal])
 	fi
 else
 	AC_MSG_NOTICE([Building without bindings])

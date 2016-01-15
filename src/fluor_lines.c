@@ -156,7 +156,7 @@ double LineEnergy(int Z, int line)
   }
   
   line_energy = LineEnergy_arr[Z][line];
-  if (line_energy < 0.) {
+  if (line_energy <= 0.) {
     ErrorExit("Line not available in function LineEnergy");
     return 0;
   }

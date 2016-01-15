@@ -65,6 +65,8 @@ Name: "python/3_1" ; Description: "Python 3.1" ; Flags: exclusive
 Name: "python/3_2" ; Description: "Python 3.2" ; Flags: exclusive 
 Name: "python/3_3" ; Description: "Python 3.3" ; Flags: exclusive 
 Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive 
+Name: "python/3_5" ; Description: "Python 3.5" ; Flags: exclusive
+Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
 
 [Files]
 Source: "{#builddir}\src\.libs\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
@@ -133,6 +135,11 @@ Source: "{#builddir}\windows\python\python3.1\_xraylib.pyd" ; DestDir: "{app}\Py
 Source: "{#builddir}\windows\python\python3.2\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_2"
 Source: "{#builddir}\windows\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_3"
 Source: "{#builddir}\windows\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
+Source: "{#builddir}\windows\python\python3.5\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
+
+Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
+Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
+
 #ifdef XRL64
 Source: "{#srcdir}\windows\msvcrt\vcredist_x64_110.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
 #endif

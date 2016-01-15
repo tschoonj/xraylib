@@ -24,6 +24,7 @@ SUBDIRS = include \
 	  fortran \
 	  ruby \
 	  php \
+	  pascal \
 	  example
 ACLOCAL_AMFLAGS = -I m4
 
@@ -38,6 +39,6 @@ windows:
 
 
 EXTRA_DIST = xraylib.spec.in BUGS Changelog 
-#DISTCHECK_CONFIGURE_FLAGS = --disable-idl --enable-php
+DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-pascal
 
 .PHONY: windows 

@@ -42,7 +42,7 @@ double CosKronTransProb(int Z, int trans)
   }
 
   trans_prob = CosKron_arr[Z][trans];
-  if (trans_prob < 0.) {
+  if (trans_prob <= 0.) {
     ErrorExit("Transition not available in function CosKronTransProb");
     return 0;
   }

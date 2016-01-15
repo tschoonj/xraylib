@@ -16,7 +16,11 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I..
 
 lib_LTLIBRARIES=libxrl.la
 noinst_PROGRAMS=prdata
-prdata_SOURCES = pr_data.c \
+noinst_LTLIBRARIES = libprdata.la
+prdata_SOURCES = pr_data.c
+prdata_LDADD = libprdata.la
+libprdata_la_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
+libprdata_la_SOURCES = \
 		 xrayvars.c \
 		 xrayglob.h \
 		 xrayvars.h \
@@ -81,21 +85,12 @@ libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ $(LDFLAGS
 
 EXTRA_DIST = xraylib.i
 
-
-
-all: 
+all:
 
 #$(EXEEXT) is necessary to allow compilation in cygwin
 #wine is necessary when cross-compiling
 xrayglob_inline.c: prdata$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
-
-
-
-
-
-
-
 clean-local:
-	rm -f xrayglob_inline.c xraylib.mod 
+	rm -f xrayglob_inline.c xraylib.mod
