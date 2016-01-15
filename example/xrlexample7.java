@@ -10,16 +10,11 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import com.github.tschoonj.xraylib.*;
+
 
 public class xrlexample7 {
 	public static void main(String argv[]) {
-		try {
-			Xraylib.XRayInit();
-		}
-		catch (Exception e){
-			e.printStackTrace();	
-			System.exit(1);
-		}
 		//Xraylib.SetErrorMessages(0);
 //		Xraylib.SetHardExit(1);
 		System.out.println("Example of java program using Xraylib");
@@ -70,6 +65,45 @@ public class xrlexample7 {
 		System.out.println("Sr anomalous scattering factor Fii at 10.0 keV: " + Xraylib.Fii(38, 10.0));
 		System.out.println("Symbol of element 26 is: " + Xraylib.AtomicNumberToSymbol(26));
 		System.out.println("Number of element Fe is: " + Xraylib.SymbolToAtomicNumber("Fe"));
+		System.out.println(Xraylib.CompoundParser("Ca(HCO3)2"));
+		System.out.println(Xraylib.CompoundParser("SiO2"));
+		System.out.println(Xraylib.CompoundParser("Ca5(PO4)OH"));
+		System.out.println(Xraylib.CompoundParser("Fe0.6Mn0.4SiO3"));
+		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CS_Total_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Total_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Rayleigh cs of SiO2 at 10.0 keV: "+Xraylib.CS_Rayl_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Rayleigh cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Rayl_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Compton cs of SiO2 at 10.0 keV: "+Xraylib.CS_Compt_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Compton cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Compt_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Photoionization cs of SiO2 at 10.0 keV: "+Xraylib.CS_Photo_CP("SiO2", 10.0)+" cm2/g");
+		System.out.println("Photoionization cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Photo_CP("SiO2", 10.0)+" barns/atom");
+		System.out.println("Differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCS_Rayl_CP("SiO2", 10.0, Math.PI/4.0)+" cm2/g/sterad");
+		System.out.println("Differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCSb_Rayl_CP("SiO2", 10.0, Math.PI/4.0)+" barns/atom/sterad");
+		System.out.println("Differential Compton cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCS_Compt_CP("SiO2", 10.0, Math.PI/4.0)+" cm2/g/sterad");
+		System.out.println("Differential Compton cs of SiO2 at 10.0 keV and 45 deg theta: "+Xraylib.DCSb_Compt_CP("SiO2", 10.0, Math.PI/4.0)+" barns/atom/sterad");
+		System.out.println("Polarized differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSP_Rayl_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" cm2/g/sterad");
+		System.out.println("Polarized differential Rayleigh cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSPb_Rayl_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" barns/atom/sterad");
+		System.out.println("Polarized differential Compton cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSP_Compt_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" cm2/g/sterad");
+		System.out.println("Polarized differential Compton cs of SiO2 at 10.0 keV and 45 deg theta and 90 deg phi: "+Xraylib.DCSPb_Compt_CP("SiO2", 10.0, Math.PI/4.0, Math.PI/2.0)+" barns/atom/sterad");
+		System.out.println("Total cs of Polymethyl Methacralate (Lucite, Perspex) at 10.0 keV: "+Xraylib.CS_Total_CP("Polymethyl Methacralate (Lucite, Perspex)", 10.0)+" cm2/g");
+
+		try {
+			// the following line should throw an exception
+			double testvalue = Xraylib.DCSb_Compt_CP("SiO2)", 10.0, Math.PI/4.0);
+			System.exit(1);
+		}
+		catch (XraylibException e) {}
+
+		System.out.println("\n" + Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide"));
+		System.out.println(Xraylib.GetCompoundDataNISTByIndex(Xraylib.NIST_COMPOUND_BRAIN_ICRP));
+                String[] nistCompounds = Xraylib.GetCompoundDataNISTList();
+
+		System.out.println("List of available NIST compounds:");
+		for (int i = 0 ; i < nistCompounds.length ; i++) {
+			System.out.format("  Compound %d: %s\n", i, nistCompounds[i]);
+		}
+
+
 		/*
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+Xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");

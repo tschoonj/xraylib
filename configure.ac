@@ -982,6 +982,7 @@ AC_CONFIG_FILES([Makefile
 				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
+				 java/OSGI-MANIFEST
 				 windows/python/Makefile
 				 windows/Makefile
 				 windows/python/python2.6/Makefile

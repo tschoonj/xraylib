@@ -13,8 +13,10 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 
 
 #include <stdio.h>
+#include <string.h>
 #include "xraylib.h"
 #include "xrayglob.h"
+#include "xraylib-nist-compounds-internal.h"
 
 
 extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
@@ -1148,6 +1150,17 @@ int main(void)
 
   SetHardExit(1);
   SetErrorMessages(1);
+
+  // NIST compounds
+  fwrite(&nCompoundDataNISTList, sizeof(int), 1, f);
+  for (i = 0 ; i < nCompoundDataNISTList ; i++) {
+  	fwrite(compoundDataNISTList[i].name, sizeof(char), strlen(compoundDataNISTList[i].name)+1, f);
+	fwrite(&compoundDataNISTList[i].nElements, sizeof(int), 1, f);
+	fwrite(compoundDataNISTList[i].Elements, sizeof(int), compoundDataNISTList[i].nElements, f);
+	fwrite(compoundDataNISTList[i].massFractions, sizeof(double), compoundDataNISTList[i].nElements, f);
+	fwrite(&compoundDataNISTList[i].density, sizeof(double), 1, f);
+  }
+
 
   fclose(f);
 
