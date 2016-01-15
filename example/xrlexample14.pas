@@ -1,10 +1,10 @@
 program xrlexample14;
 
 {$APPTYPE CONSOLE}
-
-uses
-  SysUtils,
-  xraylib in 'xraylib.pas';
+{$IFDEF FPC}
+{$linklib libxrl}
+{$ENDIF}
+uses SysUtils, xraylib;
 
 var
   i: Integer;
