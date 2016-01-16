@@ -23,11 +23,11 @@ before_install:
 #  - if [ $TRAVIS_OS_NAME == linux ]; then ./travis-deps.sh ; fi
 
 script:
-  - autoreconf -fi && ./configure --enable-php --enable-pascal && make && make check
-  - autoreconf -fi && ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check
-  - autoreconf -fi && ./configure --enable-python-numpy --enable-python PYTHON=python && make && make check
+  - autoreconf -fi && ./configure --enable-php --enable-pascal && make && make check && make distclean
+  - autoreconf -fi && ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
+  - autoreconf -fi && ./configure --enable-python-numpy --enable-python PYTHON=python && make && make check && make distclean
   # disable python3 numpy for now...
-  - autoreconf -fi && ./configure --disable-python-numpy --enable-python PYTHON=python3 && make && make check
+  - autoreconf -fi && ./configure --disable-python-numpy --enable-python PYTHON=python3 && make && make check && make distclean
 
 branches:
   only:
