@@ -138,4 +138,15 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array);
 
 int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array);
 
+/*--------------------------------------------------------------------------------
+ * Returns a NULL-terminated array of strings containing the names of the crystals
+ * in c_array. If c_array is NULL, then the builtin array of crystals will be used instead
+ * If nCrystals is not NULL, it shall receive the number of crystalnames in the array.
+ * The returned array should be freed firstly by using xrlFree to deallocate
+ * all individual strings, and subsequently by using xrlFree to deallocate the array
+ */
+ 
+char **Crystal_GetListOfCrystals(Crystal_Array *c_array, int *nCrystals);
+
+
 #endif

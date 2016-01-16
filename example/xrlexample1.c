@@ -31,6 +31,7 @@ int main()
   double f0, fp, fpp;
   xrlComplex FH, F0;
   xrlComplex FHbar;
+  char **crystalNames;
   struct compoundDataNIST *cdn;
   char **nistCompounds;
   struct radioNuclideData *rnd;
@@ -221,6 +222,14 @@ int main()
 
   F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
+
+  crystalNames = Crystal_GetListOfCrystals(NULL, NULL);
+  printf ("List of available crystals:\n");
+  for (i = 0 ; crystalNames[i] != NULL ; i++) {
+  	printf ("  Crystal %i: %s\n", i, crystalNames[i]);
+    xrlFree(crystalNames[i]);
+  }
+  xrlFree(crystalNames);
 
   printf ("\n");
 

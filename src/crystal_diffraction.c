@@ -129,6 +129,26 @@ void Crystal_Free (Crystal_Struct* crystal) {
   free(crystal);
 }
 
+/*-------------------------------------------------------------------------------------------------- */
+
+char **Crystal_GetListOfCrystals(Crystal_Array *c_array, int *nCrystals) {
+  char **rv = NULL;
+  int i;
+
+  if (c_array == NULL) {
+  	c_array = &Crystal_arr;
+  }
+  rv = malloc(sizeof(char *) * (c_array->n_crystal + 1));
+  for (i = 0 ; i < c_array->n_crystal ; i++)
+    rv[i] = strdup(c_array->crystal[i].name);
+
+  rv[c_array->n_crystal] = NULL;
+
+  if (nCrystals != NULL)
+    *nCrystals = c_array->n_crystal;
+
+  return rv;
+}
 
 /*-------------------------------------------------------------------------------------------------- */
 
