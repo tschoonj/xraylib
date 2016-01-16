@@ -1,0 +1,38 @@
+language: c
+
+sudo: required
+
+compiler:
+  - gcc
+  - clang
+
+os:
+  - linux
+  - osx
+
+#env:
+#  global:
+#    - LD_LIBRARY_PATH=/usr/local/lib
+#    - LD_RUN_PATH=/usr/local/lib
+
+before_install:
+  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update && sudo apt-get install swig python-all-dev python-numpy cython fpc gfortran php-config ; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install swig ruby python fpc lua gcc ; fi
+
+#install:
+#  - if [ $TRAVIS_OS_NAME == linux ]; then ./travis-deps.sh ; fi
+
+script:
+  - autoreconf -fi && ./configure --enable-php --enable-pascal && make && make check
+
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    recipients:
+      - Tom.Schoonjans@me.com
+    on_success: never
+    on_failure: always
+
