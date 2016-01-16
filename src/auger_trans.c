@@ -29,7 +29,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 double AugerRate(int Z, int auger_trans) {
 	double rv;
-	double yield, yield2;
 
 	rv = 0.0;
 
@@ -69,9 +68,8 @@ double AugerYield(int Z, int shell) {
 		ErrorExit("Invalid Auger transition detected in AugerYield");
 		return rv;
 	}
-	
+
 	rv = Auger_Yields[Z][shell];
 
 	return rv;
 }
-

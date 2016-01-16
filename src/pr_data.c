@@ -60,7 +60,7 @@ fprintf(f, "};\n\n");
     if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
       fprintf(f, "\n");\
   }\
-  fprintf(f, "};\n\n");    
+  fprintf(f, "};\n\n");
 
 #define PR_DYNMATI(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
@@ -81,7 +81,7 @@ fprintf(f, "};\n\n");
     if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
       fprintf(f, "\n");\
   }\
-  fprintf(f, "};\n\n");    
+  fprintf(f, "};\n\n");
 
 #define PR_DYNMAT_3DD_K(NVAR2D, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1; i++) { \
@@ -159,7 +159,7 @@ static double AugerYield_prdata(int Z, int shell) {
 	else if (shell < K_SHELL || shell > M5_SHELL) {
 		return rv;
 	}
-	
+
 	rv = FluorYield(Z, shell);
 
 	if (rv == 0.0)
@@ -207,7 +207,7 @@ static double AugerYield2_prdata(int Z, int shell) {
 	else if (shell < K_SHELL || shell > M5_SHELL) {
 		return rv;
 	}
-	
+
 	rv = Auger_Transition_Total[Z][shell];
 	if (shell == L1_SHELL) {
 		rv -= Auger_Transition_Individual[Z][L1_L2L2_AUGER];
@@ -579,7 +579,7 @@ static double AugerYield2_prdata(int Z, int shell) {
 
 static double AugerRate_prdata(int Z, int auger_trans) {
 	double rv;
-	double yield, yield2;
+	double yield2;
 
 	rv = 0.0;
 
@@ -950,49 +950,49 @@ static double AugerRate_prdata(int Z, int auger_trans) {
 
 	if (auger_trans >= K_L1L1_AUGER && auger_trans < L1_L2L2_AUGER  ) {
 		yield2 = AugerYield2_prdata(Z, K_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L1_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L2_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L3_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M1_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M2_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M3_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
 	else if (auger_trans >= M4_M5M5_AUGER && auger_trans <= M4_M5Q3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M4_SHELL);
-		if (yield2 < 1E-8) 
+		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
@@ -1006,7 +1006,7 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
 {
   int i;
   int MENDEL_PER_LINE = 10;
-  fprintf(f, "{\n"); 
+  fprintf(f, "{\n");
   for(i = 0; i < arrmax; i++) {
     fprintf(f, "{%d,\"%s\"}, ", arr[i].Zatom, arr[i].name);
     if(i%MENDEL_PER_LINE == (MENDEL_PER_LINE-1))
@@ -1019,7 +1019,7 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
 void print_doublevec(int arrmax, double *arr)
 {
   int i;
-  fprintf(f, "{\n"); 
+  fprintf(f, "{\n");
   for(i = 0; i < arrmax; i++) {
     if(i < arrmax - 1) {
       fprintf(f, "%.10E, ", arr[i]);
@@ -1037,7 +1037,7 @@ void print_doublevec(int arrmax, double *arr)
 void print_intvec(int arrmax, int *arr)
 {
   int i;
-  fprintf(f, "{\n"); 
+  fprintf(f, "{\n");
   for(i = 0; i < arrmax; i++) {
     if(i < arrmax - 1) {
       fprintf(f, "%d, ", arr[i]);
@@ -1053,7 +1053,7 @@ void print_intvec(int arrmax, int *arr)
 }
 
 
-int main(void) 
+int main(void)
 {
 
   int i,j;
@@ -1095,8 +1095,8 @@ int main(void)
   fprintf(f, "Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name, 
-              crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma, 
+    fprintf(f, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name,
+              crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma,
               crystal->volume, crystal->n_atom, crystal->name);
   }
   fprintf (f, "};\n\n");
@@ -1186,9 +1186,9 @@ int main(void)
   fprintf(f, "int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATI(ZMAX+1, SHELLNUM_K, NE_Photo_Partial_Kissel);
 
-  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel"); 
-  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel"); 
-  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2"); 
+  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel");
+  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel");
+  PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2");
 
   PR_NUMVEC1D(NShells_ComptonProfiles, "NShells_ComptonProfiles");
   PR_NUMVEC1D(Npz_ComptonProfiles, "Npz_ComptonProfiles");
