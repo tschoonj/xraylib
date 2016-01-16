@@ -79,7 +79,7 @@ printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::CS_Energy(82, 
 printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", Xraylib::CS_Energy_CP("CdTe", 40.0))
 
 
-# Si Crystal structure 
+# Si Crystal structure
 
 cryst = Xraylib.Crystal_GetCrystal("Si")
 exit(1) if not cryst
@@ -89,7 +89,7 @@ printf("Si unit cell angles are %f %f %f\n", cryst["alpha"], cryst["beta"], crys
 printf("Si unit cell volume is %f\n", cryst["volume"])
 printf("Si atoms at:\n")
 printf("   Z  fraction    X        Y        Z\n")
-for i in (0..cryst["n_atom"]-1) 
+for i in (0..cryst["n_atom"]-1)
     atom = cryst["atom"][i]
     printf("  %3i %f %f %f %f\n", atom["Zatom"], atom["fraction"], atom["x"], atom["y"], atom["z"])
 end
@@ -221,11 +221,11 @@ printf("  N: %i\n" , rnd['N'])
 printf("  Z_xray: %i\n" , rnd['Z_xray'])
 printf("  X-rays:\n")
 for i in (0..rnd['nXrays']-1)
-	printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+	printf("  %f keV -> %f\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i])
 end
 printf("  Gamma rays:\n")
 for i in (0..rnd['nGammas']-1)
-	printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+	printf("  %f keV -> %f\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i])
 end
 
 rnd = Xraylib.GetRadioNuclideDataByIndex(Xraylib::RADIO_NUCLIDE_125I)
@@ -237,11 +237,11 @@ printf("  N: %i\n" , rnd['N'])
 printf("  Z_xray: %i\n" , rnd['Z_xray'])
 printf("  X-rays:\n")
 for i in (0..rnd['nXrays']-1)
-	printf("  %f keV -> %f %%\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+	printf("  %f keV -> %f\n", Xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i])
 end
 printf("  Gamma rays:\n")
 for i in (0..rnd['nGammas']-1)
-	printf("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+	printf("  %f keV -> %f\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i])
 end
 
 radioNuclides = Xraylib.GetRadioNuclideDataList()

@@ -77,7 +77,7 @@ printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", CS_Energy_CP("CdTe", 
 /* Si Crystal structure */
 
 $cryst = Crystal_GetCrystal("Si");
-if ($cryst == NULL) 
+if ($cryst == NULL)
 	exit(1);
 printf ("Si unit cell dimensions are %f %f %f\n", $cryst["a"], $cryst["b"], $cryst["c"]);
 printf ("Si unit cell angles are %f %f %f\n", $cryst["alpha"], $cryst["beta"], $cryst["gamma"]);
@@ -87,7 +87,7 @@ printf ("   Z  fraction    X        Y        Z\n");
 for ($i = 0; $i < $cryst["n_atom"] ; $i++) {
     $atom = $cryst["atom"][$i];
     printf ("  %3d %f %f %f %f\n", $atom["Zatom"], $atom["fraction"], $atom["x"], $atom["y"], $atom["z"]);
-  } 
+  }
 
 /* Si diffraction parameters */
 $energy = 8.0;
@@ -134,7 +134,7 @@ $F0 = Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_temp_factor,
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", $F0["re"], $F0["im"]);
 
 $FHbar = Crystal_F_H_StructureFactor ($cryst, $energy, -1, -1, -1, $debye_temp_factor, $rel_angle);
-$dw = 1.0E10 * 2 * (R_E / $cryst["volume"]) * (KEV2ANGST * KEV2ANGST/ ($energy * $energy)) * 
+$dw = 1.0E10 * 2 * (R_E / $cryst["volume"]) * (KEV2ANGST * KEV2ANGST/ ($energy * $energy)) *
                                                   sqrt(c_abs(c_mul($FH, $FHbar))) / PI / sin(2*$bragg);
 printf ("  Darwin width: %f micro-radians\n", 1.0E6*$dw);
 
@@ -217,11 +217,11 @@ printf ("  N: %d\n", $rnd["N"]);
 printf ("  Z_xray: %d\n", $rnd["Z_xray"]);
 printf ("  X-rays:\n");
 for ($i = 0 ; $i < $rnd["nXrays"] ; $i++) {
-  	printf ("  %f keV -> %f %%\n", LineEnergy($rnd["Z_xray"], $rnd["XrayLines"][$i]), $rnd["XrayIntensities"][$i]*100.0);
+  	printf ("  %f keV -> %f\n", LineEnergy($rnd["Z_xray"], $rnd["XrayLines"][$i]), $rnd["XrayIntensities"][$i]);
 }
 printf ("  Gamma rays:\n");
 for ($i = 0 ; $i < $rnd["nGammas"] ; $i++) {
-  	printf ("  %f keV -> %f %%\n", $rnd["GammaEnergies"][$i], $rnd["GammaIntensities"][$i]*100.0);
+  	printf ("  %f keV -> %f\n", $rnd["GammaEnergies"][$i], $rnd["GammaIntensities"][$i]);
 }
 
 $rnd = GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I);
@@ -233,11 +233,11 @@ printf ("  N: %d\n", $rnd["N"]);
 printf ("  Z_xray: %d\n", $rnd["Z_xray"]);
 printf ("  X-rays:\n");
 for ($i = 0 ; $i < $rnd["nXrays"] ; $i++) {
-  	printf ("  %f keV -> %f %%\n", LineEnergy($rnd["Z_xray"], $rnd["XrayLines"][$i]), $rnd["XrayIntensities"][$i]*100.0);
+  	printf ("  %f keV -> %f\n", LineEnergy($rnd["Z_xray"], $rnd["XrayLines"][$i]), $rnd["XrayIntensities"][$i]);
 }
 printf ("  Gamma rays:\n");
 for ($i = 0 ; $i < $rnd["nGammas"] ; $i++) {
-  	printf ("  %f keV -> %f %%\n", $rnd["GammaEnergies"][$i], $rnd["GammaIntensities"][$i]*100.0);
+  	printf ("  %f keV -> %f\n", $rnd["GammaEnergies"][$i], $rnd["GammaIntensities"][$i]);
 }
 
 $radioNuclides = GetRadioNuclideDataList();

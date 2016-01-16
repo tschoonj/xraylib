@@ -23,7 +23,7 @@ CHARACTER (KIND=C_CHAR,LEN=5) :: compound2 = 'SiO2'
 INTEGER :: i
 TYPE (Crystal_Struct), POINTER :: cryst
 REAL (C_DOUBLE) :: bragg, q, energy, debye_temp_factor, f0, fp, fpp,&
-rel_angle 
+rel_angle
 REAL (C_DOUBLE) :: dw
 COMPLEX (C_DOUBLE) :: F_H, F_0, F_Hbar
 REAL (C_DOUBLE), PARAMETER :: PI = 4.D0*DATAN(1.D0)
@@ -33,7 +33,7 @@ TYPE (radioNuclideData), POINTER :: rnd
 CHARACTER (KIND=C_CHAR, LEN=NIST_LIST_STRING_LENGTH), POINTER, &
 DIMENSION(:) :: nistCompounds
 CHARACTER (KIND=C_CHAR, LEN=RADIO_NUCLIDE_STRING_LENGTH), POINTER, &
-DIMENSION(:) :: radioNuclides 
+DIMENSION(:) :: radioNuclides
 
 CALL XRayInit()
 !CALL SetHardExit(1)
@@ -78,17 +78,17 @@ WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)
 
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'CS2 Refractive Index at 10.0 keV : ', &
         Refractive_Index_Re('CS2',10.0_C_DOUBLE,1.261_C_DOUBLE),' - ',&
-        Refractive_Index_Im('CS2',10.0_C_DOUBLE,1.261_C_DOUBLE),' i'  
+        Refractive_Index_Im('CS2',10.0_C_DOUBLE,1.261_C_DOUBLE),' i'
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'C16H14O3 Refractive Index at 1 keV : ', &
         Refractive_Index_Re('C16H14O3',1.0_C_DOUBLE,1.2_C_DOUBLE),' - ',&
-        Refractive_Index_Im('C16H14O3',1.0_C_DOUBLE,1.2_C_DOUBLE),' i'  
+        Refractive_Index_Im('C16H14O3',1.0_C_DOUBLE,1.2_C_DOUBLE),' i'
 WRITE (6,'(A,ES14.6,A,ES14.6,A)') 'SiO2 Refractive Index at 5.0 keV : ', &
         Refractive_Index_Re('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' - ',&
-        Refractive_Index_Im('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' i'  
+        Refractive_Index_Im('SiO2',5.0_C_DOUBLE,2.65_C_DOUBLE),' i'
 WRITE (6,'(A,F12.6)') 'Compton profile for Fe at pz = 1.1 : ' ,&
-        ComptonProfile(26,1.1_C_DOUBLE) 
+        ComptonProfile(26,1.1_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'M5 Compton profile for Fe at pz = 1.1 : ' ,&
-        ComptonProfile_Partial(26,M5_SHELL,1.1_C_DOUBLE) 
+        ComptonProfile_Partial(26,M5_SHELL,1.1_C_DOUBLE)
 WRITE (6,'(A,F12.6)') 'K atomic level width for Fe: ',&
         AtomicLevelWidth(26,K_SHELL)
 WRITE (6,'(A,F12.6)') 'Bi L2-M5M5 Auger non-radiative rate: ',&
@@ -194,7 +194,7 @@ REAL(F_0),', ',AIMAG(F_0),')'
 
 F_Hbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor,&
 rel_angle)
- 
+
 dw = 1e10 * 2 * (R_E / cryst%volume) * &
 (KEV2ANGST * KEV2ANGST/ (energy *energy)) * &
 SQRT(ABS(F_H * F_Hbar)) / PI / SIN(2*bragg)
@@ -209,7 +209,7 @@ WRITE (6,'(A)') ''
 
 cryst => Crystal_GetCrystal('AlphaQuartz')
 IF (.NOT.ASSOCIATED(cryst)) CALL EXIT(1)
-WRITE (6, '(A)') 'Alpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:' 
+WRITE (6, '(A)') 'Alpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:'
 
 bragg = Bragg_angle (cryst, energy, 0, 2, 0)
 WRITE (6, '(A,F12.6,A,F12.6)') '  Bragg angle: Rad: ',bragg,' Deg: ',&
@@ -268,7 +268,7 @@ WRITE (6, '(A)') ''
 cdn => GetCompoundDataNISTByName('Uranium Monocarbide')
 WRITE (6, '(A)') 'Uranium Monocarbide'
 WRITE (6, '(A,A)') '  Name: ', TRIM(cdn%name)
-WRITE (6, '(A,F12.6,A)') '  Density: ',cdn%density,' g/cm3' 
+WRITE (6, '(A,F12.6,A)') '  Density: ',cdn%density,' g/cm3'
 DO i=1,cdn%nElements
         WRITE (6, '(A,I2,A,F12.6,A)') '  Element ',&
         cdn%Elements(i),': ', &
@@ -279,7 +279,7 @@ CALL FreeCompoundDataNIST(cdn)
 cdn => GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
 WRITE (6, '(A)') 'NIST_COMPOUND_BRAIN_ICRP'
 WRITE (6, '(A,A)') '  Name: ', TRIM(cdn%name)
-WRITE (6, '(A,F12.6,A)') '  Density: ',cdn%density,' g/cm3' 
+WRITE (6, '(A,F12.6,A)') '  Density: ',cdn%density,' g/cm3'
 DO i=1,cdn%nElements
         WRITE (6, '(A,I2,A,F12.6,A)') '  Element ',&
         cdn%Elements(i),': ', &
@@ -306,15 +306,15 @@ WRITE (6, '(A,I3)') '  N: ',rnd%N
 WRITE (6, '(A,I3)') '  Z_xray: ',rnd%Z_xray
 WRITE (6, '(A)') '  X-rays: '
 DO i=1,rnd%nXrays
-        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        WRITE (6, '(A,F12.6,A,F12.6)') '  ',&
         LineEnergy(rnd%Z_xray, rnd%XrayLines(i)),' keV -> ', &
-        rnd%XrayIntensities(i)*100.0, ' %'
+        rnd%XrayIntensities(i)
 ENDDO
 WRITE (6, '(A)') '  Gamma rays: '
 DO i=1,rnd%nGammas
-        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        WRITE (6, '(A,F12.6,A,F12.6)') '  ',&
         rnd%GammaEnergies(i),' keV -> ', &
-        rnd%GammaIntensities(i)*100.0, ' %'
+        rnd%GammaIntensities(i)
 ENDDO
 CALL FreeRadioNuclideData(rnd)
 
@@ -327,15 +327,15 @@ WRITE (6, '(A,I3)') '  N: ',rnd%N
 WRITE (6, '(A,I3)') '  Z_xray: ',rnd%Z_xray
 WRITE (6, '(A)') '  X-rays: '
 DO i=1,rnd%nXrays
-        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        WRITE (6, '(A,F12.6,A,F12.6)') '  ',&
         LineEnergy(rnd%Z_xray, rnd%XrayLines(i)),' keV -> ', &
-        rnd%XrayIntensities(i)*100.0, ' %'
+        rnd%XrayIntensities(i)
 ENDDO
 WRITE (6, '(A)') '  Gamma rays: '
 DO i=1,rnd%nGammas
-        WRITE (6, '(A,F12.6,A,F12.6,A)') '  ',&
+        WRITE (6, '(A,F12.6,A,F12.6)') '  ',&
         rnd%GammaEnergies(i),' keV -> ', &
-        rnd%GammaIntensities(i)*100.0, ' %'
+        rnd%GammaIntensities(i)
 ENDDO
 CALL FreeRadioNuclideData(rnd)
 

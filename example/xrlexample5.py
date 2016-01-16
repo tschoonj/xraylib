@@ -34,12 +34,12 @@ if __name__ == '__main__' :
 	print ("Ca(HCO3)2 contains %g atoms and %i elements"% (cdtest['nAtomsAll'], cdtest['nElements']))
 	for i in range(cdtest['nElements']):
         	print ("Element %i: %lf %%" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0))
-		
+
 	cdtest = xraylib.CompoundParser("SiO2")
 	print ("SiO2 contains %g atoms and %i elements"% (cdtest['nAtomsAll'], cdtest['nElements']))
 	for i in range(cdtest['nElements']):
         	print ("Element %i: %lf %%" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0))
-		
+
 
 	print ("CS2 Refractive Index at 10.0 keV : %g - %g i" % (xraylib.Refractive_Index_Re("CS2",10.0,1.261),xraylib.Refractive_Index_Im("CS2",10.0,1.261)))
 	print ("C16H14O3 Refractive Index at 1 keV : %g - %g i" % (xraylib.Refractive_Index_Re("C16H14O3",1.0,1.2),xraylib.Refractive_Index_Im("C16H14O3",1.0,1.2)))
@@ -79,7 +79,7 @@ if __name__ == '__main__' :
 		print ("  %3i %f %f %f %f" % (atom['Zatom'], atom['fraction'], atom['x'], atom['y'], atom['z']))
 	print ("")
 
-	
+
 	print ("Si111 at 8 KeV. Incidence at the Bragg angle:")
 	energy = 8
 	debye_temp_factor = 1.0
@@ -90,7 +90,7 @@ if __name__ == '__main__' :
 
 	q = xraylib.Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
 	print ("  Q Scattering amplitude: %f" % q)
-  
+
 	#notice the 3 return values!!!
 	f0, fp, fpp = xraylib.Atomic_Factors (14, energy, q, debye_temp_factor)
 	print ("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f" % (f0, fp, fpp))
@@ -113,7 +113,7 @@ if __name__ == '__main__' :
 
 	q = xraylib.Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
 	print ("  Q Scattering amplitude: %f" % q)
-  
+
 	#notice the 3 return values!!!
 	f0, fp, fpp = xraylib.Atomic_Factors (6, energy, q, debye_temp_factor)
 	print ("  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f" % (f0, fp, fpp))
@@ -130,7 +130,7 @@ if __name__ == '__main__' :
 	print ("  Darwin width: %f micro-radians" % (1.0E6*dw))
 	print ("")
 
-	# Alpha Quartz diffraction parameters 
+	# Alpha Quartz diffraction parameters
 
 	cryst = xraylib.Crystal_GetCrystal("AlphaQuartz")
 
@@ -206,10 +206,10 @@ if __name__ == '__main__' :
 	print ("  Z_xray: %i" % rnd['Z_xray'])
 	print ("  X-rays:")
 	for i in range(rnd['nXrays']):
-		print ("  %f keV -> %f %%" % (xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0))
+		print ("  %f keV -> %f" % (xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]))
 	print ("  Gamma rays:")
 	for i in range(rnd['nGammas']):
-		print ("  %f keV -> %f %%" % (rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0))
+		print ("  %f keV -> %f" % (rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]))
 
 
 	rnd = xraylib.GetRadioNuclideDataByIndex(xraylib.RADIO_NUCLIDE_125I)
@@ -221,10 +221,10 @@ if __name__ == '__main__' :
 	print ("  Z_xray: %i" % rnd['Z_xray'])
 	print ("  X-rays:")
 	for i in range(rnd['nXrays']):
-		print ("  %f keV -> %f %%" % (xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0))
+		print ("  %f keV -> %f" % (xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]))
 	print ("  Gamma rays:")
 	for i in range(rnd['nGammas']):
-		print ("  %f keV -> %f %%" % (rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0))
+		print ("  %f keV -> %f" % (rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]))
 
 	radioNuclides = xraylib.GetRadioNuclideDataList()
 	print ("List of available radionuclides:")

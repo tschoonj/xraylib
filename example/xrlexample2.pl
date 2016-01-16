@@ -72,12 +72,12 @@ printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",xrayl
 printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Radiative_Cascade(82,$xraylib::MA1_LINE,20.0));
 printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_Nonradiative_Cascade(82,$xraylib::MA1_LINE,20.0));
 printf("Pb Malpha XRF production cs at 20.0 keV without cascade effect: %f\n",xraylib::CS_FluorLine_Kissel_no_Cascade(82,$xraylib::MA1_LINE,20.0));
- 
+
 printf("Al mass energy-absorption cs at 20.0 keV: %f\n", xraylib::CS_Energy(13, 20.0));
 printf("Pb mass energy-absorption cs at 40.0 keV: %f\n", xraylib::CS_Energy(82, 40.0));
 printf("CdTe mass energy-absorption cs at 40.0 keV: %f\n", xraylib::CS_Energy_CP("CdTe", 40.0));
 
-# Si Crystal structure 
+# Si Crystal structure
 
 $cryst = xraylib::Crystal_GetCrystal("Si");
 if ($cryst == undef) {
@@ -138,7 +138,7 @@ $F0 = xraylib::Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_tem
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", Re($F0), Im($F0));
 
 $FHbar = xraylib::Crystal_F_H_StructureFactor ($cryst, $energy, -1, -1, -1, $debye_temp_factor, $rel_angle);
-$dw = 1e10 * 2 * ($xraylib::R_E / $cryst->{volume}) * ($xraylib::KEV2ANGST * $xraylib::KEV2ANGST/ ($energy * $energy)) * 
+$dw = 1e10 * 2 * ($xraylib::R_E / $cryst->{volume}) * ($xraylib::KEV2ANGST * $xraylib::KEV2ANGST/ ($energy * $energy)) *
                                                   sqrt(abs($FH * $FHbar)) / pi / sin(2*$bragg);
 printf ("  Darwin width: %f micro-radians\n", 1e6*$dw);
 
@@ -163,7 +163,7 @@ printf ("  FH(0,2,0) structure factor: (%f, %f)\n", Re($FH), Im($FH));
 $F0 = xraylib::Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_temp_factor, $rel_angle);
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", Re($F0), Im($F0));
 
-# Muscovite diffraction parameters 
+# Muscovite diffraction parameters
 
 $cryst = xraylib::Crystal_GetCrystal("Muscovite");
 
@@ -224,11 +224,11 @@ printf ("  N: %i\n", $rnd->{N});
 printf ("  Z_xray: %i\n", $rnd->{Z_xray});
 printf ("  X-rays:\n");
 for ($i = 0 ; $i < $rnd->{nXrays} ; $i++) {
-  	printf ("  %f keV -> %f %%\n", xraylib::LineEnergy($rnd->{Z_xray}, $rnd->{XrayLines}->[$i]), $rnd->{XrayIntensities}->[$i]*100.0);
+  	printf ("  %f keV -> %f\n", xraylib::LineEnergy($rnd->{Z_xray}, $rnd->{XrayLines}->[$i]), $rnd->{XrayIntensities}->[$i]);
 }
 printf ("  Gamma rays:\n");
 for ($i = 0 ; $i < $rnd->{nGammas} ; $i++) {
-  	printf ("  %f keV -> %f %%\n", $rnd->{GammaEnergies}->[$i], $rnd->{GammaIntensities}->[$i]*100.0);
+  	printf ("  %f keV -> %f\n", $rnd->{GammaEnergies}->[$i], $rnd->{GammaIntensities}->[$i]);
 }
 
 $rnd = xraylib::GetRadioNuclideDataByIndex($xraylib::RADIO_NUCLIDE_125I);
@@ -240,11 +240,11 @@ printf ("  N: %i\n", $rnd->{N});
 printf ("  Z_xray: %i\n", $rnd->{Z_xray});
 printf ("  X-rays:\n");
 for ($i = 0 ; $i < $rnd->{nXrays} ; $i++) {
-  	printf ("  %f keV -> %f %%\n", xraylib::LineEnergy($rnd->{Z_xray}, $rnd->{XrayLines}->[$i]), $rnd->{XrayIntensities}->[$i]*100.0);
+  	printf ("  %f keV -> %f\n", xraylib::LineEnergy($rnd->{Z_xray}, $rnd->{XrayLines}->[$i]), $rnd->{XrayIntensities}->[$i]);
 }
 printf ("  Gamma rays:\n");
 for ($i = 0 ; $i < $rnd->{nGammas} ; $i++) {
-  	printf ("  %f keV -> %f %%\n", $rnd->{GammaEnergies}->[$i], $rnd->{GammaIntensities}->[$i]*100.0);
+  	printf ("  %f keV -> %f\n", $rnd->{GammaEnergies}->[$i], $rnd->{GammaIntensities}->[$i]);
 }
 
 $radioNuclides = xraylib::GetRadioNuclideDataList();

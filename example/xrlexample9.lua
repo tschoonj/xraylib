@@ -217,11 +217,11 @@ printf ("  N: %i\n" , rnd['N'])
 printf ("  Z_xray: %i\n" , rnd['Z_xray'])
 printf ("  X-rays:\n")
 for i=1,rnd['nXrays'] do
-	printf ("  %f keV -> %f %%\n", xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+	printf ("  %f keV -> %f\n", xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i])
 end
 printf ("  Gamma rays:\n")
 for i=1,rnd['nGammas'] do
-	printf ("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+	printf ("  %f keV -> %f\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i])
 end
 
 rnd = xraylib.GetRadioNuclideDataByIndex(xraylib.RADIO_NUCLIDE_125I)
@@ -233,11 +233,11 @@ printf ("  N: %i\n" , rnd['N'])
 printf ("  Z_xray: %i\n" , rnd['Z_xray'])
 printf ("  X-rays:\n")
 for i=1,rnd['nXrays'] do
-	printf ("  %f keV -> %f %%\n", xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i]*100.0)
+	printf ("  %f keV -> %f\n", xraylib.LineEnergy(rnd['Z_xray'], rnd['XrayLines'][i]), rnd['XrayIntensities'][i])
 end
 printf ("  Gamma rays:\n")
 for i=1,rnd['nGammas'] do
-	printf ("  %f keV -> %f %%\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i]*100.0)
+	printf ("  %f keV -> %f\n" , rnd['GammaEnergies'][i], rnd['GammaIntensities'][i])
 end
 
 radioNuclides = xraylib.GetRadioNuclideDataList()

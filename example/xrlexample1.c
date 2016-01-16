@@ -131,7 +131,7 @@ int main()
   for (i = 0; i < cryst->n_atom; i++) {
     atom = &cryst->atom[i];
     printf ("  %3i %f %f %f %f\n", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
-  } 
+  }
 
   /* Si diffraction parameters */
 
@@ -176,7 +176,7 @@ int main()
   printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
   FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
-  dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) * 
+  dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) *
                                                   sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
   printf ("  Darwin width: %f micro-radians\n", 1e6*dw);
 
@@ -254,7 +254,7 @@ int main()
 	xrlFree(nistCompounds[i]);
   }
   xrlFree(nistCompounds);
- 
+
   printf ("\n");
 
   /* radioNuclideData tests */
@@ -267,10 +267,10 @@ int main()
   printf ("  Z_xray: %i\n", rnd->Z_xray);
   printf ("  X-rays:\n");
   for (i = 0 ; i < rnd->nXrays ; i++)
-  	printf ("  %f keV -> %f %%\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]*100.0);
+  	printf ("  %f keV -> %f\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]);
   printf ("  Gamma rays:\n");
   for (i = 0 ; i < rnd->nGammas ; i++)
-  	printf ("  %f keV -> %f %%\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]*100.0);
+  	printf ("  %f keV -> %f\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]);
 
   FreeRadioNuclideData(rnd);
 
@@ -283,10 +283,10 @@ int main()
   printf ("  Z_xray: %i\n", rnd->Z_xray);
   printf ("  X-rays:\n");
   for (i = 0 ; i < rnd->nXrays ; i++)
-  	printf ("  %f keV -> %f %%\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]*100.0);
+  	printf ("  %f keV -> %f\n", LineEnergy(rnd->Z_xray, rnd->XrayLines[i]), rnd->XrayIntensities[i]);
   printf ("  Gamma rays:\n");
   for (i = 0 ; i < rnd->nGammas ; i++)
-  	printf ("  %f keV -> %f %%\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]*100.0);
+  	printf ("  %f keV -> %f\n", rnd->GammaEnergies[i], rnd->GammaIntensities[i]);
 
   FreeRadioNuclideData(rnd);
 

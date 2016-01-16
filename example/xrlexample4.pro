@@ -41,11 +41,11 @@ cdtest = CompoundParser('SiO2')
 PRINT,'SiO2 contains ',cdtest.nAtomsAll, ' atoms  and ',cdtest.nElements,' elements'
 FOR i=0L,cdtest.nElements-1 DO PRINT,'Element ',cdtest.Elements[i],' : ',cdtest.massFractions[i]*100.0,' %'
 
-PRINT,'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP("Ca(HCO3)2",10.0) 
+PRINT,'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP("Ca(HCO3)2",10.0)
 
-PRINT,'CS2 Refractive Index at 10.0 keV : ',Refractive_Index_Re("CS2",10.0,1.261),' - ',Refractive_Index_Im("CS2",10.0,1.261),' i'  
-PRINT,'C16H14O3 Refractive Index at 1 keV : ',Refractive_Index_Re("C16H14O3",1.0,1.2),' - ',Refractive_Index_Im("C16H14O3",1.0,1.2),' i'  
-PRINT,'SiO2 Refractive Index at 5.0 keV : ',Refractive_Index_Re("SiO2",5.0,2.65),' - ',Refractive_Index_Im("SiO2",5.0,2.65),' i'  
+PRINT,'CS2 Refractive Index at 10.0 keV : ',Refractive_Index_Re("CS2",10.0,1.261),' - ',Refractive_Index_Im("CS2",10.0,1.261),' i'
+PRINT,'C16H14O3 Refractive Index at 1 keV : ',Refractive_Index_Re("C16H14O3",1.0,1.2),' - ',Refractive_Index_Im("C16H14O3",1.0,1.2),' i'
+PRINT,'SiO2 Refractive Index at 5.0 keV : ',Refractive_Index_Re("SiO2",5.0,2.65),' - ',Refractive_Index_Im("SiO2",5.0,2.65),' i'
 PRINT,'Compton profile for Fe at pz = 1.1 : ',ComptonProfile(26,1.1)
 PRINT,'M5 Partial Compton profile for Fe at pz = 1.1 : ',ComptonProfile_Partial(26,M5_SHELL,1.1)
 PRINT,'K atomic level width for Fe: ',$
@@ -72,12 +72,12 @@ PRINT,'CdTe mass energy-absorption cs at 40.0 keV: ', CS_Energy_CP('CdTe', 40.0)
 
 ;Si crystal structure
 cryst = Crystal_GetCrystal('Si')
-PRINT,'Si unit cell dimensions are ',cryst.a,cryst.b,cryst.c 
+PRINT,'Si unit cell dimensions are ',cryst.a,cryst.b,cryst.c
 PRINT,'Si unit cell angle are ',cryst.alpha,cryst.beta,cryst.gamma
 PRINT,'Si unit cell volume is ',cryst.volume
 PRINT,'Si atoms at:'
-PRINT,'   Z  fraction      X         Y         Z' 
-FOR i=0,7 DO $ 
+PRINT,'   Z  fraction      X         Y         Z'
+FOR i=0,7 DO $
 	PRINT,FORMAT='(%"%4i  %f  %f  %f  %f")',$
 		cryst.atom[i].Zatom,$
 		cryst.atom[i].fraction,$
@@ -189,7 +189,7 @@ cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
 PRINT, 'NIST_COMPOUND_BRAIN_ICRP'
 PRINT, '  Name: ',cdn.name
 PRINT, '  Density: ',cdn.density, ' g/cm3'
-FOR i=0,cdn.nElements-1 DO $ 
+FOR i=0,cdn.nElements-1 DO $
 	PRINT, FORMAT='(%"  Element %i: %f %%")', cdn.Elements[i], $
 	cdn.massFractions[i]*100.0
 
@@ -214,14 +214,14 @@ PRINT, '  Z_xray: ',rnd.Z_xray
 ;PRINT, '  nGammas: ',rnd.nGammas
 PRINT, '  X-rays: '
 FOR i=0,rnd.nXrays-1 DO $
-        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        PRINT, FORMAT='(%"  %f keV -> %f")',$
         LineEnergy(rnd.Z_xray, rnd.XrayLines[i]),$
-        rnd.XrayIntensities[i]*100.0
+        rnd.XrayIntensities[i]
 PRINT, '  Gamma rays: '
 FOR i=0,rnd.nGammas-1 DO $
-        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        PRINT, FORMAT='(%"  %f keV -> %f")',$
         rnd.GammaEnergies[i],$
-        rnd.GammaIntensities[i]*100.0
+        rnd.GammaIntensities[i]
 
 rnd = GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I)
 PRINT, 'RADIO_NUCLIDE_125I'
@@ -232,15 +232,15 @@ PRINT, '  N: ',rnd.N
 PRINT, '  Z_xray: ',rnd.Z_xray
 PRINT, '  X-rays: '
 FOR i=0,rnd.nXrays-1 DO $
-        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        PRINT, FORMAT='(%"  %f keV -> %f")',$
         LineEnergy(rnd.Z_xray, rnd.XrayLines[i]),$
-        rnd.XrayIntensities[i]*100.0
+        rnd.XrayIntensities[i]
 
 PRINT, '  Gamma rays: '
 FOR i=0,rnd.nGammas-1 DO $
-        PRINT, FORMAT='(%"  %f keV -> %f %%")',$
+        PRINT, FORMAT='(%"  %f keV -> %f")',$
         rnd.GammaEnergies[i],$
-        rnd.GammaIntensities[i]*100.0
+        rnd.GammaIntensities[i]
 
 radioNuclides = GetRadioNuclideDataList()
 PRINT, 'List of available radionuclides'
