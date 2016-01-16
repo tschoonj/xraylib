@@ -29,13 +29,13 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * 	nElements: the number of different atoms present
  * 	nAtomsAll: the total number of atoms present in the compound
  * 	Elements: an array with length nElements that will contain the atomic
- * 	  numbers of the different elements present in the compound, 
- * 	  in ascending order. The array memory will be allocated using malloc 
+ * 	  numbers of the different elements present in the compound,
+ * 	  in ascending order. The array memory will be allocated using malloc
  * 	  and should be freed by the user when appropriate.
  *	massFractions: an array with length nElements that will contain
  *	  the atomic mass fractions of the different elements present in the compound,
  *	  in an order corresponding with the Elements array. The sum of the values
- *	  in this array is equal to 1. The array memory will be allocated 
+ *	  in this array is equal to 1. The array memory will be allocated
  *	  using malloc and should be freed by the user when appropriate.
  *
  * For SiO2 this would yield a structure with contents:
@@ -55,7 +55,7 @@ struct compoundData {
 	double *massFractions;
 };
 
-/* 
+/*
  * FreeCompoundData is used to free the memory allocated
  * by CompoundParser in a compoundData struct. It is recommended
  * to set the value of the struct to NULL after calling this function.
@@ -65,7 +65,7 @@ void FreeCompoundData(struct compoundData *);
 
 
 /*
- * The CompoundParser function will parse a string and will return 
+ * The CompoundParser function will parse a string and will return
  * a pointer to a compoundData structure if successful, otherwise it will return a
  * NULL pointer. After usage, the struct can be freed with FreeCompoundData
  */
@@ -97,7 +97,7 @@ char * AtomicNumberToSymbol(int Z);
  * If the element does not exist, 0 is returned
  */
 
-int SymbolToAtomicNumber(char *symbol);
+int SymbolToAtomicNumber(const char *symbol);
 
 
 /*
