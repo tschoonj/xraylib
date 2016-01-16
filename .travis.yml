@@ -16,8 +16,8 @@ os:
 #    - LD_RUN_PATH=/usr/local/lib
 
 before_install:
-  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update && sudo apt-get install swig python-all-dev python-numpy cython fpc gfortran php-config lua python3-all-dev python3-numpy ; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install swig ruby python python3 fpc lua ; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update && sudo apt-get install swig python-all-dev python-numpy cython fpc gfortran php-config lua5.2 liblua5.2-dev python3-all-dev python3-numpy ; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install swig ruby python python3 fpc lua && pip install Cython numpy && pip3 install Cython numpy ; fi
 
 #install:
 #  - if [ $TRAVIS_OS_NAME == linux ]; then ./travis-deps.sh ; fi
