@@ -12,12 +12,12 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 
-#ifndef CRYSTAL_DIFFRACTION
-#define CRYSTAL_DIFFRACTION
+#ifndef XRAYLIB_CRYSTAL_DIFFRACTION_H
+#define XRAYLIB_CRYSTAL_DIFFRACTION_H
 
 #include "xraylib-defs.h"
 
-/* Note for multithreded programs: 
+/* Note for multithreded programs:
  * The routines Crystal_ReadCrystals and CrystalAddCrystalStruct are not thread safe if crystals are
  * added to the official array. In this case, locking will have to be used.
  *
@@ -70,10 +70,10 @@ Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array)
 double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller);
 
 /*--------------------------------------------------------------------------------------------------
- * Q scattering factor = Sin(theta) / wavelength 
+ * Q scattering factor = Sin(theta) / wavelength
  */
 
-double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, 
+double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
                                     int i_miller, int j_miller, int k_miller, double rel_angle);
 
 /*--------------------------------------------------------------------------------------------------
@@ -84,23 +84,23 @@ void Atomic_Factors (int Z, double energy, double q, double debye_factor, double
 
 /*--------------------------------------------------------------------------------
  * Compute F_H
- * See also Crystal_F_H_StructureFactor_Partial 
+ * See also Crystal_F_H_StructureFactor_Partial
  */
 
-xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy, 
+xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle);
 
 /*--------------------------------------------------------------------------------------------------
  * Compute F_H
  * See also Crystal_F_H_StructureFactor
  * The Atomic structure factor has three terms: F = f0 + f' + f''
- * For each of these three terms, there is a corresponding *_flag argument 
+ * For each of these three terms, there is a corresponding *_flag argument
  * which controls the numerical value used in computing F_H:
  *        *_flag = 0 --> Set this term to 0.
  *        *_flag = 1 --> Set this term to 1. Only used for f0.
  *        *_flag = 2 --> Set this term to the value given
  */
-xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, 
+xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag);
 
@@ -122,7 +122,7 @@ double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, in
 /*--------------------------------------------------------------------------------
  * Add a new CrystalStruct to crystal_array.
  * The data is copied to crystal_array.
- * If the material already exists in the array then the existing material data is overwitten. 
+ * If the material already exists in the array then the existing material data is overwitten.
  * If crystal_array is NULL then the crystals are added to the official array of crystals.
  * Return: 1 on success and 0 on error.
  */
@@ -131,7 +131,7 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array);
 
 /*--------------------------------------------------------------------------------
  * Read in a set of crystal structs to crystal_array.
- * If a material already exists in the array then the existing material data is overwitten. 
+ * If a material already exists in the array then the existing material data is overwitten.
  * If crystal_array is NULL then the crystals are added to the official array of crystals.
  * Return: 1 on success and 0 on error.
  */

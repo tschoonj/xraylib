@@ -12,8 +12,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 
-#ifndef _XRAYLIB_H
-#define _XRAYLIB_H
+#ifndef XRAYLIB_H
+#define XRAYLIB_H
 
 
 #ifdef __cplusplus
@@ -44,7 +44,7 @@ extern "C" {
  * values taken from physics.nist.gov
  *
  */
-#define AVOGNUM 0.602214129        /* Avogadro number (mol-1 * barn-1 * cm2) */ 
+#define AVOGNUM 0.602214129        /* Avogadro number (mol-1 * barn-1 * cm2) */
 #define KEV2ANGST 12.39841930      /* keV to angstrom-1 conversion factor */
 #define MEC2 510.998928            /* electron rest mass (keV) */
 #define RE2 0.079407877            /* square of classical electron radius (barn) */
@@ -112,11 +112,11 @@ extern "C" {
 #define MB_LINE M4N6_LINE
 #define MG_LINE M3N5_LINE
 
-#define F1_TRANS   0    
-#define F12_TRANS  1     
-#define F13_TRANS  2    
-#define FP13_TRANS 3     
-#define F23_TRANS  4    
+#define F1_TRANS   0
+#define F12_TRANS  1
+#define F13_TRANS  2
+#define FP13_TRANS 3
+#define F23_TRANS  4
 
 #define FL12_TRANS 1
 #define FL13_TRANS 2
@@ -155,7 +155,7 @@ double ElementDensity(int Z);
 double CS_Total(int Z, double E);
 double CS_Photo(int Z, double E);
 double CS_Rayl(int Z, double E);
-double CS_Compt(int Z, double E); 
+double CS_Compt(int Z, double E);
 double CS_KN(double E);
 double CS_Energy(int Z, double E);
 
@@ -163,7 +163,7 @@ double CS_Energy(int Z, double E);
 double CSb_Total(int Z, double E);
 double CSb_Photo(int Z, double E);
 double CSb_Rayl(int Z, double E);
-double CSb_Compt(int Z, double E); 
+double CSb_Compt(int Z, double E);
 
 
 /* Unpolarized differential scattering cross sections */
@@ -173,7 +173,7 @@ double DCS_Rayl(int Z, double E, double theta);
 double DCS_Compt(int Z, double E, double theta);
 double DCSb_Rayl(int Z, double E, double theta);
 double DCSb_Compt(int Z, double E, double theta);
- 
+
 /* Polarized differential scattering cross sections */
 double DCSP_Thoms(double theta, double phi);
 double DCSP_KN(double E, double theta, double phi);
@@ -181,7 +181,7 @@ double DCSP_Rayl(int Z, double E, double theta, double phi);
 double DCSP_Compt(int Z, double E, double theta, double phi);
 double DCSPb_Rayl(int Z, double E, double theta, double phi);
 double DCSPb_Compt(int Z, double E, double theta, double phi);
- 
+
 /* Scattering factors */
 double  FF_Rayl(int Z, double q);
 double  SF_Compt(int Z, double q);
@@ -223,22 +223,22 @@ double CS_Photo_Partial(int Z, int shell, double E);
 double CSb_Photo_Partial(int Z, int shell, double E);
 
 /* XRF cross sections using Kissel partial photoelectric cross sections */
-double CS_FluorLine_Kissel(int Z, int line, double E); 
-double CSb_FluorLine_Kissel(int Z, int line, double E); 
-double CS_FluorLine_Kissel_Cascade(int Z, int line, double E); 
-double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E); 
-double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E); 
-double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E); 
-double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E); 
-double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E); 
+double CS_FluorLine_Kissel(int Z, int line, double E);
+double CSb_FluorLine_Kissel(int Z, int line, double E);
+double CS_FluorLine_Kissel_Cascade(int Z, int line, double E);
+double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E);
+double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
+double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
+double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
+double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
 double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E);
-double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E); 
+double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E);
 
 
 
 /* Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections */
-double CS_Total_Kissel(int Z, double E); 
-double CSb_Total_Kissel(int Z, double E); 
+double CS_Total_Kissel(int Z, double E);
+double CSb_Total_Kissel(int Z, double E);
 
 /* Electron configuration (according to Kissel) */
 double ElectronConfig(int Z, int shell);
@@ -248,11 +248,11 @@ double ElectronConfig(int Z, int shell);
 double CS_Total_CP(const char compound[], double E);
 double CS_Photo_CP(const char compound[], double E);
 double CS_Rayl_CP(const char compound[], double E);
-double CS_Compt_CP(const char compound[], double E); 
+double CS_Compt_CP(const char compound[], double E);
 double CSb_Total_CP(const char compound[], double E);
 double CSb_Photo_CP(const char compound[], double E);
 double CSb_Rayl_CP(const char compound[], double E);
-double CSb_Compt_CP(const char compound[], double E); 
+double CSb_Compt_CP(const char compound[], double E);
 double DCS_Rayl_CP(const char compound[], double E, double theta);
 double DCS_Compt_CP(const char compound[], double E, double theta);
 double DCSb_Rayl_CP(const char compound[], double E, double theta);
@@ -263,8 +263,8 @@ double DCSPb_Rayl_CP(const char compound[], double E, double theta, double phi);
 double DCSPb_Compt_CP(const char compound[], double E, double theta, double phi);
 double CS_Photo_Total_CP(const char compound[], double E);
 double CSb_Photo_Total_CP(const char compound[], double E);
-double CS_Total_Kissel_CP(const char compound[], double E); 
-double CSb_Total_Kissel_CP(const char compound[], double E); 
+double CS_Total_Kissel_CP(const char compound[], double E);
+double CSb_Total_Kissel_CP(const char compound[], double E);
 double CS_Energy_CP(const char compound[], double E);
 
 /* Refractive indices functions */
