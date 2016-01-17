@@ -145,8 +145,8 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array);
  * The returned array should be freed firstly by using xrlFree to deallocate
  * all individual strings, and subsequently by using xrlFree to deallocate the array
  */
- 
-char **Crystal_GetListOfCrystals(Crystal_Array *c_array, int *nCrystals);
+
+char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals);
 
 
 #endif

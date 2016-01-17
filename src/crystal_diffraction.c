@@ -131,7 +131,7 @@ void Crystal_Free (Crystal_Struct* crystal) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-char **Crystal_GetListOfCrystals(Crystal_Array *c_array, int *nCrystals) {
+char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals) {
   char **rv = NULL;
   int i;
 
