@@ -34,6 +34,8 @@ CHARACTER (KIND=C_CHAR, LEN=NIST_LIST_STRING_LENGTH), POINTER, &
 DIMENSION(:) :: nistCompounds
 CHARACTER (KIND=C_CHAR, LEN=RADIO_NUCLIDE_STRING_LENGTH), POINTER, &
 DIMENSION(:) :: radioNuclides
+CHARACTER (KIND=C_CHAR, LEN=CRYSTAL_STRING_LENGTH), POINTER, &
+DIMENSION(:) :: crystals
 
 CALL XRayInit()
 !CALL SetHardExit(1)
@@ -262,6 +264,12 @@ WRITE (6, '(A,F12.6,A,F12.6,A)') '  F0=FH(0,0,0) structure factor: (',&
 REAL(F_0),', ',AIMAG(F_0),')'
 
 DEALLOCATE(cryst)
+
+crystals => Crystal_GetCrystalsList()
+WRITE (6, '(A)') 'List of available crystals'
+DO i=1,SIZE(crystals)
+        WRITE (6, '(A,I3,A,A)') '  Crystal',i,': ',TRIM(crystals(i))
+ENDDO
 
 WRITE (6, '(A)') ''
 

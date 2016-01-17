@@ -173,6 +173,10 @@ PRINT, FORMAT='(%"  FH(3,3,1) structure factor: (%f, %f)")', REAL_PART(FH), IMAG
 F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
 PRINT, FORMAT='(%"  F0=FH(0,0,0) structure factor: (%f, %f)")', REAL_PART(F0), IMAGINARY(F0)
 
+crystals = Crystal_GetCrystalsList()
+PRINT, 'List of available crystals'
+FOR i=0,N_ELEMENTS(crystals)-1 DO $
+	PRINT, FORMAT='(%"  Crystal %i: %s")', i, crystals[i]
 
 PRINT, ''
 

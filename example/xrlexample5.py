@@ -172,6 +172,10 @@ if __name__ == '__main__' :
 	F0 = xraylib.Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle)
 	print ("  F0=FH(0,0,0) structure factor: (%f, %f)" % (F0.real, F0.imag))
 
+	crystals = xraylib.Crystal_GetCrystalsList()
+	print ("List of available crystals:")
+	for i in range(len(crystals)):
+		print ("  Crystal %i: %s" % (i, crystals[i]))
 	print ("")
 
 	cdn = xraylib.GetCompoundDataNISTByName("Uranium Monocarbide")

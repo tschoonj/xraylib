@@ -183,7 +183,13 @@ printf("  FH(3,3,1) structure factor: (%f, %f)\n", fh.real, fh.imag)
 
 f0 = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle)
 printf("  F0=FH(0,0,0) structure factor: (%f, %f)\n", f0.real, f0.imag)
-
+crystals = Xraylib.Crystal_GetCrystalsList()
+counter = 0
+printf ("List of available crystals:\n")
+crystals.each do |crystal|
+	puts "  Crystal #{counter}: #{crystal}"
+	counter = counter + 1
+end
 printf("\n")
 
 # compoundDataNIST tests

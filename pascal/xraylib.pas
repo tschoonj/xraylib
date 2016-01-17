@@ -2050,6 +2050,7 @@ type
   function Crystal_F_H_StructureFactor_Partial(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; f0_flag:longint; f_prime_flag:longint; f_prime2_flag:longint):xrlComplex;
   function Crystal_UnitCellVolume(crystal:PCrystalStruct):double;cdecl;external External_library name 'Crystal_UnitCellVolume';
   function Crystal_dSpacing(crystal:PCrystalStruct; i_miller:longint; j_miller:longint; k_miller:longint):double;cdecl;external External_library name 'Crystal_dSpacing';
+  function Crystal_GetCrystalsList():TStringArray;
 
 implementation
 
@@ -2385,6 +2386,26 @@ begin
 end;
 
 function Crystal_GetCrystal_C(material:PAnsiChar; p:Pointer):PCrystalStruct;cdecl;external External_library name 'Crystal_GetCrystal';
+function Crystal_GetCrystalsList_C(c_array:Pointer; var nCrystals:longint):PPAnsiChar;cdecl;external External_library name 'Crystal_GetCrystalsList';
+
+function Crystal_GetCrystalsList():TStringArray;
+var
+	list_C, temp: PPAnsiChar;
+	nCrystals:longint;
+	i:longint;
+begin
+	list_C := Crystal_GetCrystalsList_C(nil, nCrystals);
+	SetLength(Result, nCrystals);
+	temp := list_C;
+
+	for i := 0 to nCrystals-1 do
+	begin
+		Result[i] := string(StrPas(temp^));
+		xrlFree(temp^);
+		inc(temp);
+	end;
+	xrlFree(list_C);
+end;
 
 procedure Crystal_F_H_StructureFactor2(crystal:PCrystalStruct; energy:double; i_miller:longint; j_miller:longint; k_miller:longint;debye_factor:double; rel_angle:double; var z:xrlComplex);cdecl;external External_library name 'Crystal_F_H_StructureFactor2';
 
@@ -2415,5 +2436,3 @@ begin
 end;
 
 end.
-
-

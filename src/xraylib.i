@@ -87,6 +87,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %typemap(in, numinputs=0) int* nCompounds {
    $1 = NULL;
 }
+%typemap(in, numinputs=0) int* nCrystals {
+   $1 = NULL;
+}
 #endif
 
 #ifdef SWIGLUA
@@ -109,7 +112,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct radioNuclideData * {
         int i;
-        struct radioNuclideData *rnd = $1; 
+        struct radioNuclideData *rnd = $1;
 
         if (rnd == NULL) {
                 fprintf(stderr,"Error: requested radionuclide not found in database\n");
@@ -194,7 +197,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct compoundDataNIST * {
         int i;
-        struct compoundDataNIST *cdn = $1; 
+        struct compoundDataNIST *cdn = $1;
 
         if (cdn == NULL) {
                 fprintf(stderr,"Error: requested NIST compound not found in database\n");
@@ -319,35 +322,35 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 lua_pushstring(L, "name");
                 lua_pushstring(L, cs->name);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "a");
                 lua_pushnumber(L, cs->a);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "b");
                 lua_pushnumber(L, cs->b);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "c");
                 lua_pushnumber(L, cs->c);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "alpha");
                 lua_pushnumber(L, cs->alpha);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "beta");
                 lua_pushnumber(L, cs->beta);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "gamma");
                 lua_pushnumber(L, cs->gamma);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "volume");
                 lua_pushnumber(L, cs->volume);
                 lua_settable(L,-3);
-                
+
                 lua_pushstring(L, "n_atom");
                 lua_pushinteger(L, cs->n_atom);
                 lua_settable(L,-3);
@@ -399,8 +402,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         xrlComplex c;
        if (!lua_istable(L, $input)) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a table");
-       } 
-       
+       }
+
        lua_pushstring(L, "re");
        lua_gettable(L, $input);
        if (lua_isnumber(L,-1)) {
@@ -431,8 +434,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
        if (!lua_istable(L, $input)) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a table");
-       } 
-       
+       }
+
        lua_pushstring(L, "cpointer");
        lua_gettable(L, $input);
        if (lua_islightuserdata(L,-1)) {
@@ -441,7 +444,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
        }
        else {
                 /* name */
-                cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct)); 
+                cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
                 lua_pushstring(L, "name");
                 lua_gettable(L, $input);
                 if (lua_isstring(L,-1)) {
@@ -634,7 +637,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct radioNuclideData * {
         int i;
-        struct radioNuclideData *rnd = $1; 
+        struct radioNuclideData *rnd = $1;
 
         if (rnd == NULL) {
                 PyErr_WarnEx(NULL, "Error: requested radionuclide not found in database\n",1);
@@ -642,24 +645,24 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
         else {
                 PyObject *dict = PyDict_New();
-                PyDict_SetItemString(dict, "name",PyString_FromString(rnd->name)); 
-                PyDict_SetItemString(dict, "Z",PyInt_FromLong(rnd->Z)); 
-                PyDict_SetItemString(dict, "A",PyInt_FromLong(rnd->A)); 
-                PyDict_SetItemString(dict, "N",PyInt_FromLong(rnd->N)); 
+                PyDict_SetItemString(dict, "name",PyString_FromString(rnd->name));
+                PyDict_SetItemString(dict, "Z",PyInt_FromLong(rnd->Z));
+                PyDict_SetItemString(dict, "A",PyInt_FromLong(rnd->A));
+                PyDict_SetItemString(dict, "N",PyInt_FromLong(rnd->N));
                 PyDict_SetItemString(dict, "Z_xray",PyInt_FromLong(rnd->Z_xray));
-                PyDict_SetItemString(dict, "nXrays",PyInt_FromLong(rnd->nXrays)); 
-                PyDict_SetItemString(dict, "nGammas",PyInt_FromLong(rnd->nGammas)); 
+                PyDict_SetItemString(dict, "nXrays",PyInt_FromLong(rnd->nXrays));
+                PyDict_SetItemString(dict, "nGammas",PyInt_FromLong(rnd->nGammas));
                 PyObject *XrayLines = PyList_New(rnd->nXrays);
                 PyObject *XrayIntensities= PyList_New(rnd->nXrays);
                 PyObject *GammaEnergies= PyList_New(rnd->nGammas);
                 PyObject *GammaIntensities= PyList_New(rnd->nGammas);
                 for (i = 0 ; i < rnd->nXrays ; i++) {
-                       PyList_SetItem(XrayLines, i, PyInt_FromLong(rnd->XrayLines[i])); 
-                       PyList_SetItem(XrayIntensities, i, PyFloat_FromDouble(rnd->XrayIntensities[i])); 
+                       PyList_SetItem(XrayLines, i, PyInt_FromLong(rnd->XrayLines[i]));
+                       PyList_SetItem(XrayIntensities, i, PyFloat_FromDouble(rnd->XrayIntensities[i]));
                 }
                 for (i = 0 ; i < rnd->nGammas ; i++) {
-                       PyList_SetItem(GammaEnergies, i, PyFloat_FromDouble(rnd->GammaEnergies[i])); 
-                       PyList_SetItem(GammaIntensities, i, PyFloat_FromDouble(rnd->GammaIntensities[i])); 
+                       PyList_SetItem(GammaEnergies, i, PyFloat_FromDouble(rnd->GammaEnergies[i]));
+                       PyList_SetItem(GammaIntensities, i, PyFloat_FromDouble(rnd->GammaIntensities[i]));
                 }
                 PyDict_SetItemString(dict, "XrayLines", XrayLines);
                 PyDict_SetItemString(dict, "XrayIntensities", XrayIntensities);
@@ -673,7 +676,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 %typemap(out) struct compoundDataNIST * {
         int i;
-        struct compoundDataNIST *cdn = $1; 
+        struct compoundDataNIST *cdn = $1;
 
         if (cdn == NULL) {
                 PyErr_WarnEx(NULL, "Error: requested NIST compound not found in database\n",1);
@@ -681,14 +684,14 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
         else {
                 PyObject *dict = PyDict_New();
-                PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name)); 
-                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements)); 
-                PyDict_SetItemString(dict, "density",PyFloat_FromDouble(cdn->density)); 
+                PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name));
+                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements));
+                PyDict_SetItemString(dict, "density",PyFloat_FromDouble(cdn->density));
                 PyObject *Elements = PyList_New(cdn->nElements);
                 PyObject *massFractions = PyList_New(cdn->nElements);
                 for (i = 0 ; i < cdn->nElements ; i++) {
-                       PyList_SetItem(Elements, i, PyInt_FromLong(cdn->Elements[i])); 
-                       PyList_SetItem(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i])); 
+                       PyList_SetItem(Elements, i, PyInt_FromLong(cdn->Elements[i]));
+                       PyList_SetItem(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i]));
                 }
                 PyDict_SetItemString(dict, "Elements", Elements);
                 PyDict_SetItemString(dict, "massFractions", massFractions);
@@ -702,8 +705,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         struct compoundData *cd = $1;
         if (cd) {
                 PyObject *dict = PyDict_New();
-                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements)); 
-                PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll)); 
+                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements));
+                PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll));
                 PyObject *elements=PyList_New(cd->nElements);
                 PyObject *massfractions=PyList_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
@@ -712,8 +715,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         o = PyFloat_FromDouble(cd->massFractions[i]);
                         PyList_SetItem(massfractions, i, o);
                 }
-                PyDict_SetItemString(dict, "Elements", elements); 
-                PyDict_SetItemString(dict, "massFractions", massfractions); 
+                PyDict_SetItemString(dict, "Elements", elements);
+                PyDict_SetItemString(dict, "massFractions", massfractions);
                 FreeCompoundData(cd);
                 $result=dict;
         }
@@ -743,32 +746,32 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 $result = Py_None;
         }
         else {
-             PyObject *dict = PyDict_New();   
-             PyDict_SetItemString(dict, "name",PyString_FromString(cs->name)); 
-             PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a)); 
-             PyDict_SetItemString(dict, "b",PyFloat_FromDouble(cs->b)); 
-             PyDict_SetItemString(dict, "c",PyFloat_FromDouble(cs->c)); 
-             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble(cs->alpha)); 
-             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble(cs->beta)); 
-             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble(cs->gamma)); 
-             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble(cs->volume)); 
-             PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom)); 
+             PyObject *dict = PyDict_New();
+             PyDict_SetItemString(dict, "name",PyString_FromString(cs->name));
+             PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a));
+             PyDict_SetItemString(dict, "b",PyFloat_FromDouble(cs->b));
+             PyDict_SetItemString(dict, "c",PyFloat_FromDouble(cs->c));
+             PyDict_SetItemString(dict, "alpha",PyFloat_FromDouble(cs->alpha));
+             PyDict_SetItemString(dict, "beta",PyFloat_FromDouble(cs->beta));
+             PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble(cs->gamma));
+             PyDict_SetItemString(dict, "volume",PyFloat_FromDouble(cs->volume));
+             PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom));
              PyObject *atom = PyList_New(cs->n_atom);
-             PyDict_SetItemString(dict, "atom", atom); 
+             PyDict_SetItemString(dict, "atom", atom);
              for (i = 0 ; i < cs->n_atom ; i++) {
                 PyObject *dict_temp = PyDict_New();
-                PyDict_SetItemString(dict_temp, "Zatom",PyInt_FromLong((int) cs->atom[i].Zatom)); 
-                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble(cs->atom[i].fraction)); 
-                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble(cs->atom[i].x)); 
-                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble(cs->atom[i].y)); 
-                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble(cs->atom[i].z)); 
+                PyDict_SetItemString(dict_temp, "Zatom",PyInt_FromLong((int) cs->atom[i].Zatom));
+                PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble(cs->atom[i].fraction));
+                PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble(cs->atom[i].x));
+                PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble(cs->atom[i].y));
+                PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble(cs->atom[i].z));
                 PyList_SetItem(atom, i, dict_temp);
              }
              /* store cpointer in dictionary */
 %#ifdef _WIN64
-             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long long) cs)); 
+             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long long) cs));
 %#else
-             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long) cs)); 
+             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long) cs));
 %#endif
 
              $result = dict;
@@ -782,7 +785,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         Crystal_Struct *cs = NULL;
 
         if (PyDict_Check(dict) == 0) {
-               PyErr_SetString(PyExc_TypeError,"Expected dictionary argument"); 
+               PyErr_SetString(PyExc_TypeError,"Expected dictionary argument");
                $1 = NULL;
                goto fail;
         }
@@ -792,9 +795,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 if (cpointer != NULL) {
                         /* convert to long */
 %#ifdef _WIN64
-                        long long cpointer_l = PyInt_AsLong(cpointer); 
+                        long long cpointer_l = PyInt_AsLong(cpointer);
 %#else
-                        long cpointer_l = PyInt_AsLong(cpointer); 
+                        long cpointer_l = PyInt_AsLong(cpointer);
 %#endif
                         if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"Invalid cpointer value");
@@ -807,7 +810,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 /* no cpointer found -> read from structure */
                 else {
-                        /* name */ 
+                        /* name */
                          cs = malloc(sizeof(Crystal_Struct));
                          temp = PyDict_GetItemString(dict,"name");
                          if (PyErr_Occurred() != NULL) {
@@ -821,7 +824,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* a */ 
+                        /* a */
                          temp = PyDict_GetItemString(dict,"a");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"a key not present");
@@ -834,7 +837,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* b */ 
+                        /* b */
                          temp = PyDict_GetItemString(dict,"b");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"b key not present");
@@ -847,7 +850,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* c */ 
+                        /* c */
                          temp = PyDict_GetItemString(dict,"c");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"c key not present");
@@ -860,7 +863,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* alpha */ 
+                        /* alpha */
                          temp = PyDict_GetItemString(dict,"alpha");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"alpha key not present");
@@ -873,7 +876,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* beta */ 
+                        /* beta */
                          temp = PyDict_GetItemString(dict,"beta");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"beta key not present");
@@ -886,7 +889,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* gamma */ 
+                        /* gamma */
                          temp = PyDict_GetItemString(dict,"gamma");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"gamma key not present");
@@ -899,7 +902,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* volume */ 
+                        /* volume */
                          temp = PyDict_GetItemString(dict,"volume");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"volume key not present");
@@ -912,7 +915,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 $1 = NULL;
                                 goto fail;
                          }
-                        /* n_atom */ 
+                        /* n_atom */
                          temp = PyDict_GetItemString(dict,"n_atom");
                          if (PyErr_Occurred() != NULL) {
                                 PyErr_SetString(PyErr_Occurred(),"n_atom key not present");
@@ -929,7 +932,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                                 PyErr_SetString(PyExc_RuntimeError,"n_atom value must be greater than zero");
                                 $1 = NULL;
                                 goto fail;
-                                
+
                          }
                          /* atom */
                          cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
@@ -953,7 +956,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                          int i;
                          PyObject *atom;
                          for (i=0 ; i < n_atom ; i++) {
-                                atom = PyList_GetItem(temp,i); 
+                                atom = PyList_GetItem(temp,i);
                                 PyObject *temp2;
                                 temp2 = PyDict_GetItemString(atom,"Zatom");
                                 if (PyErr_Occurred() != NULL) {
@@ -1050,7 +1053,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct radioNuclideData * {
         int i;
-        struct radioNuclideData *rnd = $1; 
+        struct radioNuclideData *rnd = $1;
 
         if (argvi >= items) {
                 EXTEND(sp,1);
@@ -1061,13 +1064,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
         else {
                 HV *hash = newHV();
-                STORE_HASH("name", newSVpvn(rnd->name, strlen(rnd->name)),hash) 
-                STORE_HASH("Z", newSViv(rnd->Z),hash) 
-                STORE_HASH("A", newSViv(rnd->A),hash) 
-                STORE_HASH("N", newSViv(rnd->N),hash) 
-                STORE_HASH("Z_xray", newSViv(rnd->Z_xray),hash) 
-                STORE_HASH("nXrays", newSViv(rnd->nXrays),hash) 
-                STORE_HASH("nGammas", newSViv(rnd->nGammas),hash) 
+                STORE_HASH("name", newSVpvn(rnd->name, strlen(rnd->name)),hash)
+                STORE_HASH("Z", newSViv(rnd->Z),hash)
+                STORE_HASH("A", newSViv(rnd->A),hash)
+                STORE_HASH("N", newSViv(rnd->N),hash)
+                STORE_HASH("Z_xray", newSViv(rnd->Z_xray),hash)
+                STORE_HASH("nXrays", newSViv(rnd->nXrays),hash)
+                STORE_HASH("nGammas", newSViv(rnd->nGammas),hash)
                 AV *XrayLines = newAV();
                 AV *XrayIntensities = newAV();
                 AV *GammaEnergies = newAV();
@@ -1093,7 +1096,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct compoundDataNIST * {
         int i;
-        struct compoundDataNIST *cdn = $1; 
+        struct compoundDataNIST *cdn = $1;
 
         if (argvi >= items) {
                 EXTEND(sp,1);
@@ -1104,9 +1107,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
         else {
                 HV *hash = newHV();
-                STORE_HASH("name", newSVpvn(cdn->name, strlen(cdn->name)),hash) 
-                STORE_HASH("nElements", newSViv(cdn->nElements),hash) 
-                STORE_HASH("density", newSVnv(cdn->density),hash) 
+                STORE_HASH("name", newSVpvn(cdn->name, strlen(cdn->name)),hash)
+                STORE_HASH("nElements", newSViv(cdn->nElements),hash)
+                STORE_HASH("density", newSVnv(cdn->density),hash)
                 AV *Elements = newAV();
                 AV *massFractions = newAV();
                 STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
@@ -1147,7 +1150,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         else {
                 $result = &PL_sv_undef;
         }
-        
+
         argvi++;
 
 }
@@ -1173,7 +1176,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         PUTBACK;
         FREETMPS;
         LEAVE;
-        
+
         $result = sv_2mortal(perl_result);
         argvi++;
 }
@@ -1211,7 +1214,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 STORE_HASH("cpointer", newSViv((IV) cs), rv)
                 $result = sv_2mortal(newRV_noinc((SV*) rv));
-                
+
         }
 
         argvi++;
@@ -1228,7 +1231,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 /* get cpointer */
                 SV **cpointerPtr = hv_fetch(hash, "cpointer", 8, FALSE);
                 if (cpointerPtr != NULL) {
-                        cs = (Crystal_Struct *) SvIV(*cpointerPtr); 
+                        cs = (Crystal_Struct *) SvIV(*cpointerPtr);
                 }
                 else {
                         /* no cpointer found -> read from hash */
@@ -1442,7 +1445,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 %typemap(out) struct radioNuclideData * {
         int i;
-        struct radioNuclideData *rnd = $1; 
+        struct radioNuclideData *rnd = $1;
 
         if (rnd== NULL) {
                 fprintf(stderr, "Error: requested radionuclide not found in database\n");
@@ -1481,7 +1484,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 %typemap(out) struct compoundDataNIST * {
         int i;
-        struct compoundDataNIST *cdn = $1; 
+        struct compoundDataNIST *cdn = $1;
 
         if (cdn == NULL) {
                 fprintf(stderr, "Error: requested NIST compound not found in database\n");
@@ -1508,14 +1511,14 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 %typemap(out) struct compoundData * {
         int i;
-        struct compoundData *cd = $1; 
+        struct compoundData *cd = $1;
 
         if (cd == NULL) {
-               $result = Qnil; 
+               $result = Qnil;
         }
         else {
                 VALUE rv;
-                rv = rb_hash_new(); 
+                rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
                 rb_hash_aset(rv, rb_str_new2("nAtomsAll"), rb_float_new(cd->nAtomsAll));
                 VALUE elements, massFractions;
@@ -1573,7 +1576,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         VALUE input = $input;
         Crystal_Struct *cs;
         int cpointer_found = 0;
-        
+
         if (TYPE(input) != T_HASH) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a hash");
         }
@@ -1699,7 +1702,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
         }
 
-        $1 = cs;        
+        $1 = cs;
 
 }
 
@@ -1738,7 +1741,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct radioNuclideData * {
         int i;
-        struct radioNuclideData *rnd = $1; 
+        struct radioNuclideData *rnd = $1;
 
         if (rnd == NULL) {
                 php_log_err("Error: requested radionuclide not found in database\n");
@@ -1778,7 +1781,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 %typemap(out) struct compoundDataNIST * {
         int i;
-        struct compoundDataNIST *cdn = $1; 
+        struct compoundDataNIST *cdn = $1;
 
         if (cdn == NULL) {
                 php_log_err("Error: requested NIST compound not found in database\n");
@@ -1805,7 +1808,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 %typemap(out) struct compoundData * {
         int i;
-        struct compoundData *cd = $1; 
+        struct compoundData *cd = $1;
 
         if (cd == NULL) {
                 php_log_err("CompoundParser Error\n");
@@ -1895,7 +1898,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 }
 %typemap(in) Crystal_Struct * {
         /* cpointer should be used if present and valid */
-        
+
         if (Z_TYPE_PP($input) != IS_ARRAY) {
                 SWIG_exception(SWIG_TypeError,"Argument must be an array");
         }
@@ -1960,13 +1963,13 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 convert_to_long_ex(temp2);
                 cs->n_atom = (int) Z_LVAL_PP(temp2);
-       
+
                 zval **atom;
 
                 if (zend_hash_find(Z_ARRVAL_PP($input), "atom", sizeof("atom"), (void **) &atom) == FAILURE) {
                         SWIG_exception(SWIG_TypeError,"atom key not present");
                 }
-       
+
                 if (Z_TYPE_PP(atom) != IS_ARRAY) {
                         SWIG_exception(SWIG_TypeError,"atom must be an array");
                 }
@@ -1977,7 +1980,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         if (zend_hash_index_find(Z_ARRVAL_PP(atom), i, (void **) &this_atom) == FAILURE) {
                                 SWIG_exception(SWIG_TypeError,"atom member not found\n");
                         }
-                        
+
                         if (zend_hash_find(Z_ARRVAL_PP(this_atom), "Zatom", sizeof("Zatom"), (void **) &temp2) == FAILURE) {
                                 SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
                         }
@@ -1989,25 +1992,25 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         }
                         convert_to_double_ex(temp2);
                         cs->atom[i].fraction = (double) Z_DVAL_PP(temp2);
-                        
+
                         if (zend_hash_find(Z_ARRVAL_PP(this_atom), "x", sizeof("x"), (void **) &temp2) == FAILURE) {
                                 SWIG_exception(SWIG_TypeError,"x key not found\n");
                         }
                         convert_to_double_ex(temp2);
                         cs->atom[i].x = (double) Z_DVAL_PP(temp2);
-                        
+
                         if (zend_hash_find(Z_ARRVAL_PP(this_atom), "y", sizeof("y"), (void **) &temp2) == FAILURE) {
                                 SWIG_exception(SWIG_TypeError,"y key not found\n");
                         }
                         convert_to_double_ex(temp2);
                         cs->atom[i].y = (double) Z_DVAL_PP(temp2);
-                        
+
                         if (zend_hash_find(Z_ARRVAL_PP(this_atom), "z", sizeof("z"), (void **) &temp2) == FAILURE) {
                                 SWIG_exception(SWIG_TypeError,"z key not found\n");
                         }
                         convert_to_double_ex(temp2);
                         cs->atom[i].z = (double) Z_DVAL_PP(temp2);
-                        
+
                 }
                 $1 = cs;
         }
@@ -2016,8 +2019,3 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #endif
 
 %include "xraylib.h"
-
-
-
-
-

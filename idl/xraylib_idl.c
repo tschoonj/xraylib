@@ -170,6 +170,7 @@ extern IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR arg
 extern IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Crystal_UnitCellVolume(int argc, IDL_VPTR argv[]);
 extern IDL_VPTR IDL_CDECL IDL_Crystal_dSpacing(int argc, IDL_VPTR argv[]);
+extern IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystalsList(int argc, IDL_VPTR argv[]);
 
 
 extern IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByName(int argc, IDL_VPTR argv[]);
@@ -317,6 +318,7 @@ static IDL_SYSFUN_DEF2 xrl_functions[] = {
 	{{IDL_Crystal_F_H_StructureFactor_Partial}, "CRYSTAL_F_H_STRUCTUREFACTOR_PARTIAL", 10, 10, 0, 0},
 	{{IDL_Crystal_UnitCellVolume}, "CRYSTAL_UNITCELLVOLUME", 1, 1, 0, 0},
 	{{IDL_Crystal_dSpacing}, "CRYSTAL_DSPACING", 4, 4, 0, 0},
+	{{IDL_Crystal_GetCrystalsList}, "CRYSTAL_GETCRYSTALSLIST", 0, 0, 0, 0},
 	{{IDL_GetCompoundDataNISTByName}, "GETCOMPOUNDDATANISTBYNAME", 1, 1, 0, 0},
 	{{IDL_GetCompoundDataNISTByIndex}, "GETCOMPOUNDDATANISTBYINDEX", 1, 1, 0, 0},
 	{{IDL_GetCompoundDataNISTList}, "GETCOMPOUNDDATANISTLIST", 0, 0, 0, 0},
@@ -1698,6 +1700,32 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataList(int argc, IDL_VPTR argv[]) {
 	int slen;
 
 	for (i = 0 ; i < nRadioNuclides; i++) {
+		slen = strlen(list[i]);
+		IDL_StrEnsureLength(&(list_IDL[i]), slen);
+		IDL_StrStore(&(list_IDL[i]), list[i]);
+		list_IDL[i].slen = slen;
+		xrlFree(list[i]);
+	}
+	xrlFree(list);
+
+	return rv;
+}
+
+IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystalsList(int argc, IDL_VPTR argv[]) {
+	IDL_VPTR rv;
+
+	int nCrystals;
+	char **list = Crystal_GetCrystalsList(NULL, &nCrystals);
+	IDL_STRING *list_IDL;
+	IDL_MEMINT dims[IDL_MAX_ARRAY_DIM];
+	dims[0] = nCrystals;
+
+	list_IDL = (IDL_STRING*) IDL_MakeTempArray((int) IDL_TYP_STRING, 1, dims, IDL_ARR_INI_NOP, &rv);
+
+	int i;
+	int slen;
+
+	for (i = 0 ; i < nCrystals ; i++) {
 		slen = strlen(list[i]);
 		IDL_StrEnsureLength(&(list_IDL[i]), slen);
 		IDL_StrStore(&(list_IDL[i]), list[i]);

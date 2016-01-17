@@ -15,8 +15,9 @@
 !Fortran 2003 bindings for xraylib
 
 
-#define _NIST_LIST_STRING_LENGTH 100 
+#define _NIST_LIST_STRING_LENGTH 100
 #define _RADIO_NUCLIDE_STRING_LENGTH 10
+#define _CRYSTAL_STRING_LENGTH 100
 
 MODULE xraylib
 
@@ -30,14 +31,14 @@ TYPE, BIND(C) :: compoundData_C
         REAL (C_DOUBLE) :: nAtomsAll
         TYPE (C_PTR) :: Elements
         TYPE (C_PTR) :: massFractions
-ENDTYPE 
+ENDTYPE
 
 TYPE :: compoundData
         INTEGER (C_INT) :: nElements
         REAL (C_DOUBLE) :: nAtomsAll
         INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
-ENDTYPE 
+ENDTYPE
 
 TYPE, BIND(C) :: xrlComplex_C
         REAL (C_DOUBLE) :: re
@@ -110,7 +111,7 @@ TYPE, BIND(C) :: radioNuclideData_C
         TYPE (C_PTR) :: XrayLines
         TYPE (C_PTR) :: XrayIntensities
         INTEGER (C_INT) :: nGammas
-        TYPE (C_PTR) :: GammaEnergies 
+        TYPE (C_PTR) :: GammaEnergies
         TYPE (C_PTR) :: GammaIntensities
 ENDTYPE
 
@@ -124,16 +125,16 @@ TYPE :: radioNuclideData
         INTEGER (C_INT), POINTER, DIMENSION(:) :: XrayLines
         REAL (C_DOUBLE), POINTER, DIMENSION(:) :: XrayIntensities
         INTEGER (C_INT) :: nGammas
-        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaEnergies 
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaEnergies
         REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaIntensities
 ENDTYPE
 
 
 
 !NIST constants
-REAL (KIND=C_DOUBLE),PARAMETER :: AVOGNUM = 0.602214179     ! Avogadro number (mol-1 * barn-1 * cm2) 
-REAL (KIND=C_DOUBLE),PARAMETER :: KEV2ANGST = 12.39841875   ! keV to angstrom-1 conversion factor 
-REAL (KIND=C_DOUBLE),PARAMETER :: MEC2 = 510.998910         ! electron rest mass (keV) 
+REAL (KIND=C_DOUBLE),PARAMETER :: AVOGNUM = 0.602214179     ! Avogadro number (mol-1 * barn-1 * cm2)
+REAL (KIND=C_DOUBLE),PARAMETER :: KEV2ANGST = 12.39841875   ! keV to angstrom-1 conversion factor
+REAL (KIND=C_DOUBLE),PARAMETER :: MEC2 = 510.998910         ! electron rest mass (keV)
 REAL (KIND=C_DOUBLE),PARAMETER :: RE2 = 0.079407877         ! square of classical electron radius (barn)
 REAL (KIND=C_DOUBLE),PARAMETER :: R_E = 2.8179403267E-15    ! Classical electron radius (barn)
 
@@ -142,7 +143,9 @@ REAL (KIND=C_DOUBLE),PARAMETER :: R_E = 2.8179403267E-15    ! Classical electron
 !Constants
 INTEGER (KIND=C_INT),PARAMETER ::  NIST_LIST_STRING_LENGTH = _NIST_LIST_STRING_LENGTH
 INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_STRING_LENGTH =&
-_RADIO_NUCLIDE_STRING_LENGTH 
+_RADIO_NUCLIDE_STRING_LENGTH
+INTEGER (KIND=C_INT),PARAMETER ::  CRYSTAL_STRING_LENGTH =&
+_CRYSTAL_STRING_LENGTH
 
 INTEGER (KIND=C_INT),PARAMETER ::  F1_TRANS   = 0
 INTEGER (KIND=C_INT),PARAMETER ::  F12_TRANS  = 1
@@ -1873,9 +1876,9 @@ INTERFACE
         PURE FUNCTION ElementDensity(Z) BIND(C,NAME='ElementDensity')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: ElementDensity 
+                REAL (KIND=C_DOUBLE) :: ElementDensity
                 INTEGER (KIND=C_INT),INTENT(IN),VALUE :: Z
-        END FUNCTION ElementDensity 
+        END FUNCTION ElementDensity
 
         !Cross sections (cm2/g)
         PURE FUNCTION CS_Total(Z,E) BIND(C,NAME='CS_Total')
@@ -2051,7 +2054,7 @@ INTERFACE
                 INTEGER (KIND=C_INT), INTENT(IN),VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN),VALUE :: E, theta, phi
         ENDFUNCTION DCSPb_Compt
-        
+
         !Scattering factors
         PURE FUNCTION FF_Rayl(Z , q) BIND(C,NAME='FF_Rayl')
                 USE, INTRINSIC :: ISO_C_BINDING
@@ -2135,7 +2138,7 @@ INTERFACE
                 REAL (KIND=C_DOUBLE), INTENT(IN),VALUE :: E
         END FUNCTION CSb_FluorLine
 
-        !Fractional radiative rate        
+        !Fractional radiative rate
         PURE FUNCTION RadRate(Z, line) BIND (C,NAME='RadRate')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2157,7 +2160,7 @@ INTERFACE
                 IMPLICIT NONE
                 REAL (KIND=C_DOUBLE) :: Fi
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
-                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z
         ENDFUNCTION Fi
 
         PURE FUNCTION Fii (Z , E) BIND(C, NAME='Fii')
@@ -2165,7 +2168,7 @@ INTERFACE
                 IMPLICIT NONE
                 REAL (KIND=C_DOUBLE) :: Fii
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
-                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z
         ENDFUNCTION Fii
 
         !Kissel photoelectric cross sections
@@ -2174,7 +2177,7 @@ INTERFACE
                 IMPLICIT NONE
                 REAL (KIND=C_DOUBLE) :: CS_Photo_Total
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
-                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z
         ENDFUNCTION CS_Photo_Total
 
         PURE FUNCTION CSb_Photo_Total (Z, E) BIND(C, NAME='CSb_Photo_Total')
@@ -2182,7 +2185,7 @@ INTERFACE
                 IMPLICIT NONE
                 REAL (KIND=C_DOUBLE) :: CSb_Photo_Total
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
-                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z
         ENDFUNCTION CSb_Photo_Total
 
         PURE FUNCTION CS_Photo_Partial (Z,shell, E) &
@@ -2208,7 +2211,7 @@ INTERFACE
                 IMPLICIT NONE
                 REAL (KIND=C_DOUBLE) :: CS_Total_Kissel
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
-                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z
         ENDFUNCTION CS_Total_Kissel
 
         PURE FUNCTION CSb_Total_Kissel (Z, E) BIND(C, NAME='CSb_Total_Kissel')
@@ -2216,7 +2219,7 @@ INTERFACE
                 IMPLICIT NONE
                 REAL (KIND=C_DOUBLE) :: CSb_Total_Kissel
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
-                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z 
+                INTEGER (KIND=C_INT),INTENT(IN), VALUE :: Z
         ENDFUNCTION CSb_Total_Kissel
 
         FUNCTION CompoundParser_C(compoundString) BIND(C,NAME='CompoundParser')&
@@ -2226,7 +2229,7 @@ INTERFACE
                 TYPE (C_PTR), INTENT(IN), VALUE :: compoundString
                 TYPE (C_PTR) :: rv
         ENDFUNCTION CompoundParser_C
-        !compound parser based functions                
+        !compound parser based functions
         PURE FUNCTION CS_Total_CP_C(compound,E) BIND(C,NAME='CS_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2440,7 +2443,7 @@ INTERFACE
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z,shell
-                REAL (KIND=C_DOUBLE) :: ElectronConfig 
+                REAL (KIND=C_DOUBLE) :: ElectronConfig
         ENDFUNCTION ElectronConfig
 
         PURE FUNCTION ElectronConfig_Biggs(Z,shell) BIND(C,NAME='ElectronConfig_Biggs')
@@ -2465,7 +2468,7 @@ INTERFACE
         PURE FUNCTION AugerYield(Z,shell) BIND(C,NAME='AugerYield')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, shell 
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z, shell
                 REAL (KIND=C_DOUBLE) :: AugerYield
         ENDFUNCTION
 
@@ -2479,7 +2482,7 @@ INTERFACE
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION CS_FluorLine_Kissel
 
-        PURE FUNCTION CSb_FluorLine_Kissel (Z,line, E) & 
+        PURE FUNCTION CSb_FluorLine_Kissel (Z,line, E) &
                 BIND(C, NAME='CSb_FluorLine_Kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2497,7 +2500,7 @@ INTERFACE
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION CS_FluorLine_Kissel_Cascade
 
-        PURE FUNCTION CSb_FluorLine_Kissel_Cascade (Z,line, E) & 
+        PURE FUNCTION CSb_FluorLine_Kissel_Cascade (Z,line, E) &
                 BIND(C, NAME='CSb_FluorLine_Kissel_Cascade')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2515,7 +2518,7 @@ INTERFACE
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION CS_FluorLine_Kissel_Nonradiative_Cascade
 
-        PURE FUNCTION CSb_FluorLine_Kissel_Nonradiative_Cascade (Z,line, E) & 
+        PURE FUNCTION CSb_FluorLine_Kissel_Nonradiative_Cascade (Z,line, E) &
                 BIND(C, NAME='CSb_FluorLine_Kissel_Nonradiative_Cascade')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2533,7 +2536,7 @@ INTERFACE
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION CS_FluorLine_Kissel_Radiative_Cascade
 
-        PURE FUNCTION CSb_FluorLine_Kissel_Radiative_Cascade (Z,line, E) & 
+        PURE FUNCTION CSb_FluorLine_Kissel_Radiative_Cascade (Z,line, E) &
                 BIND(C, NAME='CSb_FluorLine_Kissel_Radiative_Cascade')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2551,7 +2554,7 @@ INTERFACE
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION CS_FluorLine_Kissel_no_Cascade
 
-        PURE FUNCTION CSb_FluorLine_Kissel_no_Cascade (Z,line, E) & 
+        PURE FUNCTION CSb_FluorLine_Kissel_no_Cascade (Z,line, E) &
                 BIND(C, NAME='CSb_FluorLine_Kissel_no_Cascade')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
@@ -2565,7 +2568,7 @@ INTERFACE
                 BIND(C, NAME='PL1_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL1_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PL1_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION PL1_pure_kissel
@@ -2574,7 +2577,7 @@ INTERFACE
                 BIND(C, NAME='PL2_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL2_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PL2_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PL1
         ENDFUNCTION PL2_pure_kissel
@@ -2583,7 +2586,7 @@ INTERFACE
                 BIND(C, NAME='PL3_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL3_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PL3_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PL1, PL2
         ENDFUNCTION PL3_pure_kissel
@@ -2592,7 +2595,7 @@ INTERFACE
                 BIND(C, NAME='PM1_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM1_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PM1_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E
         ENDFUNCTION PM1_pure_kissel
@@ -2601,7 +2604,7 @@ INTERFACE
                 BIND(C, NAME='PM2_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM2_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PM2_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PM1
         ENDFUNCTION PM2_pure_kissel
@@ -2610,7 +2613,7 @@ INTERFACE
                 BIND(C, NAME='PM3_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM3_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PM3_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PM1, PM2
         ENDFUNCTION PM3_pure_kissel
@@ -2619,7 +2622,7 @@ INTERFACE
                 BIND(C, NAME='PM4_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM4_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PM4_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PM1, PM2, PM3
         ENDFUNCTION PM4_pure_kissel
@@ -2628,7 +2631,7 @@ INTERFACE
                 BIND(C, NAME='PM5_pure_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM5_pure_kissel 
+                REAL (KIND=C_DOUBLE) :: PM5_pure_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PM1, PM2, PM3, PM4
         ENDFUNCTION PM5_pure_kissel
@@ -2637,7 +2640,7 @@ INTERFACE
                 BIND(C, NAME='PL1_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL1_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL1_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK
         ENDFUNCTION PL1_rad_cascade_kissel
@@ -2646,7 +2649,7 @@ INTERFACE
                 BIND(C, NAME='PL2_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL2_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL2_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1
         ENDFUNCTION PL2_rad_cascade_kissel
@@ -2655,7 +2658,7 @@ INTERFACE
                 BIND(C, NAME='PL3_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL3_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL3_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2
         ENDFUNCTION PL3_rad_cascade_kissel
@@ -2664,7 +2667,7 @@ INTERFACE
                 BIND(C, NAME='PM1_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM1_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM1_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3
@@ -2675,7 +2678,7 @@ INTERFACE
                 BIND(C, NAME='PM2_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM2_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM2_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3, PM1
@@ -2686,7 +2689,7 @@ INTERFACE
                 BIND(C, NAME='PM3_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM3_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM3_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3,PM1, PM2
@@ -2697,7 +2700,7 @@ INTERFACE
                 BIND(C, NAME='PM4_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM4_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM4_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3, PM1, PM2, PM3
@@ -2708,7 +2711,7 @@ INTERFACE
                 BIND(C, NAME='PM5_rad_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM5_rad_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM5_rad_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
                 PL3, PM1, PM2, PM3, PM4
@@ -2718,7 +2721,7 @@ INTERFACE
                 BIND(C, NAME='PL1_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL1_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL1_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK
         ENDFUNCTION PL1_auger_cascade_kissel
@@ -2727,7 +2730,7 @@ INTERFACE
                 BIND(C, NAME='PL2_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL2_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL2_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1
         ENDFUNCTION PL2_auger_cascade_kissel
@@ -2736,7 +2739,7 @@ INTERFACE
                 BIND(C, NAME='PL3_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL3_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL3_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2
         ENDFUNCTION PL3_auger_cascade_kissel
@@ -2745,7 +2748,7 @@ INTERFACE
                 BIND(C, NAME='PM1_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM1_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM1_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3
@@ -2756,7 +2759,7 @@ INTERFACE
                 BIND(C, NAME='PM2_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM2_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM2_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3, PM1
@@ -2767,7 +2770,7 @@ INTERFACE
                 BIND(C, NAME='PM3_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM3_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM3_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3,PM1, PM2
@@ -2778,7 +2781,7 @@ INTERFACE
                 BIND(C, NAME='PM4_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM4_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM4_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3, PM1, PM2, PM3
@@ -2789,7 +2792,7 @@ INTERFACE
                 BIND(C, NAME='PM5_auger_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM5_auger_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM5_auger_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
                 PL3, PM1, PM2, PM3, PM4
@@ -2799,7 +2802,7 @@ INTERFACE
                 BIND(C, NAME='PL1_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL1_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL1_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK
         ENDFUNCTION PL1_full_cascade_kissel
@@ -2808,7 +2811,7 @@ INTERFACE
                 BIND(C, NAME='PL2_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL2_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL2_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1
         ENDFUNCTION PL2_full_cascade_kissel
@@ -2817,7 +2820,7 @@ INTERFACE
                 BIND(C, NAME='PL3_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PL3_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PL3_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2
         ENDFUNCTION PL3_full_cascade_kissel
@@ -2826,7 +2829,7 @@ INTERFACE
                 BIND(C, NAME='PM1_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM1_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM1_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3
@@ -2837,7 +2840,7 @@ INTERFACE
                 BIND(C, NAME='PM2_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM2_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM2_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3, PM1
@@ -2848,7 +2851,7 @@ INTERFACE
                 BIND(C, NAME='PM3_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM3_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM3_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3,PM1, PM2
@@ -2859,7 +2862,7 @@ INTERFACE
                 BIND(C, NAME='PM4_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM4_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM4_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2,&
                 PL3, PM1, PM2, PM3
@@ -2870,7 +2873,7 @@ INTERFACE
                 BIND(C, NAME='PM5_full_cascade_kissel')
                 USE, INTRINSIC :: ISO_C_BINDING
                 IMPLICIT NONE
-                REAL (KIND=C_DOUBLE) :: PM5_full_cascade_kissel 
+                REAL (KIND=C_DOUBLE) :: PM5_full_cascade_kissel
                 INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
                 REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, PK, PL1, PL2, &
                 PL3, PM1, PM2, PM3, PM4
@@ -2953,7 +2956,7 @@ INTERFACE
                 REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, q,debye_factor
                 REAL (C_DOUBLE), INTENT(OUT) :: f0, f_primep, f_prime2
         ENDSUBROUTINE Atomic_Factors
-        
+
         FUNCTION Crystal_F_H_StructureFactor_C(crystal, energy, i_miller,&
         j_miller, k_miller, debye_factor, rel_angle) BIND(C,NAME=&
         'Crystal_F_H_StructureFactor') RESULT(rv)
@@ -3000,7 +3003,7 @@ INTERFACE
                 INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
                 REAL (C_DOUBLE) :: rv
         ENDFUNCTION Crystal_dSpacing_C
-        
+
         FUNCTION GetCompoundDataNISTByName_C(compoundString)&
         BIND (C,NAME='GetCompoundDataNISTByName')&
         RESULT(rv)
@@ -3055,6 +3058,16 @@ INTERFACE
                 TYPE (C_PTR) :: rv
         ENDFUNCTION GetRadioNuclideDataList_C
 
+        FUNCTION Crystal_GetCrystalsList_C(c_array, nCrystals)&
+        BIND (C,NAME='Crystal_GetCrystalsList')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT) :: nCrystals
+                TYPE (C_PTR), VALUE :: c_array
+                TYPE (C_PTR) :: rv
+        ENDFUNCTION Crystal_GetCrystalsList_C
+
 ENDINTERFACE
 
 CONTAINS
@@ -3104,7 +3117,7 @@ FUNCTION AtomicNumberToSymbol(Z) RESULT(rv)
         IMPLICIT NONE
         INTEGER (KIND=C_INT), INTENT(IN) :: Z
         CHARACTER (KIND=C_CHAR,LEN=3) :: rv
-       
+
         TYPE (C_PTR) :: symbol_C
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: symbol_F
         INTEGER :: i
@@ -3171,13 +3184,13 @@ FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
         TYPE (C_PTR) :: material_C, crystal_C
         INTEGER :: i
         TYPE (Crystal_Struct_C), POINTER :: c_struct_c
-        TYPE (Crystal_Struct), POINTER :: rv 
+        TYPE (Crystal_Struct), POINTER :: rv
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_F
 
         NULLIFY(rv)
 
         CALL stringF2C(material, material_F)
-        
+
         material_C = C_LOC(material_F)
 
         IF (PRESENT(c_array)) THEN
@@ -3201,7 +3214,7 @@ FUNCTION Crystal_GetCrystal (material, c_array) RESULT(rv)
                 rv%n_atom =c_struct_c%n_atom
                 CALL C_F_POINTER(c_struct_c%atom, rv%atom, [rv%n_atom])
         ENDIF
-       
+
         RETURN
 ENDFUNCTION Crystal_GetCrystal
 
@@ -3210,12 +3223,12 @@ FUNCTION Bragg_angle (crystal, energy, i_miller, j_miller, k_miller)&
         RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         TYPE (Crystal_Struct), INTENT(IN) :: crystal
         REAL (C_DOUBLE), INTENT(IN) :: energy
         INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
         REAL (C_DOUBLE) :: rv
-        
+
         TYPE (C_PTR) :: crystal_ptr
         TYPE (Crystal_Struct_C), TARGET :: crystal_c
 
@@ -3241,12 +3254,12 @@ FUNCTION Q_scattering_amplitude(crystal, energy, i_miller, j_miller,&
         RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         TYPE (Crystal_Struct), INTENT(IN) :: crystal
         REAL (C_DOUBLE), INTENT(IN) :: energy, rel_angle
         INTEGER (C_INT), INTENT(IN) :: i_miller, j_miller, k_miller
         REAL (C_DOUBLE) :: rv
-        
+
         TYPE (C_PTR) :: crystal_ptr
         TYPE (Crystal_Struct_C), TARGET :: crystal_c
 
@@ -3437,7 +3450,7 @@ FUNCTION Refractive_Index_Re(compoundString, E, density) RESULT(rv)
         CALL stringF2C(compoundString, compoundString_F)
 
         rv = Refractive_Index_Re_C(C_LOC(compoundString_F), E, density)
-ENDFUNCTION Refractive_Index_Re 
+ENDFUNCTION Refractive_Index_Re
 
 FUNCTION Refractive_Index_Im(compoundString, E, density) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
@@ -3451,9 +3464,9 @@ FUNCTION Refractive_Index_Im(compoundString, E, density) RESULT(rv)
         REAL (C_DOUBLE) :: rv
 
         CALL stringF2C(compoundString, compoundString_F)
-        
+
         rv = Refractive_Index_Im_C(C_LOC(compoundString_F), E, density)
-ENDFUNCTION Refractive_Index_Im 
+ENDFUNCTION Refractive_Index_Im
 
 FUNCTION Refractive_Index(compoundString, E, density) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
@@ -3486,9 +3499,9 @@ FUNCTION GetCompoundDataNISTByName(compoundString) RESULT(rv)
         INTEGER :: i
 
         NULLIFY(rv)
-        
+
         CALL stringF2C(compoundString, compoundString_F)
-        
+
         rv_c_ptr = GetCompoundDataNISTByName_C(C_LOC(compoundString_F))
 
         IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
@@ -3511,7 +3524,7 @@ FUNCTION GetCompoundDataNISTByIndex(index) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
 
-        INTEGER (C_INT), INTENT(IN) :: index 
+        INTEGER (C_INT), INTENT(IN) :: index
         TYPE (compoundDataNIST), POINTER :: rv
         TYPE (compoundDataNIST_C), POINTER :: rv_C
         TYPE (C_PTR) :: rv_c_ptr
@@ -3528,7 +3541,7 @@ FUNCTION GetCompoundDataNISTByIndex(index) RESULT(rv)
         ENDINTERFACE
 
         NULLIFY(rv)
-        
+
         rv_c_ptr = GetCompoundDataNISTByIndex_C(index)
 
         IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
@@ -3606,7 +3619,7 @@ ENDFUNCTION GetCompoundDataNISTList
 FUNCTION CS_Total_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3622,7 +3635,7 @@ ENDFUNCTION CS_Total_CP
 FUNCTION CS_Photo_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3638,7 +3651,7 @@ ENDFUNCTION CS_Photo_CP
 FUNCTION CS_Rayl_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3654,7 +3667,7 @@ ENDFUNCTION CS_Rayl_CP
 FUNCTION CS_Compt_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3670,7 +3683,7 @@ ENDFUNCTION CS_Compt_CP
 FUNCTION CS_Energy_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3686,7 +3699,7 @@ ENDFUNCTION CS_Energy_CP
 FUNCTION CSb_Total_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3702,7 +3715,7 @@ ENDFUNCTION CSb_Total_CP
 FUNCTION CSb_Photo_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3718,7 +3731,7 @@ ENDFUNCTION CSb_Photo_CP
 FUNCTION CSb_Rayl_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3734,7 +3747,7 @@ ENDFUNCTION CSb_Rayl_CP
 FUNCTION CSb_Compt_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3750,7 +3763,7 @@ ENDFUNCTION CSb_Compt_CP
 FUNCTION DCS_Rayl_CP(compound, E, theta) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3766,7 +3779,7 @@ ENDFUNCTION DCS_Rayl_CP
 FUNCTION DCS_Compt_CP(compound, E, theta) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3782,7 +3795,7 @@ ENDFUNCTION DCS_Compt_CP
 FUNCTION DCSb_Rayl_CP(compound, E, theta) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3798,7 +3811,7 @@ ENDFUNCTION DCSb_Rayl_CP
 FUNCTION DCSb_Compt_CP(compound, E, theta) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3814,7 +3827,7 @@ ENDFUNCTION DCSb_Compt_CP
 FUNCTION DCSP_Rayl_CP(compound, E, theta, phi) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3830,7 +3843,7 @@ ENDFUNCTION DCSP_Rayl_CP
 FUNCTION DCSP_Compt_CP(compound, E, theta, phi) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3846,7 +3859,7 @@ ENDFUNCTION DCSP_Compt_CP
 FUNCTION DCSPb_Rayl_CP(compound, E, theta, phi) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3862,7 +3875,7 @@ ENDFUNCTION DCSPb_Rayl_CP
 FUNCTION DCSPb_Compt_CP(compound, E, theta, phi) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3878,7 +3891,7 @@ ENDFUNCTION DCSPb_Compt_CP
 FUNCTION CS_Photo_Total_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3894,7 +3907,7 @@ ENDFUNCTION CS_Photo_Total_CP
 FUNCTION CS_Total_Kissel_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3910,7 +3923,7 @@ ENDFUNCTION CS_Total_Kissel_CP
 FUNCTION CSb_Photo_Total_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3926,7 +3939,7 @@ ENDFUNCTION CSb_Photo_Total_CP
 FUNCTION CSb_Total_Kissel_CP(compound, E) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
-        
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compound
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compound_F
@@ -3990,9 +4003,9 @@ FUNCTION GetRadioNuclideDataByName(radioNuclideDataString) RESULT(rv)
         INTEGER :: i
 
         NULLIFY(rv)
-        
+
         CALL stringF2C(radioNuclideDataString, radioNuclideDataString_F)
-        
+
         rv_c_ptr = GetRadioNuclideDataByName_C(C_LOC(radioNuclideDataString_F))
 
         IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
@@ -4021,7 +4034,7 @@ FUNCTION GetRadioNuclideDataByIndex(index) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
 
-        INTEGER (C_INT), INTENT(IN) :: index 
+        INTEGER (C_INT), INTENT(IN) :: index
         TYPE (radioNuclideData), POINTER :: rv
         TYPE (radioNuclideData_C), POINTER :: rv_C
         TYPE (C_PTR) :: rv_c_ptr
@@ -4038,7 +4051,7 @@ FUNCTION GetRadioNuclideDataByIndex(index) RESULT(rv)
         ENDINTERFACE
 
         NULLIFY(rv)
-        
+
         rv_c_ptr = GetRadioNuclideDataByIndex_C(index)
 
         IF (C_ASSOCIATED(rv_c_ptr) .EQV. .TRUE.) THEN
@@ -4122,4 +4135,51 @@ FUNCTION GetRadioNuclideDataList() RESULT(rv)
         NULLIFY(list_c_ptrs)
         CALL xrlFree(list_c_ptr)
 ENDFUNCTION GetRadioNuclideDataList
+
+FUNCTION Crystal_GetCrystalsList(c_array) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        IMPLICIT NONE
+        TYPE (Crystal_Array), INTENT(INOUT), OPTIONAL, TARGET :: c_array
+        CHARACTER(KIND=C_CHAR, LEN=CRYSTAL_STRING_LENGTH),&
+        DIMENSION(:), POINTER :: rv
+        INTEGER (C_INT) :: nCrystals
+        TYPE (C_PTR) :: list_c_ptr
+        TYPE (C_PTR), DIMENSION(:), POINTER :: list_c_ptrs
+        INTEGER :: i,j
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: list_f
+
+        INTERFACE
+        PURE FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
+        IF (PRESENT(c_array)) THEN
+          list_c_ptr = Crystal_GetCrystalsList_C(C_LOC(c_array), nCrystals)
+        ELSE
+          list_c_ptr = Crystal_GetCrystalsList_C(C_NULL_PTR, nCrystals)
+        ENDIF
+
+        CALL C_F_POINTER(list_c_ptr, list_c_ptrs, [nCrystals])
+
+        ALLOCATE(rv(nCrystals))
+
+        DO i=1,nCrystals
+                CALL C_F_POINTER(list_c_ptrs(i), list_f,&
+                [xrlstrlen(list_c_ptrs(i))])
+                DO j=1,xrlstrlen(list_c_ptrs(i))
+                        rv(i)(j:j)=list_f(j)
+                ENDDO
+                DO j=xrlstrlen(list_c_ptrs(i))+1,CRYSTAL_STRING_LENGTH
+                        rv(i)(j:j)=' '
+                ENDDO
+                NULLIFY(list_f)
+                CALL xrlFree(list_c_ptrs(i))
+        ENDDO
+        NULLIFY(list_c_ptrs)
+        CALL xrlFree(list_c_ptr)
+ENDFUNCTION Crystal_GetCrystalsList
 ENDMODULE

@@ -181,6 +181,9 @@ printf ("  FH(3,3,1) structure factor: (%f, %f)\n", FH['re'], FH['im'])
 
 F0 = xraylib.Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle)
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0['re'], F0['im'])
+crystals = xraylib.Crystal_GetCrystalsList()
+printf ("List of available crystals:\n")
+for i,v in ipairs(crystals) do printf("  Crystal %i: %s\n",i,v) end
 
 printf ("\n")
 

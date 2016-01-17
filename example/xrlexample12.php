@@ -180,6 +180,11 @@ printf ("  FH(3,3,1) structure factor: (%f, %f)\n", $FH["re"], $FH["im"]);
 $F0 = Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_temp_factor, $rel_angle);
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", $F0["re"], $F0["im"]);
 
+$crystals = Crystal_GetCrystalsList();
+printf ("List of available crystals:\n");
+for ($i = 0 ; $i < count($crystals) ; $i++) {
+	printf("  Crystal %d: %s\n", $i, $crystals[$i]);
+}
 printf ("\n");
 
 /* compoundDataNIST tests */

@@ -65,7 +65,6 @@ src/Makefile
 src/libxrl.la
 src/libxrlf03.la
 src/prdata
-src/xraylib.i
 stamp-h1
 xraylib.spec
 .tags

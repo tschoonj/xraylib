@@ -184,6 +184,13 @@ printf ("  FH(3,3,1) structure factor: (%f, %f)\n", Re($FH), Im($FH));
 $F0 = xraylib::Crystal_F_H_StructureFactor ($cryst, $energy, 0, 0, 0, $debye_temp_factor, $rel_angle);
 printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", Re($F0), Im($F0));
 
+$crystalNames = xraylib::Crystal_GetCrystalsList();
+$counter = 0;
+printf ("List of available crystals:\n");
+foreach my $crystalName (@$crystalNames) {
+	printf ("  Crystal %i: %s\n", $counter++, $crystalName);
+}
+
 printf ("\n");
 
 # compoundDataNIST tests

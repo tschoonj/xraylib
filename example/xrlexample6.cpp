@@ -190,6 +190,14 @@ int main()
   F0 = Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   std::printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
+  char **crystals;
+  crystals = Crystal_GetCrystalsList(NULL, NULL);
+  std::printf ("List of available crystals:\n");
+  for (i = 0 ; crystals[i] != NULL ; i++) {
+  	std::printf ("  Crystal %i: %s\n", i, crystals[i]);
+	xrlFree(crystals[i]);
+  }
+  xrlFree(crystals);
   std::printf ("\n");
 
   /* compoundDataNIST tests */

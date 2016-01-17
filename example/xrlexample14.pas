@@ -12,6 +12,7 @@ var
   cdn: PCompoundDataNIST;
   nistCompounds: TStringArray;
   radioNuclides: TStringArray;
+  crystals: TStringArray;
   cryst: PCrystalStruct;
 	atom: PCrystalAtom;
 	energy : double = 8.0;
@@ -185,6 +186,11 @@ begin
 
   	Fbig0 := Crystal_F_H_StructureFactor (cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
   	WriteLn('  F0=FH(0,0,0) structure factor: (', Fbig0.re, ', ', Fbig0.im, ')');
+
+    crystals:= Crystal_GetCrystalsList();
+    WriteLn('List of available crystals:');
+    for  i := 0 to Length(crystals)-1 do
+      WriteLn('  Crystal ',i,': ', crystals[i]);
 
     // CompoundDataNIST tests
     WriteLn;
