@@ -20,15 +20,15 @@ public class compoundDataNIST {
   public final String name;
   public final int nElements;
   public final int[] Elements;
-  public final double[] massFractions;  
+  public final double[] massFractions;
   public final double density;
   private final String formattedNISTCompoundString;
 
   protected compoundDataNIST(ByteBuffer byte_buffer) {
     name = Xraylib.readString(byte_buffer);
     nElements = byte_buffer.getInt();
-    Elements = Xraylib.readIntArray(nElements, byte_buffer); 
-    massFractions = Xraylib.readDoubleArray(nElements, byte_buffer); 
+    Elements = Xraylib.readIntArray(nElements, byte_buffer);
+    massFractions = Xraylib.readDoubleArray(nElements, byte_buffer);
     density = byte_buffer.getDouble();
 
     String formattedNISTCompoundString = String.format("%s contains %d elements", name, nElements);
@@ -47,13 +47,12 @@ public class compoundDataNIST {
     this.massFractions = new double[cd.nElements];
     System.arraycopy(cd.massFractions, 0, this.massFractions, 0, cd.nElements);
     this.density = cd.density;
-    this.formattedNISTCompoundString = cd.formattedNISTCompoundString;
+    this.formattedNISTCompoundString = new String(cd.formattedNISTCompoundString);
   }
 
   @Override
   public String toString() {
     return formattedNISTCompoundString;
   }
- 
-}
 
+}

@@ -17,6 +17,7 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 #include "xraylib.h"
 #include "xrayglob.h"
 #include "xraylib-nist-compounds-internal.h"
+#include "xraylib-radionuclides-internal.h"
 
 
 extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
@@ -1074,7 +1075,7 @@ int main(void)
   PR_DYNMATD(NE_Photo, CS_Photo_arr, "CS_Photo_arr");
   PR_DYNMATD(NE_Photo, CS_Photo_arr2, "CS_Photo_arr2");
 
-  
+
   PR_NUMVEC1D(NE_Rayl, "NE_Rayl");
   PR_DYNMATD(NE_Rayl, E_Rayl_arr, "E_Rayl_arr");
   PR_DYNMATD(NE_Rayl, CS_Rayl_arr, "CS_Rayl_arr");
@@ -1090,7 +1091,7 @@ int main(void)
   PR_DYNMATD(NE_Energy, CS_Energy_arr, "CS_Energy_arr");
   PR_DYNMATD(NE_Energy, CS_Energy_arr2, "CS_Energy_arr2");
 
-  
+
   PR_NUMVEC1D(Nq_Rayl, "Nq_Rayl");
   PR_DYNMATD(Nq_Rayl, q_Rayl_arr, "q_Rayl_arr");
   PR_DYNMATD(Nq_Rayl, FF_Rayl_arr, "FF_Rayl_arr");
@@ -1161,6 +1162,20 @@ int main(void)
 	fwrite(&compoundDataNISTList[i].density, sizeof(double), 1, f);
   }
 
+  fwrite(&nNuclideDataList, sizeof(int), 1, f);
+  for (i = 0 ; i < nNuclideDataList ; i++) {
+    fwrite(nuclideDataList[i].name, sizeof(char), strlen(nuclideDataList[i].name)+1, f);
+    fwrite(&nuclideDataList[i].Z, sizeof(int), 1, f);
+    fwrite(&nuclideDataList[i].A, sizeof(int), 1, f);
+    fwrite(&nuclideDataList[i].N, sizeof(int), 1, f);
+    fwrite(&nuclideDataList[i].Z_xray, sizeof(int), 1, f);
+    fwrite(&nuclideDataList[i].nXrays, sizeof(int), 1, f);
+    fwrite(nuclideDataList[i].XrayLines, sizeof(int), nuclideDataList[i].nXrays, f);
+    fwrite(nuclideDataList[i].XrayIntensities, sizeof(double), nuclideDataList[i].nXrays, f);
+    fwrite(&nuclideDataList[i].nGammas, sizeof(int), 1, f);
+    fwrite(nuclideDataList[i].GammaEnergies, sizeof(double), nuclideDataList[i].nGammas, f);
+    fwrite(nuclideDataList[i].GammaIntensities, sizeof(double), nuclideDataList[i].nGammas, f);
+  }
 
   fclose(f);
 

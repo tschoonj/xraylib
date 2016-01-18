@@ -125,7 +125,7 @@ public class Xraylib {
       }
     }
     return rv;
-  } 
+  }
 
   private static void XRayInit() throws Exception {
     try {
@@ -257,6 +257,12 @@ public class Xraylib {
         compoundDataNISTList[i] = new compoundDataNIST(byte_buffer);
       }
 
+      int nNuclideDataList = byte_buffer.getInt();
+      nuclideDataList = new radioNuclideData[nNuclideDataList];
+      for (int i = 0 ; i < nNuclideDataList ; i++) {
+        nuclideDataList[i] = new radioNuclideData(byte_buffer);
+      }
+
       //this should never happen!
       if (byte_buffer.hasRemaining()) {
         throw new RuntimeException("byte_buffer not empty when closing!");
@@ -265,7 +271,7 @@ public class Xraylib {
       inputStream.close();
     }
     catch (IOException | RuntimeException e ) {
-      e.printStackTrace();	
+      e.printStackTrace();
       throw new Exception(e.getMessage());
     }
   }
@@ -565,7 +571,7 @@ public class Xraylib {
     return SF;
   }
 
-  public static double DCS_Thoms(double theta) { 
+  public static double DCS_Thoms(double theta) {
     double cos_theta;
 
     cos_theta = Math.cos(theta);
@@ -573,7 +579,7 @@ public class Xraylib {
     return (RE2/2.0) * (1.0 + cos_theta*cos_theta);
   }
 
-  public static double  DCS_KN(double E, double theta) { 
+  public static double  DCS_KN(double E, double theta) {
     double cos_theta, t1, t2;
 
     if (E <= 0.) {
@@ -583,13 +589,13 @@ public class Xraylib {
     cos_theta = Math.cos(theta);
     t1 = (1.0 - cos_theta) * E / MEC2 ;
     t2 = 1.0 + t1;
-  
+
     return (RE2/2.) * (1.0 + cos_theta*cos_theta + t1*t1/t2) /t2 /t2;
   }
 
   public static double DCS_Rayl(int Z, double E, double theta) {
-    double F, q ;                                                      
-                                                        
+    double F, q ;
+
     if (Z<1 || Z>ZMAX) {
       throw new XraylibException("Z out of range");
     }
@@ -603,9 +609,9 @@ public class Xraylib {
     return  AVOGNUM / AtomicWeight_arr[Z] * F*F * DCS_Thoms(theta);
   }
 
-  public static double DCS_Compt(int Z, double E, double theta) { 
-    double S, q ;                                                      
-                                                        
+  public static double DCS_Compt(int Z, double E, double theta) {
+    double S, q ;
+
     if (Z<1 || Z>ZMAX) {
       throw new XraylibException("Z out of range");
     }
@@ -623,7 +629,7 @@ public class Xraylib {
     if (E <= 0.) {
       throw new XraylibException("Energy <=0 is not allowed");
     }
-  
+
     return E / KEV2ANGST * Math.sin(theta / 2.0) ;
   }
 
@@ -641,7 +647,7 @@ public class Xraylib {
     b2 = b*b;
     lb = Math.log(b);
 
-    sigma = 2*Math.PI*RE2*( (1+a)/a3*(2*a*(1+a)/b-lb) + 0.5*lb/a - (1+3*a)/b2); 
+    sigma = 2*Math.PI*RE2*( (1+a)/a3*(2*a*(1+a)/b-lb) + 0.5*lb/a - (1+3*a)/b2);
     return sigma;
   }
 
@@ -706,16 +712,16 @@ public class Xraylib {
 
     if (Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell] < 1.0E-06){
       throw new XraylibException("selected orbital is unoccupied");
-    } 
-  
+    }
+
     if (EdgeEnergy_arr[Z*SHELLNUM + shell] > E) {
       throw new XraylibException("selected energy cannot excite the orbital: energy must be greater than the absorption edge energy");
-    } 
+    }
     else {
       ln_E = Math.log(E);
       if (EdgeEnergy_Kissel_arr[Z*SHELLNUM_K + shell] > EdgeEnergy_arr[Z*SHELLNUM + shell] && E < EdgeEnergy_Kissel_arr[Z*SHELLNUM_K + shell]) {
    	/*
-	 * use log-log extrapolation 
+	 * use log-log extrapolation
 	 */
 	x0 = E_Photo_Partial_Kissel_arr[Z][shell][0];
 	x1 = E_Photo_Partial_Kissel_arr[Z][shell][1];
@@ -736,14 +742,14 @@ public class Xraylib {
       }
       sigma = Math.exp(ln_sigma);
     }
-    return sigma; 
+    return sigma;
   }
 
   public static double CS_Photo_Partial(int Z, int shell, double E) {
     return CSb_Photo_Partial(Z, shell, E)*Electron_Config_Kissel_arr[Z*SHELLNUM_K + shell]*AVOGNUM/AtomicWeight_arr[Z];
   }
 
-  public static double CS_Total_Kissel(int Z, double E) { 
+  public static double CS_Total_Kissel(int Z, double E) {
 
     if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel_arr[Z]<0 || NE_Rayl_arr[Z]<0 || NE_Compt_arr[Z]<0) {
       throw new XraylibException("Z out of range");
@@ -776,7 +782,7 @@ public class Xraylib {
       throw new XraylibException("Shell is not occupied");
     }
 
-    return rv; 
+    return rv;
   }
 
   public static double ComptonProfile(int Z, double pz) {
@@ -785,17 +791,17 @@ public class Xraylib {
 
     if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles_arr[Z] < 0) {
       throw new XraylibException("Z out of range");
-    }  
+    }
 
     if (pz < 0.0) {
       throw new XraylibException("pz < 0 is not allowed");
     }
-	
+
     ln_pz = Math.log(pz + 1.0);
 
     ln_q = splint(pz_ComptonProfiles_arr[Z], Total_ComptonProfiles_arr[Z], Total_ComptonProfiles_arr2[Z],  Npz_ComptonProfiles_arr[Z], ln_pz);
 
-    q = Math.exp(ln_q); 
+    q = Math.exp(ln_q);
 
     return q;
   }
@@ -815,12 +821,12 @@ public class Xraylib {
     if (pz < 0.0) {
       throw new XraylibException("pz < 0 is not allowed");
     }
-	
+
     ln_pz = Math.log(pz + 1.0);
 
     ln_q = splint(pz_ComptonProfiles_arr[Z], Partial_ComptonProfiles_arr[Z][shell], Partial_ComptonProfiles_arr2[Z][shell], Npz_ComptonProfiles_arr[Z],ln_pz);
 
-    q = Math.exp(ln_q); 
+    q = Math.exp(ln_q);
 
     return q;
   }
@@ -828,19 +834,19 @@ public class Xraylib {
   public static double ElectronConfig_Biggs(int Z, int shell) {
     if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles_arr[Z] < 0) {
       throw new XraylibException("Z out of range");
-    }  
-	
+    }
+
     if (shell >= NShells_ComptonProfiles_arr[Z] || UOCCUP_ComptonProfiles_arr[Z][shell] == 0.0 ) {
       throw new XraylibException("Shell unavailable");
     }
 
-    double rv = UOCCUP_ComptonProfiles_arr[Z][shell]; 
+    double rv = UOCCUP_ComptonProfiles_arr[Z][shell];
 
     if (rv == 0.) {
       throw new XraylibException("Shell is not occupied");
     }
 
-    return rv; 
+    return rv;
   }
 
   public static double AugerRate(int Z, int auger_trans) {
@@ -888,7 +894,7 @@ public class Xraylib {
 
   private static double CS_Photo_Partial_catch(int Z, int shell, double E) {
     try {
-      return CS_Photo_Partial(Z, shell, E); 
+      return CS_Photo_Partial(Z, shell, E);
     }
     catch (XraylibException e) {
       return 0.0;
@@ -897,7 +903,7 @@ public class Xraylib {
 
   private static double RadRate_catch(int Z, int line) {
     try {
-      return RadRate(Z, line); 
+      return RadRate(Z, line);
     }
     catch (XraylibException e) {
       return 0.0;
@@ -906,7 +912,7 @@ public class Xraylib {
 
   private static double FluorYield_catch(int Z, int shell) {
     try {
-      return FluorYield(Z, shell); 
+      return FluorYield(Z, shell);
     }
     catch (XraylibException e) {
       return 0.0;
@@ -915,7 +921,7 @@ public class Xraylib {
 
   private static double AugerYield_catch(int Z, int shell) {
     try {
-      return AugerYield(Z, shell); 
+      return AugerYield(Z, shell);
     }
     catch (XraylibException e) {
       return 0.0;
@@ -924,7 +930,7 @@ public class Xraylib {
 
   private static double AugerRate_catch(int Z, int line) {
     try {
-      return AugerRate(Z, line); 
+      return AugerRate(Z, line);
     }
     catch (XraylibException e) {
       return 0.0;
@@ -933,7 +939,7 @@ public class Xraylib {
 
   private static double CosKronTransProb_catch(int Z, int trans) {
     try {
-      return CosKronTransProb(Z, trans); 
+      return CosKronTransProb(Z, trans);
     }
     catch (XraylibException e) {
       return 0.0;
@@ -958,7 +964,7 @@ public class Xraylib {
 
   public static double PL1_auger_cascade_kissel(int Z, double E, double PK) {
     double rv;
-    
+
     rv = CS_Photo_Partial_catch(Z,L1_SHELL, E);
     if (PK > 0.0)
       rv += (AugerYield_catch(Z,K_SHELL))*PK*(
@@ -1001,7 +1007,7 @@ public class Xraylib {
       AugerRate_catch(Z,K_M5L1_AUGER)
       );
 
-    return rv;  
+    return rv;
   }
 
   public static double PL1_full_cascade_kissel(int Z, double E, double PK) {
@@ -1058,7 +1064,7 @@ public class Xraylib {
     rv = CS_Photo_Partial_catch(Z, L2_SHELL, E);
     if (PL1 > 0.0)
       rv +=CosKronTransProb_catch(Z,FL12_TRANS)*PL1;
-    return rv;  
+    return rv;
   }
 
   public static double PL2_rad_cascade_kissel(int Z, double E, double PK, double PL1) {
@@ -1122,7 +1128,7 @@ public class Xraylib {
     if (PL1 > 0.0)
       rv += CosKronTransProb_catch(Z,FL12_TRANS)*PL1;
     return  rv;
-    
+
   }
 
   public static double PL2_full_cascade_kissel(int Z, double E, double PK, double PL1) {
@@ -1171,7 +1177,7 @@ public class Xraylib {
       AugerRate_catch(Z,K_M4L2_AUGER)+
       AugerRate_catch(Z,K_M5L2_AUGER)
       );
-      
+
     if (PL1 > 0.0)
       rv += CosKronTransProb_catch(Z,FL12_TRANS)*PL1;
     return rv;
@@ -1339,7 +1345,7 @@ public class Xraylib {
     if (PL3 > 0.0)
       rv += FluorYield_catch(Z,L3_SHELL)*PL3*RadRate_catch(Z,L3M1_LINE);
 
-    return rv; 
+    return rv;
   }
 
   public static double PM1_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3) {
@@ -1365,7 +1371,7 @@ public class Xraylib {
       AugerRate_catch(Z,K_M4M1_AUGER)+
       AugerRate_catch(Z,K_M5M1_AUGER)
       );
-    
+
     if (PL1 > 0.0)
       rv += AugerYield_catch(Z,L1_SHELL)*PL1*(
       AugerRate_catch(Z,L1_M1M1_AUGER)+
@@ -1401,7 +1407,7 @@ public class Xraylib {
       AugerRate_catch(Z,L1_M5M1_AUGER)
       );
 
-    if (PL2 > 0.0) 
+    if (PL2 > 0.0)
       rv += AugerYield_catch(Z,L2_SHELL)*PL2*(
       AugerRate_catch(Z,L2_M1M1_AUGER)+
       AugerRate_catch(Z,L2_M1M2_AUGER)+
@@ -1435,7 +1441,7 @@ public class Xraylib {
       AugerRate_catch(Z,L2_M4M1_AUGER)+
       AugerRate_catch(Z,L2_M5M1_AUGER)
       );
-    
+
     if (PL3 > 0.0)
       rv += AugerYield_catch(Z,L3_SHELL)*PL3*(
       AugerRate_catch(Z,L3_M1M1_AUGER)+
@@ -1478,7 +1484,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M1_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM1_LINE)+
       AugerYield_catch(Z,K_SHELL)*PK*(
       AugerRate_catch(Z,K_L1M1_AUGER)+
@@ -1497,7 +1503,7 @@ public class Xraylib {
       AugerRate_catch(Z,K_M4M1_AUGER)+
       AugerRate_catch(Z,K_M5M1_AUGER)
       );
-      
+
 
     if (PL1 > 0.0)
       rv += FluorYield_catch(Z,L1_SHELL)*PL1*RadRate_catch(Z,L1M1_LINE)+
@@ -1534,7 +1540,7 @@ public class Xraylib {
       AugerRate_catch(Z,L1_M4M1_AUGER)+
       AugerRate_catch(Z,L1_M5M1_AUGER)
       );
-    
+
     if (PL2 > 0.0)
       rv += FluorYield_catch(Z,L2_SHELL)*PL2*RadRate_catch(Z,L2M1_LINE)+
       AugerYield_catch(Z,L2_SHELL)*PL2*(
@@ -1618,8 +1624,8 @@ public class Xraylib {
     rv = CS_Photo_Partial_catch(Z, M2_SHELL, E);
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM12_TRANS)*PM1;
-      
-    return rv; 
+
+    return rv;
   }
 
   public static double PM2_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1) {
@@ -1805,7 +1811,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M2_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM2_LINE)+
       AugerYield_catch(Z,K_SHELL)*PK*(
       AugerRate_catch(Z,K_L1M2_AUGER)+
@@ -1847,7 +1853,7 @@ public class Xraylib {
       AugerRate_catch(Z,K_M5M2_AUGER)
       );
 
-    if (PL1 > 0.0) 
+    if (PL1 > 0.0)
       rv += FluorYield_catch(Z,L1_SHELL)*PL1*RadRate_catch(Z,L1M2_LINE)+
       AugerYield_catch(Z,L1_SHELL)*PL1*(
       AugerRate_catch(Z,L1_M1M2_AUGER)+
@@ -1882,7 +1888,7 @@ public class Xraylib {
       AugerRate_catch(Z,L1_M4M2_AUGER)+
       AugerRate_catch(Z,L1_M5M2_AUGER)
       );
-    
+
     if (PL2 > 0.0)
       rv += FluorYield_catch(Z,L2_SHELL)*PL2*RadRate_catch(Z,L2M2_LINE)+
       AugerYield_catch(Z,L2_SHELL)*PL2*(
@@ -1980,7 +1986,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M3_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM3_LINE);
 
     if (PL1 > 0.0)
@@ -1994,7 +2000,7 @@ public class Xraylib {
 
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM13_TRANS)*PM1;
-    
+
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM23_TRANS)*PM2;
 
@@ -2114,7 +2120,7 @@ public class Xraylib {
       AugerRate_catch(Z,L2_M4M3_AUGER)+
       AugerRate_catch(Z,L2_M5M3_AUGER)
       );
-    if (PL3 > 0.0) 
+    if (PL3 > 0.0)
       rv += AugerYield_catch(Z,L3_SHELL)*PL3*(
       AugerRate_catch(Z,L3_M1M3_AUGER)+
       AugerRate_catch(Z,L3_M2M3_AUGER)+
@@ -2161,7 +2167,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M3_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM3_LINE)+
       (1.0-FluorYield_catch(Z,K_SHELL))*PK*(
       AugerRate_catch(Z,K_L1M3_AUGER)+
@@ -2313,13 +2319,13 @@ public class Xraylib {
 
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM13_TRANS)*PM1;
-    
+
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM23_TRANS)*PM2;
 
     return rv;
   }
- 
+
   public static double PM4_pure_kissel(int Z, double E, double PM1, double PM2, double PM3) {
     double rv;
 
@@ -2343,7 +2349,7 @@ public class Xraylib {
     rv = CS_Photo_Partial_catch(Z, M4_SHELL, E);
 
     /*yes I know that KM4 lines are forbidden... */
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM4_LINE);
 
     if (PL1 > 0.0)
@@ -2357,7 +2363,7 @@ public class Xraylib {
 
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM14_TRANS)*PM1;
-    
+
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM24_TRANS)*PM2;
 
@@ -2373,7 +2379,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M4_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += AugerYield_catch(Z,K_SHELL)*PK*(
       AugerRate_catch(Z,K_L1M4_AUGER)+
       AugerRate_catch(Z,K_L2M4_AUGER)+
@@ -2521,7 +2527,7 @@ public class Xraylib {
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM24_TRANS)*PM2;
 
-    if (PM3 > 0.0)  
+    if (PM3 > 0.0)
       rv += CosKronTransProb_catch(Z,FM34_TRANS)*PM3;
 
     return rv;
@@ -2532,7 +2538,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M4_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM4_LINE)+
       AugerYield_catch(Z,K_SHELL)*PK*(
       AugerRate_catch(Z,K_L1M4_AUGER)+
@@ -2684,7 +2690,7 @@ public class Xraylib {
 
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM14_TRANS)*PM1;
-    
+
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM24_TRANS)*PM2;
 
@@ -2720,7 +2726,7 @@ public class Xraylib {
     rv = CS_Photo_Partial_catch(Z, M5_SHELL, E);
 
     /*yes I know that KM5 lines are forbidden... */
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM5_LINE);
 
     if (PL1 > 0.0)
@@ -2734,7 +2740,7 @@ public class Xraylib {
 
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM15_TRANS)*PM1;
-    
+
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM25_TRANS)*PM2;
 
@@ -2752,7 +2758,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M5_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += AugerYield_catch(Z,K_SHELL)*PK*(
       AugerRate_catch(Z,K_L1M5_AUGER)+
       AugerRate_catch(Z,K_L2M5_AUGER)+
@@ -2898,9 +2904,9 @@ public class Xraylib {
       rv += CosKronTransProb_catch(Z,FM15_TRANS)*PM1;
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM25_TRANS)*PM2;
-    if (PM3 > 0.0)  
+    if (PM3 > 0.0)
       rv += CosKronTransProb_catch(Z,FM35_TRANS)*PM3;
-    if (PM4 > 0.0)  
+    if (PM4 > 0.0)
       rv += CosKronTransProb_catch(Z,FM45_TRANS)*PM4;
 
     return rv;
@@ -2911,7 +2917,7 @@ public class Xraylib {
 
     rv = CS_Photo_Partial_catch(Z, M5_SHELL, E);
 
-    if (PK > 0.0) 
+    if (PK > 0.0)
       rv += FluorYield_catch(Z,K_SHELL)*PK*RadRate_catch(Z,KM5_LINE)+
       AugerYield_catch(Z,K_SHELL)*PK*(
       AugerRate_catch(Z,K_L1M4_AUGER)+
@@ -3062,7 +3068,7 @@ public class Xraylib {
       );
     if (PM1 > 0.0)
       rv += CosKronTransProb_catch(Z,FM15_TRANS)*PM1;
-    
+
     if (PM2 > 0.0)
       rv += CosKronTransProb_catch(Z,FM25_TRANS)*PM2;
 
@@ -3123,7 +3129,7 @@ public class Xraylib {
       rv = (FluorYield_catch(Z, L3_SHELL)*RadRate_catch(Z,line))*PL3_pure_kissel(Z, E, PL1, PL2);
     }
     else if (line == LA_LINE) {
-      rv = (CS_FluorLine_Kissel_no_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_no_Cascade(Z,L3M5_LINE,E)); 
+      rv = (CS_FluorLine_Kissel_no_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_no_Cascade(Z,L3M5_LINE,E));
     }
     else if (line == LB_LINE) {
       rv = (CS_FluorLine_Kissel_no_Cascade(Z,L2M4_LINE,E)+
@@ -3189,7 +3195,7 @@ public class Xraylib {
     }
     else {
       throw new XraylibException("Line not allowed");
-    }  
+    }
 
     if (rv == 0.0) {
       throw new XraylibException("No XRF production");
@@ -3244,7 +3250,7 @@ public class Xraylib {
       rv = (FluorYield_catch(Z, L3_SHELL)*RadRate_catch(Z,line))*PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
     }
     else if (line == LA_LINE) {
-      rv = (CS_FluorLine_Kissel_Radiative_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Radiative_Cascade(Z,L3M5_LINE,E)); 
+      rv = (CS_FluorLine_Kissel_Radiative_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Radiative_Cascade(Z,L3M5_LINE,E));
     }
     else if (line == LB_LINE) {
       rv = (CS_FluorLine_Kissel_Radiative_Cascade(Z,L2M4_LINE,E)+
@@ -3330,7 +3336,7 @@ public class Xraylib {
     }
     else {
       throw new XraylibException("Line not allowed");
-    }  
+    }
 
     if (rv == 0.0) {
       throw new XraylibException("No XRF production");
@@ -3385,7 +3391,7 @@ public class Xraylib {
       rv = (FluorYield_catch(Z, L3_SHELL)*RadRate_catch(Z,line))*PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
     }
     else if (line == LA_LINE) {
-      rv = (CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3M5_LINE,E)); 
+      rv = (CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3M5_LINE,E));
     }
     else if (line == LB_LINE) {
       rv = (CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L2M4_LINE,E)+
@@ -3471,7 +3477,7 @@ public class Xraylib {
     }
     else {
       throw new XraylibException("Line not allowed");
-    }  
+    }
 
     if (rv == 0.0) {
       throw new XraylibException("No XRF production");
@@ -3526,7 +3532,7 @@ public class Xraylib {
       rv = (FluorYield_catch(Z, L3_SHELL)*RadRate_catch(Z,line))*PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
     }
     else if (line == LA_LINE) {
-      rv = (CS_FluorLine_Kissel_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Cascade(Z,L3M5_LINE,E)); 
+      rv = (CS_FluorLine_Kissel_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Cascade(Z,L3M5_LINE,E));
     }
     else if (line == LB_LINE) {
       rv = (CS_FluorLine_Kissel_Cascade(Z,L2M4_LINE,E)+
@@ -3612,7 +3618,7 @@ public class Xraylib {
     }
     else {
       throw new XraylibException("Line not allowed");
-    }  
+    }
 
     if (rv == 0.0) {
       throw new XraylibException("No XRF production");
@@ -3815,8 +3821,8 @@ public class Xraylib {
     else {
       throw new XraylibException("Line not allowed");
     }
-  
-  
+
+
     return (cs_line);
   }
 
@@ -3826,11 +3832,11 @@ public class Xraylib {
     double tmp=0.0,tmp1=0.0,tmp2=0.0;
     int i;
     int temp_line;
-  
+
     if (Z<1 || Z>ZMAX) {
       throw new XraylibException("Z out of range");
     }
-  
+
     if (line>=KA_LINE && line<LA_LINE) {
       if (line == KA_LINE) {
         for (i = 0 ; i <= 2 ; i++) {
@@ -3924,25 +3930,25 @@ public class Xraylib {
    * special cases for composed lines
    */
     else if (line == L1N67_LINE) {
-      return (LineEnergy(Z, L1N6_LINE)+LineEnergy(Z,L1N7_LINE))/2.0; 
+      return (LineEnergy(Z, L1N6_LINE)+LineEnergy(Z,L1N7_LINE))/2.0;
     }
     else if (line == L1O45_LINE) {
-      return (LineEnergy(Z, L1O4_LINE)+LineEnergy(Z,L1O5_LINE))/2.0; 
+      return (LineEnergy(Z, L1O4_LINE)+LineEnergy(Z,L1O5_LINE))/2.0;
     }
     else if (line == L1P23_LINE) {
-      return (LineEnergy(Z, L1P2_LINE)+LineEnergy(Z,L1P3_LINE))/2.0; 
+      return (LineEnergy(Z, L1P2_LINE)+LineEnergy(Z,L1P3_LINE))/2.0;
     }
     else if (line == L2P23_LINE) {
-      return (LineEnergy(Z, L2P2_LINE)+LineEnergy(Z,L2P3_LINE))/2.0; 
+      return (LineEnergy(Z, L2P2_LINE)+LineEnergy(Z,L2P3_LINE))/2.0;
     }
     else if (line == L3O45_LINE) {
-      return (LineEnergy(Z, L3O4_LINE)+LineEnergy(Z,L3O5_LINE))/2.0; 
+      return (LineEnergy(Z, L3O4_LINE)+LineEnergy(Z,L3O5_LINE))/2.0;
     }
     else if (line == L3P23_LINE) {
-      return (LineEnergy(Z, L3P2_LINE)+LineEnergy(Z,L3P3_LINE))/2.0; 
+      return (LineEnergy(Z, L3P2_LINE)+LineEnergy(Z,L3P3_LINE))/2.0;
     }
     else if (line == L3P45_LINE) {
-      return (LineEnergy(Z, L3P4_LINE)+LineEnergy(Z,L3P5_LINE))/2.0; 
+      return (LineEnergy(Z, L3P4_LINE)+LineEnergy(Z,L3P5_LINE))/2.0;
     }
 
     line = -line - 1;
@@ -3950,7 +3956,7 @@ public class Xraylib {
     if (line<0 || line>=LINENUM) {
       throw new XraylibException("Line not available");
     }
-  
+
     line_energy = LineEnergy_arr[Z*LINENUM + line];
 
     if (line_energy <= 0.) {
@@ -4028,8 +4034,8 @@ public class Xraylib {
   }
 
   public static double DCSP_Rayl(int Z, double E, double theta, double phi) {
-    double F, q;                                                      
-                                                        
+    double F, q;
+
     if (Z<1 || Z>ZMAX) {
       throw new XraylibException("Z out of range");
     }
@@ -4043,9 +4049,9 @@ public class Xraylib {
     return  AVOGNUM / AtomicWeight(Z) * F*F * DCSP_Thoms(theta, phi);
   }
 
-  public static double DCSP_Compt(int Z, double E, double theta, double phi) { 
-    double S, q;                                                      
-                                                        
+  public static double DCSP_Compt(int Z, double E, double theta, double phi) {
+    double S, q;
+
     if (Z<1 || Z>ZMAX) {
       throw new XraylibException("Z out of range");
     }
@@ -4061,7 +4067,7 @@ public class Xraylib {
 
   public static double DCSP_KN(double E, double theta, double phi) {
     double k0_k, k_k0, k_k0_2, cos_th, sin_th, cos_phi;
-  
+
     if (E <= 0.) {
       throw new XraylibException("Energy <=0 is not allowed");
     }
@@ -4069,14 +4075,14 @@ public class Xraylib {
     cos_th = Math.cos(theta);
     sin_th = Math.sin(theta);
     cos_phi = Math.cos(phi);
-  
+
     k0_k = 1.0 + (1.0 - cos_th) * E / MEC2 ;
     k_k0 = 1.0 / k0_k;
     k_k0_2 = k_k0 * k_k0;
-  
-    return (RE2/2.) * k_k0_2 * (k_k0 + k0_k - 2 * sin_th * sin_th 
+
+    return (RE2/2.) * k_k0_2 * (k_k0 + k0_k - 2 * sin_th * sin_th
 			      * cos_phi * cos_phi);
-  } 
+  }
 
   public static double DCSP_Thoms(double theta, double phi) {
     double sin_th, cos_phi ;
@@ -4252,7 +4258,6 @@ public class Xraylib {
     return rv;
   }
 
-
   public static compoundDataNIST GetCompoundDataNISTByName(String compoundString) {
     for (compoundDataNIST cdn : compoundDataNISTList) {
       if (cdn.name.equals(compoundString))
@@ -4267,8 +4272,7 @@ public class Xraylib {
     }
     return new compoundDataNIST(compoundDataNISTList[compoundIndex]);
   }
- 
-  
+
   public static String[] GetCompoundDataNISTList() {
     String[] rv = new String[compoundDataNISTList.length];
     int i = 0;
@@ -4277,7 +4281,31 @@ public class Xraylib {
     }
     return rv;
   }
- 
+
+  public static radioNuclideData GetRadioNuclideDataByName(String radioNuclideString) {
+    for (radioNuclideData rnd : nuclideDataList) {
+      if (rnd.name.equals(radioNuclideString))
+        return new radioNuclideData(rnd);
+    }
+    throw new XraylibException("radio-nuclide not available in database");
+  }
+
+  public static radioNuclideData GetRadioNuclideDataByIndex(int radioNuclideIndex) {
+    if (radioNuclideIndex < 0 || radioNuclideIndex >= nuclideDataList.length) {
+      throw new XraylibException("radio-nuclide not available in database");
+    }
+    return new radioNuclideData(nuclideDataList[radioNuclideIndex]);
+  }
+
+  public static String[] GetRadioNuclideDataList() {
+    String[] rv = new String[nuclideDataList.length];
+    int i = 0;
+    for (radioNuclideData rnd : nuclideDataList) {
+      rv[i++] = new String(rnd.name);
+    }
+    return rv;
+  }
+
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
@@ -4388,6 +4416,7 @@ public class Xraylib {
   private static double[] Auger_Rates_arr;
 
   private static compoundDataNIST[] compoundDataNISTList;
+  private static radioNuclideData[] nuclideDataList;
 
   public static int ZMAX;
   public static int SHELLNUM;
@@ -6084,6 +6113,16 @@ public class Xraylib {
     "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh"
   };
 
+  public static final int RADIO_NUCLIDE_55FE = 0;
+  public static final int RADIO_NUCLIDE_57CO = 1;
+  public static final int RADIO_NUCLIDE_109CD = 2;
+  public static final int RADIO_NUCLIDE_125I = 3;
+  public static final int RADIO_NUCLIDE_137CS = 4;
+  public static final int RADIO_NUCLIDE_133BA = 5;
+  public static final int RADIO_NUCLIDE_153GD = 6;
+  public static final int RADIO_NUCLIDE_238PU = 7;
+  public static final int RADIO_NUCLIDE_241AM = 8;
+  public static final int RADIO_NUCLIDE_244CM = 9;
 
 
 }

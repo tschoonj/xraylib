@@ -96,11 +96,20 @@ public class xrlexample7 {
 
 		System.out.println("\n" + Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide"));
 		System.out.println(Xraylib.GetCompoundDataNISTByIndex(Xraylib.NIST_COMPOUND_BRAIN_ICRP));
-                String[] nistCompounds = Xraylib.GetCompoundDataNISTList();
+    String[] nistCompounds = Xraylib.GetCompoundDataNISTList();
 
 		System.out.println("List of available NIST compounds:");
 		for (int i = 0 ; i < nistCompounds.length ; i++) {
 			System.out.format("  Compound %d: %s\n", i, nistCompounds[i]);
+		}
+
+		System.out.println("\n" + Xraylib.GetRadioNuclideDataByName("109Cd"));
+		System.out.println(Xraylib.GetRadioNuclideDataByIndex(Xraylib.RADIO_NUCLIDE_125I));
+    String[] radioNuclides = Xraylib.GetRadioNuclideDataList();
+
+		System.out.println("List of available radionuclides:");
+		for (int i = 0 ; i < radioNuclides.length ; i++) {
+			System.out.format("  Radionuclide %d: %s\n", i, radioNuclides[i]);
 		}
 
 

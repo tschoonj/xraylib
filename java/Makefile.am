@@ -17,14 +17,23 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/
 #java bindings for xraylib
 xrljavadir = $(prefix)/share/xraylib/java
 xrljava_DATA = com.github.tschoonj.xraylib_$(VERSION).jar
-dist_xrljava_JAVA = Xraylib.java XraylibException.java compoundData.java compoundDataNIST.java
+dist_xrljava_JAVA = Xraylib.java \
+										XraylibException.java \
+										compoundData.java \
+										compoundDataNIST.java \
+										radioNuclideData.java
 
 noinst_PROGRAMS = prdata_java
 prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-com.github.tschoonj.xraylib_$(VERSION).jar: xraylib.dat com/github/tschoonj/xraylib/Xraylib.class com/github/tschoonj/xraylib/XraylibException.class com/github/tschoonj/xraylib/compoundData.class com/github/tschoonj/xraylib/compoundDataNIST.class
+com.github.tschoonj.xraylib_$(VERSION).jar: xraylib.dat \
+	com/github/tschoonj/xraylib/Xraylib.class \
+	com/github/tschoonj/xraylib/XraylibException.class \
+	com/github/tschoonj/xraylib/compoundData.class \
+	com/github/tschoonj/xraylib/compoundDataNIST.class \
+	com/github/tschoonj/xraylib/radioNuclideData.class
 	jar cfm com.github.tschoonj.xraylib_$(VERSION).jar OSGI-MANIFEST xraylib.dat com
 
 xraylib.dat: prdata_java$(EXEEXT)
