@@ -92,7 +92,7 @@ xrlexample4.sh: ../idl/libxrlidl.la xrlexample4.pro
 	@chmod +x xrlexample4.sh
 
 #test the perl bindings
-xrlexample2.sh: ../perl/xraylib.pm xrlexample2.pl
+xrlexample2.sh: ../perl/xraylib.la xrlexample2.pl
 	@echo "Testing perl bindings"
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PERL5LIB=\"${top_builddir}/perl/.libs/:${top_builddir}/perl\" $(PERL) ${top_srcdir}/example/xrlexample2.pl" > xrlexample2.sh
 	@chmod +x xrlexample2.sh
@@ -104,10 +104,10 @@ xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
-xrlexample7.sh: ../java/com.github.tschoonj.xraylib.jar xrlexample7.java
+xrlexample7.sh: ../java/com.github.tschoonj.xraylib_$(VERSION).jar xrlexample7.java
 	@echo "Testing java bindings"
-	@echo "$(JAVAC) -classpath \"${top_builddir}/java/com.github.tschoonj.xraylib.jar:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java || exit 1" > xrlexample7.sh
-	@echo "$(JAVA) -classpath \"${top_builddir}/java/com.github.tschoonj.xraylib.jar:.:..\" xrlexample7 || exit 1" >> xrlexample7.sh
+	@echo "$(JAVAC) -classpath \"${top_builddir}/java/com.github.tschoonj.xraylib_$(VERSION).jar:.:..\" -d \"${builddir}\" ${top_srcdir}/example/xrlexample7.java || exit 1" > xrlexample7.sh
+	@echo "$(JAVA) -classpath \"${top_builddir}/java/com.github.tschoonj.xraylib_$(VERSION).jar:.:..\" xrlexample7 || exit 1" >> xrlexample7.sh
 	@chmod +x xrlexample7.sh
 
 #test the lua bindings
@@ -147,8 +147,14 @@ xrlexample14.sh: ../pascal/xraylib.ppu xrlexample14.pas
 	@chmod +x xrlexample14.sh
 
 
-../perl/xraylib.pm:
-	$(MAKE) -C ../perl xraylib.pm
+../src/libxrl.la:
+	$(MAKE) -C ../src libxrl.la
+
+../src/libxrlf03.la:
+	$(MAKE) -C ../fortran
+
+../perl/xraylib.la:
+	$(MAKE) -C ../perl
 
 ../idl/libxrlidl.la:
 	$(MAKE) -C ../idl libxrlidl.la
@@ -156,8 +162,8 @@ xrlexample14.sh: ../pascal/xraylib.ppu xrlexample14.pas
 ../python/_xraylib.la:
 	$(MAKE) -C ../python _xraylib.la
 
-../java/xraylib.java:
-	$(MAKE) -C ../java xraylib.jar
+../java/com.github.tschoonj.xraylib_$(VERSION).jar:
+	$(MAKE) -C ../java
 
 ../lua/xraylib.la:
 	$(MAKE) -C ../lua xraylib.la
