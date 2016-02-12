@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'osgi'
+
+version = '@VERSION@'
+libsDirName = '..'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+	compile 'org.apache.commons:commons-math3:3.6'
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir '@srcdir@'
+		}
+		resources {
+			srcDir '@builddir@'
+			include 'xraylib.dat'
+		}
+	}
+}
+
+jar {
+	manifest {
+		instruction 'Bundle-Vendor', 'Tom Schoonjans'
+	}
+}

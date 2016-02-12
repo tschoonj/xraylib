@@ -16,31 +16,27 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/
 
 #java bindings for xraylib
 xrljavadir = $(prefix)/share/xraylib/java
-xrljava_DATA = com.github.tschoonj.xraylib_$(VERSION).jar
-dist_xrljava_JAVA = Xraylib.java \
-										XraylibException.java \
-										compoundData.java \
-										compoundDataNIST.java \
-										radioNuclideData.java
+xrljava_DATA = com.github.tschoonj.xraylib-$(VERSION).jar
 
 noinst_PROGRAMS = prdata_java
 prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-com.github.tschoonj.xraylib_$(VERSION).jar: xraylib.dat \
-	com/github/tschoonj/xraylib/Xraylib.class \
-	com/github/tschoonj/xraylib/XraylibException.class \
-	com/github/tschoonj/xraylib/compoundData.class \
-	com/github/tschoonj/xraylib/compoundDataNIST.class \
-	com/github/tschoonj/xraylib/radioNuclideData.class
-	jar cfm com.github.tschoonj.xraylib_$(VERSION).jar OSGI-MANIFEST xraylib.dat com
+com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat 
+	gradle --info build
 
 xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
 
 clean-local:
-	rm -rf com.github.tschoonj.xraylib_$(VERSION).jar xraylib.dat com
+	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar xraylib.dat com build .gradle
 
 endif
-EXTRA_DIST = OSGI-MANIFEST.in
+EXTRA_DIST = \
+	settings.gradle \
+	Xraylib.java \
+	XraylibException.java \
+	compoundData.java \
+	compoundDataNIST.java \
+	radioNuclideData.java
