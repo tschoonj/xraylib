@@ -615,6 +615,8 @@ elif test "x$SWIG" = xswig && test "x$enable_java" != xno && test "x$DISABLE_BIN
 	fi
 fi
 
+GRADLE=
+
 if test "x$VALID_JAVA" = xyes ; then
 	AC_MSG_NOTICE([Building with java bindings])
 	case $host in
@@ -670,9 +672,10 @@ if test "x$VALID_JAVA" = xyes ; then
 	XRLJAVALIB=$JAVALIBRARYPREFIX
 	XRLJAVALIB+=xraylib.la
 	AC_SUBST(XRLJAVALIB)
-
+	AC_PATH_PROG([GRADLE], [gradle], ["nogradle"])
 fi
 AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
+AM_CONDITIONAL([ENABLE_GRADLE],[test x$GRADLE != xnogradle])
 
 
 #C++ example

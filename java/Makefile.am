@@ -24,7 +24,11 @@ prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
 com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat 
-	gradle --info build
+if ENABLE_GRADLE
+	$(GRADLE) --info build
+else
+	$(srcdir)/gradlew --info build
+endif
 
 xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
@@ -39,4 +43,6 @@ EXTRA_DIST = \
 	XraylibException.java \
 	compoundData.java \
 	compoundDataNIST.java \
-	radioNuclideData.java
+	radioNuclideData.java \
+	gradlew \
+	gradle
