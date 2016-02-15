@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 import com.github.tschoonj.xraylib.*;
+import org.apache.commons.math3.complex.Complex;
 
 
 public class xrlexample7 {
@@ -112,12 +113,14 @@ public class xrlexample7 {
 			System.out.format("  Radionuclide %d: %s\n", i, radioNuclides[i]);
 		}
 
+		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2", 10.0, 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2", 10.0, 1.261)+" i");
+		System.out.println("C16H14O3 Refractive Index at 1 keV : "+Xraylib.Refractive_Index_Re("C16H14O3", 1.0, 1.2)+" - "+Xraylib.Refractive_Index_Im("C16H14O3", 1.0, 1.2)+" i");
+		System.out.println("SiO2 Refractive Index at 5.0 keV : "+Xraylib.Refractive_Index_Re("SiO2", 5.0, 2.65)+" - "+Xraylib.Refractive_Index_Im("SiO2", 5.0, 2.65)+" i");
+		Complex refr = Xraylib.Refractive_Index("CS2", 10.0, 1.261);
+		System.out.println("CS2 Refractive Index at 10.0 keV : "+ refr.getReal()+" - "+ refr.getImaginary()+" i");
 
 		/*
 		System.out.println("Ca(HCO3)2 Rayleigh cs at 10.0 keV: "+Xraylib.CS_Rayl_CP("Ca(HCO3)2",(float) 10.0) );
-		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2",(float) 10.0,(float) 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2",(float) 10.0,(float) 1.261)+" i");
-		System.out.println("C16H14O3 Refractive Index at 1 keV : "+Xraylib.Refractive_Index_Re("C16H14O3",(float) 1.0,(float) 1.2)+" - "+Xraylib.Refractive_Index_Im("C16H14O3",(float) 1.0,(float) 1.2)+" i");
-		System.out.println("SiO2 Refractive Index at 5.0 keV : "+Xraylib.Refractive_Index_Re("SiO2",(float) 5.0,(float) 2.65)+" - "+Xraylib.Refractive_Index_Im("SiO2",(float) 5.0,(float) 2.65)+" i");
 		System.out.println("Al mass energy-absorption cs at 20.0 keV: "+ Xraylib.CS_Energy(13, (float) 20.0));
 		System.out.println("Pb mass energy-absorption cs at 40.0 keV: "+ Xraylib.CS_Energy(82, (float) 40.0));
 		System.out.println("CdTe mass energy-absorption cs at 40.0 keV: "+ Xraylib.CS_Energy_CP("CdTe", (float) 40.0));
