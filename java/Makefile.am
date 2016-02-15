@@ -23,26 +23,28 @@ prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat 
+java_source = \
+	Xraylib.java \
+	XraylibException.java \
+	compoundData.java \
+	compoundDataNIST.java \
+	radioNuclideData.java
+
+com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat $(java_source)
 if ENABLE_GRADLE
-	$(GRADLE) --info build
+	$(GRADLE) --info --debug build
 else
-	$(srcdir)/gradlew --info build
+	$(srcdir)/gradlew --info --debug build
 endif
 
 xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
 
 clean-local:
-	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar xraylib.dat com build .gradle
+	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar xraylib.dat com build .gradle META-INF
 
 endif
 EXTRA_DIST = \
-	settings.gradle \
-	Xraylib.java \
-	XraylibException.java \
-	compoundData.java \
-	compoundDataNIST.java \
-	radioNuclideData.java \
+	$(java_source) \
 	gradlew \
 	gradle

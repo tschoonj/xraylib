@@ -1,5 +1,18 @@
 apply plugin: 'java'
-apply plugin: 'osgi'
+//apply plugin: 'osgi'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.dm.gradle:gradle-bundle-plugin:0.8'
+    }
+}
+
+apply plugin: 'org.dm.bundle'
+
 
 version = '@VERSION@'
 libsDirName = '..'
@@ -27,6 +40,12 @@ sourceSets {
 
 jar {
 	manifest {
-		instruction 'Bundle-Vendor', 'Tom Schoonjans'
+		attributes 'Bundle-Vendor': 'Tom Schoonjans'
 	}
+}
+
+bundle {
+	//instruction 'Include-Resource', 'commons-math3-3.6.jar'
+	//instruction 'Bundle-ClassPath', '., commons-math3-3.6.jar'
+	instruction 'Export-Package','org.apache.commons.math3', 'org.apache.commons.math3.complex'
 }

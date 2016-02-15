@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
+import org.apache.commons.math3.complex.Complex;
 
 
 public class Xraylib {
@@ -4304,6 +4305,52 @@ public class Xraylib {
       rv[i++] = new String(rnd.name);
     }
     return rv;
+  }
+
+  private static final double KD = 4.15179082788e-4;
+
+  public static double Refractive_Index_Re(String compound, double E, double density) {
+    compoundData cd = null;
+    double delta = 0.0;
+
+    try {
+      cd = CompoundParser(compound);
+    } catch (XraylibException e) {
+      throw new XraylibException("Refractive_Index_Re: compound parser error");
+    }
+    if (E <= 0.0)
+      throw new XraylibException("Refractive_Index_Re: energy must be greater than zero");
+    else if (density <= 0.0)
+      throw new XraylibException("Refractive_Index_Re: density must be greater than zero");
+
+    for (int i = 0 ; i < cd.nElements ; i++)
+      delta += cd.massFractions[i]*KD*(cd.Elements[i]+Fi(cd.Elements[i],E))/AtomicWeight(cd.Elements[i])/E/E;
+
+    return 1.0 - delta*density;
+  }
+
+  public static double Refractive_Index_Im(String compound, double E, double density) {
+    compoundData cd = null;
+    double rv = 0.0;
+
+    try {
+      cd = CompoundParser(compound);
+    } catch (XraylibException e) {
+      throw new XraylibException("Refractive_Index_Im: compound parser error");
+    }
+    if (E <= 0.0)
+      throw new XraylibException("Refractive_Index_Im: energy must be greater than zero");
+    else if (density <= 0.0)
+      throw new XraylibException("Refractive_Index_Im: density must be greater than zero");
+
+    for (int i = 0 ; i < cd.nElements ; i++)
+      rv += CS_Total(cd.Elements[i], E) * cd.massFractions[i];
+
+    return rv * density * 9.8663479e-9 / E;
+  }
+
+  public static Complex Refractive_Index(String compound, double E, double density) {
+    return new Complex(Refractive_Index_Re(compound, E, density), Refractive_Index_Im(compound, E, density));
   }
 
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
