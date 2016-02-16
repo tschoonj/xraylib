@@ -989,6 +989,7 @@ int main(void)
   double mec2 = MEC2;
   double avognum = AVOGNUM;
   double kev2angst = KEV2ANGST;
+  double r_e = R_E;
 
   XRayInit();
 
@@ -1015,6 +1016,7 @@ int main(void)
   fwrite(&mec2, sizeof(double), 1, f);
   fwrite(&avognum, sizeof(double), 1, f);
   fwrite(&kev2angst, sizeof(double), 1, f);
+  fwrite(&r_e, sizeof(double), 1, f);
 
   /*
   fprintf(f, "#include \"xraylib-defs.h\"\n\n");
@@ -1029,24 +1031,6 @@ int main(void)
   print_mendelvec(MENDEL_MAX, MendelArraySorted);
 
 
-  for (i = 0; i < Crystal_arr.n_crystal; i++) {
-    crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "Crystal_Atom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
-    for (j = 0; j < crystal->n_atom; j++) {
-      if (j % 2 == 0) fprintf(f, "\n  ");
-      atom = &crystal->atom[j];
-      fprintf(f, "{%i, %ff, %ff, %ff, %ff}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
-    }
-    fprintf (f, "\n};\n\n");
-  }
-
-  fprintf(f, "Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
-  for (i = 0; i < Crystal_arr.n_crystal; i++) {
-    crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name,
-              crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma,
-              crystal->volume, crystal->n_atom, crystal->name);
-  }
   fprintf (f, "};\n\n");
 
   fprintf(f, "Crystal_Array Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
@@ -1175,6 +1159,28 @@ int main(void)
     fwrite(&nuclideDataList[i].nGammas, sizeof(int), 1, f);
     fwrite(nuclideDataList[i].GammaEnergies, sizeof(double), nuclideDataList[i].nGammas, f);
     fwrite(nuclideDataList[i].GammaIntensities, sizeof(double), nuclideDataList[i].nGammas, f);
+  }
+
+  fwrite(&Crystal_arr.n_crystal, sizeof(int), 1, f);
+  for (i = 0; i < Crystal_arr.n_crystal; i++) {
+    crystal = &Crystal_arr.crystal[i];
+    fwrite(crystal->name, sizeof(char), strlen(crystal->name)+1, f);
+    fwrite(&crystal->a, sizeof(double), 1, f);
+    fwrite(&crystal->b, sizeof(double), 1, f);
+    fwrite(&crystal->c, sizeof(double), 1, f);
+    fwrite(&crystal->alpha, sizeof(double), 1, f);
+    fwrite(&crystal->beta, sizeof(double), 1, f);
+    fwrite(&crystal->gamma, sizeof(double), 1, f);
+    fwrite(&crystal->volume, sizeof(double), 1, f);
+    fwrite(&crystal->n_atom, sizeof(int), 1, f);
+    for (j = 0; j < crystal->n_atom; j++) {
+      atom = &crystal->atom[j];
+      fwrite(&atom->Zatom, sizeof(int), 1, f);
+      fwrite(&atom->fraction, sizeof(double), 1, f);
+      fwrite(&atom->x, sizeof(double), 1, f);
+      fwrite(&atom->y, sizeof(double), 1, f);
+      fwrite(&atom->z, sizeof(double), 1, f);
+    }
   }
 
   fclose(f);

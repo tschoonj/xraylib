@@ -28,7 +28,9 @@ java_source = \
 	XraylibException.java \
 	compoundData.java \
 	compoundDataNIST.java \
-	radioNuclideData.java
+	radioNuclideData.java \
+	Crystal_Struct.java \
+	Crystal_Atom.java 
 
 com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat $(java_source)
 if ENABLE_GRADLE

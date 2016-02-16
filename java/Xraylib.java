@@ -147,6 +147,7 @@ public class Xraylib {
       MEC2 = byte_buffer.getDouble();
       AVOGNUM = byte_buffer.getDouble();
       KEV2ANGST = byte_buffer.getDouble();
+      R_E = byte_buffer.getDouble();
       //System.out.println("ZMAX: " + ZMAX);
       //System.out.println("SHELLNUM: " + SHELLNUM);
       //System.out.println("TRANSNUM: " + TRANSNUM);
@@ -262,6 +263,13 @@ public class Xraylib {
       nuclideDataList = new radioNuclideData[nNuclideDataList];
       for (int i = 0 ; i < nNuclideDataList ; i++) {
         nuclideDataList[i] = new radioNuclideData(byte_buffer);
+      }
+
+      //crystals 
+      int nCrystals = byte_buffer.getInt();
+      crystalDataList = new Crystal_Struct[nCrystals];
+      for (int i = 0 ; i < nCrystals ; i++) {
+        crystalDataList[i] = new Crystal_Struct(byte_buffer);
       }
 
       //this should never happen!
@@ -4353,6 +4361,56 @@ public class Xraylib {
     return new Complex(Refractive_Index_Re(compound, E, density), Refractive_Index_Im(compound, E, density));
   }
 
+  public static String[] Crystal_GetCrystalsList() {
+    String[] rv = new String[crystalDataList.length];
+    for (int i = 0 ; i < crystalDataList.length ; i++) {
+      rv[i] = new String(crystalDataList[i].name);
+    }
+    return rv;
+  }
+
+  public static Crystal_Struct Crystal_GetCrystal(String material) {
+    for (Crystal_Struct cs : crystalDataList) {
+      if (cs.name.equals(material))
+        return new Crystal_Struct(cs);
+    }
+    throw new XraylibException("crystal not available in database");
+  }
+
+  public static double Bragg_angle(Crystal_Struct cs, double energy, int i_miller, int j_miller, int k_miller) {
+    return cs.Bragg_angle(energy, i_miller, j_miller, k_miller);
+  }
+
+  public static Complex Crystal_F_H_StructureFactor (Crystal_Struct cs, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
+    return cs.Crystal_F_H_StructureFactor(energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
+  }
+
+  public static Complex Crystal_F_H_StructureFactor_Partial(Crystal_Struct cs, double energy,
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
+                      int f0_flag, int f_prime_flag, int f_prime2_flag) {
+    return cs.Crystal_F_H_StructureFactor_Partial(energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+  }
+
+  public static double Crystal_UnitCellVolume(Crystal_Struct cs) {
+    return cs.Crystal_UnitCellVolume();
+  }
+
+  public static double Crystal_dSpacing(Crystal_Struct cs, int i_miller, int j_miller, int k_miller) {
+    return cs.Crystal_dSpacing(i_miller, j_miller, k_miller);
+  }
+
+  public static double Q_scattering_amplitude(Crystal_Struct cs, double energy, int i_miller, int j_miller, int k_miller, double rel_angle) {
+    return cs.Q_scattering_amplitude(energy, i_miller, j_miller, k_miller, rel_angle);
+  }
+
+  public static double[] Atomic_Factors(int Z, double energy, double q, double debye_factor) {
+
+    double f0 = FF_Rayl(Z, q) * debye_factor;
+    double f_prime = Fi(Z, energy) * debye_factor;
+    double f_prime2 = -Fii(Z, energy) * debye_factor;
+    return new double[]{f0, f_prime, f_prime2};
+  }
+
   private static double splint(double[] xa, double[] ya, double[] y2a, int n, double x) {
     int klo, khi, k;
     double h, b, a;
@@ -4464,6 +4522,7 @@ public class Xraylib {
 
   private static compoundDataNIST[] compoundDataNISTList;
   private static radioNuclideData[] nuclideDataList;
+  private static Crystal_Struct[] crystalDataList;
 
   public static int ZMAX;
   public static int SHELLNUM;
@@ -4476,6 +4535,7 @@ public class Xraylib {
   public static double MEC2;
   public static double AVOGNUM;
   public static double KEV2ANGST;
+  public static double R_E;
 
   public static final int K_SHELL = 0;
   public static final int L1_SHELL = 1;

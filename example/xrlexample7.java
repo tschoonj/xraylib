@@ -95,22 +95,154 @@ public class xrlexample7 {
 		}
 		catch (XraylibException e) {}
 
-		System.out.println("\n" + Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide"));
+  		double energy = 8;
+  		double debye_temp_factor = 1.0;
+  		double rel_angle = 1.0;
+		int i;
+
+  		double bragg, q, dw;
+  		double f0 = 0.0, fp = 0.0, fpp = 0.0;
+		double[] factors;
+  		Complex FH, F0;
+  		Complex FHbar;
+  		String[] crystalNames;
+
+		/* Si Crystal structure */
+		Crystal_Struct cryst = Xraylib.Crystal_GetCrystal("Si");
+		System.out.format("Si unit cell dimensions are %f %f %f%n", cryst.a, cryst.b, cryst.c);
+		System.out.format("Si unit cell angles are %f %f %f%n", cryst.alpha, cryst.beta, cryst.gamma);
+		System.out.format("Si unit cell volume is %f%n", cryst.volume);
+		System.out.format("Si atoms at:%n");
+		System.out.format("   Z  fraction    X        Y        Z%n");
+		for (i = 0; i < cryst.n_atom; i++) {
+			Crystal_Atom atom = cryst.atom[i];
+    			System.out.format("  %3d %f %f %f %f%n", atom.Zatom, atom.fraction, atom.x, atom.y, atom.z);
+  		}
+
+  		/* Si diffraction parameters */
+
+  		System.out.format("%nSi111 at 8 KeV. Incidence at the Bragg angle:%n");
+
+		bragg = Xraylib.Bragg_angle(cryst, energy, 1, 1, 1);
+  		System.out.format("  Bragg angle: Rad: %f Deg: %f%n", bragg, bragg*180/Math.PI);
+
+		q = Xraylib.Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+		System.out.format("  Q Scattering amplitude: %f%n", q);
+
+  		factors = Xraylib.Atomic_Factors(14, energy, q, debye_temp_factor);
+		f0 = factors[0];
+		fp = factors[1];
+		fpp = factors[2];
+		System.out.format("  Atomic factors (Z = 14) f0, fp, fpp: %f, %f, i*%f%n", f0, fp, fpp);
+
+		FH = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+  		System.out.format("  FH(1,1,1) structure factor: (%f, %f)%n", FH.getReal(), FH.getImaginary());
+
+		F0 = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+  		System.out.format("  F0=FH(0,0,0) structure factor: (%f, %f)%n", F0.getReal(), F0.getImaginary());
+
+
+		/* Diamond diffraction parameters */
+
+		cryst = Xraylib.Crystal_GetCrystal("Diamond");
+
+		System.out.format("%nDiamond 111 at 8 KeV. Incidence at the Bragg angle:%n");
+
+		bragg = Xraylib.Bragg_angle(cryst, energy, 1, 1, 1);
+		System.out.format("  Bragg angle: Rad: %f Deg: %f%n", bragg, bragg*180/Math.PI);
+
+		q = Xraylib.Q_scattering_amplitude (cryst, energy, 1, 1, 1, rel_angle);
+		System.out.format("  Q Scattering amplitude: %f%n", q);
+
+		factors = Xraylib.Atomic_Factors (6, energy, q, debye_temp_factor);
+		f0 = factors[0];
+		fp = factors[1];
+		fpp = factors[2];
+		System.out.format("  Atomic factors (Z = 6) f0, fp, fpp: %f, %f, i*%f%n", f0, fp, fpp);
+
+		FH = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 1, 1, 1, debye_temp_factor, rel_angle);
+		System.out.format("  FH(1,1,1) structure factor: (%f, %f)%n", FH.getReal(), FH.getImaginary());
+
+		F0 = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+		System.out.format("  F0=FH(0,0,0) structure factor: (%f, %f)%n", F0.getReal(), F0.getImaginary());
+
+		FHbar = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle);
+		dw = 1e10 * 2 * (Xraylib.R_E / cryst.volume) * (Xraylib.KEV2ANGST * Xraylib.KEV2ANGST/ (energy * energy)) * Math.sqrt(FH.multiply(FHbar).abs()) / Math.PI / Math.sin(2.0*bragg);
+		System.out.format("  Darwin width: %f micro-radians%n", 1e6*dw);
+
+		/* Alpha Quartz diffraction parameters */
+		// Object methods here
+
+		cryst = Xraylib.Crystal_GetCrystal("AlphaQuartz");
+
+		System.out.format("%nAlpha Quartz 020 at 8 KeV. Incidence at the Bragg angle:%n");
+
+		bragg = cryst.Bragg_angle(energy, 0, 2, 0);
+		System.out.format("  Bragg angle: Rad: %f Deg: %f%n", bragg, bragg*180/Math.PI);
+
+		q = cryst.Q_scattering_amplitude (energy, 0, 2, 0, rel_angle);
+		System.out.format("  Q Scattering amplitude: %f%n", q);
+
+		factors = Xraylib.Atomic_Factors(8, energy, q, debye_temp_factor);
+		f0 = factors[0];
+		fp = factors[1];
+		fpp = factors[2];
+		System.out.format("  Atomic factors (Z = 8) f0, fp, fpp: %f, %f, i*%f%n", f0, fp, fpp);
+
+		FH = cryst.Crystal_F_H_StructureFactor(energy, 0, 2, 0, debye_temp_factor, rel_angle);
+		System.out.format("  FH(0,2,0) structure factor: (%f, %f)%n", FH.getReal(), FH.getImaginary());
+
+		F0 = cryst.Crystal_F_H_StructureFactor(energy, 0, 0, 0, debye_temp_factor, rel_angle);
+		System.out.format("  F0=FH(0,0,0) structure factor: (%f, %f)%n", F0.getReal(), F0.getImaginary());
+
+		/* Muscovite diffraction parameters */
+
+		cryst = Xraylib.Crystal_GetCrystal("Muscovite");
+
+		System.out.format("%nMuscovite 331 at 8 KeV. Incidence at the Bragg angle:%n");
+
+		bragg = Xraylib.Bragg_angle(cryst, energy, 3, 3, 1);
+		System.out.format("  Bragg angle: Rad: %f Deg: %f%n", bragg, bragg*180/Math.PI);
+
+		q = Xraylib.Q_scattering_amplitude(cryst, energy, 3, 3, 1, rel_angle);
+		System.out.format("  Q Scattering amplitude: %f%n", q);
+
+		factors = Xraylib.Atomic_Factors(19, energy, q, debye_temp_factor);
+		f0 = factors[0];
+		fp = factors[1];
+		fpp = factors[2];
+		System.out.format("  Atomic factors (Z = 19) f0, fp, fpp: %f, %f, i*%f%n", f0, fp, fpp);
+
+		FH = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 3, 3, 1, debye_temp_factor, rel_angle);
+  		System.out.format("  FH(3,3,1) structure factor: (%f, %f)\n", FH.getReal(), FH.getImaginary());
+
+		F0 = Xraylib.Crystal_F_H_StructureFactor(cryst, energy, 0, 0, 0, debye_temp_factor, rel_angle);
+		System.out.format("  F0=FH(0,0,0) structure factor: (%f, %f)%n", F0.getReal(), F0.getImaginary());
+
+		crystalNames = Xraylib.Crystal_GetCrystalsList();
+		System.out.format("List of available crystals:%n");
+		for (i = 0 ; i < crystalNames.length  ; i++) {
+			System.out.format("  Crystal %d: %s%n", i, crystalNames[i]);
+  		}
+
+		System.out.format("%n");
+
+		System.out.println("%n" + Xraylib.GetCompoundDataNISTByName("Uranium Monocarbide"));
 		System.out.println(Xraylib.GetCompoundDataNISTByIndex(Xraylib.NIST_COMPOUND_BRAIN_ICRP));
     String[] nistCompounds = Xraylib.GetCompoundDataNISTList();
 
 		System.out.println("List of available NIST compounds:");
-		for (int i = 0 ; i < nistCompounds.length ; i++) {
-			System.out.format("  Compound %d: %s\n", i, nistCompounds[i]);
+		for (i = 0 ; i < nistCompounds.length ; i++) {
+			System.out.format("  Compound %d: %s%n", i, nistCompounds[i]);
 		}
 
-		System.out.println("\n" + Xraylib.GetRadioNuclideDataByName("109Cd"));
+		System.out.println("%n" + Xraylib.GetRadioNuclideDataByName("109Cd"));
 		System.out.println(Xraylib.GetRadioNuclideDataByIndex(Xraylib.RADIO_NUCLIDE_125I));
     String[] radioNuclides = Xraylib.GetRadioNuclideDataList();
 
 		System.out.println("List of available radionuclides:");
-		for (int i = 0 ; i < radioNuclides.length ; i++) {
-			System.out.format("  Radionuclide %d: %s\n", i, radioNuclides[i]);
+		for (i = 0 ; i < radioNuclides.length ; i++) {
+			System.out.format("  Radionuclide %d: %s%n", i, radioNuclides[i]);
 		}
 
 		System.out.println("CS2 Refractive Index at 10.0 keV : "+Xraylib.Refractive_Index_Re("CS2", 10.0, 1.261)+" - "+Xraylib.Refractive_Index_Im("CS2", 10.0, 1.261)+" i");
