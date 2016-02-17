@@ -34,9 +34,9 @@ java_source = \
 
 com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat $(java_source)
 if ENABLE_GRADLE
-	$(GRADLE) --info --debug build
+	$(GRADLE) build
 else
-	$(srcdir)/gradlew --info --debug build
+	$(srcdir)/gradlew build
 endif
 
 xraylib.dat: prdata_java$(EXEEXT)
