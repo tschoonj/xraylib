@@ -49,3 +49,17 @@ bundle {
 	//instruction 'Bundle-ClassPath', '., commons-math3-3.6.jar'
 	instruction 'Export-Package','org.apache.commons.math3', 'org.apache.commons.math3.complex', 'org.apache.commons.math3.exception', 'org.apache.commons.math3.exception.util', 'org.apache.commons.math3.util'
 }
+
+task checkCompile(type: JavaCompile) {
+	source = fileTree('@top_srcdir@/example/') 
+	include 'xrlexample7.java'
+	classpath = sourceSets.main.runtimeClasspath
+	options.compilerArgs = ['-sourcepath', '@top_srcdir@/example']
+	destinationDir = ['.']
+}
+
+
+task(checkRun, dependsOn: 'checkCompile', type: JavaExec) {
+	main = 'xrlexample7'
+	classpath = sourceSets.main.runtimeClasspath + files('.')
+}
