@@ -45,9 +45,10 @@ jar {
 }
 
 bundle {
-	//instruction 'Include-Resource', 'commons-math3-3.6.jar'
-	//instruction 'Bundle-ClassPath', '., commons-math3-3.6.jar'
-	instruction 'Export-Package','org.apache.commons.math3', 'org.apache.commons.math3.complex', 'org.apache.commons.math3.exception', 'org.apache.commons.math3.exception.util', 'org.apache.commons.math3.util'
+	instructions << [
+		'Export-Package': 'com.github.tschoonj.xraylib',
+		'-noee': true
+	]
 }
 
 task checkCompile(type: JavaCompile) {
