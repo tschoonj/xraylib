@@ -146,6 +146,7 @@
  double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller)
  int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array)
  int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array)
+ char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals)
 
  COMPOUND PARSER
  struct compoundData {
@@ -156,7 +157,7 @@
  }
  struct compoundData *CompoundParser(const char compoundString[])
  char * AtomicNumberToSymbol(int Z)
- int SymbolToAtomicNumber(char *symbol)
+ int SymbolToAtomicNumber(const char *symbol)
  void xrlFree(void *)
  void FreeCompoundData(struct compoundData *)
 

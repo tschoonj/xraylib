@@ -16,7 +16,7 @@ MODULE XRAYLIB
 
 DESCRIPTION IDL XRAYLIB BINDINGS
 
-VERSION 3.1.0
+VERSION 3.2.0
 
 SOURCE A.Brunetti, M. S. del Rio, T. Schoonjans, T. Ikonen, B. Golosio, A. Simionovici, A. Somogyi
 

@@ -1,7 +1,7 @@
-xraylib 3.1.0 revised September 2014 
+xraylib 3.2.0 revised March 2016
 Authors: A. Brunetti (Universita di Sassari, Italy),
 	 M. S. del Rio (ESRF, Grenoble, France),
-	 T. Schoonjans (Universita di Sassari, Italy),
+	 T. Schoonjans (Diamond Light Source, United Kingdom and BAM, Berlin, Germany),
 	 T. Ikonen (EMBL, Hamburg, Germany),
 	 B. Golosio (Universita di Sassari, Italy),
 	 A. Simionovici (Universite Joseph Fourier, Grenoble, France),
