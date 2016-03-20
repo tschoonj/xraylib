@@ -31,7 +31,6 @@ windows:
 endif
 
 common:
-	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
 	$(MAKE) -C python python
 	cp ../src/libxrl-$(LIB_CURRENT_MINUS_AGE).def .
 	cp ../src/.libs/libxrl-$(LIB_CURRENT_MINUS_AGE).dll .
@@ -58,6 +57,7 @@ common:
 	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
 	unix2dos -n ${top_srcdir}/include/xraylib-radionuclides.h xraylib-radionuclides.h
 	unix2dos -n ${top_srcdir}/example/xrlexample5.py xrlexample5.py
+	unix2dos -n ${top_srcdir}/example/xrlexample13.py xrlexample13.py
 	unix2dos -n ${srcdir}/python/cli/xraylib-cli.py xraylib-cli.py
 	unix2dos -n ${srcdir}/python/cli/xraymessages.py xraymessages.py
 	unix2dos -n ${srcdir}/python/cli/xrayhelp.py xrayhelp.py

@@ -996,12 +996,7 @@ AC_CONFIG_FILES([Makefile
 				 perl/Makefile
 				 lua/Makefile
 				 fortran/Makefile
-				 windows/python/python2.7/Makefile
-				 windows/python/python2.7/xrlsetup.py
-				 windows/python/python3.4/Makefile
-				 windows/python/python3.4/xrlsetup.py
-				 windows/python/python3.5/Makefile
-				 windows/python/python3.5/xrlsetup.py
+				 windows/python/xrlsetup.py
 				 ruby/Makefile
 				 php/Makefile
 				 pascal/Makefile

@@ -121,13 +121,17 @@ Source: "{#builddir}\windows\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ;
 Source: "{#builddir}\windows\xraylib_radionuclides.pro"; DestDir: "{app}\pro" ; Components: idl
 
 Source: "{#builddir}\windows\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
-Source: "{#builddir}\windows\xraylib.py" ; DestDir: "{app}\Python" ; Components: python
+Source: "{#builddir}\windows\xrlexample13.py" ; DestDir: "{app}\Example" ; Components: python
+Source: "{#builddir}\windows\python\xraylib.py" ; DestDir: "{app}\Python" ; Components: python
 Source: "{#builddir}\windows\xrayhelp.py" ; DestDir: "{app}\Python" ; Components: python
 Source: "{#builddir}\windows\xraymessages.py" ; DestDir: "{app}\Python" ; Components: python
 Source: "{#builddir}\windows\xraylib-cli.py" ; DestDir: "{app}\Bin" ; Components: python
 Source: "{#builddir}\windows\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
+Source: "{#builddir}\windows\python\python2.7\xraylib_np.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
 Source: "{#builddir}\windows\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
+Source: "{#builddir}\windows\python\python3.4\xraylib_np.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
 Source: "{#builddir}\windows\python\python3.5\_xraylib.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
+Source: "{#builddir}\windows\python\python3.5\xraylib_np.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
 
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
