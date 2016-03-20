@@ -989,9 +989,6 @@ AC_CONFIG_FILES([Makefile
 				 java/settings.gradle
 				 windows/python/Makefile
 				 windows/Makefile
-				 windows/python/python2.6/Makefile
-				 windows/python/python2.7/Makefile
-				 windows/python/python3.1/Makefile
 				 windows/python/cli/Makefile
 				 windows/python/cli_py2exe/Makefile
 				 windows/python/cli_py2exe/xraylib-cli.nsi
@@ -999,15 +996,12 @@ AC_CONFIG_FILES([Makefile
 				 perl/Makefile
 				 lua/Makefile
 				 fortran/Makefile
-				 windows/python/python2.6/xrlsetup.py
+				 windows/python/python2.7/Makefile
 				 windows/python/python2.7/xrlsetup.py
-				 windows/python/python3.1/xrlsetup.py
-				 windows/python/python3.2/Makefile
-				 windows/python/python3.2/xrlsetup.py
-				 windows/python/python3.3/Makefile
-				 windows/python/python3.3/xrlsetup.py
 				 windows/python/python3.4/Makefile
 				 windows/python/python3.4/xrlsetup.py
+				 windows/python/python3.5/Makefile
+				 windows/python/python3.5/xrlsetup.py
 				 ruby/Makefile
 				 php/Makefile
 				 pascal/Makefile

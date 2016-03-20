@@ -59,11 +59,7 @@ Name: "sdk" ; Description: "SDK: headers and static libraries" ; Types: full
 Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full 
 Name: "idl" ; Description: "IDL bindings" ; Types: full 
 Name: "python" ; Description: "Python bindings" ; Types: full 
-Name: "python/2_6" ; Description: "Python 2.6" ; Flags: exclusive
 Name: "python/2_7" ; Description: "Python 2.7" ; Types: full ; Flags: exclusive 
-Name: "python/3_1" ; Description: "Python 3.1" ; Flags: exclusive 
-Name: "python/3_2" ; Description: "Python 3.2" ; Flags: exclusive 
-Name: "python/3_3" ; Description: "Python 3.3" ; Flags: exclusive 
 Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive 
 Name: "python/3_5" ; Description: "Python 3.5" ; Flags: exclusive
 Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
@@ -129,13 +125,9 @@ Source: "{#builddir}\windows\xraylib.py" ; DestDir: "{app}\Python" ; Components:
 Source: "{#builddir}\windows\xrayhelp.py" ; DestDir: "{app}\Python" ; Components: python
 Source: "{#builddir}\windows\xraymessages.py" ; DestDir: "{app}\Python" ; Components: python
 Source: "{#builddir}\windows\xraylib-cli.py" ; DestDir: "{app}\Bin" ; Components: python
-Source: "{#builddir}\windows\python\python2.6\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_6"
 Source: "{#builddir}\windows\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
-Source: "{#builddir}\windows\python\python3.1\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_1"
-Source: "{#builddir}\windows\python\python3.2\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_2"
-Source: "{#builddir}\windows\python\python3.3\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_3"
 Source: "{#builddir}\windows\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
-Source: "{#builddir}\windows\python\python3.5\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
+Source: "{#builddir}\windows\python\python3.5\_xraylib.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
 
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
