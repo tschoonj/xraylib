@@ -18,8 +18,8 @@
 !define PRODUCT_DIR_REGKEY "Software\xraylib-cli"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
-!define abs_top_srcdir_win "C:\MinGW\msys\1.0\@abs_top_srcdir_win@"
-!define abs_top_builddir_win "C:\MinGW\msys\1.0\@abs_top_builddir_win@"
+!define abs_top_srcdir_win "C:\msys\1.0\@abs_top_srcdir_win@"
+!define abs_top_builddir_win "C:\msys\1.0\@abs_top_builddir_win@"
 !define DLLTOOL "i686-pc-mingw32-dlltool"
 
 !addincludedir "${abs_top_srcdir_win}\windows\python\cli_py2exe"

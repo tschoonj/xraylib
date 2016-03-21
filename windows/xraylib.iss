@@ -9,8 +9,8 @@
 #else
 #define MyAppName "xraylib 32-bit"
 #define MyAppId "xraylib"
-#define srcdir "C:\MinGW\msys\1.0\" + abs_top_srcdir_win
-#define builddir "C:\MinGW\msys\1.0\" + abs_top_builddir_win
+#define srcdir "C:\msys\1.0\" + abs_top_srcdir_win
+#define builddir "C:\msys\1.0\" + abs_top_builddir_win
 #endif
 ;#define MyAppVersion "2.17.0"
 #define MyAppPublisher "Tom Schoonjans"
@@ -130,8 +130,13 @@ Source: "{#builddir}\windows\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Py
 Source: "{#builddir}\windows\python\python2.7\xraylib_np.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
 Source: "{#builddir}\windows\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
 Source: "{#builddir}\windows\python\python3.4\xraylib_np.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
+#ifdef XRL64
 Source: "{#builddir}\windows\python\python3.5\_xraylib.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
 Source: "{#builddir}\windows\python\python3.5\xraylib_np.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
+#else
+Source: "{#builddir}\windows\python\python3.5\_xraylib.cp35-win32.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
+Source: "{#builddir}\windows\python\python3.5\xraylib_np.cp35-win32.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
+#endif
 
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
