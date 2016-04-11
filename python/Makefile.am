@@ -50,6 +50,3 @@ distclean-local:
 	rm -rf __pycache__
 
 EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx
-
-
-

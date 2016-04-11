@@ -39,6 +39,6 @@ windows:
 
 
 EXTRA_DIST = xraylib.spec.in BUGS Changelog 
-#DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-pascal
+DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-pascal --enable-java
 
 .PHONY: windows 

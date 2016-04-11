@@ -12,14 +12,15 @@
 
 if ENABLE_PASCAL
 
-all-local: xraylib.ppu xraylib.o
+all-local: xraylib.ppu
 
-xraylib.ppu: $(srcdir)/xraylib.pas
+xraylib.ppu:
+	echo `pwd`/$(srcdir)
+	ls $(srcdir)
 	$(FPC) -FE$(builddir) -Mdelphi $(srcdir)/xraylib.pas
 
-xraylib.o: xraylib.ppu
 
-install-exec-local: xraylib.ppu xraylib.o
+install-exec-local: xraylib.ppu
 	$(MKDIR_P) $(DESTDIR)$(FPC_DIR)
 	$(INSTALL) xraylib.o xraylib.ppu $(DESTDIR)$(FPC_DIR)
 
@@ -29,7 +30,5 @@ uninstall-local:
 
 clean-local:
 	rm -rf xraylib.ppu xraylib.o
-
-EXTRA_DIST = xraylib.pas
-
 endif
+EXTRA_DIST = xraylib.pas
