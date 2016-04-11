@@ -590,7 +590,7 @@ namespace Science {
 
 		/// <summary>Gets a Crystal object from the array using the specified name</summary>
 		/// <param name="name">	[in,out] If non-null, the crystal name. </param>
-		/// <returns>	null if it fails, else the crystal. </returns>
+		/// <returns>Null if it fails, else the crystal. </returns>
 		Crystal^ GetCrystal(String^ name)
 		{
 			Crystal^ result = gcnew Crystal();
@@ -634,6 +634,47 @@ namespace Science {
 					result->Atoms->Add(item);
 				}
 			}
+
+			return result;
+		}
+
+		/// <summary>Gets the names of crystals within within the CrystalArray object.</summary>
+		/// <returns>A list of strings containing the names.</returns>
+		List<String^>^ GetNames()
+		{
+			int i;
+			List<String^>^ result;
+
+			result = gcnew List<String^>;
+
+			if (ca != NULL)
+			{
+				for (i = 0; i < ca->n_crystal; i++)
+				{
+					result->Add(gcnew String(ca->crystal[i].name));
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>Gets the names of default crystals defined within the XrayLib library.</summary>
+		/// <returns>A list of strings containing the names.</returns>
+		static List<String^>^ GetDefaultNames()
+		{
+			char **names;
+			int i;
+			List<String^>^ result;
+
+			result = gcnew List<String^>;
+
+			names = ::Crystal_GetCrystalsList(NULL, 0);
+			for (i = 0; names[i] != NULL; i++) 
+			{
+				result->Add(gcnew String(names[i]));
+				::xrlFree(names[i]);
+			}
+			::xrlFree(names);
 
 			return result;
 		}

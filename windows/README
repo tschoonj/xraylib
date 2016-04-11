@@ -1,83 +1,31 @@
 Some info on how we have built the Windows package:
 
-First of all: we don't compile it on Windows itself! Instead we use a cross-compiler on linux by running configure with the option: --host=i386-mingw32 or something similar depending on your mingw32 installation. This will also test for the presence of wine (The WINdows Emulator), due to its requirement during the build phase. Assuming make and make check didn't end horribly, you now have built the dll and static archive of xraylib that can be used on the Windows platform. Unfortunately these files can not be linked in on Windows when you use the Microsoft Visual C++ compiler (MSVC) due to the missing .lib file. To produce this file, we used a trick described on http://www.mingw.org/wiki/MSVC_and_MinGW_DLLs
+We use two separate Windows 7 64-bit VirtualBox VMs, one with 32-bit versions of GCC, IDL and python, and a second one with 64-bit counterparts of these. All work is done using a MSYS shell. In both cases the GCC compilers were packaged by the TDM-GCC project.
 
-We used the DEF file produced during the compilation phase, copied it to a Windows machine with MSVC installed and ran the following command on a Windows shell:
+Compilation starts out as on Linux/Mac OS X...
 
-lib /machine:i386 /def:libxrl-{version}.def
+  ./configure && make
 
-This produces the required .LIB file. This file works fine with MSVC but fails horribly when using the Borland compiler... There appears to be an incompatibility in the format of the .LIB files required for compilation between Borland on the one hand and mingw/MSVC/Intel C++ on the other hand.
-However: we produced a Borland compatible .LIB file using the implib.exe command (part of the Borland C++ package):
+... followed by:
 
-implib.exe -a -c libxrl-{version}-bcc.lib libxrl-{version}.dll
+  make windows
 
-
-Now to produce the installer itself we used the NullSoft Installer System. After running ./configure, a script xraylib.nsi will be produced in the nsis subdirectory of the xraylib package. After the crosscompilation, run "makensis xraylib.nsi" in this folder to create the executable. Note that this does not work with the NSIS package available from MacPorts!!! We used Fedora 11 to create the package. 
-
-Note: Starting with xraylib 2.16.0, a native build is being used. For this do (in the unpacked directory)
-
-./configure && make && make nsis
+which will produce the python and IDL bindings, followed by running InnoSetup to create the installer package.
 
 This procedure is heavily adapted to my own directory layout and will require considerable changes to get it working on your system.
-Build environment is MSYS, compiler comes from TDM-GCC...
-
-For version 2.17.0, the installer of the win32 SDK has been rewritten with Inno Setup. This was done to ensure a smoother installation experience: NSIS' lack of radiobuttons and deactivateable sections became a real problem. It is possible that the installer of the CLI package will also move at some point to Inno Setup.
 
 
-----
-
-Recently we have been successful in compiling xraylib natively on the Windows platform using the MinGW32 compiler. These notes were contributed by Matthew Wormington:
-
-The easiest way to build XrayLib under Windows is to use the "Minimalist GNU for Windows" toolset that is freely available from http://www.MinGW.org <http://www.mingw.org/> . The Graphical Installer provides a convenient and simple means to install components from MinGW and MSYS. This can be downloaded from the links on the MinGW.org website, or directly from the project page on SourceForge:   http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst/ <http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst/> 
-
-
-
-To install MinGW:
-
-1)      Run the Graphical Installer. If you are running on Windows Vista or 7 then you will need to run the program as an administrator.
-
-2)      Click the Next > button three times to move through the installation accepting the default options
-
-3)      Accept the license agreement and then click the Next button
-
-4)      Accept the default installation folder (C:\MinGW) and shortcut folder (MinGW) by clicking the Next button twice
-
-5)      Select the C++ Compiler and MinGW Developer Toolkit from the list of available components and click the Next button
-
-6)      Click the Install button to start downloading and installing the toolkit. This may take few minutes and the status will be displayed in a console window.   
-
-7)      Click finish to complete the installation.
-
-
-
-To build XrayLib using MinGW:
-
-1)      Select the Start > All Programs > MinGW > MinGW Shell menu item. This will start the shell in which you can build the project.
-
-2)      In the shell change to the source code directory using the appropriate cd command
-
-3)      Enter ./configure in the shell to create the XrayLib makefiles. This will take a few minutes and the status will be updated in the shell window.
-
-4)      Enter make to start the build process. The status will be displayed in the shell window and when completed, the compiled dynamic link library (.DLL) will be located in the src\.libs folder
-
-
-----
-
-We have also been successful in compiling xraylib using MinGW-w64, using the distribution available from http://tdm-gcc.tdragon.net. With this compiler, it is even possible to compile a 64-bit version of xraylib for Windows. An installer package containing the 64-bit dll is currently not scheduled
-
-
-----
 
 Python bindings
 ===============
 
-These were compiled using the mingw32 compiler for windows using a modified version of the xrlsetup.py file found in the python folder.
+These were compiled using the TDM-GCC compiler for windows using a modified version of the xrlsetup.py file found in the python folder. The Cython bindings are also included (installed using pip).
 The command we used:
 
 python xrlsetup.py build_ext --inplace --compiler=mingw32
 
-The produced _xraylib.pyd file is of course dependent on the python version it was compiled against...
-The package includes bindings for Python version 2.6, 2.7 and 3.1.
+The produced _xraylib.pyd and xraylib_np.pyd files are of course dependent on the python version they were compiled against...
+The package includes bindings for Python versions 2.7, 3.4 and 3.5.
 
 
 ----
@@ -106,11 +54,7 @@ Depending on the versions of IDL, xraylib and Visual Studio that are installed, 
 .NET bindings
 =============
 
-The .NET Framework can be installed on computers running Microsoft Windows operating systems. It supports multiple programming languages, including C#, VB.NET, C++/CLI, Pascal, Fortran and includes a large class library for that solves many common programming problems. Microsoft offers free versions of its Express Edition compilers from  http://www.microsoft.com/express/ 
-
-These were compiled using Visual Studio 2008 Standard and was built against .NET Framework Version 2. The binding consists of a single, mixed-mode assembly XrayLib.NET.dll written in C++/CLI. The assembly provides the interop between a managed XrayLib class and the native functions and types exposed by libxrl-3.dll. This combines the language interoperability of .NET with the performance of the native underlying functions. 
-
-A pre-built Release version of the assembly and an example program can be found in the bin folder together with a HTML Help v1 file.
+The .NET Framework can be installed on computers running Microsoft Windows operating systems. It supports multiple programming languages, including C#, VB.NET, C++/CLI, Pascal, Fortran and includes a large class library for that solves many common programming problems. These bindings have been compiled using the free Visual Studio Community 2015 IDE from Microsoft (https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx) and was built against .NET Framework Version 4. The binding consists of a single, mixed-mode assembly XrayLib.NET.dll written in C++/CLI. The assembly provides the interop between a managed XrayLib class and the native functions and types exposed by libxrl-7.dll. This combines the language interoperability of .NET with the performance of the native underlying functions. A pre-built Release version of the assembly and an example program can be found in the bin folder together with a HTML Help v1 file.
 
 To use XrayLib.NET.dll in Visual Studio:
 

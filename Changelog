@@ -8,6 +8,7 @@ contributions)
 - New API: Crystal_GetCrystalsList
 - K-shell fluorescence yields revised (thanks to Alex Simionovici for
 reporting this)
+- Cython bindings added to Windows installers
 - Several bugfixes: thanks to those that reported them!
 
 
