@@ -17,7 +17,7 @@
 
 from __future__ import print_function
 from math import *
-from _xraylib import *
+from xraylib import *
 import getopt, sys, string, traceback
 from xraymessages import *
 from xrayhelp import *
