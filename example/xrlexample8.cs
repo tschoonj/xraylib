@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Numerics;
 using Science;
+using System.Collections.Generic;
 
 namespace Test
 {
@@ -216,6 +217,12 @@ namespace Test
                 Console.WriteLine("  F0=FH(0,0,0) structure factor: ({0}, {1})", F0.Real, F0.Imaginary);
                 Console.WriteLine();
             }
+
+            List<string> crystalNames;
+            crystalNames = CrystalArray.GetDefaultNames();
+            foreach (string name in crystalNames)
+                Console.WriteLine(name);
+            Console.WriteLine(); 
 
             // RadionuclideData tests 
             RadionuclideData rd = new RadionuclideData("109Cd");
