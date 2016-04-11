@@ -1,3 +1,16 @@
+Version 3.2.0 Tom Schoonjans
+
+- Python3 support in Fedora RPM packages
+- Pascal/Delphi bindings added (thanks to Matthew Wormington for his
+contributions)
+- pure Java implementation of xraylib: jar created with OSGI support
+- SymbolToAtomicNumber: char* changed to const char*
+- New API: Crystal_GetCrystalsList
+- K-shell fluorescence yields revised (thanks to Alex Simionovici for
+reporting this)
+- Several bugfixes: thanks to those that reported them!
+
+
 Version 3.1.0 Tom Schoonjans
 
 - Database of commonly used radionuclides for X-ray sources added (new API:
