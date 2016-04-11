@@ -589,21 +589,14 @@ AC_ARG_ENABLE([java],[AS_HELP_STRING([--disable-java],[build without the java bi
 
 VALID_JAVA=
 
-if test "x$SWIG" = xnoswig && test "x$enable_java" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
-	#don't even bother when swig is not found
-	AC_MSG_ERROR([--enable-java was given as an option but swig was not found on the system])
-elif test "x$SWIG" = xswig && test "x$enable_java" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
+if test "x$enable_java" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#search for java compiler
 	AX_PROG_JAVAC
 	#search for java virtual machine
 	if test "x$JAVAC" != x ; then
 		AX_PROG_JAVA
 	fi
-	#search for location of jni.h, using javah
-	if test "x$JAVAC" != x && test "x$JAVA" != x ; then
-		AX_PROG_JAVAH
-	fi
-	if test "x$JAVAC" = x || test "x$JAVA" = x || test "x$JAVACPPFLAGS" = x ; then
+	if test "x$JAVAC" = x || test "x$JAVA" = x ; then
 		if test "x$enable_java" = xyes ; then
 			AC_MSG_ERROR([Cannot build java bindings])
 		else
@@ -619,59 +612,6 @@ GRADLE=
 
 if test "x$VALID_JAVA" = xyes ; then
 	AC_MSG_NOTICE([Building with java bindings])
-	case $host in
-		*-*-darwin*)
-			JAVADYNAMICLINKING="-framework JavaVM"
-			JAVACFLAGS=""
-			JAVALIBRARYPREFIX="lib"
-			JAVASO=".jnilib"
-			LDSHARED="cc -bundle -undefined suppress -flat_namespace"
-			CCSHARED=""
-			JAVALDSHARED='$(CC)'
-			JAVACXXSHARED='$(CXX)'
-
-			;;
-		*-*-solaris*)
-			SO=".so"
-			JAVADYNAMICLINKING=""
-			JAVACFLAGS=""
-			JAVALIBRARYPREFIX="lib"
-			JAVASO=$SO
-			LDSHARED="ld -G"
-			CCSHARED=""
-			JAVALDSHARED='$(LDSHARED)'
-			JAVACXXSHARED='$(CXXSHARED)'
-			;;
-		*)
-			SO=".so"
-			JAVADYNAMICLINKING=""
-			JAVACFLAGS=""
-			JAVALIBRARYPREFIX="lib"
-			JAVASO=$SO
-			LDSHARED="gcc -shared"
-			CCSHARED="-fpic"
-			JAVALDSHARED='$(LDSHARED)'
-			JAVACXXSHARED='$(CXXSHARED)'
-			;;
-	esac
-
-	JAVAINC=$JAVACPPFLAGS
-	JAVAROOT='$(builddir)'
-	AC_SUBST(JAVAROOT)
-	AC_SUBST(JAVA)
-	AC_SUBST(JAVAC)
-	AC_SUBST(JAVAINC)
-	AC_SUBST(JAVADYNAMICLINKING)
-	AC_SUBST(JAVALIBRARYPREFIX)
-	AC_SUBST(JAVASO)
-	AC_SUBST(LDSHARED)
-	AC_SUBST(JAVALDSHARED)
-	AC_SUBST(JAVACXXSHARED)
-	AC_SUBST(JAVACFLAGS)
-	AC_SUBST(CCSHARED)
-	XRLJAVALIB=$JAVALIBRARYPREFIX
-	XRLJAVALIB+=xraylib.la
-	AC_SUBST(XRLJAVALIB)
 	AC_PATH_PROG([GRADLE], [gradle], ["nogradle"])
 fi
 AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
