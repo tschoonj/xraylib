@@ -14,9 +14,14 @@ xraylibincludedir=${includedir}/xraylib
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I..
 
 
+if LIBXRL_CONVENIENCE_BUILD
+noinst_LTLIBRARIES = libxrl.la libprdata.la
+else
 lib_LTLIBRARIES=libxrl.la
-noinst_PROGRAMS=prdata
 noinst_LTLIBRARIES = libprdata.la
+endif
+
+noinst_PROGRAMS=prdata
 prdata_SOURCES = pr_data.c
 prdata_LDADD = libprdata.la
 libprdata_la_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)

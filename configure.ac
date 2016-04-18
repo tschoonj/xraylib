@@ -55,6 +55,10 @@ fi
 
 AC_CANONICAL_HOST
 
+#check if libxrl should be built as a convenience library
+AC_ARG_ENABLE([libxrl],[AS_HELP_STRING([--disable-libxrl],[do not build libxrl separately, link it statically into bindings])],[enable_libxrl=$enableval],[enable_libxrl=check])
+
+AM_CONDITIONAL([LIBXRL_CONVENIENCE_BUILD], [test x$enable_libxrl = xno])
 
 #headers check
 AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h])
