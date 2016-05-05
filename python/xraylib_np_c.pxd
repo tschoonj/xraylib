@@ -10,72 +10,72 @@
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 cdef extern from "xraylib.h":
-	void XRayInit()
-	void SetHardExit(int hard_exit)
-	void SetExitStatus(int exit_status)
-	int GetExitStatus()
-	void SetErrorMessages(int status)
-	int GetErrorMessages()
-	double AtomicWeight(int Z)
-	double ElementDensity(int Z)
-	double CS_KN(double arg1)
-	double DCS_Thoms(double arg1)
-	double CS_Total(int arg1, double arg2)
-	double CS_Photo(int arg1, double arg2)
-	double CS_Rayl(int arg1, double arg2)
-	double CS_Compt(int arg1, double arg2)
-	double CS_Energy(int arg1, double arg2)
-	double CSb_Total(int arg1, double arg2)
-	double CSb_Photo(int arg1, double arg2)
-	double CSb_Rayl(int arg1, double arg2)
-	double CSb_Compt(int arg1, double arg2)
-	double FF_Rayl(int arg1, double arg2)
-	double SF_Compt(int arg1, double arg2)
-	double Fi(int arg1, double arg2)
-	double Fii(int arg1, double arg2)
-	double CS_Photo_Total(int arg1, double arg2)
-	double CSb_Photo_Total(int arg1, double arg2)
-	double CS_Total_Kissel(int arg1, double arg2)
-	double CSb_Total_Kissel(int arg1, double arg2)
-	double ComptonProfile(int arg1, double arg2)
-	double LineEnergy(int arg1, int arg2)
-	double FluorYield(int arg1, int arg2)
-	double CosKronTransProb(int arg1, int arg2)
-	double EdgeEnergy(int arg1, int arg2)
-	double JumpFactor(int arg1, int arg2)
-	double RadRate(int arg1, int arg2)
-	double ElectronConfig(int arg1, int arg2)
-	double AtomicLevelWidth(int arg1, int arg2)
-	double AugerRate(int arg1, int arg2)
-	double AugerYield(int arg1, int arg2)
-	double DCS_KN(double arg1, double arg2)
-	double DCSP_Thoms(double arg1, double arg2)
-	double MomentTransf(double arg1, double arg2)
-	double ComptonEnergy(double arg1, double arg2)
-	double DCS_Rayl(int arg1, double arg2, double arg3)
-	double DCS_Compt(int arg1, double arg2, double arg3)
-	double DCSb_Rayl(int arg1, double arg2, double arg3)
-	double DCSb_Compt(int arg1, double arg2, double arg3)
-	double DCSP_KN(double arg1, double arg2, double arg3)
-	double CS_FluorLine(int arg1, double arg2, double arg3)
-	double CSb_FluorLine(int arg1, double arg2, double arg3)
-	double CS_Photo_Partial(int arg1, double arg2, double arg3)
-	double CSb_Photo_Partial(int arg1, double arg2, double arg3)
-	double CS_FluorLine_Kissel(int arg1, double arg2, double arg3)
-	double CSb_FluorLine_Kissel(int arg1, double arg2, double arg3)
-	double CS_FluorLine_Kissel_Cascade(int arg1, double arg2, double arg3)
-	double CSb_FluorLine_Kissel_Cascade(int arg1, double arg2, double arg3)
-	double CS_FluorLine_Kissel_no_Cascade(int arg1, double arg2, double arg3)
-	double CSb_FluorLine_Kissel_no_Cascade(int arg1, double arg2, double arg3)
-	double CS_FluorLine_Kissel_Nonradiative_Cascade(int arg1, double arg2, double arg3)
-	double CSb_FluorLine_Kissel_Nonradiative_Cascade(int arg1, double arg2, double arg3)
-	double CS_FluorLine_Kissel_Radiative_Cascade(int arg1, double arg2, double arg3)
-	double CSb_FluorLine_Kissel_Radiative_Cascade(int arg1, double arg2, double arg3)
-	double ComptonProfile_Partial(int arg1, double arg2, double arg3)
-	double DCSP_Rayl(int arg1, double arg2, double arg3, double arg4)
-	double DCSP_Compt(int arg1, double arg2, double arg3, double arg4)
-	double DCSPb_Rayl(int arg1, double arg2, double arg3, double arg4)
-	double DCSPb_Compt(int arg1, double arg2, double arg3, double arg4)
+	void XRayInit() nogil
+	void SetHardExit(int hard_exit) nogil
+	void SetExitStatus(int exit_status) nogil
+	int GetExitStatus() nogil
+	void SetErrorMessages(int status) nogil
+	int GetErrorMessages() nogil
+	double AtomicWeight(int Z) nogil
+	double ElementDensity(int Z) nogil
+	double CS_KN(double arg1) nogil
+	double DCS_Thoms(double arg1) nogil
+	double CS_Total(int arg1, double arg2) nogil
+	double CS_Photo(int arg1, double arg2) nogil
+	double CS_Rayl(int arg1, double arg2) nogil
+	double CS_Compt(int arg1, double arg2) nogil
+	double CS_Energy(int arg1, double arg2) nogil
+	double CSb_Total(int arg1, double arg2) nogil
+	double CSb_Photo(int arg1, double arg2) nogil
+	double CSb_Rayl(int arg1, double arg2) nogil
+	double CSb_Compt(int arg1, double arg2) nogil
+	double FF_Rayl(int arg1, double arg2) nogil
+	double SF_Compt(int arg1, double arg2) nogil
+	double Fi(int arg1, double arg2) nogil
+	double Fii(int arg1, double arg2) nogil
+	double CS_Photo_Total(int arg1, double arg2) nogil
+	double CSb_Photo_Total(int arg1, double arg2) nogil
+	double CS_Total_Kissel(int arg1, double arg2) nogil
+	double CSb_Total_Kissel(int arg1, double arg2) nogil
+	double ComptonProfile(int arg1, double arg2) nogil
+	double LineEnergy(int arg1, int arg2) nogil
+	double FluorYield(int arg1, int arg2) nogil
+	double CosKronTransProb(int arg1, int arg2) nogil
+	double EdgeEnergy(int arg1, int arg2) nogil
+	double JumpFactor(int arg1, int arg2) nogil
+	double RadRate(int arg1, int arg2) nogil
+	double ElectronConfig(int arg1, int arg2) nogil
+	double AtomicLevelWidth(int arg1, int arg2) nogil
+	double AugerRate(int arg1, int arg2) nogil
+	double AugerYield(int arg1, int arg2) nogil
+	double DCS_KN(double arg1, double arg2) nogil
+	double DCSP_Thoms(double arg1, double arg2) nogil
+	double MomentTransf(double arg1, double arg2) nogil
+	double ComptonEnergy(double arg1, double arg2) nogil
+	double DCS_Rayl(int arg1, double arg2, double arg3) nogil
+	double DCS_Compt(int arg1, double arg2, double arg3) nogil
+	double DCSb_Rayl(int arg1, double arg2, double arg3) nogil
+	double DCSb_Compt(int arg1, double arg2, double arg3) nogil
+	double DCSP_KN(double arg1, double arg2, double arg3) nogil
+	double CS_FluorLine(int arg1, double arg2, double arg3) nogil
+	double CSb_FluorLine(int arg1, double arg2, double arg3) nogil
+	double CS_Photo_Partial(int arg1, double arg2, double arg3) nogil
+	double CSb_Photo_Partial(int arg1, double arg2, double arg3) nogil
+	double CS_FluorLine_Kissel(int arg1, double arg2, double arg3) nogil
+	double CSb_FluorLine_Kissel(int arg1, double arg2, double arg3) nogil
+	double CS_FluorLine_Kissel_Cascade(int arg1, double arg2, double arg3) nogil
+	double CSb_FluorLine_Kissel_Cascade(int arg1, double arg2, double arg3) nogil
+	double CS_FluorLine_Kissel_no_Cascade(int arg1, double arg2, double arg3) nogil
+	double CSb_FluorLine_Kissel_no_Cascade(int arg1, double arg2, double arg3) nogil
+	double CS_FluorLine_Kissel_Nonradiative_Cascade(int arg1, double arg2, double arg3) nogil
+	double CSb_FluorLine_Kissel_Nonradiative_Cascade(int arg1, double arg2, double arg3) nogil
+	double CS_FluorLine_Kissel_Radiative_Cascade(int arg1, double arg2, double arg3) nogil
+	double CSb_FluorLine_Kissel_Radiative_Cascade(int arg1, double arg2, double arg3) nogil
+	double ComptonProfile_Partial(int arg1, double arg2, double arg3) nogil
+	double DCSP_Rayl(int arg1, double arg2, double arg3, double arg4) nogil
+	double DCSP_Compt(int arg1, double arg2, double arg3, double arg4) nogil
+	double DCSPb_Rayl(int arg1, double arg2, double arg3, double arg4) nogil
+	double DCSPb_Compt(int arg1, double arg2, double arg3, double arg4) nogil
 
 
 	int XRAYLIB_MAJOR "XRAYLIB_MAJOR"
