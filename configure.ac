@@ -557,7 +557,8 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 			AC_MSG_WARN([Cannot build Python-NumPy bindings])
 			VALID_PYTHON_NUMPY=no
 		fi
-
+		# check for OpenMP
+		AC_OPENMP
 	fi
 fi
 AM_CONDITIONAL([ENABLE_PYTHON_NUMPY],[test x$VALID_PYTHON_NUMPY = xyes])

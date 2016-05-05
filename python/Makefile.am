@@ -29,10 +29,10 @@ endif
 
 if ENABLE_PYTHON_NUMPY
 pyexec_LTLIBRARIES += xraylib_np.la 
-xraylib_np_la_CFLAGS = -fopenmp $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS)
+xraylib_np_la_CFLAGS = $(OPENMP_CFLAGS) $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS)
 xraylib_np_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_np_la_SOURCES = xraylib_np.c
-xraylib_np_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -fopenmp
+xraylib_np_la_LDFLAGS = -avoid-version -module -shared -export-dynamic $(OPENMP_CFLAGS)
 endif
 
 xraylib_np.c: ${srcdir}/xraylib_np.pyx ${srcdir}/xraylib_np_c.pxd
