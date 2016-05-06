@@ -15,7 +15,6 @@ cimport numpy as np
 cimport cython
 from cython.parallel import prange
 cimport cython.parallel
-cimport openmp
 
 np.import_array()
 
