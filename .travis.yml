@@ -1,33 +1,43 @@
-language: c
-
 sudo: required
 dist: trusty
 
-compiler:
-  - gcc
-
-os:
-  - linux
-  - osx
-
-#env:
-#  global:
-#    - LD_LIBRARY_PATH=/usr/local/lib
-#    - LD_RUN_PATH=/usr/local/lib
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang
+      env: CC='clang' EXTRA='--disable-fortran2003' XRL_PYTHON='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-5
+            - gfortran-5
+      env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
+    - os: osx
+      env: CC='clang' EXTRA='--disable-fortran2003' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
+    - os: osx
+      env: CC='gcc5' FC='gfortran-5' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
 
 before_install:
-  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install swig fpc gfortran php5-dev lua5.2 liblua5.2-dev && sudo -H pip install Cython numpy && sudo -H pip3 install numpy; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy swig fpc gfortran php5-dev lua5.2 liblua5.2-dev ; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python python3 fpc lua && pip install Cython numpy && pip3 install numpy ; fi
 
 #install:
 #  - if [ $TRAVIS_OS_NAME == linux ]; then ./travis-deps.sh ; fi
 
 script:
-  - if [ $TRAVIS_OS_NAME == osx ]; then export CC=gcc-5 ; fi
-  - autoreconf -fi && ./configure --enable-php --enable-pascal --disable-python --disable-python-numpy && make && make check && make distclean
-  - autoreconf -fi && ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
-  - autoreconf -fi && ./configure --enable-python-numpy --enable-python PYTHON=python && make && make check && make distclean
-  - autoreconf -fi && ./configure --enable-python-numpy --enable-python PYTHON=python3 && make && make check && make distclean
+  - autoreconf -fi
+  - ./configure --enable-php --enable-pascal --disable-python --disable-python-numpy && make && make check && make distclean
+  - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
+  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} && make && make check && make distclean
+  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} && make && make check && make distclean
 
 branches:
   only:
