@@ -23,7 +23,7 @@ matrix:
     - os: osx
       env: CC='clang' EXTRA='--disable-fortran2003' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
     - os: osx
-      env: CC='gcc5' FC='gfortran-5' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
+      env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
 
 before_install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy swig fpc gfortran php5-dev lua5.2 liblua5.2-dev ; fi
@@ -36,8 +36,8 @@ script:
   - autoreconf -fi
   - ./configure --enable-php --enable-pascal --disable-python --disable-python-numpy && make && make check && make distclean
   - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} && make && make check && make distclean
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} && make && make check && make distclean
+  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} ${EXTRA} && make && make check && make distclean
+  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} && make && make check && make distclean
 
 branches:
   only:
