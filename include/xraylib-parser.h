@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010, Tom Schoonjans
+Copyright (c) 2010-2016, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30,13 +30,14 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * 	nAtomsAll: the total number of atoms present in the compound
  * 	Elements: an array with length nElements that will contain the atomic
  * 	  numbers of the different elements present in the compound,
- * 	  in ascending order. The array memory will be allocated using malloc
- * 	  and should be freed by the user when appropriate.
+ * 	  in ascending order.
  *	massFractions: an array with length nElements that will contain
  *	  the atomic mass fractions of the different elements present in the compound,
- *	  in an order corresponding with the Elements array. The sum of the values
- *	  in this array is equal to 1. The array memory will be allocated
- *	  using malloc and should be freed by the user when appropriate.
+ *	  in an order corresponding to the Elements array. The sum of the values
+ *	  in this array is equal to 1.
+ *	nAtoms: an array with nElements that will contain the number of atoms each element
+ *	  has in the compound, in an order corresponding to the Elements array.
+ *	molecularMass: the molecular mass of the compound.
  *
  * For SiO2 this would yield a structure with contents:
  *  nElements: 2
@@ -53,6 +54,8 @@ struct compoundData {
 	double nAtomsAll;
 	int *Elements;
 	double *massFractions;
+	double *nAtoms;
+	double molecularMass;
 };
 
 /*
@@ -76,7 +79,7 @@ struct compoundData *CompoundParser(const char compoundString[]);
 
 /*
  * The add_compound_data function will make calculate the composition
- * corresponding with the sum of the compositions of A and B, taking into
+ * corresponding to the sum of the compositions of A and B, taking into
  * their weights, with weightA + weightB typically less than 1.0
  * Returns NULL pointer on error
  */

@@ -56,9 +56,9 @@ int main()
   /*parser test for Ca(HCO3)2 (calcium bicarbonate)*/
   if ((cdtest = CompoundParser("Ca(HCO3)2")) == NULL)
 	return 1;
-  printf("Ca(HCO3)2 contains %g atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  printf("Ca(HCO3)2 contains %g atoms, %i elements and has a molecular mass of %g\n", cdtest->nAtomsAll, cdtest->nElements, cdtest->molecularMass);
   for (i = 0 ; i < cdtest->nElements ; i++)
-    printf("Element %i: %f %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
+    printf("Element %i: %f %% and %g atoms\n", cdtest->Elements[i], cdtest->massFractions[i]*100.0, cdtest->nAtoms[i]);
 
   FreeCompoundData(cdtest);
 
@@ -66,9 +66,9 @@ int main()
   if ((cdtest = CompoundParser("SiO2")) == NULL)
 	return 1;
 
-  printf("SiO2 contains %g atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  printf("SiO2 contains %g atoms, %i elements and has a molecular mass of %g\n", cdtest->nAtomsAll, cdtest->nElements, cdtest->molecularMass);
   for (i = 0 ; i < cdtest->nElements ; i++)
-    printf("Element %i: %f %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
+    printf("Element %i: %f %% and %g atoms\n", cdtest->Elements[i], cdtest->massFractions[i]*100.0, cdtest->nAtoms[i]);
 
   FreeCompoundData(cdtest);
 

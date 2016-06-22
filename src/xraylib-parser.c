@@ -354,8 +354,9 @@ struct compoundData *CompoundParser(const char compoundString[]) {
 		struct compoundData *cd = (struct compoundData *) malloc(sizeof(struct compoundData));
 		cd->nElements = ca.nElements;
 		cd->nAtomsAll = 0.0;
-		cd->Elements = (int *) malloc(sizeof(int)*ca.nElements);
-		cd->massFractions = (double *) malloc(sizeof(double)*ca.nElements);
+		cd->Elements = malloc(sizeof(int)*ca.nElements);
+		cd->massFractions = malloc(sizeof(double)*ca.nElements);
+		cd->nAtoms = malloc(sizeof(double)*ca.nElements);
 		for (i = 0 ; i < ca.nElements ; i++) {
 			sum += AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms;
 			cd->nAtomsAll += ca.singleElements[i].nAtoms;
@@ -363,7 +364,9 @@ struct compoundData *CompoundParser(const char compoundString[]) {
 		for (i = 0 ; i < ca.nElements ; i++) {
 			cd->Elements[i] = ca.singleElements[i].Element;
 			cd->massFractions[i] = AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms/sum;
+			cd->nAtoms[i] = ca.singleElements[i].nAtoms;
 		}
+		cd->molecularMass = sum;
 		free(ca.singleElements);
 		free(compoundStringCopy);
 
@@ -376,6 +379,7 @@ struct compoundData *CompoundParser(const char compoundString[]) {
 void FreeCompoundData(struct compoundData *cd) {
 	free(cd->Elements);
 	free(cd->massFractions);
+	free(cd->nAtoms);
 	free(cd);
 }
 
@@ -424,10 +428,12 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
 	/*sort array */
 	qsort(rv->Elements, rv->nElements, sizeof(int),compareInt );
 
-	/*use of this is questionable... */
+	/* the following lines are highly questionable... */
 	rv->nAtomsAll = longest->nAtomsAll + shortest->nAtomsAll;
+	rv->molecularMass = longest->molecularMass + shortest->molecularMass;
+	rv->nAtoms = (double *) calloc(rv->nElements,sizeof(double));
 
-	rv->massFractions = (double *) calloc(rv->nElements,sizeof(double) );
+	rv->massFractions = (double *) calloc(rv->nElements,sizeof(double));
 
 	for (i = 0 ; i < rv->nElements ; i++) {
 		for (j = 0 ; j < longest->nElements ; j++) {
