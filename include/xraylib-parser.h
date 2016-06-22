@@ -44,7 +44,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  *  nAtomsAll: 3
  *  Elements: 8 14
  *  massFractions: 0.467465  0.532535
- *
+ *  nAtoms: 2 1
+ *  molecularMass: 60.09
  *
  *
  */
