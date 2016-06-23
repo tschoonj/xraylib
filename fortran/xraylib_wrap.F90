@@ -31,6 +31,8 @@ TYPE, BIND(C) :: compoundData_C
         REAL (C_DOUBLE) :: nAtomsAll
         TYPE (C_PTR) :: Elements
         TYPE (C_PTR) :: massFractions
+        TYPE (C_PTR) :: nAtoms
+        REAL (C_DOUBLE) :: molecularMass
 ENDTYPE
 
 TYPE :: compoundData
@@ -38,6 +40,8 @@ TYPE :: compoundData
         REAL (C_DOUBLE) :: nAtomsAll
         INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
+        REAL (C_DOUBLE),DIMENSION(:),POINTER :: nAtoms
+        REAL (C_DOUBLE) :: molecularMass
 ENDTYPE
 
 TYPE, BIND(C) :: xrlComplex_C
@@ -3097,6 +3101,9 @@ FUNCTION CompoundParser(compoundString) RESULT(rv)
                 rv%nAtomsAll = rv_C%nAtomsAll
                 CALL C_F_POINTER(rv_C%Elements, rv%Elements, [rv%nElements])
                 CALL C_F_POINTER(rv_C%massFractions, rv%massFractions, [rv%nElements])
+                CALL C_F_POINTER(rv_C%nAtoms, rv%nAtoms, [rv%nElements])
+                rv%molecularMass = rv_C%molecularMass
+                CALL xrlFree(rv_c_ptr)
         ENDIF
 
         RETURN
@@ -3109,6 +3116,7 @@ SUBROUTINE FreeCompoundData(cd)
 
         CALL xrlFree(C_LOC(cd%Elements(1)))
         CALL xrlFree(C_LOC(cd%massFractions(1)))
+        CALL xrlFree(C_LOC(cd%nAtoms(1)))
         DEALLOCATE(cd)
 ENDSUBROUTINE
 

@@ -1,4 +1,4 @@
-!Copyright (c) 2009, 2010, 2011, 2012 Tom Schoonjans
+!Copyright (c) 2009-2016 Tom Schoonjans
 !All rights reserved.
 
 !Redistribution and use in source and binary forms, with or without
@@ -56,9 +56,12 @@ cd => CompoundParser(compound1)
 IF (.NOT. ASSOCIATED(cd)) THEN
         CALL EXIT(1)
 ENDIF
-WRITE (6,'(A,F12.6,A,I4,A)') 'Ca(HCO3)2 contains ',cd%nAtomsAll,' atoms and ',cd%nElements,' elements'
+WRITE (6,'(A,F12.6,A,I4,A,F12.6)') 'Ca(HCO3)2 contains ',cd%nAtomsAll,' atoms, ',&
+cd%nElements,' elements and has a molecular mass of ', cd%molecularMass
 DO i=1,cd%nElements
-        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',cd%massFractions(i)*100.0_C_DOUBLE,' %'
+        WRITE (6,'(A,I2,A,F12.6,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',&
+        cd%massFractions(i)*100.0_C_DOUBLE,' % and ',&
+        cd%nAtoms(i)
 ENDDO
 
 !Free the memory allocated for the arrays
@@ -68,9 +71,12 @@ cd => CompoundParser(compound2)
 IF (.NOT. ASSOCIATED(cd)) THEN
         CALL EXIT(1)
 ENDIF
-WRITE (6,'(A,F12.6,A,I4,A)') 'SiO2 contains ',cd%nAtomsAll,' atoms and ',cd%nElements,' elements'
+WRITE (6,'(A,F12.6,A,I4,A,F12.6)') 'SiO2 contains ',cd%nAtomsAll,' atoms, ',&
+cd%nElements,' elements and has a molecular mass of ', cd%molecularMass
 DO i=1,cd%nElements
-        WRITE (6,'(A,I2,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',cd%massFractions(i)*100.0_C_DOUBLE,' %'
+        WRITE (6,'(A,I2,A,F12.6,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',&
+        cd%massFractions(i)*100.0_C_DOUBLE,' % and ',&
+        cd%nAtoms(i)
 ENDDO
 
 !Free the memory allocated for the arrays
