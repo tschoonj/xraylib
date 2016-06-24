@@ -283,6 +283,19 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 lua_settable(L, -3);
 
+                lua_pushstring(L, "nAtoms");
+                lua_createtable(L, cd->nElements, 0);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushnumber(L,cd->nAtoms[i]);
+                        lua_settable(L,-3);
+                }
+                lua_settable(L, -3);
+
+                lua_pushstring(L, "molecularMass");
+                lua_pushnumber(L, cd->molecularMass);
+                lua_settable(L,-3);
+
                 lua_pushvalue(L, -1);
                 FreeCompoundData(cd);
                 SWIG_arg++;
