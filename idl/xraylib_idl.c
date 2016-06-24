@@ -1142,6 +1142,8 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 		double nAtomsAll;
 		IDL_LONG Elements[cd->nElements];
 		double massFractions[cd->nElements];
+		double nAtoms[cd->nElements];
+		double molecularMass;
 	};
 	*/
 	struct compoundData_IDL {
@@ -1156,9 +1158,11 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 		{"NATOMSALL", 0, (void *) IDL_TYP_DOUBLE},
 		{"ELEMENTS", array_dims, (void *) IDL_TYP_LONG},
 		{"MASSFRACTIONS", array_dims, (void *) IDL_TYP_DOUBLE},
+		{"NATOMS", array_dims, (void *) IDL_TYP_DOUBLE},
+		{"MOLECULARMASS", 0, (void *) IDL_TYP_DOUBLE},
 		{0}
 	};
-	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL)-sizeof(char)+sizeof(IDL_LONG)*cd->nElements+sizeof(double)*cd->nElements);
+	cdi = (struct compoundData_IDL *) malloc(sizeof(struct compoundData_IDL)-sizeof(char)+sizeof(IDL_LONG)*cd->nElements+2*sizeof(double)*cd->nElements+sizeof(double));
 	cdi->nElements = cd->nElements;
 	cdi->nAtomsAll = cd->nAtomsAll;
 	ilDims[0] = 1;
@@ -1168,6 +1172,10 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	memcpy(rv->value.arr->data+offset,cd->Elements,sizeof(int)*cd->nElements);
 	offset = IDL_StructTagInfoByName(sdef, "MASSFRACTIONS", IDL_MSG_LONGJMP, NULL);
 	memcpy(rv->value.arr->data+offset,cd->massFractions,sizeof(double)*cd->nElements);
+	offset = IDL_StructTagInfoByName(sdef, "NATOMS", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset,cd->nAtoms,sizeof(double)*cd->nElements);
+	offset = IDL_StructTagInfoByName(sdef, "MOLECULARMASS", IDL_MSG_LONGJMP, NULL);
+	memcpy(rv->value.arr->data+offset, &cd->molecularMass, sizeof(double));
 	FreeCompoundData(cd);
 
 	return rv;
