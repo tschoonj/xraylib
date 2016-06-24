@@ -1998,6 +1998,8 @@ type
     nAtomsAll : double;
     Elements : array of longint;
     massFractions : array of double;
+    nAtoms : array of double;
+    molecularMass : double;
   end;
 
   PCompoundDataNIST  = ^TCompoundDataNIST;

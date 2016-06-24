@@ -46,17 +46,17 @@ begin
     // Parser test for Ca(HCO3)2 (calcium bicarbonate)
     WriteLn;
     cd := CompoundParser('Ca(HCO3)2');
-    WriteLn('Ca(HCO3)2 contains ', cd^.nAtomsAll, ' atoms and ', cd^.nElements,' elements');
+    WriteLn('Ca(HCO3)2 contains ', cd^.nAtomsAll, ' atoms, ', cd^.nElements,' elements and has a molecular mass of ', cd^.molecularMass);
     for  i := 0 to cd^.nElements-1 do
-      WriteLn('Element ', cd^.Elements[i], ': ', cd^.massFractions[i]*100.0, ' %');
+      WriteLn('Element ', cd^.Elements[i], ': ', cd^.massFractions[i]*100.0, ' % and ', cd^.nAtoms[i], ' atoms');
     FreeCompoundData(cd);
 
     // parser test for SiO2 (quartz)
     WriteLn;
     cd := CompoundParser('SiO2');
-    WriteLn('SiO2 contains ',cd^.nAtomsAll, ' atoms and ', cd^.nElements,' elements');
-   	for  i := 0 to cd^.nElements-1 do
-		  WriteLn('Element ', cd^.Elements[i], ': ', cd^.massFractions[i]*100.0, ' %');
+    WriteLn('SiO2 contains ', cd^.nAtomsAll, ' atoms, ', cd^.nElements,' elements and has a molecular mass of ', cd^.molecularMass);
+    for  i := 0 to cd^.nElements-1 do
+      WriteLn('Element ', cd^.Elements[i], ': ', cd^.massFractions[i]*100.0, ' % and ', cd^.nAtoms[i], ' atoms');
     FreeCompoundData(cd);
 
     WriteLn;
