@@ -25,6 +25,8 @@ public class compoundData {
   public final double nAtomsAll;
   public final int[] Elements;
   public final double[] massFractions;  
+  public final double[] nAtoms;
+  public final double molecularMass;
   private final String compoundString;
   private final String formattedCompoundString;
  
@@ -47,6 +49,7 @@ public class compoundData {
       double nAtomsAll= 0.0;
       Elements = new int[nElements];
       massFractions = new double[nElements];
+      nAtoms = new double[nElements];
 
       double sum = 0.0;
 
@@ -55,14 +58,16 @@ public class compoundData {
         nAtomsAll+= cas.nAtoms; 
       }
 
-      String formattedCompoundString = String.format("%s contains %g atoms and %d elements", compoundString, nAtomsAll, nElements);
+      String formattedCompoundString = String.format("%s contains %g atoms, %d elements and has a molecular mass of %g", compoundString, nAtomsAll, nElements, sum);
 
       for (int i = 0 ; i < nElements ; i++) {
         Elements[i] = ca.get(i).Element;
         massFractions[i] = Xraylib.AtomicWeight(ca.get(i).Element)*ca.get(i).nAtoms/sum;
-        formattedCompoundString += String.format("\nElement %d: %f %%", Elements[i], massFractions[i]*100.0);
+	nAtoms[i] = ca.get(i).nAtoms;
+        formattedCompoundString += String.format("\nElement %d: %f %% and %g atoms", Elements[i], massFractions[i]*100.0, nAtoms[i]);
       }
       this.nAtomsAll = nAtomsAll;
+      this.molecularMass = sum;
       this.formattedCompoundString = formattedCompoundString;
     }
     catch (XraylibException e) {
