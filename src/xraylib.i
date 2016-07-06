@@ -722,14 +722,19 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll));
                 PyObject *elements=PyList_New(cd->nElements);
                 PyObject *massfractions=PyList_New(cd->nElements);
+                PyObject *nAtoms=PyList_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
                         PyObject *o = PyInt_FromLong((long) cd->Elements[i]);
                         PyList_SetItem(elements, i, o);
                         o = PyFloat_FromDouble(cd->massFractions[i]);
                         PyList_SetItem(massfractions, i, o);
+                        o = PyFloat_FromDouble(cd->nAtoms[i]);
+                        PyList_SetItem(nAtoms, i, o);
                 }
                 PyDict_SetItemString(dict, "Elements", elements);
                 PyDict_SetItemString(dict, "massFractions", massfractions);
+                PyDict_SetItemString(dict, "nAtoms", nAtoms);
+                PyDict_SetItemString(dict, "molecularMass",PyFloat_FromDouble(cd->molecularMass));
                 FreeCompoundData(cd);
                 $result=dict;
         }

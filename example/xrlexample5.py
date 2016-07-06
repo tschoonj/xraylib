@@ -31,14 +31,14 @@ if __name__ == '__main__' :
 	print ("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f" % xraylib.CS_Rayl_CP("Ca(HCO3)2",10.0))
 
 	cdtest = xraylib.CompoundParser("Ca(HCO3)2")
-	print ("Ca(HCO3)2 contains %g atoms and %i elements"% (cdtest['nAtomsAll'], cdtest['nElements']))
+	print ("Ca(HCO3)2 contains %g atoms, %i elements and has a molecular mass of %g" % (cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molecularMass']))
 	for i in range(cdtest['nElements']):
-        	print ("Element %i: %lf %%" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0))
+        	print ("Element %i: %lf %% and %g atoms" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
 
 	cdtest = xraylib.CompoundParser("SiO2")
-	print ("SiO2 contains %g atoms and %i elements"% (cdtest['nAtomsAll'], cdtest['nElements']))
+	print ("SiO2 contains %g atoms, %i elements and has a molecular mass of %g" % (cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molecularMass']))
 	for i in range(cdtest['nElements']):
-        	print ("Element %i: %lf %%" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0))
+        	print ("Element %i: %lf %% and %g atoms" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
 
 
 	print ("CS2 Refractive Index at 10.0 keV : %g - %g i" % (xraylib.Refractive_Index_Re("CS2",10.0,1.261),xraylib.Refractive_Index_Im("CS2",10.0,1.261)))
