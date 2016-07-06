@@ -37,7 +37,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  *	  in this array is equal to 1.
  *	nAtoms: an array with nElements that will contain the number of atoms each element
  *	  has in the compound, in an order corresponding to the Elements array.
- *	molecularMass: the molecular mass of the compound.
+ *	molarMass: the molar mass of the compound, in g/mol
  *
  * For SiO2 this would yield a structure with contents:
  *  nElements: 2
@@ -45,7 +45,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  *  Elements: 8 14
  *  massFractions: 0.467465  0.532535
  *  nAtoms: 2 1
- *  molecularMass: 60.09
+ *  molarMass: 60.09
  *
  *
  */
@@ -56,7 +56,7 @@ struct compoundData {
 	int *Elements;
 	double *massFractions;
 	double *nAtoms;
-	double molecularMass;
+	double molarMass;
 };
 
 /*

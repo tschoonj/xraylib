@@ -31,7 +31,7 @@ exit(1) if not cdtest
 
 #puts PP.pp(cdtest, "")
 
-printf("Ca(HCO3)2 contains %g atoms, %i elements and has a molecular mass of %g\n",cdtest['nAtomsAll'],cdtest['nElements'],cdtest['molecularMass'])
+printf("Ca(HCO3)2 contains %g atoms, %i elements and has a molar mass of %g g/mol\n",cdtest['nAtomsAll'],cdtest['nElements'],cdtest['molarMass'])
 
 for i in (0..cdtest['nElements']-1)
     printf("Element %i: %f %% and %g atoms\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i])
@@ -40,7 +40,7 @@ end
 cdtest = Xraylib.CompoundParser("SiO2")
 exit(1) if not cdtest
 
-printf("SiO2 contains %g atoms, %i elements and has a molecular mass of %g\n",cdtest['nAtomsAll'],cdtest['nElements'],cdtest['molecularMass'])
+printf("SiO2 contains %g atoms, %i elements and has a molar mass of %g g/mol\n",cdtest['nAtomsAll'],cdtest['nElements'],cdtest['molarMass'])
 
 for i in (0..cdtest['nElements']-1)
     printf("Element %i: %f %% and %g atoms\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i])

@@ -292,8 +292,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 }
                 lua_settable(L, -3);
 
-                lua_pushstring(L, "molecularMass");
-                lua_pushnumber(L, cd->molecularMass);
+                lua_pushstring(L, "molarMass");
+                lua_pushnumber(L, cd->molarMass);
                 lua_settable(L,-3);
 
                 lua_pushvalue(L, -1);
@@ -734,7 +734,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 PyDict_SetItemString(dict, "Elements", elements);
                 PyDict_SetItemString(dict, "massFractions", massfractions);
                 PyDict_SetItemString(dict, "nAtoms", nAtoms);
-                PyDict_SetItemString(dict, "molecularMass",PyFloat_FromDouble(cd->molecularMass));
+                PyDict_SetItemString(dict, "molarMass",PyFloat_FromDouble(cd->molarMass));
                 FreeCompoundData(cd);
                 $result=dict;
         }
@@ -1164,7 +1164,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                         av_push(massFractions, newSVnv(cd->massFractions[i]));
                         av_push(nAtoms, newSVnv(cd->nAtoms[i]));
                 }
-                STORE_HASH("molecularMass", newSVnv(cd->molecularMass),hash)
+                STORE_HASH("molarMass", newSVnv(cd->molarMass),hash)
                 FreeCompoundData(cd);
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
@@ -1555,7 +1555,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 rb_hash_aset(rv, rb_str_new2("Elements"), elements);
                 rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
                 rb_hash_aset(rv, rb_str_new2("nAtoms"), nAtoms);
-                rb_hash_aset(rv, rb_str_new2("molecularMass"), rb_float_new(cd->molecularMass));
+                rb_hash_aset(rv, rb_str_new2("molarMass"), rb_float_new(cd->molarMass));
                 FreeCompoundData(cd);
                 $result = rv;
         }
@@ -1859,7 +1859,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         add_assoc_zval(return_value, "Elements", Elements);
         add_assoc_zval(return_value, "massFractions", massFractions);
         add_assoc_zval(return_value, "nAtoms", nAtoms);
-        add_assoc_double(return_value, "molecularMass", cd->molecularMass);
+        add_assoc_double(return_value, "molarMass", cd->molarMass);
         FreeCompoundData(cd);
 }
 

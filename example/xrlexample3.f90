@@ -56,8 +56,8 @@ cd => CompoundParser(compound1)
 IF (.NOT. ASSOCIATED(cd)) THEN
         CALL EXIT(1)
 ENDIF
-WRITE (6,'(A,F12.6,A,I4,A,F12.6)') 'Ca(HCO3)2 contains ',cd%nAtomsAll,' atoms, ',&
-cd%nElements,' elements and has a molecular mass of ', cd%molecularMass
+WRITE (6,'(A,F12.6,A,I4,A,F12.6,A)') 'Ca(HCO3)2 contains ',cd%nAtomsAll,' atoms, ',&
+cd%nElements,' elements and has a molar mass of ', cd%molarMass, ' g/mol'
 DO i=1,cd%nElements
         WRITE (6,'(A,I2,A,F12.6,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',&
         cd%massFractions(i)*100.0_C_DOUBLE,' % and ',&
@@ -71,8 +71,8 @@ cd => CompoundParser(compound2)
 IF (.NOT. ASSOCIATED(cd)) THEN
         CALL EXIT(1)
 ENDIF
-WRITE (6,'(A,F12.6,A,I4,A,F12.6)') 'SiO2 contains ',cd%nAtomsAll,' atoms, ',&
-cd%nElements,' elements and has a molecular mass of ', cd%molecularMass
+WRITE (6,'(A,F12.6,A,I4,A,F12.6,A)') 'SiO2 contains ',cd%nAtomsAll,' atoms, ',&
+cd%nElements,' elements and has a molar mass of ', cd%molarMass, ' g/mol'
 DO i=1,cd%nElements
         WRITE (6,'(A,I2,A,F12.6,A,F12.6,A)') 'Element ',cd%Elements(i),' : ',&
         cd%massFractions(i)*100.0_C_DOUBLE,' % and ',&

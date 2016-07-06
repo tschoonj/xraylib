@@ -38,19 +38,19 @@ int main()
   //parser test for Ca(HCO3)2 (calcium bicarbonate)
   if ((cdtest = CompoundParser("Ca(HCO3)2")) == NULL)
 	return 1;
-  std::printf("Ca(HCO3)2 contains %g atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  std::printf("Ca(HCO3)2 contains %g atoms, %i elements and has a molar mass of %g g/mol\n", cdtest->nAtomsAll, cdtest->nElements, cdtest->molarMass);
   for (i = 0 ; i < cdtest->nElements ; i++)
-    std::printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
+    std::printf("Element %i: %f %% and %g atoms\n", cdtest->Elements[i], cdtest->massFractions[i]*100.0, cdtest->nAtoms[i]);
 
   FreeCompoundData(cdtest);
 
   //parser test for SiO2 (quartz)
   if ((cdtest = CompoundParser("SiO2")) == NULL)
 	return 1;
-
-  std::printf("SiO2 contains %g atoms and %i elements\n",cdtest->nAtomsAll,cdtest->nElements);
+  std::printf("SiO2 contains %g atoms, %i elements and has a molar mass of %g g/mol\n", cdtest->nAtomsAll, cdtest->nElements, cdtest->molarMass);
   for (i = 0 ; i < cdtest->nElements ; i++)
-    std::printf("Element %i: %lf %%\n",cdtest->Elements[i],cdtest->massFractions[i]*100.0);
+    std::printf("Element %i: %f %% and %g atoms\n", cdtest->Elements[i], cdtest->massFractions[i]*100.0, cdtest->nAtoms[i]);
+
 
   FreeCompoundData(cdtest);
 

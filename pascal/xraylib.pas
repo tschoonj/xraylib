@@ -1999,7 +1999,7 @@ type
     Elements : array of longint;
     massFractions : array of double;
     nAtoms : array of double;
-    molecularMass : double;
+    molarMass : double;
   end;
 
   PCompoundDataNIST  = ^TCompoundDataNIST;

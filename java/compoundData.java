@@ -26,7 +26,7 @@ public class compoundData {
   public final int[] Elements;
   public final double[] massFractions;  
   public final double[] nAtoms;
-  public final double molecularMass;
+  public final double molarMass;
   private final String compoundString;
   private final String formattedCompoundString;
  
@@ -58,7 +58,7 @@ public class compoundData {
         nAtomsAll+= cas.nAtoms; 
       }
 
-      String formattedCompoundString = String.format("%s contains %g atoms, %d elements and has a molecular mass of %g", compoundString, nAtomsAll, nElements, sum);
+      String formattedCompoundString = String.format("%s contains %g atoms, %d elements and has a molar mass of %g", compoundString, nAtomsAll, nElements, sum);
 
       for (int i = 0 ; i < nElements ; i++) {
         Elements[i] = ca.get(i).Element;
@@ -67,7 +67,7 @@ public class compoundData {
         formattedCompoundString += String.format("\nElement %d: %f %% and %g atoms", Elements[i], massFractions[i]*100.0, nAtoms[i]);
       }
       this.nAtomsAll = nAtomsAll;
-      this.molecularMass = sum;
+      this.molarMass = sum;
       this.formattedCompoundString = formattedCompoundString;
     }
     catch (XraylibException e) {

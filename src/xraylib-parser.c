@@ -366,7 +366,7 @@ struct compoundData *CompoundParser(const char compoundString[]) {
 			cd->massFractions[i] = AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms/sum;
 			cd->nAtoms[i] = ca.singleElements[i].nAtoms;
 		}
-		cd->molecularMass = sum;
+		cd->molarMass = sum;
 		free(ca.singleElements);
 		free(compoundStringCopy);
 
@@ -430,7 +430,7 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
 
 	/* the following lines are highly questionable... */
 	rv->nAtomsAll = longest->nAtomsAll + shortest->nAtomsAll;
-	rv->molecularMass = longest->molecularMass + shortest->molecularMass;
+	rv->molarMass = longest->molarMass + shortest->molarMass;
 	rv->nAtoms = (double *) calloc(rv->nElements,sizeof(double));
 
 	rv->massFractions = (double *) calloc(rv->nElements,sizeof(double));

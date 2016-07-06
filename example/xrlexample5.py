@@ -31,12 +31,12 @@ if __name__ == '__main__' :
 	print ("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f" % xraylib.CS_Rayl_CP("Ca(HCO3)2",10.0))
 
 	cdtest = xraylib.CompoundParser("Ca(HCO3)2")
-	print ("Ca(HCO3)2 contains %g atoms, %i elements and has a molecular mass of %g" % (cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molecularMass']))
+	print ("Ca(HCO3)2 contains %g atoms, %i elements and has a molar mass of %g g/mol" % (cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molarMass']))
 	for i in range(cdtest['nElements']):
         	print ("Element %i: %lf %% and %g atoms" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
 
 	cdtest = xraylib.CompoundParser("SiO2")
-	print ("SiO2 contains %g atoms, %i elements and has a molecular mass of %g" % (cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molecularMass']))
+	print ("SiO2 contains %g atoms, %i elements and has a molar mass of %g g/mol" % (cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molarMass']))
 	for i in range(cdtest['nElements']):
         	print ("Element %i: %lf %% and %g atoms" % (cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
 

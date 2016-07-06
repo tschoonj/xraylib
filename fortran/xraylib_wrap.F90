@@ -32,7 +32,7 @@ TYPE, BIND(C) :: compoundData_C
         TYPE (C_PTR) :: Elements
         TYPE (C_PTR) :: massFractions
         TYPE (C_PTR) :: nAtoms
-        REAL (C_DOUBLE) :: molecularMass
+        REAL (C_DOUBLE) :: molarMass
 ENDTYPE
 
 TYPE :: compoundData
@@ -41,7 +41,7 @@ TYPE :: compoundData
         INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
         REAL (C_DOUBLE),DIMENSION(:),POINTER :: nAtoms
-        REAL (C_DOUBLE) :: molecularMass
+        REAL (C_DOUBLE) :: molarMass
 ENDTYPE
 
 TYPE, BIND(C) :: xrlComplex_C
@@ -3102,7 +3102,7 @@ FUNCTION CompoundParser(compoundString) RESULT(rv)
                 CALL C_F_POINTER(rv_C%Elements, rv%Elements, [rv%nElements])
                 CALL C_F_POINTER(rv_C%massFractions, rv%massFractions, [rv%nElements])
                 CALL C_F_POINTER(rv_C%nAtoms, rv%nAtoms, [rv%nElements])
-                rv%molecularMass = rv_C%molecularMass
+                rv%molarMass = rv_C%molarMass
                 CALL xrlFree(rv_c_ptr)
         ENDIF
 
