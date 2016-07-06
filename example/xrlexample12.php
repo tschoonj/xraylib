@@ -30,16 +30,16 @@ printf("U M3O3 Fluorescence Line Energy: %f\n",LineEnergy(92,M3O3_LINE));
 /*parser test for Ca(HCO3)2 (calcium bicarbonate)*/
 if (($cdtest = CompoundParser("Ca(HCO3)2")) == NULL)
 	exit(1);
-printf("Ca(HCO3)2 contains %g atoms and %i elements\n",$cdtest["nAtomsAll"],$cdtest["nElements"]);
+printf("Ca(HCO3)2 contains %g atoms, %i elements and has a molecular mass of %g\n", $cdtest["nAtomsAll"], $cdtest["nElements"], $cdtest["molecularMass"]);
 for ($i = 0 ; $i < $cdtest["nElements"] ; $i++)
-    printf("Element %i: %f %%\n",$cdtest["Elements"][$i],$cdtest["massFractions"][$i]*100.0);
+    printf("Element %i: %f %% and %g atoms\n", $cdtest["Elements"][$i], $cdtest["massFractions"][$i]*100.0, $cdtest["nAtoms"][$i]);
 
 /*parser test for SiO2 (quartz)*/
 if (($cdtest = CompoundParser("SiO2")) == NULL)
 	exit(1);
-printf("Ca(HCO3)2 contains %g atoms and %i elements\n",$cdtest["nAtomsAll"],$cdtest["nElements"]);
+printf("SiO2 contains %g atoms, %i elements and has a molecular mass of %g\n", $cdtest["nAtomsAll"], $cdtest["nElements"], $cdtest["molecularMass"]);
 for ($i = 0 ; $i < $cdtest["nElements"] ; $i++)
-    printf("Element %i: %f %%\n",$cdtest["Elements"][$i],$cdtest["massFractions"][$i]*100.0);
+    printf("Element %i: %f %% and %g atoms\n", $cdtest["Elements"][$i], $cdtest["massFractions"][$i]*100.0, $cdtest["nAtoms"][$i]);
 
 printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",CS_Rayl_CP("Ca(HCO3)2",10.0) );
 

@@ -1834,18 +1834,22 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         array_init(return_value);
         add_assoc_long(return_value, "nElements", cd->nElements);
         add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
-        zval *Elements, *massFractions;
+        zval *Elements, *massFractions, *nAtoms;
 
         ALLOC_INIT_ZVAL(Elements);
         ALLOC_INIT_ZVAL(massFractions);
+        ALLOC_INIT_ZVAL(nAtoms);
         array_init(Elements);
         array_init(massFractions);
+        array_init(nAtoms);
         for (i = 0 ; i < cd->nElements ; i++) {
                 add_index_long(Elements, i, cd->Elements[i]);
                 add_index_double(massFractions, i, cd->massFractions[i]);
+                add_index_double(nAtoms, i, cd->nAtoms[i]);
         }
         add_assoc_zval(return_value, "Elements", Elements);
         add_assoc_zval(return_value, "massFractions", massFractions);
+        add_assoc_double(return_value, "molecularMass", cd->molecularMass);
         FreeCompoundData(cd);
 }
 
