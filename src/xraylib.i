@@ -1150,12 +1150,16 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 STORE_HASH("nAtomsAll", newSVnv(cd->nAtomsAll),hash)
                 AV *Elements = newAV();
                 AV *massFractions = newAV();
+                AV *nAtoms = newAV();
                 STORE_HASH("Elements", newRV_noinc((SV*) Elements),hash)
                 STORE_HASH("massFractions", newRV_noinc((SV*) massFractions),hash)
+                STORE_HASH("nAtoms", newRV_noinc((SV*) nAtoms),hash)
                 for (i = 0 ; i < cd->nElements ; i++) {
                         av_push(Elements, newSViv(cd->Elements[i]));
                         av_push(massFractions, newSVnv(cd->massFractions[i]));
+                        av_push(nAtoms, newSVnv(cd->nAtoms[i]));
                 }
+                STORE_HASH("molecularMass", newSVnv(cd->molecularMass),hash)
                 FreeCompoundData(cd);
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
