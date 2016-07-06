@@ -1543,15 +1543,19 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
                 rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
                 rb_hash_aset(rv, rb_str_new2("nAtomsAll"), rb_float_new(cd->nAtomsAll));
-                VALUE elements, massFractions;
+                VALUE elements, massFractions, nAtoms;
                 elements = rb_ary_new2(cd->nElements);
                 massFractions = rb_ary_new2(cd->nElements);
+                nAtoms = rb_ary_new2(cd->nElements);
                 for (i = 0 ; i < cd->nElements ; i++) {
                         rb_ary_store(elements, (long) i , INT2FIX(cd->Elements[i]));
                         rb_ary_store(massFractions, (long) i , rb_float_new(cd->massFractions[i]));
+                        rb_ary_store(nAtoms, (long) i , rb_float_new(cd->nAtoms[i]));
                 }
                 rb_hash_aset(rv, rb_str_new2("Elements"), elements);
                 rb_hash_aset(rv, rb_str_new2("massFractions"), massFractions);
+                rb_hash_aset(rv, rb_str_new2("nAtoms"), nAtoms);
+                rb_hash_aset(rv, rb_str_new2("molecularMass"), rb_float_new(cd->molecularMass));
                 FreeCompoundData(cd);
                 $result = rv;
         }

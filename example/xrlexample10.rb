@@ -31,19 +31,19 @@ exit(1) if not cdtest
 
 #puts PP.pp(cdtest, "")
 
-printf("Ca(HCO3)2 contains %g atoms and %i elements\n",cdtest['nAtomsAll'],cdtest['nElements'])
+printf("Ca(HCO3)2 contains %g atoms, %i elements and has a molecular mass of %g\n",cdtest['nAtomsAll'],cdtest['nElements'],cdtest['molecularMass'])
 
 for i in (0..cdtest['nElements']-1)
-    printf("Element %i: %f %%\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0)
+    printf("Element %i: %f %% and %g atoms\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i])
 end
 
 cdtest = Xraylib.CompoundParser("SiO2")
 exit(1) if not cdtest
 
-printf("SiO2 contains %g atoms and %i elements\n",cdtest['nAtomsAll'],cdtest['nElements'])
+printf("SiO2 contains %g atoms, %i elements and has a molecular mass of %g\n",cdtest['nAtomsAll'],cdtest['nElements'],cdtest['molecularMass'])
 
 for i in (0..cdtest['nElements']-1)
-    printf("Element %i: %f %%\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0)
+    printf("Element %i: %f %% and %g atoms\n",cdtest['Elements'][i],cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i])
 end
 
 printf("Ca(HCO3)2 Rayleigh cs at 10.0 keV: %f\n",Xraylib.CS_Rayl_CP("Ca(HCO3)2",10.0) )
