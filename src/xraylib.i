@@ -1849,6 +1849,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
         }
         add_assoc_zval(return_value, "Elements", Elements);
         add_assoc_zval(return_value, "massFractions", massFractions);
+        add_assoc_zval(return_value, "nAtoms", nAtoms);
         add_assoc_double(return_value, "molecularMass", cd->molecularMass);
         FreeCompoundData(cd);
 }
