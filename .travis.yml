@@ -49,8 +49,8 @@ script:
   - ./configure --enable-php --enable-pascal --disable-python --disable-python-numpy && make && make check && make distclean
   - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
   - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} ${EXTRA} && make && make check && make distclean
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} && make && make check && make distclean
-  - if [ -e example/xrlexample13.sh.log ] ; then cat example/xrlexample13.sh.log ; fi
+  # there appears to be a problem on OSX with python 3.5.2, Cython and clang... disable for now...
+  - if [ $TRAVIS_OS_NAME == linux ]; then ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} && make && make check && make distclean ; fi
 
 branches:
   only:
