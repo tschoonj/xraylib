@@ -49,7 +49,7 @@ if __name__ == '__main__' :
 	try:    
 		XRayInit()
 		res = eval(sys.argv[1])
-		if type(res) == dict or type(res) == list:
+		if type(res) == dict or type(res) == list or type(res) == complex:
 			pprint(res)
 		elif res == None:
 			print ("No result available. Check the arguments")
