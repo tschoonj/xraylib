@@ -50,6 +50,7 @@ script:
   - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
   - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} ${EXTRA} && make && make check && make distclean
   - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} && make && make check && make distclean
+  - cat example/xrlexample13.sh.log
 
 branches:
   only:
