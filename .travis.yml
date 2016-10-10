@@ -40,7 +40,7 @@ install:
       cd swig-3.0.10 || exit 1
       ./configure || exit 1
       make || exit 1
-      make install || exit 1
+      sudo make install || exit 1
     fi
 
 script:
