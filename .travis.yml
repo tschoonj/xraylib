@@ -1,9 +1,10 @@
-sudo: required
-dist: trusty
+language: generic
 
 matrix:
   include:
     - os: linux
+      dist: trusty
+      sudo: required
       addons:
         apt:
           sources:
@@ -12,6 +13,8 @@ matrix:
             - clang
       env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
+      dist: trusty
+      sudo: required
       addons:
         apt:
           sources:
@@ -26,11 +29,19 @@ matrix:
       env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
 
 before_install:
-  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy swig fpc gfortran php5-dev lua5.2 liblua5.2-dev ; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python python3 fpc lua && pip install Cython numpy && pip3 install numpy ; fi
+  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy fpc gfortran php5-dev lua5.2 liblua5.2-dev ; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python python3 fpc lua perl && pip install Cython numpy && pip3 install numpy ; fi
 
-#install:
-#  - if [ $TRAVIS_OS_NAME == linux ]; then ./travis-deps.sh ; fi
+install:
+  - |
+    if [ $TRAVIS_OS_NAME == linux ]; then
+      wget http://prdownloads.sourceforge.net/swig/swig-3.0.10.tar.gz || exit 1
+      tar xfz swig-3.0.10.tar.gz || exit 1
+      cd swig-3.0.10 || exit 1
+      ./configure || exit 1
+      make || exit 1
+      make install || exit 1
+    fi
 
 script:
   - autoreconf -fi
