@@ -41,6 +41,7 @@ install:
       ./configure || exit 1
       make || exit 1
       sudo make install || exit 1
+      cd ..
     fi
 
 script:
