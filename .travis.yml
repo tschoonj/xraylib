@@ -30,7 +30,7 @@ matrix:
 
 before_install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy fpc gfortran php5-dev lua5.2 liblua5.2-dev ; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python python3 fpc lua perl && pip install Cython numpy && pip3 install numpy ; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python3 fpc lua perl && pip install Cython numpy && pip3 install numpy ; fi
 
 install:
   - |
