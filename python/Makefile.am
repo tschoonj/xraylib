@@ -18,7 +18,7 @@ pyexec_LTLIBRARIES =
 
 if ENABLE_PYTHON
 pyexec_LTLIBRARIES += _xraylib.la
-_xraylib_la_CFLAGS = $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) 
+_xraylib_la_CFLAGS = $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS)
 _xraylib_la_LIBADD = ../src/libxrl.la
 nodist__xraylib_la_SOURCES = xraylib_wrap.c
 _xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
@@ -39,7 +39,7 @@ xraylib_np.c: ${srcdir}/xraylib_np.pyx ${srcdir}/xraylib_np_c.pxd
 	$(CYTHON) -X boundscheck=False,wraparound=False,cdivision=True -I${top_srcdir}/include -o ${builddir}/xraylib_np.c ${srcdir}/xraylib_np.pyx
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I${top_srcdir}/include -I$(srcdir) -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
 
 xraylib.py: xraylib_wrap.c
 
@@ -49,4 +49,4 @@ clean-local:
 distclean-local:
 	rm -rf __pycache__
 
-EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx
+EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx pyfragments.swg

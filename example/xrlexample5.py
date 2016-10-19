@@ -15,6 +15,7 @@
 
 import xraylib
 import math
+import numpy as np
 
 
 xraylib.XRayInit()
@@ -56,6 +57,9 @@ print("Bi L3 Auger yield: {}".format(xraylib.AugerYield(86, xraylib.L3_SHELL)))
 symbol = xraylib.AtomicNumberToSymbol(26)
 print("Symbol of element 26 is: {}".format(symbol))
 print("Number of element Fe is: {}".format(xraylib.SymbolToAtomicNumber("Fe")))
+Z = np.array([26])
+symbol = xraylib.AtomicNumberToSymbol(Z[0])
+print("Symbol of element 26 is: {}".format(symbol))
 print("Pb Malpha XRF production cs at 20.0 keV with cascade effect: {}".format(xraylib.CS_FluorLine_Kissel(82, xraylib.MA1_LINE,20.0)))
 print("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: {}".format(xraylib.CS_FluorLine_Kissel_Radiative_Cascade(82, xraylib.MA1_LINE,20.0)))
 print("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: {}".format(xraylib.CS_FluorLine_Kissel_Nonradiative_Cascade(82, xraylib.MA1_LINE,20.0)))
