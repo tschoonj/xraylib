@@ -37,6 +37,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %{
 #ifdef SWIGPYTHON
 #undef c_abs
+/* include numpy headers */
+#include <numpy/ndarraytypes.h>
+#include <numpy/ndarrayobject.h>
 #endif
 
 #ifdef SWIGLUA
@@ -51,6 +54,12 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 
 %}
+
+#ifdef SWIGPYTHON
+%init %{
+    import_array();
+%}
+#endif
 
 #if !defined(SWIGLUA) && !defined(SWIGPHP)
 %ignore c_abs;

@@ -491,8 +491,21 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno && test "x$DISABLE_B
 			fi
 			VALID_PYTHON=no
 		else
-			VALID_PYTHON=yes
-			AC_MSG_NOTICE([Building with Python bindings])
+			# check for numpy!
+			AC_MSG_CHECKING([for numpy])
+			res=`$PYTHON -c "import numpy" &>/dev/null`
+			NUMPY=$?
+			if test x$NUMPY = x0 ; then
+				AC_MSG_RESULT([yes])
+				NUMPY_HEADERS=-I`$PYTHON -c "from __future__ import print_function; import numpy; \
+					print(numpy.get_include())"`
+				AC_SUBST(NUMPY_HEADERS)
+				VALID_PYTHON=yes
+				AC_MSG_NOTICE([Building with Python bindings])
+			else
+				VALID_PYTHON=no
+				AC_MSG_RESULT([no])
+			fi
 		fi
 
 	fi
@@ -527,7 +540,20 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 				fi
 				VALID_PYTHON_EXE=no
 			else
-				VALID_PYTHON_EXE=yes
+				# check for numpy!
+				AC_MSG_CHECKING([for numpy])
+				res=`$PYTHON -c "import numpy" &>/dev/null`
+				NUMPY=$?
+				if test x$NUMPY = x0 ; then
+					AC_MSG_RESULT([yes])
+					NUMPY_HEADERS=-I`$PYTHON -c "from __future__ import print_function; import numpy; \
+						print(numpy.get_include())"`
+					AC_SUBST(NUMPY_HEADERS)
+					VALID_PYTHON_EXE=yes
+				else
+					VALID_PYTHON_EXE=no
+					AC_MSG_RESULT([no])
+				fi
 			fi
 		fi
 	else
@@ -536,19 +562,7 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 	if test "x$VALID_PYTHON_EXE" = xyes ; then
 		#now check cython
 		AC_CHECK_PROGS(CYTHON, [cython-[$PYTHON_VERSION] cython],["nocython"])
-		#check for numpy
-		AC_MSG_CHECKING([for numpy])
-		res=`$PYTHON -c "import numpy" &>/dev/null`
-		NUMPY=$?
-		if test x$NUMPY = x0 ; then
-			AC_MSG_RESULT([yes])
-			NUMPY_HEADERS=-I`$PYTHON -c "from __future__ import print_function; import numpy; \
-				print(numpy.get_include())"`
-			AC_SUBST(NUMPY_HEADERS)
-		else
-			AC_MSG_RESULT([no])
-		fi
-		if test x$CYTHON != "xnocython" && test x$NUMPY = x0 ; then
+		if test x$CYTHON != "xnocython" ; then
 			VALID_PYTHON_NUMPY=yes
 			AC_MSG_NOTICE([Building with Python-NumPy bindings])
 		elif test "x$enable_python_np" = "xyes" ; then
