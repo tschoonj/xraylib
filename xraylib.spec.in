@@ -77,17 +77,6 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the python bindings of xraylib and a command utility.
 
-%package idl
-Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: IDL bindings
-Requires: xraylib-python
-Requires: xraylib
-
-%description idl
-Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
-
-This rpm package provides the IDL bindings of xraylib.
-
-
 %package lua
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: lua bindings
 Requires: lua xraylib
@@ -127,7 +116,7 @@ popd
 
 %build
 #first run WITHOUT python
-%configure --disable-java --enable-idl --enable-fortran2003 --disable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --disable-python-numpy FC=gfortran 
+%configure --disable-java --disable-idl --enable-fortran2003 --disable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --disable-python-numpy FC=gfortran 
 #necessary to fix rpath issues during rpmbuild
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -182,27 +171,6 @@ rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
 %if 0%{?fedora}
 rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
 %endif
-rm -f $RPM_BUILD_ROOT%{_prefix}/dlm/libxrlidl.la
-
-mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d
-cat >$RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/xraylib.sh <<EOF
-if test -z \${IDL_PATH} ; then
-        IDL_PATH="<IDL_DEFAULT>:%{_prefix}/pro"
-else
-        IDL_PATH=\$IDL_PATH:%{_prefix}/pro
-fi
-
-if test -z \${IDL_DLM_PATH} ; then
-        IDL_DLM_PATH="<IDL_DEFAULT>:%{_prefix}/dlm"
-else
-        IDL_DLM_PATH=\$IDL_DLM_PATH:%{_prefix}/dlm
-fi
-
-export IDL_PATH IDL_DLM_PATH
-EOF
-
-chmod 0644 $RPM_BUILD_ROOT/%{_sysconfdir}/profile.d/xraylib.sh
-
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -251,19 +219,6 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %{_prefix}/share/xraylib/*.txt
 
-%files idl
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/profile.d/xraylib.sh
-%{_prefix}/dlm/libxrlidl.so
-%{_prefix}/dlm/libxrlidl.dlm
-%{_prefix}/pro/xraylib_shells.pro
-%{_prefix}/pro/xraylib_help.pro
-%{_prefix}/pro/xraylib_lines.pro
-%{_prefix}/pro/xraylib_auger.pro
-%{_prefix}/pro/xraylib_nist_compounds.pro
-%{_prefix}/pro/xraylib_radionuclides.pro
-%{_prefix}/pro/xraylib.pro
-
 %files lua
 %defattr(-,root,root)
 %{lualibdir}/*
@@ -278,6 +233,9 @@ rm -rf $RPM_BUILD_ROOT
 %{perllibdir}/xraylib.so
 
 %changelog
+* Wed Nov 23 2016 Tom Schoonjans
+- Remove support for IDL
+
 * Wed Dec 10 2014 Tom Schoonjans
 - Support added for python3
 
