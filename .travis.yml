@@ -24,7 +24,7 @@ matrix:
             - gfortran-5
       env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: osx
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
+      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0'
     - os: osx
       env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
 
@@ -54,7 +54,6 @@ script:
 branches:
   only:
     - master
-    - molecular-weight
 
 notifications:
   email:
