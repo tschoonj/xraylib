@@ -872,6 +872,15 @@ if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BIN
 			AC_MSG_RESULT([$PHP_PREFIX])
 			PHP_PREFIX_DIR=${PHP_DIR#$PHP_PREFIX}
 			PHP_PREFIX_DIR=$PHP_PREFIX_DIR
+			AC_MSG_CHECKING([for php version])
+			PHP_VERNUM=`[$PHP_CONFIG --vernum]`
+			AC_MSG_RESULT([$PHP_VERNUM])
+			if test "$PHP_VERNUM" -gt "60000" ; then
+				PHP_SWIG="-php7"
+			else
+				PHP_SWIG="-php"
+			fi
+
 			if test "x$enable_php_integration" = xyes ; then
 				PHP_DIR=$PHP_DIR
 			else
@@ -893,6 +902,7 @@ AC_SUBST(PHP_LDFLAGS)
 #AC_SUBST(PHP_LIBS)
 AC_SUBST(PHP_CFLAGS)
 AC_SUBST(PHP_DIR)
+AC_SUBST(PHP_SWIG)
 
 #
 # Pascal bindings -> look for fpc
