@@ -68,6 +68,11 @@ __version__ = VERSION
 %}
 #endif
 
+#if defined(SWIGPHP) && !defined(SWIGPHP5) && !defined(SWIGPHP7)
+/* hack to ensure PHP bindings will still get built with old SWIGs */
+#define SWIGPHP5
+#endif
+
 #if !defined(SWIGLUA) && !defined(SWIGPHP)
 %ignore c_abs;
 %ignore c_mul;
@@ -1767,7 +1772,7 @@ __version__ = VERSION
 #endif
 
 
-#ifdef SWIGPHP
+#ifdef SWIGPHP5
 
 %typemap(out) char ** {
         int i = 0;
@@ -2064,5 +2069,292 @@ __version__ = VERSION
 
 }
 #endif
+
+#ifdef SWIGPHP7
+
+%typemap(out) char ** {
+        int i = 0;
+        char **list = $1;
+
+        array_init(return_value);
+        for (i = 0 ; list[i] != NULL ; i++) {
+                add_index_string(return_value, i, list[i]);
+                xrlFree(list[i]);
+        }
+        xrlFree(list);
+}
+
+%typemap(out) struct radioNuclideData * {
+        int i;
+        struct radioNuclideData *rnd = $1;
+
+        if (rnd == NULL) {
+                php_log_err("Error: requested radionuclide not found in database\n");
+                RETURN_NULL();
+        }
+        array_init(return_value);
+        add_assoc_string(return_value, "name", rnd->name);
+        add_assoc_long(return_value, "Z", rnd->Z);
+        add_assoc_long(return_value, "A", rnd->A);
+        add_assoc_long(return_value, "N", rnd->N);
+        add_assoc_long(return_value, "Z_xray", rnd->Z_xray);
+        add_assoc_long(return_value, "nXrays", rnd->nXrays);
+        add_assoc_long(return_value, "nGammas", rnd->nGammas);
+        zval XrayLines, XrayIntensities, GammaEnergies, GammaIntensities;
+
+        array_init(&XrayLines);
+        array_init(&XrayIntensities);
+        array_init(&GammaEnergies);
+        array_init(&GammaIntensities);
+        for (i = 0 ; i < rnd->nXrays ; i++) {
+                add_index_long(&XrayLines, i, rnd->XrayLines[i]);
+                add_index_double(&XrayIntensities, i, rnd->XrayIntensities[i]);
+        }
+        for (i = 0 ; i < rnd->nGammas ; i++) {
+                add_index_double(&GammaEnergies, i, rnd->GammaEnergies[i]);
+                add_index_double(&GammaIntensities, i, rnd->GammaIntensities[i]);
+        }
+        add_assoc_zval(return_value, "XrayLines", &XrayLines);
+        add_assoc_zval(return_value, "XrayIntensities", &XrayIntensities);
+        add_assoc_zval(return_value, "GammaEnergies", &GammaEnergies);
+        add_assoc_zval(return_value, "GammaIntensities", &GammaIntensities);
+        FreeRadioNuclideData(rnd);
+}
+%typemap(out) struct compoundDataNIST * {
+        int i;
+        struct compoundDataNIST *cdn = $1;
+
+        if (cdn == NULL) {
+                php_log_err("Error: requested NIST compound not found in database\n");
+                RETURN_NULL();
+        }
+        array_init(return_value);
+        add_assoc_string(return_value, "name", cdn->name);
+        add_assoc_long(return_value, "nElements", cdn->nElements);
+        add_assoc_double(return_value, "density", cdn->density);
+        zval Elements, massFractions;
+
+        array_init(&Elements);
+        array_init(&massFractions);
+        for (i = 0 ; i < cdn->nElements ; i++) {
+                add_index_long(&Elements, i, cdn->Elements[i]);
+                add_index_double(&massFractions, i, cdn->massFractions[i]);
+        }
+        add_assoc_zval(return_value, "Elements", &Elements);
+        add_assoc_zval(return_value, "massFractions", &massFractions);
+        FreeCompoundDataNIST(cdn);
+}
+%typemap(out) struct compoundData * {
+        int i;
+        struct compoundData *cd = $1;
+
+        if (cd == NULL) {
+                php_log_err("CompoundParser Error\n");
+                RETURN_NULL();
+        }
+        array_init(return_value);
+        add_assoc_long(return_value, "nElements", cd->nElements);
+        add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
+        zval Elements, massFractions, nAtoms;
+
+        array_init(&Elements);
+        array_init(&massFractions);
+        array_init(&nAtoms);
+        for (i = 0 ; i < cd->nElements ; i++) {
+                add_index_long(&Elements, i, cd->Elements[i]);
+                add_index_double(&massFractions, i, cd->massFractions[i]);
+                add_index_double(&nAtoms, i, cd->nAtoms[i]);
+        }
+        add_assoc_zval(return_value, "Elements", &Elements);
+        add_assoc_zval(return_value, "massFractions", &massFractions);
+        add_assoc_zval(return_value, "nAtoms", &nAtoms);
+        add_assoc_double(return_value, "molarMass", cd->molarMass);
+        FreeCompoundData(cd);
+}
+%typemap(out) xrlComplex {
+        xrlComplex c = $1;
+
+        array_init(return_value);
+        add_assoc_double(return_value, "re", c.re);
+        add_assoc_double(return_value, "im", c.im);
+}
+%typemap(in) xrlComplex {
+        xrlComplex c;
+
+        if (Z_TYPE($input) != IS_ARRAY) {
+                SWIG_exception(SWIG_TypeError,"Argument must be an array");
+        }
+        if (!zend_hash_str_exists(Z_ARRVAL($input), "im", sizeof("im")-1)) {
+                SWIG_exception(SWIG_TypeError, "re hash key not present");
+        }
+        if (!zend_hash_str_exists(Z_ARRVAL($input), "im", sizeof("im")-1)) {
+                SWIG_exception(SWIG_TypeError, "im hash key not present");
+        }
+        zval *re, *im;
+        re = zend_hash_str_find(Z_ARRVAL($input), "re", sizeof("re")-1);
+        im = zend_hash_str_find(Z_ARRVAL($input), "im", sizeof("im")-1);
+        convert_to_double_ex(re);
+        convert_to_double_ex(im);
+        c.re = Z_DVAL_P(re);
+        c.im = Z_DVAL_P(im);
+        $1 = c;
+}
+%typemap(out) Crystal_Struct * {
+        Crystal_Struct *cs = $1;
+        int i;
+        if (cs == NULL) {
+                php_log_err("Crystal_GetCrystal Error: crystal not found");
+                RETURN_NULL();
+        }
+
+        array_init(return_value);
+        add_assoc_string(return_value, "name", cs->name);
+        add_assoc_double(return_value, "a", cs->a);
+        add_assoc_double(return_value, "b", cs->b);
+        add_assoc_double(return_value, "c", cs->c);
+        add_assoc_double(return_value, "alpha", cs->alpha);
+        add_assoc_double(return_value, "beta", cs->beta);
+        add_assoc_double(return_value, "gamma", cs->gamma);
+        add_assoc_double(return_value, "volume", cs->volume);
+        add_assoc_long(return_value, "n_atom", cs->n_atom);
+        zval atom;
+        array_init(&atom);
+        add_assoc_zval(return_value, "atom", &atom);
+        for (i = 0 ; i < cs->n_atom ; i++) {
+                zval dict_temp;
+                array_init(&dict_temp);
+                add_assoc_long(&dict_temp, "Zatom", cs->atom[i].Zatom);
+                add_assoc_double(&dict_temp, "fraction", cs->atom[i].fraction);
+                add_assoc_double(&dict_temp, "x", cs->atom[i].x);
+                add_assoc_double(&dict_temp, "y", cs->atom[i].y);
+                add_assoc_double(&dict_temp, "z", cs->atom[i].z);
+                add_index_zval(&atom, i, &dict_temp);
+        }
+        add_assoc_long(return_value, "cpointer", (zend_long) cs);
+}
+%typemap(in) Crystal_Struct * {
+        /* cpointer should be used if present and valid */
+
+        if (Z_TYPE($input) != IS_ARRAY) {
+                SWIG_exception(SWIG_TypeError,"Argument must be an array");
+        }
+        if (zend_hash_str_exists(Z_ARRVAL($input), "cpointer", sizeof("cpointer")-1)) {
+                /* cpointer found */
+                zval *cpointer;
+                cpointer = zend_hash_str_find(Z_ARRVAL($input), "cpointer", sizeof("cpointer")-1);
+                convert_to_long_ex(cpointer);
+                Crystal_Struct *cs = (Crystal_Struct *) Z_LVAL_P(cpointer);
+                $1 = cs;
+        }
+        else {
+                Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
+                zval *temp;
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "name", sizeof("name")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"Name key not present");
+                }
+                cs->name = strdup(Z_STRVAL_P(temp));
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "a", sizeof("a")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"a key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->a = Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "b", sizeof("b")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"b key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->b = Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "c", sizeof("c")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"c key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->c = Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "alpha", sizeof("alpha")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"alpha key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->alpha = Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "beta", sizeof("beta")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"beta key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->beta= Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "gamma", sizeof("gamma")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"gamma key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->gamma = Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "volume", sizeof("volume")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"volume key not present");
+                }
+                convert_to_double_ex(temp);
+                cs->volume = Z_DVAL_P(temp);
+
+                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "n_atom", sizeof("n_atom")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"n_atom key not present");
+                }
+                convert_to_long_ex(temp);
+                cs->n_atom = (int) Z_LVAL_P(temp);
+
+                zval *atom;
+
+                if ((atom = zend_hash_str_find(Z_ARRVAL($input), "atom", sizeof("atom")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"atom key not present");
+                }
+
+                if (Z_TYPE_P(atom) != IS_ARRAY) {
+                        SWIG_exception(SWIG_TypeError,"atom must be an array");
+                }
+                int i;
+                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        zval *this_atom;
+                        if ((this_atom = zend_hash_index_find(Z_ARRVAL_P(atom), i)) == NULL) {
+                                SWIG_exception(SWIG_TypeError,"atom member not found\n");
+                        }
+                        zval *temp2;
+                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "Zatom", sizeof("Zatom")-1)) == NULL) {
+                                SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
+                        }
+                        convert_to_long_ex(temp2);
+                        cs->atom[i].Zatom = (int) Z_LVAL_P(temp2);
+
+                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "fraction", sizeof("fraction")-1)) == NULL) {
+                                SWIG_exception(SWIG_TypeError,"fraction key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].fraction = (double) Z_DVAL_P(temp2);
+
+                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "x", sizeof("x")-1)) == NULL) {
+                                SWIG_exception(SWIG_TypeError,"x key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].x = (double) Z_DVAL_P(temp2);
+
+                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "y", sizeof("y")-1)) == NULL) {
+                                SWIG_exception(SWIG_TypeError,"y key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].y = (double) Z_DVAL_P(temp2);
+
+                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "z", sizeof("z")-1)) == NULL) {
+                                SWIG_exception(SWIG_TypeError,"z key not found\n");
+                        }
+                        convert_to_double_ex(temp2);
+                        cs->atom[i].z = (double) Z_DVAL_P(temp2);
+
+                }
+                $1 = cs;
+        }
+
+}
+#endif
+
 
 %include "xraylib.h"
