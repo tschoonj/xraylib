@@ -34,7 +34,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 %}
 
 #ifdef SWIGPYTHON
-%pythonbegin {
+%pythoncode {
 __version__ = VERSION 
 }
 #endif
