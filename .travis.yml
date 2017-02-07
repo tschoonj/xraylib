@@ -24,20 +24,22 @@ matrix:
             - gfortran-5
       env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: osx
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0'
+      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='homebrew/php/php56'
+    - os: osx
+      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='homebrew/php/php71'
     - os: osx
       env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON='/usr/local/bin/python' XRL_PYTHON3='/usr/local/bin/python3'
 
 before_install:
   - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get --yes --force-yes update && sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy fpc gfortran php5-dev lua5.2 liblua5.2-dev ; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python3 fpc lua perl && pip install Cython numpy && pip3 install numpy ; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then brew update && brew install homebrew/versions/gcc5 swig ruby python3 fpc lua perl ${PHP} && pip install Cython numpy && pip3 install numpy ; fi
 
 install:
   - |
     if [ $TRAVIS_OS_NAME == linux ]; then
-      wget http://prdownloads.sourceforge.net/swig/swig-3.0.10.tar.gz || exit 1
-      tar xfz swig-3.0.10.tar.gz || exit 1
-      cd swig-3.0.10 || exit 1
+      wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz || exit 1
+      tar xfz swig-3.0.12.tar.gz || exit 1
+      cd swig-3.0.12 || exit 1
       ./configure || exit 1
       make || exit 1
       sudo make install || exit 1
