@@ -18,6 +18,7 @@ cimport cython.parallel
 
 np.import_array()
 
+__version__ = xrl.__version__
 XRAYLIB_MAJOR = xrl.XRAYLIB_MAJOR
 XRAYLIB_MINOR = xrl.XRAYLIB_MINOR
 AVOGNUM = xrl.AVOGNUM

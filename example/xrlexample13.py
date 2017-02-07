@@ -17,17 +17,18 @@ import sys, string
 
 
 if __name__ == '__main__' :
-	xrl_np.XRayInit()
-	xrl_np.SetErrorMessages(0)
-	print ("Example of python-numpy program using xraylib")
+        xrl_np.XRayInit()
+        xrl_np.SetErrorMessages(0)
+        print ("Example of python-numpy program using xraylib")
+        print("xraylib version: {}".format(xrl_np.__version__))
 
 
-	Z = np.arange(1,94,dtype=int)
-	energies = np.arange(10,10000,dtype=np.double)/100.0
-	CS = xrl_np.CS_Total_Kissel(Z,energies)
+        Z = np.arange(1,94,dtype=int)
+        energies = np.arange(10,10000,dtype=np.double)/100.0
+        CS = xrl_np.CS_Total_Kissel(Z,energies)
 
 
-	print ("")
-	print ("--------------------------- END OF XRLEXAMPLE13 -------------------------------")
-	print ("")
-	sys.exit(0)
+        print ("")
+        print ("--------------------------- END OF XRLEXAMPLE13 -------------------------------")
+        print ("")
+        sys.exit(0)
