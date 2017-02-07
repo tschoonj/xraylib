@@ -21,6 +21,7 @@ import numpy as np
 xraylib.XRayInit()
 xraylib.SetErrorMessages(0)
 print("Example of python program using xraylib")
+print("xraylib version: {}".format(xraylib.__version__))
 print("Density of pure Al : {} g/cm3".format(xraylib.ElementDensity(13)))
 print("Ca K-alpha Fluorescence Line Energy: {}".format(xraylib.LineEnergy(20, xraylib.KA_LINE)))
 print("Fe partial photoionization cs of L3 at 6.0 keV: {}".format(xraylib.CS_Photo_Partial(26, xraylib.L3_SHELL,6.0)))

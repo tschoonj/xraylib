@@ -33,9 +33,16 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #endif
 %}
 
+#ifdef SWIGPYTHON
+%pythonbegin {
+__version__ = VERSION 
+}
+#endif
+
 
 %{
 #ifdef SWIGPYTHON
+
 #undef c_abs
 /* include numpy headers */
 #include <numpy/ndarraytypes.h>
