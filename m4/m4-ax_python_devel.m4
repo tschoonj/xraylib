@@ -170,6 +170,9 @@ $ac_distutils_result])
 			if test "${plat_python_path}" != "${python_path}"; then
 				python_path="-I$python_path -I$plat_python_path"
 			else
+				if test $OS_WINDOWS = 1 ; then
+					python_path=`cygpath -u $python_path`
+				fi
 				python_path="-I$python_path"
 			fi
 		fi
@@ -239,6 +242,10 @@ EOD`
 		#then
 			# use the official shared library
 			ac_python_library=`echo "$ac_python_library" | sed "s/^lib//"`
+			if test -z "$ac_python_libdir" ; then
+				full_python=`which $PYTHON`
+				ac_python_libdir=`AS_DIRNAME($full_python)`
+			fi
 			PYTHON_LDFLAGS="-L$ac_python_libdir -l$ac_python_library"
 		#else
 		#	# old way: use libpython from python_configdir
@@ -270,6 +277,9 @@ EOD`
 	if test -z "$PYTHON_SITE_PKG"; then
 		PYTHON_SITE_PKG=`$PYTHON -c "import distutils.sysconfig; \
 			print (distutils.sysconfig.get_python_lib(0,0));"`
+		if test $OS_WINDOWS = 1 ; then
+			PYTHON_SITE_PKG=`cygpath -u $PYTHON_SITE_PKG`
+		fi
 	fi
 	AC_MSG_RESULT([$PYTHON_SITE_PKG])
 	AC_SUBST([PYTHON_SITE_PKG])
@@ -281,6 +291,9 @@ EOD`
 	if test -z "$PYTHON_SITE_PKG_EXEC"; then
 		PYTHON_SITE_PKG_EXEC=`$PYTHON -c "import distutils.sysconfig; \
 		        print (distutils.sysconfig.get_python_lib(1,0));"`
+		if test $OS_WINDOWS = 1 ; then
+			PYTHON_SITE_PKG_EXEC=`cygpath -u $PYTHON_SITE_PKG_EXEC`
+		fi
 	fi
 	AC_MSG_RESULT([$PYTHON_SITE_PKG_EXEC])
 	AC_SUBST([PYTHON_SITE_PKG_EXEC])
@@ -290,12 +303,30 @@ EOD`
 	#
 	AC_MSG_CHECKING([for Python module cflags])
 	if test -z "$PYTHON_CFLAGS"; then
-		PYTHON_CFLAGS=[`$PYTHON -c "import distutils.sysconfig; \
-		        conf = distutils.sysconfig.get_config_vars(); \
-			print (conf['OPT'])"`]
+		PYTHON_CFLAGS=`cat<<EOD | $PYTHON -
+from distutils.sysconfig import *
+e = get_config_var('OPT')
+if e is not None:
+  print(e)
+EOD`
 	fi
 	AC_MSG_RESULT([$PYTHON_CFLAGS])
 	AC_SUBST([PYTHON_CFLAGS])
+
+	#
+	# Check for module extension
+	#
+	AC_MSG_CHECKING([for Python module extension])
+	if test -z "$PYTHON_EXT"; then
+		PYTHON_EXT=`cat<<EOD | $PYTHON -
+from distutils.sysconfig import *
+e = get_config_var('SO')
+if e is not None:
+  print(e)
+EOD`
+	fi
+	AC_MSG_RESULT([$PYTHON_EXT])
+	AC_SUBST([PYTHON_EXT])
 
 
 	#
@@ -317,8 +348,10 @@ EOD`
 	# save current global flags
 	ac_save_LIBS="$LIBS"
 	ac_save_CPPFLAGS="$CPPFLAGS"
+	ac_save_LDFLAGS="$LDFLAGS"
 	LIBS="$ac_save_LIBS $PYTHON_LDFLAGS $PYTHON_EXTRA_LIBS"
 	CPPFLAGS="$ac_save_CPPFLAGS $PYTHON_CPPFLAGS"
+	LDFLAGS=""
 	AC_LANG_PUSH([C])
 	AC_LINK_IFELSE([
 		AC_LANG_PROGRAM([[#include <Python.h>]],
@@ -327,6 +360,7 @@ EOD`
 	AC_LANG_POP([C])
 	# turn back to default flags
 	CPPFLAGS="$ac_save_CPPFLAGS"
+	LDFLAGS="$ac_save_LDFLAGS"
 	LIBS="$ac_save_LIBS"
 
 	AC_MSG_RESULT([$pythonexists])

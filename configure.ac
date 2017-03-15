@@ -110,23 +110,26 @@ if test "x$host" != "x$build" ; then
 		AC_MSG_ERROR([wine is necessary when cross-compiling for windows.])
 	fi
 	CROSS_COMPILING=yes
-	LDFLAGS+="-no-undefined"
-	LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+	LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+	LDFLAGS_FORTRAN="-no-undefined"
+	LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 else
 	case "$host" in
 		i686-*mingw*)
 			#build dll
-			LDFLAGS+="-no-undefined"
-			LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+			LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
 			OS_WINDOWS_32=1
 			OS_WINDOWS=1
+			LDFLAGS_FORTRAN="-no-undefined"
+			LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 			;;
 		x86_64-*mingw*)
 			#build dll
-			LDFLAGS+="-no-undefined"
-			LDFLAGS_LIBXRL=-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def
+			LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
 			OS_WINDOWS_64=1
 			OS_WINDOWS=1
+			LDFLAGS_FORTRAN="-no-undefined"
+			LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 			;;
 	esac
 fi
@@ -139,6 +142,8 @@ AC_SUBST(OS_WINDOWS_64)
 
 
 AC_SUBST(LDFLAGS_LIBXRL)
+AC_SUBST(LDFLAGS_FORTRAN)
+AC_SUBST(LDFLAGS_PYTHON)
 
 
 
@@ -497,8 +502,12 @@ elif test "x$SWIG" = xswig && test "x$enable_python" != xno && test "x$DISABLE_B
 			NUMPY=$?
 			if test x$NUMPY = x0 ; then
 				AC_MSG_RESULT([yes])
-				NUMPY_HEADERS=-I`$PYTHON -c "from __future__ import print_function; import numpy; \
+				NUMPY_HEADERS_PATH=`$PYTHON -c "from __future__ import print_function; import numpy; \
 					print(numpy.get_include())"`
+				if test $OS_WINDOWS = 1 ; then
+					NUMPY_HEADERS_PATH=`cygpath -u $NUMPY_HEADERS_PATH`
+				fi
+				NUMPY_HEADERS=-I$NUMPY_HEADERS_PATH
 				AC_SUBST(NUMPY_HEADERS)
 				VALID_PYTHON=yes
 				AC_MSG_NOTICE([Building with Python bindings])
@@ -546,8 +555,12 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 				NUMPY=$?
 				if test x$NUMPY = x0 ; then
 					AC_MSG_RESULT([yes])
-					NUMPY_HEADERS=-I`$PYTHON -c "from __future__ import print_function; import numpy; \
+					NUMPY_HEADERS_PATH=`$PYTHON -c "from __future__ import print_function; import numpy; \
 						print(numpy.get_include())"`
+					if test $OS_WINDOWS = 1 ; then
+						NUMPY_HEADERS_PATH=`cygpath -u $NUMPY_HEADERS_PATH`
+					fi
+					NUMPY_HEADERS=-I$NUMPY_HEADERS_PATH
 					AC_SUBST(NUMPY_HEADERS)
 					VALID_PYTHON_EXE=yes
 				else

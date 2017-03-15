@@ -21,7 +21,11 @@ pyexec_LTLIBRARIES += _xraylib.la
 _xraylib_la_CFLAGS = $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS)
 _xraylib_la_LIBADD = ../src/libxrl.la
 nodist__xraylib_la_SOURCES = xraylib_wrap.c
-_xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
+_xraylib_la_LDFLAGS = $(LDFLAGS_PYTHON) -avoid-version -module -shared -export-dynamic -shrext $(PYTHON_EXT)
+if OS_WINDOWS
+_xraylib_la_LDFLAGS += $(PYTHON_LDFLAGS)
+#_xraylib_la_CPPFLAGS = -mdll
+endif
 
 dist_bin_SCRIPTS = xraylib
 nodist_python_PYTHON = xraylib.py xrayhelp.py xraymessages.py
@@ -32,7 +36,11 @@ pyexec_LTLIBRARIES += xraylib_np.la
 xraylib_np_la_CFLAGS = $(OPENMP_CFLAGS) $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS)
 xraylib_np_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_np_la_SOURCES = xraylib_np.c
-xraylib_np_la_LDFLAGS = -avoid-version -module -shared -export-dynamic $(OPENMP_CFLAGS)
+xraylib_np_la_LDFLAGS = $(LDFLAGS_PYTHON) -avoid-version -module -shared -export-dynamic $(OPENMP_CFLAGS) -shrext $(PYTHON_EXT)
+if OS_WINDOWS
+xraylib_np_la_LDFLAGS += $(PYTHON_LDFLAGS)
+#xraylib_np_la_CPPFLAGS = -mdll
+endif
 endif
 
 xraylib_np.c: ${srcdir}/xraylib_np.pyx ${srcdir}/xraylib_np_c.pxd
