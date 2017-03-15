@@ -18,7 +18,7 @@ lib_LTLIBRARIES=libxrlf03.la
 libxrlf03_la_SOURCES = xraylib_wrap.F90
 libxrlf03_la_LIBADD = ../src/libxrl.la
 libxrlf03_la_FCFLAGS = $(ARCHFLAGS)
-libxrlf03_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libxrlf03_la_LDFLAGS=$(LDFLAGS_FORTRAN) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 nodist_xraylibinclude_HEADERS = xraylib.mod
 
 BUILT_SOURCES = xraylib.mod
