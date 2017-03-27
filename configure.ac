@@ -481,7 +481,7 @@ PYTHON_FOUND=
 if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
 	AC_MSG_ERROR([--enable-python was given as an option but swig was not found on the system])
-elif test "x$SWIG" = xswig && test "x$enable_python" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
+elif test "x$SWIG" != xnoswig && test "x$enable_python" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	#verify the python installation
 	AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
 	if test "x$PYTHON_FOUND" = xtrue ; then
@@ -679,7 +679,7 @@ VALID_LUA=
 if test "x$SWIG" = xnoswig && test "x$enable_lua" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
 	AC_MSG_ERROR([--enable-lua was given as an option but swig was not found on the system])
-elif test "x$SWIG" = xswig && test "x$enable_lua" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
+elif test "x$SWIG" != xnoswig && test "x$enable_lua" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	#search for lua interpreter
 	AX_WITH_LUA
 	if test "x$LUA" != x ; then
@@ -743,7 +743,7 @@ VALID_RUBY=
 if test "x$SWIG" = xnoswig && test "x$enable_ruby" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
 	AC_MSG_ERROR([--enable-ruby was given as an option but swig was not found on the system])
-elif test "x$SWIG" = xswig && test "x$enable_ruby" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
+elif test "x$SWIG" != xnoswig && test "x$enable_ruby" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	AX_RUBY_EXT
 	if test "x$RUBY" = x ; then
 		if test "x$enable_ruby" = xyes ; then
