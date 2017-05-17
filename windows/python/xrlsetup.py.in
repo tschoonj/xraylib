@@ -28,7 +28,7 @@ top_builddir = '@top_builddir@'.replace('/','\\')
 srcdir = '@srcdir@'.replace('/','\\')
 top_srcdir = '@top_srcdir@'.replace('/','\\')
 
-xraylib_module = Extension('_xraylib', sources=['xraylib_wrap.c'],libraries = ['xrl'], include_dirs = [top_srcdir + '\\include'], library_dirs=[top_builddir + '\\src\\.libs'])
+xraylib_module = Extension('_xraylib', sources=['xraylib_wrap.c'],libraries = ['xrl'], include_dirs = [top_srcdir + '\\include'], library_dirs=[top_builddir + '\\src\\.libs'], define_macros=[('WITHOUT_NUMPY', None)])
 
 if platform.architecture()[0] == "64bit":
 	macros=[('MS_WIN64', None)]

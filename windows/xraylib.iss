@@ -58,10 +58,6 @@ Name: "core" ; Description: "xraylib shared library and documentation" ; Flags: 
 Name: "sdk" ; Description: "SDK: headers and static libraries" ; Types: full 
 Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full 
 Name: "idl" ; Description: "IDL bindings" ; Types: full 
-Name: "python" ; Description: "Python bindings" ; Types: full 
-Name: "python/2_7" ; Description: "Python 2.7" ; Types: full ; Flags: exclusive 
-Name: "python/3_4" ; Description: "Python 3.4" ; Flags: exclusive 
-Name: "python/3_5" ; Description: "Python 3.5" ; Flags: exclusive
 Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
 
 [Files]
@@ -120,24 +116,6 @@ Source: "{#builddir}\windows\xraylib_auger.pro"; DestDir: "{app}\pro" ; Componen
 Source: "{#builddir}\windows\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
 Source: "{#builddir}\windows\xraylib_radionuclides.pro"; DestDir: "{app}\pro" ; Components: idl
 
-Source: "{#builddir}\windows\xrlexample5.py" ; DestDir: "{app}\Example" ; Components: python
-Source: "{#builddir}\windows\xrlexample13.py" ; DestDir: "{app}\Example" ; Components: python
-Source: "{#builddir}\windows\python\xraylib.py" ; DestDir: "{app}\Python" ; Components: python
-Source: "{#builddir}\windows\xrayhelp.py" ; DestDir: "{app}\Python" ; Components: python
-Source: "{#builddir}\windows\xraymessages.py" ; DestDir: "{app}\Python" ; Components: python
-Source: "{#builddir}\windows\xraylib-cli.py" ; DestDir: "{app}\Bin" ; Components: python
-Source: "{#builddir}\windows\python\python2.7\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
-Source: "{#builddir}\windows\python\python2.7\xraylib_np.pyd" ; DestDir: "{app}\Python" ; Components: "python/2_7"
-Source: "{#builddir}\windows\python\python3.4\_xraylib.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
-Source: "{#builddir}\windows\python\python3.4\xraylib_np.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_4"
-#ifdef XRL64
-Source: "{#builddir}\windows\python\python3.5\_xraylib.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
-Source: "{#builddir}\windows\python\python3.5\xraylib_np.cp35-win_amd64.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
-#else
-Source: "{#builddir}\windows\python\python3.5\_xraylib.cp35-win32.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
-Source: "{#builddir}\windows\python\python3.5\xraylib_np.cp35-win32.pyd" ; DestDir: "{app}\Python" ; Components: "python/3_5"
-#endif
-
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 
@@ -155,10 +133,6 @@ Filename: "{tmp}\vcredist_x64_110.exe" ; Parameters: "/q" ; StatusMsg: "Installi
 #endif
 
 [UninstallDelete]
-Type: filesandordirs ; Name: "{app}\Python\__pycache__"
-Type: files ; Name: "{app}\Python\*.pyc"
-Type: files ; Name: "{app}\Python\*.pyo"
-Type: dirifempty ; Name: "{app}\Python"
 Type: dirifempty ; Name: "{app}"
 
 [Registry]
@@ -168,8 +142,6 @@ Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environme
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_PATH"; ValueData: "<IDL_DEFAULT>" ; Flags: createvalueifdoesntexist ; Components: idl
 Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_PATH"; ValueData: "{olddata};{app}\pro" ; Components: idl
 
-Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "PYTHONPATH"; ValueData: "{olddata};{app}\Python" ; Components: python 
-Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "PATH"; ValueData: "{olddata};{app}\Bin" ; Components: python 
 
 [Code]
 /////////////////////////////////////////////////////////////////////
@@ -263,33 +235,6 @@ procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   BinDir, Path: String;
 begin
-  if (CurUninstallStep = usPostUninstall)
-     and (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH', Path)) then
-  begin
-    BinDir := ExpandConstant('{app}\Bin');
-    if Pos(';' + LowerCase(BinDir), Lowercase(Path)) <> 0 then
-    begin
-      StringChange(Path, ';' + BinDir, '');
-      RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PATH', Path);
-    end;
-  end;
-  if (CurUninstallStep = usPostUninstall)
-     and (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PYTHONPATH', Path)) then
-  begin
-    BinDir := ExpandConstant('{app}\Python');
-    if Pos(';' + LowerCase(BinDir), Lowercase(Path)) <> 0 then
-    begin
-      StringChange(Path, ';' + BinDir, '');
-      if Length(Path) = 0 then
-      begin
-	RegDeleteValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PYTHONPATH')
-      end
-      else
-      begin
-        RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'PYTHONPATH', Path);
-      end;
-    end;
-  end;
   if (CurUninstallStep = usPostUninstall)
      and (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'IDL_DLM_PATH', Path)) then
   begin
