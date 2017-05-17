@@ -121,6 +121,7 @@ else
 			OS_WINDOWS_32=1
 			OS_WINDOWS=1
 			LDFLAGS_FORTRAN="-no-undefined"
+			LDFLAGS_IDL="-no-undefined"
 			LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 			;;
 		x86_64-*mingw*)
@@ -129,6 +130,7 @@ else
 			OS_WINDOWS_64=1
 			OS_WINDOWS=1
 			LDFLAGS_FORTRAN="-no-undefined"
+			LDFLAGS_IDL="-no-undefined"
 			LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 			;;
 	esac
@@ -143,6 +145,7 @@ AC_SUBST(OS_WINDOWS_64)
 
 AC_SUBST(LDFLAGS_LIBXRL)
 AC_SUBST(LDFLAGS_FORTRAN)
+AC_SUBST(LDFLAGS_IDL)
 AC_SUBST(LDFLAGS_PYTHON)
 
 
@@ -971,7 +974,6 @@ AC_CONFIG_FILES([Makefile
 				 java/settings.gradle
 				 windows/python/Makefile
 				 windows/Makefile
-				 windows/python/cli/Makefile
 				 windows/python/cli_py2exe/Makefile
 				 windows/python/cli_py2exe/xraylib-cli.nsi
 				 windows/python/cli_py2exe/setup.py

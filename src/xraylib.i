@@ -45,8 +45,10 @@ __version__ = VERSION
 
 #undef c_abs
 /* include numpy headers */
-#include <numpy/ndarraytypes.h>
-#include <numpy/ndarrayobject.h>
+  #ifndef WITHOUT_NUMPY
+    #include <numpy/ndarraytypes.h>
+    #include <numpy/ndarrayobject.h>
+  #endif
 #endif
 
 #ifdef SWIGLUA
@@ -63,9 +65,11 @@ __version__ = VERSION
 %}
 
 #ifdef SWIGPYTHON
+  #ifndef WITHOUT_NUMPY
 %init %{
     import_array();
 %}
+  #endif
 #endif
 
 #if defined(SWIGPHP) && !defined(SWIGPHP5) && !defined(SWIGPHP7)

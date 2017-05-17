@@ -14,6 +14,7 @@ SUBDIRS = python
 if OS_WINDOWS_32
 windows:
 	$(MAKE) common
+	$(MAKE) -C python python
 	lib /machine:i386 /def:libxrl-$(LIB_CURRENT_MINUS_AGE).def
 	implib.exe -a -c libxrl-$(LIB_CURRENT_MINUS_AGE)-bcc.lib libxrl-$(LIB_CURRENT_MINUS_AGE).dll
 	iscc.exe "-dLIB_CURRENT_MINUS_AGE=$(LIB_CURRENT_MINUS_AGE)" "-dMyAppVersion=$(VERSION)" "-dabs_top_srcdir_win=$(abs_top_srcdir_win)" "-dabs_top_builddir_win=$(abs_top_builddir_win)" "${srcdir}/xraylib.iss"
@@ -31,7 +32,6 @@ windows:
 endif
 
 common:
-	$(MAKE) -C python python
 	cp ../src/libxrl-$(LIB_CURRENT_MINUS_AGE).def .
 	cp ../src/.libs/libxrl-$(LIB_CURRENT_MINUS_AGE).dll .
 	unix2dos -n ${top_srcdir}/README README.txt
@@ -56,11 +56,6 @@ common:
 	unix2dos -n ${top_srcdir}/include/xraylib-defs.h xraylib-defs.h
 	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
 	unix2dos -n ${top_srcdir}/include/xraylib-radionuclides.h xraylib-radionuclides.h
-	unix2dos -n ${top_srcdir}/example/xrlexample5.py xrlexample5.py
-	unix2dos -n ${top_srcdir}/example/xrlexample13.py xrlexample13.py
-	unix2dos -n ${srcdir}/python/cli/xraylib-cli.py xraylib-cli.py
-	unix2dos -n ${srcdir}/python/cli/xraymessages.py xraymessages.py
-	unix2dos -n ${srcdir}/python/cli/xrayhelp.py xrayhelp.py
 	unix2dos -n ${top_srcdir}/example/xrlexample4.pro xrlexample4.pro
 	unix2dos -n ${top_srcdir}/idl/libxrlidl.dlm libxrlidl.dlm 
 	unix2dos -n ${top_srcdir}/idl/xraylib.pro xraylib.pro 
