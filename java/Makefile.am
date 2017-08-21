@@ -42,7 +42,7 @@ xraylib.dat: prdata_java$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
 
 clean-local:
-	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar xraylib.dat com build .gradle META-INF xrlexample7.class
+	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar xraylib.dat com build .gradle META-INF xrlexample7.class prdata_java.dSYM
 
 endif
 EXTRA_DIST = \
