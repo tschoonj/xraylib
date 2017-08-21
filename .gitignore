@@ -69,3 +69,5 @@ stamp-h1
 xraylib.spec
 .tags*
 *ppu
+*.pyc
+*.pyo

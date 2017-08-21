@@ -4017,11 +4017,15 @@ public class Xraylib {
       throw new XraylibException("Z out of range");
     }
 
-    if (E <= 0.) {
-      throw new XraylibException("Energy <=0 is not allowed");
+    E *= 1000.0; // Henke uses eV
+
+    if (E <= E_Fi_arr[Z][0]) {
+      throw new XraylibException("Energy less than minimum available energy");
     }
 
     fi = splint(E_Fi_arr[Z], Fi_arr[Z], Fi_arr2[Z], NE_Fii_arr[Z], E);
+
+    fi = Math.exp(fi) - Z;
 
     return fi;
   }
@@ -4033,13 +4037,15 @@ public class Xraylib {
       throw new XraylibException("Z out of range");
     }
 
-    if (E <= 0.) {
-      throw new XraylibException("Energy <=0 is not allowed");
+    E *= 1000; // Henke uses eV
+
+    if (E <= E_Fii_arr[Z][0]) {
+      throw new XraylibException("Energy less than minimum available energy");
     }
 
     fii = splint(E_Fii_arr[Z], Fii_arr[Z], Fii_arr2[Z], NE_Fii_arr[Z], E);
 
-    return fii;
+    return -1.0 * Math.exp(fii);
   }
 
   public static double DCSP_Rayl(int Z, double E, double theta, double phi) {

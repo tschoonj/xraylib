@@ -59,6 +59,9 @@ printf("K atomic level width for Fe: %f\n", AtomicLevelWidth(26,K_SHELL));
 printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
 printf("Bi L3 Auger yield: %f\n", AugerYield(86, L3_SHELL));
 
+printf("Sr anomalous scattering factor Fi at 10.0 keV: %f\n", Fi(38, 10.0));
+printf("Sr anomalous scattering factor Fii at 10.0 keV: %f\n", Fii(38, 10.0));
+  
 $symbol = AtomicNumberToSymbol(26);
 printf("Symbol of element 26 is: %s\n",$symbol);
 

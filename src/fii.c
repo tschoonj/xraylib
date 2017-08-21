@@ -14,6 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include <math.h>
 
 
 /*////////////////////////////////////////////////////////////////////
@@ -33,8 +34,10 @@ double Fii(int Z, double E)
     return 0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function Fii");
+  E *= 1000; // Henke uses eV
+
+  if (E <= E_Fii_arr[Z][0]) {
+    ErrorExit("Energy less than minimum available energy in function Fii");
     return 0;
   }
 
@@ -42,7 +45,6 @@ double Fii(int Z, double E)
          NE_Fii[Z], E, &fii);
 
 
-  return fii;
-
+  return -1.0 * exp(fii);
 }
 
