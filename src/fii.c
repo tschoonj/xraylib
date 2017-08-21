@@ -34,7 +34,7 @@ double Fii(int Z, double E)
     return 0;
   }
 
-  E *= 1000; // Henke uses eV
+  E *= 1000; /* Henke uses eV */
 
   if (E <= E_Fii_arr[Z][0]) {
     ErrorExit("Energy less than minimum available energy in function Fii");
