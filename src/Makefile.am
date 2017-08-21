@@ -98,4 +98,4 @@ xrayglob_inline.c: prdata$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
 clean-local:
-	rm -f xrayglob_inline.c xraylib.mod
+	rm -rf xrayglob_inline.c xraylib.mod prdata.dSYM
