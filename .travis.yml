@@ -48,11 +48,23 @@ install:
     fi
 
 script:
-  - autoreconf -fi
-  - ./configure --enable-php --enable-pascal --disable-python --disable-python-numpy && make && make check && make distclean
-  - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" && make && make check && make distclean
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} ${EXTRA} && make && make check && make distclean
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} && make && make check && make distclean
+  - autoreconf -fi || exit 1
+  - ./configure --enable-php --enable-pascal --enable-java --disable-python --disable-python-numpy || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON} ${EXTRA} || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distcheck || exit 1
 
 branches:
   only:
