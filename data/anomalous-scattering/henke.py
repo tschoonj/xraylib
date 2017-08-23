@@ -9,6 +9,7 @@ import xraylib as xrl
 from storable import retrieve # to read Perl storables
 
 def check_energy(energy):
+	return energy
 	for i in range(1, energy.size):
 		if (energy[i] == energy[i-1]):
 			energy[i] += 1E-6
@@ -23,8 +24,10 @@ with open('../fi.dat', 'w') as fi, open('../fii.dat', 'w') as fii:
 		energy = check_energy(np.array(data[symbol]['energy'], dtype=np.float64))
 		f1 = np.array(data[symbol]['f1'], dtype=np.float64)
 		f1dd = utils.deriv(energy, utils.deriv(energy, f1))
+		f1dd[np.where(np.logical_or(f1dd < -1, f1dd > 1))] = 0.0
 		f2 = np.array(data[symbol]['f2'], dtype=np.float64)
 		f2dd = utils.deriv(energy, utils.deriv(energy, f2))
+		f2dd[np.where(np.logical_or(f2dd < -1, f2dd > 1))] = 0.0
 		npoints = energy.size
 		fi.write('{n}\n'.format(n=npoints))
 		fii.write('{n}\n'.format(n=npoints))
