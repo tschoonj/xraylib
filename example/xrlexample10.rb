@@ -62,6 +62,8 @@ printf("K atomic level width for Fe: %g\n", Xraylib.AtomicLevelWidth(26,Xraylib:
 printf("Bi L2-M5M5 Auger non-radiative rate: %g\n",Xraylib.AugerRate(86,Xraylib::L2_M5M5_AUGER))
 printf("Bi L3 Auger yield: %f\n", Xraylib.AugerYield(86, Xraylib::L3_SHELL))
 
+printf("Sr anomalous scattering factor Fi at 10.0 keV: %f\n", Xraylib.Fi(38, 10.0))
+printf("Sr anomalous scattering factor Fii at 10.0 keV: %f\n", Xraylib.Fii(38, 10.0))
 
 symbol = Xraylib.AtomicNumberToSymbol(26)
 printf("Symbol of element 26 is: %s\n",symbol)

@@ -62,6 +62,8 @@ printf("Au Mg XRF production cs at 10.0 keV (Kissel): %f\n", xraylib::CS_FluorLi
 printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",xraylib::AugerRate(86,$xraylib::L2_M5M5_AUGER));
 printf("Bi L3 Auger yield: %f\n", xraylib::AugerYield(86, $xraylib::L3_SHELL));
 
+printf("Sr anomalous scattering factor Fi at 10.0 keV: %f\n", xraylib::Fi(38, 10.0));
+printf("Sr anomalous scattering factor Fii at 10.0 keV: %f\n", xraylib::Fii(38, 10.0));
 
 $symbol = xraylib::AtomicNumberToSymbol(26);
 printf("Symbol of element 26 is: %s\n",$symbol);
