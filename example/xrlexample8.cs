@@ -83,6 +83,9 @@ namespace Test
             Console.WriteLine("Bi L2-M5M5 Auger non-radiative rate: {0}",
                 xl.AugerRate(86, XrayLib.L2_M5M5_AUGER));
 
+            Console.WriteLine("Sr anomalous scattering factor Fi at 10.0 keV: {0}", xl.Fi(38, 10.0));
+            Console.WriteLine("Sr anomalous scattering factor Fii at 10.0 keV: {0}", xl.Fii(38, 10.0));
+
             cd = new CompoundData("SiO2", 0.4, "Ca(HCO3)2", 0.6);
             Console.WriteLine("Compound contains:");
             Console.Write(cd.ToString());
