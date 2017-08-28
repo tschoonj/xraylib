@@ -32,7 +32,7 @@ This paper was recently superseded by a new publication, covering all aspects of
 
 If you would publish scientific results that were obtained using xraylib, please refer to this paper.
 
-We recently started a mailinglist. Subscription is possible at https://lists.ugent.be/sympa/info/xraylib
+We recently started a mailinglist. Subscription is possible at https://lists.ugent.be/wws/info/xraylib
 
 Reporting bugs
 ==============
@@ -45,6 +45,5 @@ Contributing to xraylib
 =======================
 
 If you are interested in participating in xraylib development, please see the webpage at http://ftp.esrf.eu/pub/scisoft/xraylib/readme.html
-
 
 
