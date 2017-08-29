@@ -76,6 +76,9 @@ begin
     WriteLn('K atomic level width for Fe: ', AtomicLevelWidth(26,K_SHELL));
     WriteLn('Bi L2-M5M5 Auger non-radiative rate: ',AugerRate(86,L2_M5M5_AUGER));
     WriteLn('Bi L3 Auger yield: ', AugerYield(86, L3_SHELL));
+
+    WriteLn('Sr anomalous scattering factor Fi at 10.0 keV: ', Fi(38, 10.0));
+    WriteLn('Sr anomalous scattering factor Fii at 10.0 keV: ', Fii(38, 10.0));
     WriteLn('Symbol of element 26 is: ',AtomicNumberToSymbol(26));
     WriteLn('Number of element Fe is: ',SymbolToAtomicNumber('Fe'));
 

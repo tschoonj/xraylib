@@ -123,6 +123,9 @@ WRITE (6,'(A,F12.6)') 'Pb mass energy-absorption cs at 40.0 keV: ', CS_Energy(82
 WRITE (6,'(A,F12.6)') 'CdTe mass energy-absorption cs at 40.0 keV: ',&
 CS_Energy_CP('CdTe', 40.0_C_DOUBLE)
 
+WRITE (6, '(A,F12.6)') 'Sr anomalous scattering factor Fi at 10.0 keV: ', Fi(38, 10.0_C_DOUBLE)
+WRITE (6, '(A,F12.6)') 'Sr anomalous scattering factor Fii at 10.0 keV: ', Fii(38, 10.0_C_DOUBLE)
+
 WRITE (6,'(A,A)') 'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 WRITE (6,'(A,I3)') 'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 

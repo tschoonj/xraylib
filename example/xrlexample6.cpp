@@ -71,6 +71,15 @@ int main()
   std::printf("Bi L2-M5M5 Auger non-radiative rate: %f\n",AugerRate(86,L2_M5M5_AUGER));
   std::printf("Bi L3 Auger yield: %f\n", AugerYield(86, L3_SHELL));
 
+  std::printf("Sr anomalous scattering factor Fi at 10.0 keV: %f\n", Fi(38, 10.0));
+  std::printf("Sr anomalous scattering factor Fii at 10.0 keV: %f\n", Fii(38, 10.0));
+  
+  char *symbol = AtomicNumberToSymbol(26);
+  std::printf("Symbol of element 26 is: %s\n",symbol);
+  xrlFree(symbol);
+
+  std::printf("Number of element Fe is: %i\n",SymbolToAtomicNumber("Fe"));
+
   std::printf("Pb Malpha XRF production cs at 20.0 keV with cascade effect: %f\n",CS_FluorLine_Kissel(82,MA1_LINE,20.0));
   std::printf("Pb Malpha XRF production cs at 20.0 keV with radiative cascade effect: %f\n",CS_FluorLine_Kissel_Radiative_Cascade(82,MA1_LINE,20.0));
   std::printf("Pb Malpha XRF production cs at 20.0 keV with non-radiative cascade effect: %f\n",CS_FluorLine_Kissel_Nonradiative_Cascade(82,MA1_LINE,20.0));

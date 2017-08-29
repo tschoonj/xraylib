@@ -55,6 +55,8 @@ print("Au Mg XRF production cs at 10.0 keV (Kissel): {}".format(xraylib.CS_Fluor
 print("K atomic level width for Fe: {}".format(xraylib.AtomicLevelWidth(26, xraylib.K_SHELL)))
 print("Bi L2-M5M5 Auger non-radiative rate: {}".format(xraylib.AugerRate(86, xraylib.L2_M5M5_AUGER)))
 print("Bi L3 Auger yield: {}".format(xraylib.AugerYield(86, xraylib.L3_SHELL)))
+print("Sr anomalous scattering factor Fi at 10.0 keV: {}".format(xraylib.Fi(38, 10.0)))
+print("Sr anomalous scattering factor Fii at 10.0 keV: {}".format(xraylib.Fii(38, 10.0)))
 symbol = xraylib.AtomicNumberToSymbol(26)
 print("Symbol of element 26 is: {}".format(symbol))
 print("Number of element Fe is: {}".format(xraylib.SymbolToAtomicNumber("Fe")))

@@ -56,6 +56,9 @@ PRINT,'Au Ma1 XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,M
 PRINT,'Au Mb XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MB_LINE,10.0)
 PRINT,'Au Mg XRF production cs at 10.0 keV (Kissel): ',CS_FluorLine_Kissel(79,MG_LINE,10.0)
 
+PRINT, 'Sr anomalous scattering factor Fi at 10.0 keV: ', Fi(38, 10.0)
+PRINT, 'Sr anomalous scattering factor Fii at 10.0 keV: ', Fii(38, 10.0)
+
 PRINT,'Symbol of element 26 is: ',AtomicNumberToSymbol(26)
 PRINT,'Number of element Fe is: ',SymbolToAtomicNumber('Fe')
 PRINT,'Bi L2-M5M5 Auger non-radiative rate: ', AugerRate(86,L2_M5M5_AUGER)

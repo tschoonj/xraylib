@@ -104,6 +104,9 @@ int main()
   FreeCompoundData(cdtest2);
   FreeCompoundData(cdtest3);
 
+  printf("Sr anomalous scattering factor Fi at 10.0 keV: %f\n", Fi(38, 10.0));
+  printf("Sr anomalous scattering factor Fii at 10.0 keV: %f\n", Fii(38, 10.0));
+  
   symbol = AtomicNumberToSymbol(26);
   printf("Symbol of element 26 is: %s\n",symbol);
   xrlFree(symbol);
