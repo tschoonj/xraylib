@@ -647,11 +647,8 @@ GRADLE=
 
 if test "x$VALID_JAVA" = xyes ; then
 	AC_MSG_NOTICE([Building with java bindings])
-	AC_PATH_PROG([GRADLE], [gradle], ["nogradle"])
 fi
 AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
-AM_CONDITIONAL([ENABLE_GRADLE],[test x$GRADLE != xnogradle])
-
 
 #C++ example
 AC_PROG_CXX
