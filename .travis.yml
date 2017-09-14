@@ -11,7 +11,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - clang
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
+      env: CC='/usr/bin/clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
       dist: trusty
       sudo: required
