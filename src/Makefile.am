@@ -96,6 +96,7 @@ all:
 #wine is necessary when cross-compiling
 xrayglob_inline.c: prdata$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
+	sync
 
 clean-local:
 	rm -rf xrayglob_inline.c xraylib.mod prdata.dSYM
