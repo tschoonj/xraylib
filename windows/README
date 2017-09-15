@@ -1,6 +1,6 @@
 Some info on how we have built the Windows package:
 
-We use two separate Windows 7 64-bit VirtualBox VMs, one with 32-bit versions of GCC, IDL and python, and a second one with 64-bit counterparts of these. All work is done using a MSYS shell. In both cases the GCC compilers were packaged by the TDM-GCC project.
+We use two separate Windows 7 64-bit VirtualBox VMs, one with 32-bit versions of GCC, and a second one with 64-bit counterparts of these. All work is done using a MSYS shell. In both cases the GCC compilers were packaged by the TDM-GCC project.
 
 Compilation starts out as on Linux/Mac OS X...
 
@@ -10,45 +10,9 @@ Compilation starts out as on Linux/Mac OS X...
 
   make windows
 
-which will produce the python and IDL bindings, followed by running InnoSetup to create the installer package.
+followed by running InnoSetup to create the installer package.
 
 This procedure is heavily adapted to my own directory layout and will require considerable changes to get it working on your system.
-
-
-
-Python bindings
-===============
-
-These were compiled using the TDM-GCC compiler for windows using a modified version of the xrlsetup.py file found in the python folder. The Cython bindings are also included (installed using pip).
-The command we used:
-
-python xrlsetup.py build_ext --inplace --compiler=mingw32
-
-The produced _xraylib.pyd and xraylib_np.pyd files are of course dependent on the python version they were compiled against...
-The package includes bindings for Python versions 2.7, 3.4 and 3.5.
-
-
-----
-
-
-IDL bindings
-============
-
-The IDL bindings for Windows were compiled using the MAKE_DLL procedure, callable from within IDL. Before executing the routine itself, we changed the !MAKE_DLL IDL system variable as follows:
-
-!MAKE_DLL.COMPILER_NAME='GCC'
-!MAKE_DLL.CC='gcc.exe %X -fPIC -I"C:\Program Files (x86)\ITT\IDL\IDL80\external\include" -c -D_REENTRANT %C -o %O'
-
-It is important here NOT to change the value of !MAKE_DLL.LD
-
-The MAKE_DLL command itself was:
-
-make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I"C:\Program Files (x86)\xraylib\Include"',EXTRA_LFLAGS='"C:\Program Files (x86)\xraylib\Lib\libxrl-3.lib" /LIBPATH:"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib"',OUTPUT='.'
-
-Depending on the versions of IDL, xraylib and Visual Studio that are installed, these commands may need to be altered.
-
-
-----
 
 
 .NET bindings

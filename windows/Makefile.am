@@ -25,7 +25,6 @@ endif
 if OS_WINDOWS_64
 windows:
 	$(MAKE) common
-	$(MAKE) idl64
 	lib /machine:X64 /def:libxrl-$(LIB_CURRENT_MINUS_AGE).def
 	iscc.exe "-dXRL64" "-dLIB_CURRENT_MINUS_AGE=$(LIB_CURRENT_MINUS_AGE)" "-dMyAppVersion=$(VERSION)" "-dabs_top_srcdir_win=$(abs_top_srcdir_win)" "-dabs_top_builddir_win=$(abs_top_builddir_win)" "${srcdir}/xraylib.iss"
 	rm libxrl-$(LIB_CURRENT_MINUS_AGE).def
@@ -56,36 +55,8 @@ common:
 	unix2dos -n ${top_srcdir}/include/xraylib-defs.h xraylib-defs.h
 	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
 	unix2dos -n ${top_srcdir}/include/xraylib-radionuclides.h xraylib-radionuclides.h
-	unix2dos -n ${top_srcdir}/example/xrlexample4.pro xrlexample4.pro
-	unix2dos -n ${top_srcdir}/idl/libxrlidl.dlm libxrlidl.dlm 
-	unix2dos -n ${top_srcdir}/idl/xraylib.pro xraylib.pro 
-	unix2dos -n ${top_srcdir}/idl/xraylib_help.pro xraylib_help.pro 
-	unix2dos -n ${top_srcdir}/idl/xraylib_lines.pro xraylib_lines.pro 
-	unix2dos -n ${top_srcdir}/idl/xraylib_shells.pro xraylib_shells.pro 
-	unix2dos -n ${top_srcdir}/idl/xraylib_auger.pro xraylib_auger.pro 
-	unix2dos -n ${top_srcdir}/idl/xraylib_nist_compounds.pro xraylib_nist_compounds.pro 
-	unix2dos -n ${top_srcdir}/idl/xraylib_radionuclides.pro xraylib_radionuclides.pro 
 	unix2dos -n ${top_srcdir}/pascal/xraylib.pas xraylib.pas
 	unix2dos -n ${top_srcdir}/example/xrlexample14.pas xrlexample14.pas
-
-idl32:
-	cp ${top_srcdir}/idl/xraylib_idl.c .
-	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
-	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Program Files (x86)\ITT\IDL71\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
-	echo "CD,'C:\MinGW\msys\1.0\home\Administrator\xraylib\build\windows'" >> batch.pro
-	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\include\" -I\"C:\MinGW\msys\1.0\home\Administrator\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Lib\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE" >> batch.pro
-	echo "exit" >> batch.pro
-	IDL_PATH="C:\MinGW\msys\1.0\home\Administrator\xraylib\build\windows" idl batch
-
-idl64:
-	cp ${top_srcdir}/idl/xraylib_idl.c .
-	echo "!MAKE_DLL.COMPILER_NAME='GCC'" > batch.pro
-	echo "!MAKE_DLL.CC='gcc.exe %X -fPIC -I\"C:\Exelis\IDL83\external\include\" -c -D_REENTRANT %C -o %O'" >> batch.pro
-	echo "CD,'C:\msys\1.0\home\schoon\github\xraylib\build\windows'" >> batch.pro
-	echo "make_dll,'xraylib_idl','libxrlidl','IDL_Load',INPUT_DIR='.',EXTRA_CFLAGS='-I\"C:\msys\1.0\home\schoon\github\xraylib\include\" -I\"C:\msys\1.0\home\schoon\github\xraylib\src\"',EXTRA_LFLAGS='\"libxrl-$(LIB_CURRENT_MINUS_AGE).lib\" /LIBPATH:\"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\lib\amd64\" /LIBPATH:\"C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib\x64\"',OUTPUT='.', COMPILE_DIRECTORY='.', /SHOW_ALL, /VERBOSE, DLL_PATH=mydll" >> batch.pro
-	echo "print,mydll" >> batch.pro
-	echo "exit" >> batch.pro
-	IDL_PATH="C:\msys\1.0\home\schoon\github\xraylib\build\windows" /C/Exelis/IDL83/bin/bin.x86_64/idl batch
 
 
 

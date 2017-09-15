@@ -57,7 +57,6 @@ Name: "custom" ; Description: "Custom installation" ; Flags: iscustom
 Name: "core" ; Description: "xraylib shared library and documentation" ; Flags: fixed ; Types: full minimal custom
 Name: "sdk" ; Description: "SDK: headers and static libraries" ; Types: full 
 Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full 
-Name: "idl" ; Description: "IDL bindings" ; Types: full 
 Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
 
 [Files]
@@ -101,47 +100,17 @@ Source: "{#srcdir}\windows\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Co
 Source: "{#builddir}\windows\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
 Source: "{#srcdir}\windows\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
-Source: "{#builddir}\windows\xrlexample4.pro" ; DestDir: "{app}\Example" ; Components: idl
-#ifdef XRL64
-Source: "{#builddir}\windows\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
-#else
-Source: "{#builddir}\idl\.libs\libxrlidl.dll"; DestDir: "{app}\dlm" ; Flags: sharedfile ; Components: idl
-#endif
-Source: "{#builddir}\windows\libxrlidl.dlm"; DestDir: "{app}\dlm" ; Components: idl
-Source: "{#builddir}\windows\xraylib.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\windows\xraylib_help.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\windows\xraylib_lines.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\windows\xraylib_shells.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\windows\xraylib_auger.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\windows\xraylib_nist_compounds.pro"; DestDir: "{app}\pro" ; Components: idl
-Source: "{#builddir}\windows\xraylib_radionuclides.pro"; DestDir: "{app}\pro" ; Components: idl
-
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 
-#ifdef XRL64
-Source: "{#srcdir}\windows\msvcrt\vcredist_x64_110.exe" ; Flags: deleteafterinstall ; DestDir: "{tmp}" ; Components: idl
-#endif
-
 [Icons]
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-
-
-#ifdef XRL64
-[Run]
-Filename: "{tmp}\vcredist_x64_110.exe" ; Parameters: "/q" ; StatusMsg: "Installing Visual Studio 2012 C++ CRT Libraries if required..." ; Components: idl   
-#endif
 
 [UninstallDelete]
 Type: dirifempty ; Name: "{app}"
 
 [Registry]
 Root: HKLM; Subkey: "Software\xraylib" ; ValueType: string ; ValueName: "" ; ValueData: "{app}" ; Flags: uninsdeletekey
-Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_DLM_PATH"; ValueData: "<IDL_DEFAULT>" ; Flags: createvalueifdoesntexist ; Components: idl
-Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_DLM_PATH"; ValueData: "{olddata};{app}\dlm" ; Components: idl
-Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_PATH"; ValueData: "<IDL_DEFAULT>" ; Flags: createvalueifdoesntexist ; Components: idl
-Root: HKLM ; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "IDL_PATH"; ValueData: "{olddata};{app}\pro" ; Components: idl
-
 
 [Code]
 /////////////////////////////////////////////////////////////////////
