@@ -4,15 +4,14 @@
 #ifdef XRL64
 #define MyAppName "xraylib 64-bit"
 #define MyAppId "xraylib_64"
-#define srcdir "C:\msys\1.0\" + abs_top_srcdir_win
-#define builddir "C:\msys\1.0\" + abs_top_builddir_win
+#define srcdir "C:\msys64\" + abs_top_srcdir_win
+#define builddir "C:\msys64\" + abs_top_builddir_win
 #else
 #define MyAppName "xraylib 32-bit"
 #define MyAppId "xraylib"
 #define srcdir "C:\msys\1.0\" + abs_top_srcdir_win
 #define builddir "C:\msys\1.0\" + abs_top_builddir_win
 #endif
-;#define MyAppVersion "2.17.0"
 #define MyAppPublisher "Tom Schoonjans"
 #define MyAppURL "http://github.com/tschoonj/xraylib"
 
