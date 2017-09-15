@@ -1,5 +1,5 @@
 /*
-	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2017 Matthew Wormington. All rights reserved.
 
 	File: Compound.h
 	Author: Matthew Wormington
@@ -73,18 +73,22 @@ namespace Science {
 	/// </summary>
 	public ref class CompoundData
 	{		
-		double _atomCount;
-		double _elementCount;
+		List<double>^ _atomCount;		
 		List<int>^ _atomicNumber;  
-		List<double>^ _massFraction;  
+		int _elementCount;
+		List<double>^ _massFraction; 
+		double _molarMass;
+		double _totalAtomCount;
 
 	public:
 
 		/// <summary> Default constructor. </summary>
 		CompoundData()
 		{
+			_atomCount = gcnew List<double>();
 			_atomicNumber = gcnew List<int>();	
 			_massFraction = gcnew List<double>();	
+			
 			Clear();
 		}
 
@@ -92,10 +96,10 @@ namespace Science {
 		/// <param name="compound">	The chemical formula of the compound. </param>
 		CompoundData(String^ compound)
 		{
+			_atomCount = gcnew List<double>();
 			_atomicNumber = gcnew List<int>();	
 			_massFraction = gcnew List<double>();	
-			Clear();
-
+			
 			Parse(compound);
 		}
 
@@ -112,9 +116,11 @@ namespace Science {
 			::compoundData *cdA, *cdB;
 			::compoundData *cd;
 
+			_atomCount = gcnew List<double>();
 			_atomicNumber = gcnew List<int>();	
 			_massFraction = gcnew List<double>();	
 			Clear();
+
 			if (String::IsNullOrEmpty(compoundA) || String::IsNullOrEmpty(compoundB) || (weightA < 0.0) || (weightB < 0.0))
 				return;
 
@@ -149,17 +155,20 @@ namespace Science {
 
 			cd = ::add_compound_data(*cdA, weightA, *cdB, weightB);		
 			if (cd != nullptr)
-			{
-				_atomCount = cd->nAtomsAll;
+			{		
 				_elementCount = cd->nElements;
 				if (_elementCount > 0)
 				{
 					for (int i = 0; i < _elementCount; i++)
 					{
+						_atomCount->Add(cd->nAtoms[i]);
 						_atomicNumber->Add(cd->Elements[i]);
 						_massFraction->Add(cd->massFractions[i]);
 					}
 				}
+				_molarMass = cd->molarMass;
+				_totalAtomCount = cd->nAtomsAll;
+
 				::FreeCompoundData(cd);
 			}
 
@@ -176,6 +185,8 @@ namespace Science {
 			if (String::IsNullOrEmpty(compound))
 				return;
 
+			Clear();
+
 			IntPtr p = Marshal::StringToHGlobalAnsi(compound);
 			try
 			{					
@@ -188,17 +199,19 @@ namespace Science {
 			}
 			
 			if (cd != nullptr)
-			{
-				_atomCount = cd->nAtomsAll;
+			{	
 				_elementCount = cd->nElements;
 				if (_elementCount > 0)
 				{
 					for (int i = 0; i < _elementCount; i++)
 					{
+						_atomCount->Add(cd->nAtoms[i]);
 						_atomicNumber->Add(cd->Elements[i]);
 						_massFraction->Add(cd->massFractions[i]);
 					}
 				}
+				_molarMass = cd->molarMass;
+				_totalAtomCount = cd->nAtomsAll;
 			}
 						
 			::FreeCompoundData(cd); 
@@ -207,19 +220,30 @@ namespace Science {
 		/// <summary> Clears this object to its blank/initial state. </summary>
 		void Clear()
 		{
-			_atomCount = 0;
 			_elementCount = 0;
+			_atomCount->Clear();
 			_atomicNumber->Clear();
 			_massFraction->Clear();
+			_totalAtomCount = 0;
 		}
 
-		/// <summary>Gets the number of atoms. </summary>
-		/// <value>	The number of atoms. </value>
-		property double AtomCount
+		/// <summary>Gets the total number of atoms. </summary>
+		/// <value>	The total number of atoms. </value>
+		property double TotalAtomCount
 		{
 			double get()
 			{
-				return _atomCount;
+				return _totalAtomCount;
+			}
+		}
+
+		/// <summary>Gets the number of atoms of the component element with the specified index. </summary>
+		/// <value>	The number of atoms[int]. </value>
+		property double AtomCount[int]
+		{
+			double get(int index)
+			{
+				return _atomCount[index];
 			}
 		}
 
@@ -258,12 +282,13 @@ namespace Science {
 		virtual String^ ToString() override 
 		{
 			StringBuilder^ sb = gcnew StringBuilder();
-			sb->AppendLine(String::Format("AtomCount: {0}", _atomCount));
 			sb->AppendLine(String::Format("ElementCount: {0}", _elementCount));
-			sb->AppendLine(String::Format("AtomicNumber, MassFraction"));
+			sb->AppendLine(String::Format("AtomicNumber, AtomCount, MassFraction"));
 			for (int i=0; i<_elementCount; i++)
-				sb->AppendLine(String::Format("{0}, {1}", _atomicNumber[i], _massFraction[i]));	
-			
+				sb->AppendLine(String::Format("{0}, {1}, {2}", _atomicNumber[i], _atomCount[i], _massFraction[i]));	
+			sb->AppendLine(String::Format("MolarMass: {0}", _molarMass));
+			sb->AppendLine(String::Format("TotalAtomCount: {0}", _totalAtomCount));
+
 			return sb->ToString();
 		}
 

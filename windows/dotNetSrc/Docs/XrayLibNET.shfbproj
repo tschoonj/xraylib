@@ -33,7 +33,7 @@
     <BuildLogFile>
     </BuildLogFile>
     <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
-    <HelpTitle>XrayLib v3.2.0 .NET Class Library</HelpTitle>
+    <HelpTitle>XrayLib v3.3.0 .NET Class Library</HelpTitle>
     <PresentationStyle>VS2013</PresentationStyle>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\Debug\XrayLib.NET.dll" />
@@ -41,7 +41,7 @@
     </DocumentationSources>
     <FeedbackEMailAddress>m_wormington%40hotmail.com</FeedbackEMailAddress>
     <FeedbackEMailLinkText>Matthew Wormington</FeedbackEMailLinkText>
-    <CopyrightText>Copyright %28c%29 2010-2016 Matthew Wormington. All rights reserved.</CopyrightText>
+    <CopyrightText>Copyright %28c%29 2010-2017 Matthew Wormington. All rights reserved.</CopyrightText>
     <SyntaxFilters>Standard</SyntaxFilters>
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <RootNamespaceContainer>False</RootNamespaceContainer>
