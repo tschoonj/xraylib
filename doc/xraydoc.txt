@@ -94,37 +94,9 @@ fi.dat
 
 Anomalous scattering factor fi.
  
- This data set contains data calculated by Lynn Kissel
- (lkissel@llnl.gov). The original data is available from
- ftp://www-phys.llnl.gov/rayleigh
- and an interactive WWW interface is in 
- http://www-phys.llnl.gov/V_Div/scattering/elastic.html
- 
- These data are computed for neutral atoms, only, entirely
- within a local relativistic self-consistent potential
- with the Slater local-exchange coefficient and Latter tail.
- For a detailed discussion of the underlying validity of the
- information contained in these directories see, for example:
- 
-  Validity of Form-Factor, Modified-Form-Factor and
-  Anomalous-Scattering-Factor Approximations in Elastic Scattering
-  Calculations, by Lynn Kissel, B. Zhou, S. C. Roy, S. K. Sen Gupta and
-  R. H. Pratt, Acta Crystallographica Vol. A51, 271-288 (1995).
- 
-  New Relativistic S-Matrix Results for Scattering - Beyond the Usual
-  Anomalous Factors/Beyond Impulse Approximation, by R. H. Pratt, Lynn
-  Kissel and P. M. Bergstrom, Jr., in Resonant Anomalous X-Ray
-  Scattering, edited by G. Materlik, C. J. Sparks and K. Fischer
-  (North-Holland: Amsterdam, 1994).
- 
-  Elastic Scattering of Gamma-Rays and X-Rays by Atoms, by
-  P. P. Kane, Lynn Kissel, R. H. Pratt and S. C. Roy, Physics Reports
-  Vol. 140, 75-159 (1986).
- 
-  Rayleigh Scattering - Elastic Photon Scattering by Bound
-  Electrons, by Lynn Kissel and R. H. Pratt, in Atomic Inner-Shell
-  Physics, edited by Bernd Crasemann (Plenum Publishing: New York,
-  1985).
+Taken from D.E. Cullen, J.H. Hubbell, J.H. Kissel, EPDL97: The evaluated photon
+library, '97 Version. Lawrence Livermore National Laboratory Report
+UCRL-50400, vol. 6 Rev 5.
 
 kissel_pe.dat
 =============

@@ -154,6 +154,8 @@
         double nAtomsAll;
         int *Elements;
         double *massFractions;
+	double *nAtoms;
+	double molarMass;
  }
  struct compoundData *CompoundParser(const char compoundString[])
  char * AtomicNumberToSymbol(int Z)

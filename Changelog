@@ -1,3 +1,16 @@
+Version 3.3.0 Tom Schoonjans
+
+- Anomalous scattering factors: switch to EPDL97 (thanks to Chris Jacobsen and Ming Du for reporting spikes in RTAB data)
+- Windows installer: remove python and IDL bindings
+- RPM packages: remove IDL bindings
+- Support Anaconda Windows build
+- Support PHP7
+- Add __version__ to Python modules (requested by Jonas Adler)
+- Support numpy scalars in SWIG generated Python bindings (requested by David Larsson)
+- Python example style improvements (contributed by Jonas Adler)
+- CompoundParser: compoundData now also contains nAtoms and molarMass
+- Cython generated Python bindings: use OpenMP
+
 Version 3.2.0 Tom Schoonjans
 
 - Python3 support in Fedora RPM packages
