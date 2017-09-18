@@ -65,6 +65,7 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the fortran 2003 bindings of xraylib.
 
+%if 0%{?rhel} && 0%{?rhel} > 6
 %package python
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python bindings
 Requires: python xraylib numpy
@@ -76,6 +77,8 @@ Requires: python3 python3-numpy
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
 
 This rpm package provides the python bindings of xraylib and a command utility.
+
+%endif
 
 %package lua
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: lua bindings
@@ -106,6 +109,7 @@ This rpm package provides the perl bindings of xraylib.
 
 
 %prep
+
 %setup -q
 pushd ..
 cp -r xraylib-%{version} xraylib-%{version}-python2
@@ -121,6 +125,7 @@ popd
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
+%if 0%{?rhel} && 0%{?rhel} > 6
 #python2
 pushd ../xraylib-%{version}-python2
 %configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python2} CYTHON=/usr/bin/cython
@@ -132,9 +137,11 @@ pushd ../xraylib-%{version}-python3
 %configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python3} CYTHON=/usr/bin/cython3
 popd
 %endif
+%endif
 
 make 
 
+%if 0%{?rhel} && 0%{?rhel} > 6
 mv ../xraylib-%{version}-python2/python python2
 %if 0%{?fedora}
 mv ../xraylib-%{version}-python3/python python3
@@ -148,11 +155,13 @@ cd python3
 make
 cd ..
 %endif
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
+%if 0%{?rhel} && 0%{?rhel} > 6
 cd python2
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
@@ -161,15 +170,20 @@ cd python3
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
 %endif
+%else
+rm -f $RPM_BUILD_ROOT%{_prefix}/share/xraylib/*.txt
+%endif
 
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
 rm -f $RPM_BUILD_ROOT%{perllibdir}/*.la
+%if 0%{?rhel} && 0%{?rhel} > 6
 rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
 %if 0%{?fedora}
 rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
+%endif
 %endif
 
 %clean
@@ -201,6 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/xraylib/*.mod
 %{_libdir}/pkgconfig/libxrlf03.pc
 
+%if 0%{?rhel} && 0%{?rhel} > 6
 %files python
 %defattr(-,root,root)
 %{_bindir}/xraylib
@@ -218,6 +233,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitearch}/xraylib_np.*
 %endif
 %{_prefix}/share/xraylib/*.txt
+%endif
 
 %files lua
 %defattr(-,root,root)
@@ -233,6 +249,8 @@ rm -rf $RPM_BUILD_ROOT
 %{perllibdir}/xraylib.so
 
 %changelog
+* Mon Sep 18 2017 Tom Schoonjans
+- Remove python bindings for RHEL6
 * Wed Nov 23 2016 Tom Schoonjans
 - Remove support for IDL
 
