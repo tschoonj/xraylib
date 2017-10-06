@@ -1,5 +1,4 @@
-
-#Copyright (c) 2009, Tom Schoonjans
+#Copyright (c) 2017, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -11,35 +10,12 @@
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-SUBDIRS = include \
-	  src \
-	  idl \
-	  python \
-	  doc \
-	  data \
-	  java \
-	  windows \
-	  perl \
-	  lua \
-	  fortran \
-	  ruby \
-	  php \
-	  pascal \
-	  example \
-	  tests
-ACLOCAL_AMFLAGS = -I m4
 
-pkgconfigdir=$(libdir)/pkgconfig
-pkgconfig_DATA=libxrl.pc
-if ENABLE_FORTRAN
-  pkgconfig_DATA += libxrlf03.pc
-endif
+AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 
-windows:
-	$(MAKE) -C windows windows
+check_PROGRAMS = test-compoundparser
+TESTS = $(check_PROGRAMS)
 
+test_compoundparser_SOURCES = test-compoundparser.c
+test_compoundparser_LDADD = ../src/libxrl.la
 
-EXTRA_DIST = xraylib.spec.in BUGS Changelog 
-DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-pascal --enable-java
-
-.PHONY: windows 
