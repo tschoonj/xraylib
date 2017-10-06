@@ -981,6 +981,7 @@ AC_CONFIG_FILES([Makefile
 				 ruby/Makefile
 				 php/Makefile
 				 pascal/Makefile
+				 tests/Makefile
 ])
 
 
