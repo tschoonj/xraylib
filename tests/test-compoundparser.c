@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 	assert(CompoundParser("Ca5(PO4)3F") != NULL);
 	assert(CompoundParser("Ca5(PO4)3OH") != NULL);
 	assert(CompoundParser("Ca5.522(PO4.48)3OH") != NULL);
+	assert(CompoundParser("Ca5.522(PO.448)3OH") != NULL);
 
 	// bad formulas
 	assert(CompoundParser("CuI2ww") == NULL);
@@ -46,6 +47,10 @@ int main(int argc, char *argv[]) {
 	assert(CompoundParser("Au11(H3PO4)2)") == NULL);
 	assert(CompoundParser("Au11(H3PO4))2") == NULL);
 	assert(CompoundParser("Au(11(H3PO4))2") == NULL);
+	assert(CompoundParser("Ca5.522(PO.44.8)3OH") == NULL);
+	assert(CompoundParser("Ba[12]") == NULL);
+	assert(CompoundParser("Auu1") == NULL);
+	assert(CompoundParser("AuL1") == NULL);
 
 	return 0;
 }
