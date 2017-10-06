@@ -16,8 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <stddef.h>
 
 int main(int argc, char *argv[]) {
-	// taken from https://github.com/KenanY/chemical-formula/blob/master/test/index.js
-	// good formulas
+	/* taken from https://github.com/KenanY/chemical-formula/blob/master/test/index.js */
+	/* good formulas */
 	assert(CompoundParser("C19H29COOH") != NULL);
 	assert(CompoundParser("C12H10") != NULL);
 	assert(CompoundParser("C12H6O2") != NULL);
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 	assert(CompoundParser("Ca5.522(PO4.48)3OH") != NULL);
 	assert(CompoundParser("Ca5.522(PO.448)3OH") != NULL);
 
-	// bad formulas
+	/* bad formulas */
 	assert(CompoundParser("CuI2ww") == NULL);
 	assert(CompoundParser("0C") == NULL);
 	assert(CompoundParser("2O") == NULL);
