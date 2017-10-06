@@ -85,7 +85,9 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 				brackets_end_locs[nbracket_pairs-1] = compoundString+i;
 			}
 		}
-		else if (nbrackets > 0) {}
+		else if (nbrackets > 0) {
+
+		}
 		else if (nbrackets == 0 && isupper(compoundString[i])) {
 			upper_locs =(char **) realloc((char **) upper_locs,sizeof(char *)*++nuppers);
 			upper_locs[nuppers-1] = compoundString+i;
@@ -95,7 +97,14 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			ErrorExit(buffer);
 			return 0;
 		}
-		else if (islower(compoundString[i]) || isdigit(compoundString[i]) || compoundString[i] == '.') {}
+		else if (i > 0 && islower(compoundString[i]) && isdigit(compoundString[i-1])) {
+			sprintf(buffer,"xraylib-parser: invalid chemical formula. Found a lowercase character where not allowed");
+			ErrorExit(buffer);
+			return 0;
+		}
+		else if (islower(compoundString[i]) || isdigit(compoundString[i]) || compoundString[i] == '.') {
+
+		}
 		else {
 			sprintf(buffer,"xraylib-parser: invalid character detected %c",compoundString[i]);
 			ErrorExit(buffer);
