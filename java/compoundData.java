@@ -119,7 +119,9 @@ public class compoundData {
           brackets_end_locs.add(i);
         }
       }
-      else if (nbrackets > 0) {}
+      else if (nbrackets > 0) {
+
+      }
       else if (nbrackets == 0 && Character.isUpperCase(csa[i])) {
         nuppers++;
         upper_locs.add(i);
@@ -127,8 +129,12 @@ public class compoundData {
       else if (csa[i] == ' '){
         throw new XraylibException("spaces are not allowed in compound formula");
       }
-      else if (Character.isLowerCase(csa[i]) || 
-               Character.isDigit(csa[i]) || csa[i] == '.') {}
+      else if (i > 0 && Character.isLowerCase(csa[i]) && Character.isDigit(csa[i-1])) {
+	throw new XraylibException("invalid chemical formula. Found a lowercase character where not allowed");
+      }
+      else if (Character.isLowerCase(csa[i]) || Character.isDigit(csa[i]) || csa[i] == '.') {
+
+      }
       else {
         throw new XraylibException("invalid character detected " + csa[i]);
       }
