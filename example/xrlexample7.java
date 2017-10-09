@@ -70,6 +70,13 @@ public class xrlexample7 {
 		System.out.println(Xraylib.CompoundParser("SiO2"));
 		System.out.println(Xraylib.CompoundParser("Ca5(PO4)OH"));
 		System.out.println(Xraylib.CompoundParser("Fe0.6Mn0.4SiO3"));
+		try {
+			// the following line should throw an exception
+			Xraylib.CompoundParser("CuI2ww");
+			System.exit(1);
+		}
+		catch (XraylibException e) {
+		}
 		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CS_Total_CP("SiO2", 10.0)+" cm2/g");
 		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Total_CP("SiO2", 10.0)+" barns/atom");
 		System.out.println("Rayleigh cs of SiO2 at 10.0 keV: "+Xraylib.CS_Rayl_CP("SiO2", 10.0)+" cm2/g");

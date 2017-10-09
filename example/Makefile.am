@@ -107,6 +107,8 @@ xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 xrlexample7.sh: ../java/com.github.tschoonj.xraylib-$(VERSION).jar xrlexample7.java
 	@echo "Testing java bindings"
 	@echo "pushd ../java" > xrlexample7.sh
+	@echo "set -e" >> xrlexample7.sh
+	@echo "set -x" >> xrlexample7.sh
 	@echo "$(top_srcdir)/java/gradlew checkRun" >> xrlexample7.sh
 	@echo "popd" >> xrlexample7.sh
 	@chmod +x xrlexample7.sh
