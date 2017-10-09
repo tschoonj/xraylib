@@ -31,7 +31,7 @@ prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
-com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat
+com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat $(java_source)
 	$(srcdir)/gradlew build
 
 xraylib.dat: prdata_java$(EXEEXT)
