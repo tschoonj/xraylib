@@ -1,0 +1,2 @@
+#cmakedefine HAVE_STRDUP
+#cmakedefine HAVE_STRNDUP
