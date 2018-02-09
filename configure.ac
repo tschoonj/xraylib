@@ -896,11 +896,14 @@ if test "x$enable_php" = xyes && test "x$SWIG" != xnoswig && test "x$DISABLE_BIN
 
 			if test "x$enable_php_integration" = xyes ; then
 				PHP_DIR=$PHP_DIR
+				PHP_SCRIPT_DIR="$PHP_PREFIX/share/php"
 			else
 				if test "x$prefix" = xNONE ; then
 					PHP_DIR=["/usr/local/$PHP_PREFIX_DIR"]
+					PHP_SCRIPT_DIR=["/usr/local/share/php"]
 				else
 					PHP_DIR=["${prefix}/$PHP_PREFIX_DIR"]
+					PHP_SCRIPT_DIR=["${prefix}/share/php"]
 				fi
 			fi
 			VALID_PHP=yes
@@ -915,7 +918,9 @@ AC_SUBST(PHP_LDFLAGS)
 #AC_SUBST(PHP_LIBS)
 AC_SUBST(PHP_CFLAGS)
 AC_SUBST(PHP_DIR)
+AC_SUBST(PHP_SCRIPT_DIR)
 AC_SUBST(PHP_SWIG)
+AC_SUBST(PHP_PREFIX)
 
 #
 # Pascal bindings -> look for fpc
