@@ -19,6 +19,9 @@
 %define perldir @PERL_EXT_LIB@
 %define perllibdir @PERL_EXT_LIB@/auto/xraylib
 
+%define phpdir @PHP_DIR@
+%define phpscriptdir @PHP_SCRIPT_DIR@
+
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %{!?__python2: %global __python2 /usr/bin/python2}
 %{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -36,7 +39,7 @@ URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig lua-devel ruby-devel perl-devel
-BuildRequires: Cython numpy 
+BuildRequires: Cython numpy php-devel
 %if 0%{?fedora}
 #only fedora has default support for python3 nowadays...
 BuildRequires: python3-Cython python3-numpy python3-devel
@@ -107,6 +110,15 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the perl bindings of xraylib.
 
+%package php
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: php bindings
+Requires: php xraylib
+
+%description php
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
+
+This rpm package provides the PHP bindings of xraylib.
+
 
 %prep
 
@@ -120,7 +132,7 @@ popd
 
 %build
 #first run WITHOUT python
-%configure --disable-java --disable-idl --enable-fortran2003 --disable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --disable-python-numpy FC=gfortran 
+%configure --disable-java --disable-idl --enable-fortran2003 --disable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --disable-python-numpy --enable-php --enable-php-integration FC=gfortran 
 #necessary to fix rpath issues during rpmbuild
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
@@ -128,13 +140,13 @@ sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %if 0%{?rhel} && 0%{?rhel} > 6
 #python2
 pushd ../xraylib-%{version}-python2
-%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python2} CYTHON=/usr/bin/cython
+%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python2} CYTHON=/usr/bin/cython
 popd
 
 #python3
 %if 0%{?fedora}
 pushd ../xraylib-%{version}-python3
-%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --enable-python-numpy PYTHON=%{__python3} CYTHON=/usr/bin/cython3
+%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python3} CYTHON=/usr/bin/cython3
 popd
 %endif
 %endif
@@ -179,12 +191,20 @@ rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
 rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
 rm -f $RPM_BUILD_ROOT%{perllibdir}/*.la
+rm -f $RPM_BUILD_ROOT%{phpdir}/*.la
 %if 0%{?rhel} && 0%{?rhel} > 6
 rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
 %if 0%{?fedora}
 rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
 %endif
 %endif
+
+mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/php.d
+cat >$RPM_BUILD_ROOT/%{_sysconfdir}/php.d/xraylib.ini <<EOF
+extension=xraylib.so
+EOF
+
+chmod 0644 $RPM_BUILD_ROOT/%{_sysconfdir}/php.d/xraylib.ini
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -248,9 +268,19 @@ rm -rf $RPM_BUILD_ROOT
 %{perldir}/xraylib.pm
 %{perllibdir}/xraylib.so
 
+%files php
+%defattr(-,root,root)
+%{phpdir}/xraylib.so
+%{phpscriptdir}/xraylib.php
+%config(noreplace) %{_sysconfdir}/php.d/xraylib.ini
+
 %changelog
+* Mon Feb 12 2018 Tom Schoonjans
+- Add PHP bindings
+
 * Mon Sep 18 2017 Tom Schoonjans
 - Remove python bindings for RHEL6
+
 * Wed Nov 23 2016 Tom Schoonjans
 - Remove support for IDL
 
