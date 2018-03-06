@@ -24,11 +24,11 @@ matrix:
             - gfortran-7
       env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: osx
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='homebrew/php/php56'
+      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='homebrew/php/php56'
     - os: osx
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='homebrew/php/php71'
+      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='homebrew/php/php71'
     - os: osx
-      env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/local/bin/python2' XRL_PYTHON3='/usr/local/bin/python3'
+      env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3'
 
 before_install:
   - |
@@ -43,9 +43,9 @@ before_install:
       brew update || exit 1
       brew cleanup -s || exit 1
       rm -rf $(brew --cache) || exit 1
-      brew install autoconf automake libtool gcc@7 swig ruby python python3 fpc lua perl ${PHP}
-      pip2 install Cython numpy
-      pip3 install numpy
+      brew install autoconf automake libtool gcc@7 swig ruby python@2 python fpc lua perl ${PHP}
+      /usr/local/opt/python@2/bin/pip2.7 install Cython numpy
+      /usr/local/bin/pip3 install numpy
     fi
   - rm -rf $HOME/.phpenv
 
