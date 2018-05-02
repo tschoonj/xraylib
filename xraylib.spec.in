@@ -68,7 +68,7 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the fortran 2003 bindings of xraylib.
 
-%if 0%{?rhel} && 0%{?rhel} > 6
+%if 0%{?fedora} || 0%{?rhel} > 6
 %package python
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python bindings
 Requires: python xraylib numpy
@@ -275,6 +275,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/php.d/xraylib.ini
 
 %changelog
+* Wed May 2 2018 Tom Schoonjans
+- Fix Fedora python build
+
 * Mon Feb 12 2018 Tom Schoonjans
 - Add PHP bindings
 
