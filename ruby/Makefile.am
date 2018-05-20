@@ -13,14 +13,14 @@ if ENABLE_RUBY
 
 plugindir = $(RUBYDIR)
 plugin_LTLIBRARIES = xraylib.la
-xraylib_la_CFLAGS = $(RUBY_EXT_CPPFLAGS) -DSWIGRUBY_TRICK -I${top_builddir} -I${top_srcdir}/include $(RUBY_EXT_INC)
+xraylib_la_CFLAGS = $(RUBY_EXT_CPPFLAGS) -DSWIGRUBY_TRICK -I${top_builddir} -I${top_srcdir}/include $(RUBY_EXT_INC) -I$(top_srcdir)/src
 xraylib_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(RUBY_EXT_DLEXT)
 
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap_temp.c -ruby ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I$(top_srcdir)/src -I${top_srcdir}/include -includeall -o xraylib_wrap_temp.c -ruby ${top_srcdir}/src/xraylib.i
 	$(SED) -e 's/^[[:space:]]*\/\/.\{1,\}//' xraylib_wrap_temp.c > xraylib_wrap.c
 	rm xraylib_wrap_temp.c
 

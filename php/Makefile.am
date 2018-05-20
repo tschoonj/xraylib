@@ -14,7 +14,7 @@ if ENABLE_PHP
 plugindir = $(PHP_DIR)
 scriptdir = $(PHP_SCRIPT_DIR)
 plugin_LTLIBRARIES = xraylib.la
-xraylib_la_CFLAGS = $(PHP_CFLAGS) -I${top_builddir} -I${top_srcdir}/include
+xraylib_la_CFLAGS = $(PHP_CFLAGS) -I${top_builddir} -I${top_srcdir}/include -I$(top_srcdir)/src
 xraylib_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic $(PHP_LDFLAGS)
@@ -22,7 +22,7 @@ nodist_script_DATA = xraylib.php
 
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -I${top_srcdir}/include -includeall -o xraylib_wrap.c $(PHP_SWIG) ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I$(top_srcdir)/src -I${top_srcdir}/include -includeall -o xraylib_wrap.c $(PHP_SWIG) ${top_srcdir}/src/xraylib.i
 
 xraylib.php: xraylib_wrap.c
 
