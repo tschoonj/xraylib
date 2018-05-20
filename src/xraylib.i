@@ -60,6 +60,7 @@ __version__ = VERSION
 #endif
 
 #include "xraylib.h"
+#include "xrf_cross_sections_aux.h"
 
 
 %}
@@ -2362,3 +2363,4 @@ __version__ = VERSION
 
 
 %include "xraylib.h"
+%include "xrf_cross_sections_aux.h"
