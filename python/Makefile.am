@@ -27,8 +27,7 @@ _xraylib_la_LDFLAGS += $(PYTHON_LDFLAGS)
 #_xraylib_la_CPPFLAGS = -mdll
 endif
 
-dist_bin_SCRIPTS = xraylib
-nodist_python_PYTHON = xraylib.py xrayhelp.py xraymessages.py
+nodist_python_PYTHON = xraylib.py
 endif
 
 if ENABLE_PYTHON_NUMPY
