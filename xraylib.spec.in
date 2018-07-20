@@ -238,16 +238,11 @@ rm -rf $RPM_BUILD_ROOT
 %if 0%{?rhel} && 0%{?rhel} > 6
 %files python
 %defattr(-,root,root)
-%{_bindir}/xraylib
 %{python2_sitelib}/xraylib.py*
-%{python2_sitelib}/xrayhelp.py*
-%{python2_sitelib}/xraymessages.py*
 %{python2_sitearch}/_xraylib.*
 %{python2_sitearch}/xraylib_np.*
 %if 0%{?fedora}
 %{python3_sitelib}/xraylib.py*
-%{python3_sitelib}/xrayhelp.py*
-%{python3_sitelib}/xraymessages.py*
 %{python3_sitelib}/__pycache__/*
 %{python3_sitearch}/_xraylib.*
 %{python3_sitearch}/xraylib_np.*
@@ -275,6 +270,9 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/php.d/xraylib.ini
 
 %changelog
+* Fri Jul 20 2018 Tom Schoonjans
+- Remove python command line executable
+
 * Wed May 2 2018 Tom Schoonjans
 - Fix Fedora python build
 

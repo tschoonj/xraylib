@@ -964,8 +964,6 @@ AC_CONFIG_FILES([Makefile
 				 example/Makefile
 				 idl/Makefile
 				 python/Makefile
-				 python/xrayhelp.py
-				 python/xraymessages.py
 				 doc/Makefile
 				 libxrl.pc
 				 libxrlf03.pc
@@ -974,15 +972,10 @@ AC_CONFIG_FILES([Makefile
 				 java/Makefile
 				 java/build.gradle
 				 java/settings.gradle
-				 windows/python/Makefile
 				 windows/Makefile
-				 windows/python/cli_py2exe/Makefile
-				 windows/python/cli_py2exe/xraylib-cli.nsi
-				 windows/python/cli_py2exe/setup.py
 				 perl/Makefile
 				 lua/Makefile
 				 fortran/Makefile
-				 windows/python/xrlsetup.py
 				 ruby/Makefile
 				 php/Makefile
 				 pascal/Makefile
