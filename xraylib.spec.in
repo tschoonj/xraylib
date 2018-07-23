@@ -182,8 +182,6 @@ cd python3
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
 %endif
-%else
-rm -f $RPM_BUILD_ROOT%{_prefix}/share/xraylib/*.txt
 %endif
 
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
@@ -218,6 +216,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %{_libdir}/libxrl.so.*
+%{_prefix}/share/xraylib/*.txt
 
 %files devel
 %defattr(-,root,root)
@@ -247,7 +246,6 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitearch}/_xraylib.*
 %{python3_sitearch}/xraylib_np.*
 %endif
-%{_prefix}/share/xraylib/*.txt
 %endif
 
 %files lua
