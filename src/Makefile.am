@@ -80,7 +80,8 @@ libxrl_la_SOURCES = xrayvars.c \
 		    xraylib-nist-compounds-internal.h \
 		    densities.c \
 		    xraylib-radionuclides-internal.h \
-		    xraylib-radionuclides.c
+		    xraylib-radionuclides.c \
+		    xraylib-error.c
 
 libxrl_la_CFLAGS = $(ARCHFLAGS)
 

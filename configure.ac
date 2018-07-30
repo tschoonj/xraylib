@@ -11,7 +11,7 @@
 
 
 
-AC_INIT([xraylib],[3.3.1],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[3.99.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -19,9 +19,9 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CANONICAL_HOST
 
 
-LIB_CURRENT=10
+LIB_CURRENT=11
 LIB_REVISION=0
-LIB_AGE=3
+LIB_AGE=0
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
@@ -32,9 +32,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_USE_SYSTEM_EXTENSIONS
 AC_CHECK_FUNCS([strndup strdup])
-
-
-
+AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
 
 m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 #at least version 2.0 of libtool is required for creating the fortran bindings

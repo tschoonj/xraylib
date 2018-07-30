@@ -8,4 +8,5 @@ xraylibinclude_HEADERS = 	xraylib.h \
 				xraylib-defs.h \
 				xraylib-crystal-diffraction.h \
 				xraylib-nist-compounds.h \
-				xraylib-radionuclides.h
+				xraylib-radionuclides.h \
+				xraylib-error.h

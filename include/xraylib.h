@@ -50,6 +50,7 @@ extern "C" {
 #define RE2 0.079407877            /* square of classical electron radius (barn) */
 #define R_E 2.8179403267e-15       /* Classical electron radius (m) */
 
+#include "xraylib-error.h"
 #include "xraylib-shells.h"
 #include "xraylib-lines.h"
 #include "xraylib-parser.h"

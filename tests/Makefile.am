@@ -13,9 +13,12 @@
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 
-check_PROGRAMS = test-compoundparser
+check_PROGRAMS = test-compoundparser test-error
 TESTS = $(check_PROGRAMS)
 
 test_compoundparser_SOURCES = test-compoundparser.c
 test_compoundparser_LDADD = ../src/libxrl.la
+
+test_error_SOURCES = test-error.c
+test_error_LDADD = ../src/libxrl.la
 

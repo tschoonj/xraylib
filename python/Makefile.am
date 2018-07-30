@@ -46,7 +46,7 @@ xraylib_np.c: ${srcdir}/xraylib_np.pyx ${srcdir}/xraylib_np_c.pxd
 	$(CYTHON) -X boundscheck=False,wraparound=False,cdivision=True -I${top_srcdir}/include -o ${builddir}/xraylib_np.c ${srcdir}/xraylib_np.pyx
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -DVERSION="'$(VERSION)'" -I$(top_srcdir)/src -I${top_srcdir}/include -I$(srcdir) -I${top_builddir} -includeall -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
+	$(SWIG) -DVERSION="'$(VERSION)'" -I$(top_srcdir)/src -I${top_srcdir}/include -I$(srcdir) -I${top_builddir} -o xraylib_wrap.c -python ${top_srcdir}/src/xraylib.i
 
 xraylib.py: xraylib_wrap.c
 
