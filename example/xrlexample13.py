@@ -18,7 +18,6 @@ import sys, string
 
 if __name__ == '__main__' :
         xrl_np.XRayInit()
-        xrl_np.SetErrorMessages(0)
         print ("Example of python-numpy program using xraylib")
         print("xraylib version: {}".format(xrl_np.__version__))
 

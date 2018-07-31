@@ -38,10 +38,6 @@ int main()
   char **radioNuclides;
 
   XRayInit();
-  /*if something goes wrong, the test will end with EXIT_FAILURE
-  //SetHardExit(1);*/
-
-  SetErrorMessages(0);
 
   printf("Example of C program using xraylib\n");
   printf("Density of pure Al: %f g/cm3\n", ElementDensity(13));

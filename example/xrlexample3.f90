@@ -38,8 +38,6 @@ CHARACTER (KIND=C_CHAR, LEN=CRYSTAL_STRING_LENGTH), POINTER, &
 DIMENSION(:) :: crystals
 
 CALL XRayInit()
-!CALL SetHardExit(1)
-CALL SetErrorMessages(0)
 
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
 WRITE (6,'(A,F12.6,A)') 'Density of pure Al: ',ElementDensity(13),' g/cm3'

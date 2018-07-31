@@ -14,7 +14,6 @@ if RUBY_VERSION < "1.9"
 require 'complex'
 end
 
-Xraylib.SetErrorMessages(0)
 printf("Example of ruby program using xraylib\n")
 printf("Density of pure Al: %f g/cm3\n", Xraylib.ElementDensity(13))
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",

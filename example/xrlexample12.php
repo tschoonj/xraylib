@@ -14,8 +14,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 include("xraylib.php");
 
-SetErrorMessages(0);
-
 printf("Example of PHP program using xraylib\n");
 printf("Density of pure Al: %f g/cm3\n", ElementDensity(13));
 printf("Ca K-alpha Fluorescence Line Energy: %f\n",

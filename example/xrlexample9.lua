@@ -19,8 +19,6 @@ printf = function(s,...)
 	return io.write(s:format(...))
 	end
 
-xraylib.SetErrorMessages(0)
-
 printf("Example of lua program using xraylib\n")
 printf("Density of pure Al: %f g/cm3\n", xraylib.ElementDensity(13))
 printf("Ca K-alpha Fluorescence Line Energy: %f\n", xraylib.LineEnergy(20,xraylib.KA_LINE))

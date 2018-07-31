@@ -26,10 +26,6 @@ begin
   try
     XrayInit();
 
-    // If something goes wrong, the test will end with EXIT_FAILURE
-    // SetHardExit(1);
-    SetErrorMessages(0);
-
     WriteLn(Format('XrayLib v%d.%d', [XRAYLIB_MAJOR,XRAYLIB_MINOR]));
     WriteLn('Example Delphi program using XrayLib');
 

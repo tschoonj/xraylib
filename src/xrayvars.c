@@ -21,10 +21,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 /////            Variables                                       /////
 /////////////////////////////////////////////////////////////////// */
 
-static int HardExit = 0;
-static int ExitStatus = 0;
-static int ErrorMessages = 1;
-
 char ShellName[][5] = {
 "K",    "L1",   "L2",   "L3",   "M1",   "M2",   "M3",   "M4",   "M5",   "N1",
 "N2",   "N3",   "N4",   "N5",   "N6",   "N7",   "O1",   "O2",   "O3",   "O4",
@@ -252,38 +248,38 @@ int matchCrystalStruct(const void *i1, const void *i2) {
 	return strcmp(ca1, ca2->name);
 }
 
+#define ERROR_MESSAGE " has been deprecated and will be removed in a future release of xraylib.\nPlease remove all occurrences of this method in your code.\n"
+
 void ErrorExit(char *error_message)
 {
-  if (ErrorMessages) {
-  	printf("%s\n", error_message);
-  }
-  ExitStatus = 1;
-  if (HardExit != 0) exit(EXIT_FAILURE);
+  fprintf(stderr, "ErrorExit" ERROR_MESSAGE);
 }
 
 void SetHardExit(int hard_exit)
 {
-  HardExit = hard_exit;
+  fprintf(stderr, "SetHardExit" ERROR_MESSAGE);
 }
 
 void SetExitStatus(int exit_status)
 {
-  ExitStatus = exit_status;
+  fprintf(stderr, "SetExitStatus" ERROR_MESSAGE);
 }
 
-int GetExitStatus()
+int GetExitStatus(void)
 {
-  return ExitStatus;
+  fprintf(stderr, "GetExitStatus" ERROR_MESSAGE);
+  return 0;
 }
 
 void SetErrorMessages(int status)
 {
-  ErrorMessages = status;
+  fprintf(stderr, "SetErrorMessages" ERROR_MESSAGE);
 }
 
 int GetErrorMessages(void)
 {
-  return ErrorMessages;
+  fprintf(stderr, "GetErrorMessages" ERROR_MESSAGE);
+  return 0;
 }
 
 

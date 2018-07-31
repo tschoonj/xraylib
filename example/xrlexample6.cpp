@@ -21,9 +21,6 @@ int main()
   struct compoundData *cdtest;
   int i;
   XRayInit();
-  SetErrorMessages(0);
-  //if something goes wrong, the test will end with EXIT_FAILURE
-  //SetHardExit(1);
 
   std::printf("Example of C++ program using xraylib\n");
   std::printf("Density of pure Al: %f g/cm3\n", ElementDensity(13));
