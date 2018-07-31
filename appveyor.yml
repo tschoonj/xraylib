@@ -1,0 +1,25 @@
+version: 1.0.{build}
+
+shallow_clone: true
+
+environment:
+  matrix:
+    - compiler: msvc_msys2
+      ARCH: x64
+      MSYS2_ARCH: x86_64
+      MSYS2_DIR: msys64
+      MSYSTEM: MINGW64
+
+before_build:
+    - set PATH=C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%
+    - bash -lc "for i in {1..3}; do pacman -Syyuu --ask 20 --noconfirm && break || sleep 15; done"
+    - bash -lc "for i in {1..3}; do pacman -Suu --ask 20 --noconfirm && break || sleep 15; done"
+    - bash -lc "for i in {1..3}; do pacman --ask 20 --noconfirm -Su mingw-w64-%MSYS2_ARCH%-{gcc,libtool,cython2,python2-numpy,python3-numpy} automake autoconf make wget tar && break || sleep 15; done"
+
+build_script:
+    - bash -lc "cd \"$APPVEYOR_BUILD_FOLDER\" && exec ./appveyor-build-script.sh"
+
+branches:
+  only:
+    - master
+
