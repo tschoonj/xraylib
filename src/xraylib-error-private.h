@@ -10,51 +10,32 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef XRAYLIB_ERROR_H
-#define XRAYLIB_ERROR_H
+#ifndef XRAYLIB_ERROR_PRIVATE_H
+#define XRAYLIB_ERROR_PRIVATE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "xraylib-error.h"
+#include <stdarg.h>
 
-enum xrl_error_code {
-	XRL_ERROR_MEMORY, /* set in case of a memory allocation problem */
-	XRL_ERROR_INVALID_ARGUMENT, /* set in case an invalid argument gets passed to a routine */
-	XRL_ERROR_IO, /* set in case an error involving input/output occurred */
-	XRL_ERROR_TYPE, /* set in case an error involving type conversion occurred */
-	XRL_ERROR_UNSUPPORTED, /* set in case an unsupported feature has been requested */
-	XRL_ERROR_RUNTIME, /* set in case an unexpected runtime error occurred */
-};
+/*
+ *  This file is mostly copy-pasted from GLib's error methods...
+ */ 
 
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
+#define GNUC_PRINTF( format_idx, arg_idx )    \
+  __attribute__((__format__ (__printf__, format_idx, arg_idx)))
+#else /* !__GNUC__ */
+#define GNUC_PRINTF( format_idx, arg_idx )
+#endif /* !__GNUC__ */
 
-/**
- * xrl_error:
- * @code: error code, e.g. %XRL_ERROR_MEMORY
- * @message: human-readable informative error message
- *
- * The `xrl_error` structure contains information about
- * an error that has occurred.
- */
-typedef struct _xrl_error xrl_error;
+xrl_error* xrl_error_new(enum xrl_error_code code, const char *format, ...) GNUC_PRINTF (2, 3);
 
-struct _xrl_error
-{
-  enum xrl_error_code code;
-  char *message;
-};
+xrl_error* xrl_error_new_literal(enum xrl_error_code code, const char *message);
 
-void xrl_error_free(xrl_error *error);
+xrl_error* xrl_error_new_valist(enum xrl_error_code code, const char *format, va_list args) GNUC_PRINTF(2, 0);
 
-xrl_error* xrl_error_copy(const xrl_error *error);
+void xrl_set_error(xrl_error **err, enum xrl_error_code code , const char *format, ...) GNUC_PRINTF (3, 4);
 
-int xrl_error_matches(const xrl_error *error, enum xrl_error_code code);
-
-void xrl_propagate_error(xrl_error **dest, xrl_error *src);
-
-void xrl_clear_error(xrl_error **err);
-
-#ifdef __cplusplus
-}
-#endif
+void xrl_set_error_literal(xrl_error **err, enum xrl_error_code code, const char *message);
 
 #endif
+
