@@ -24,10 +24,13 @@ matrix:
             - gfortran-7
       env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: osx
+      osx_image: xcode7.3
       env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='/usr/local/opt/php@5.6/bin/php' PHP_CONFIG='/usr/local/opt/php@5.6/bin/php-config' PHP_BREW='php@5.6'
     - os: osx
+      osx_image: xcode7.3
       env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='/usr/local/bin/php' PHP_CONFIG='/usr/local/bin/php-config' PHP_BREW='php'
     - os: osx
+      osx_image: xcode7.3
       env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3'
 
 before_install:
