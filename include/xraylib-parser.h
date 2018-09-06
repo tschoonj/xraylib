@@ -16,6 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #ifndef XRAYLIB_PARSER_H
 #define XRAYLIB_PARSER_H
 
+#include "xraylib-error.h"
+
 /*
  *
  * this header includes the prototype of a function designed to parse
@@ -75,7 +77,7 @@ void FreeCompoundData(struct compoundData *);
  */
 
 
-struct compoundData *CompoundParser(const char compoundString[]);
+struct compoundData *CompoundParser(const char compoundString[], xrl_error **error);
 
 
 /*
@@ -94,14 +96,14 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
  * The string should be freed after usage with the xrlFree function
  */
 
-char * AtomicNumberToSymbol(int Z);
+char* AtomicNumberToSymbol(int Z, xrl_error **error);
 
 /*
  * The SymbolToAtomicNumber function returns the atomic number that corresponds with element symbol
  * If the element does not exist, 0 is returned
  */
 
-int SymbolToAtomicNumber(const char *symbol);
+int SymbolToAtomicNumber(const char *symbol, xrl_error **error);
 
 
 /*

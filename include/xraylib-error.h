@@ -17,14 +17,14 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 extern "C" {
 #endif
 
-enum xrl_error_code {
+typedef enum {
 	XRL_ERROR_MEMORY, /* set in case of a memory allocation problem */
 	XRL_ERROR_INVALID_ARGUMENT, /* set in case an invalid argument gets passed to a routine */
 	XRL_ERROR_IO, /* set in case an error involving input/output occurred */
 	XRL_ERROR_TYPE, /* set in case an error involving type conversion occurred */
 	XRL_ERROR_UNSUPPORTED, /* set in case an unsupported feature has been requested */
-	XRL_ERROR_RUNTIME, /* set in case an unexpected runtime error occurred */
-};
+	XRL_ERROR_RUNTIME /* set in case an unexpected runtime error occurred */
+} xrl_error_code;
 
 
 /**
@@ -39,7 +39,7 @@ typedef struct _xrl_error xrl_error;
 
 struct _xrl_error
 {
-  enum xrl_error_code code;
+  xrl_error_code code;
   char *message;
 };
 
@@ -47,7 +47,7 @@ void xrl_error_free(xrl_error *error);
 
 xrl_error* xrl_error_copy(const xrl_error *error);
 
-int xrl_error_matches(const xrl_error *error, enum xrl_error_code code);
+int xrl_error_matches(const xrl_error *error, xrl_error_code code);
 
 void xrl_propagate_error(xrl_error **dest, xrl_error *src);
 

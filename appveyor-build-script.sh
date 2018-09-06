@@ -8,6 +8,14 @@ export CYTHON=cython2
 cd $APPVEYOR_BUILD_FOLDER
 
 autoreconf -fi
+
+./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic"
+make
+make check
+make distclean
+
+exit 0
+
 ./configure --disable-python --disable-python-numpy
 make
 make check

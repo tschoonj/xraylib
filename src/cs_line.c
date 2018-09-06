@@ -13,6 +13,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
+#include <stddef.h>
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -29,163 +31,293 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 // Ref: M. O. Krause et. al. "X-Ray Fluorescence Cross Sections     //
 // for K and L X Rays of the Elements", ORNL 53                     //
 /////////////////////////////////////////////////////////////////// */
-      
-static double Jump_from_L1(int Z,double E)
+
+/* the next three methods correspond to the math shown in the third page of the Brunetti et al 2004 xraylib manuscript */
+
+static double Jump_from_L1(int Z, double E, xrl_error **error)
 {
-  double Factor=1.0,JumpL1,JumpK;
-	if( E > EdgeEnergy(Z,K_SHELL) ) {
-	  JumpK = JumpFactor(Z,K_SHELL) ;
-	  if( JumpK <= 0. )
-		return 0. ;
-	  Factor /= JumpK ;
-	}
-	if (E > EdgeEnergy(Z, L1_SHELL)) {
-	  JumpL1 = JumpFactor(Z, L1_SHELL);
-	  if (JumpL1 <= 0.0) return 0.0;
-	  Factor *= ((JumpL1-1)/JumpL1) * FluorYield(Z, L1_SHELL);
-	}
-	else
-	  return 0.;
+  double Factor = 1.0, JumpL1, JumpK;
+  double edgeK = EdgeEnergy(Z, K_SHELL, NULL);
+  double edgeL1 = EdgeEnergy(Z, L1_SHELL, NULL);
+  double yield;
+
+  if (E > edgeK && edgeK > 0.0) {
+    JumpK = JumpFactor(Z, K_SHELL, NULL);
+    if (JumpK == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    Factor /= JumpK ;
+  }
+ 
+  if (E > edgeL1 && edgeL1 > 0.0) {
+    JumpL1 = JumpFactor(Z, L1_SHELL, NULL);
+    if (JumpL1 == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    yield = FluorYield(Z, L1_SHELL, NULL);
+    if (yield == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_FLUOR_YIELD);
+      return 0.0;
+    }
+    Factor *= ((JumpL1 - 1) / JumpL1) * yield;
+  }
+  else {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+    return 0.0;
+  }
+
   return Factor;
-
 }
 
-static double Jump_from_L2(int Z,double E)
+static double Jump_from_L2(int Z, double E, xrl_error **error)
 {
-  double Factor=1.0,JumpL1,JumpL2,JumpK;
-  double TaoL1=0.0,TaoL2=0.0;
-	if( E > EdgeEnergy(Z,K_SHELL) ) {
-	  JumpK = JumpFactor(Z,K_SHELL) ;
-	  if( JumpK <= 0. )
-		return 0. ;
-	  Factor /= JumpK ;
-	}
-	JumpL1 = JumpFactor(Z,L1_SHELL) ;
-	JumpL2 = JumpFactor(Z,L2_SHELL) ;
-	if(E>EdgeEnergy (Z,L1_SHELL)) {
-	  if( JumpL1 <= 0.|| JumpL2 <= 0. )
-		return 0. ;
-	  TaoL1 = (JumpL1-1) / JumpL1 ;
-	  TaoL2 = (JumpL2-1) / (JumpL2*JumpL1) ;
-	}
-	else if( E > EdgeEnergy(Z,L2_SHELL) ) {
-	  if( JumpL2 <= 0. )
-		return 0. ;
-	  TaoL1 = 0. ;
-	  TaoL2 = (JumpL2-1)/(JumpL2) ;
-	}
-	else
-	  Factor = 0;
-	Factor *= (TaoL2 + TaoL1*CosKronTransProb(Z,F12_TRANS)) * FluorYield(Z,L2_SHELL) ;
+  double Factor = 1.0, JumpL1, JumpL2, JumpK;
+  double TaoL1 = 0.0, TaoL2 = 0.0;
+  double edgeK = EdgeEnergy(Z, K_SHELL, NULL);
+  double edgeL1 = EdgeEnergy(Z, L1_SHELL, NULL);
+  double edgeL2 = EdgeEnergy(Z, L2_SHELL, NULL);
+  double ck_L12, yield;
 
-	return Factor;
+  if (E > edgeK && edgeK > 0.0) {
+    JumpK = JumpFactor(Z, K_SHELL, NULL);
+    if (JumpK == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    Factor /= JumpK ;
+  }
 
+  JumpL1 = JumpFactor(Z, L1_SHELL, NULL);
+  JumpL2 = JumpFactor(Z, L2_SHELL, NULL);
+
+  if (E > edgeL1 && edgeL1 > 0.0) {
+    if (JumpL1 == 0.0 || JumpL2 == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    TaoL1 = (JumpL1 - 1) / JumpL1 ;
+    TaoL2 = (JumpL2 - 1) / (JumpL2 * JumpL1) ;
+  }
+  else if (E > edgeL2 && edgeL2 > 0.0) {
+    if (JumpL2 == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    TaoL1 = 0.0;
+    TaoL2 = (JumpL2 - 1) / JumpL2;
+  }
+  else {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+    return 0.0;
+  }
+
+  ck_L12 = CosKronTransProb(Z, F12_TRANS, NULL);
+  if (TaoL1 > 0 && ck_L12 == 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_CK);
+    return 0.0;
+  }
+
+  yield = FluorYield(Z, L2_SHELL, NULL);
+  if (yield == 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_FLUOR_YIELD);
+    return 0.0;
+  }
+
+  Factor *= (TaoL2 + TaoL1 * ck_L12) * yield;
+
+  return Factor;
 }
 
-
-static double Jump_from_L3(int Z,double E )
+static double Jump_from_L3(int Z, double E, xrl_error **error)
 {
-  double Factor=1.0,JumpL1,JumpL2,JumpL3,JumpK;
-  double TaoL1=0.0,TaoL2=0.0,TaoL3=0.0;
+  double Factor=1.0, JumpL1, JumpL2, JumpL3, JumpK;
+  double TaoL1=0.0, TaoL2=0.0, TaoL3=0.0;
+  double edgeK = EdgeEnergy(Z, K_SHELL, NULL);
+  double edgeL1 = EdgeEnergy(Z, L1_SHELL, NULL);
+  double edgeL2 = EdgeEnergy(Z, L2_SHELL, NULL);
+  double edgeL3 = EdgeEnergy(Z, L3_SHELL, NULL);
+  double ck_L23, ck_L13, ck_LP13, ck_L12;
+  double yield;
 
-	if( E > EdgeEnergy(Z,K_SHELL) ) {
-	  JumpK = JumpFactor(Z,K_SHELL) ;
-	  if( JumpK <= 0. )
-	return 0.;
-	  Factor /= JumpK ;
-	}
-	JumpL1 = JumpFactor(Z,L1_SHELL) ;
-	JumpL2 = JumpFactor(Z,L2_SHELL) ;
-	JumpL3 = JumpFactor(Z,L3_SHELL) ;
-	if( E > EdgeEnergy(Z,L1_SHELL) ) {
-	  if( JumpL1 <= 0.|| JumpL2 <= 0. || JumpL3 <= 0. )
-	return 0. ;
-	  TaoL1 = (JumpL1-1) / JumpL1 ;
-	  TaoL2 = (JumpL2-1) / (JumpL2*JumpL1) ;
-	  TaoL3 = (JumpL3-1) / (JumpL3*JumpL2*JumpL1) ;
-	}
-	else if( E > EdgeEnergy(Z,L2_SHELL) ) {
-	  if( JumpL2 <= 0. || JumpL3 <= 0. )
-	return 0. ;
-	  TaoL1 = 0. ;
-	  TaoL2 = (JumpL2-1) / (JumpL2) ;
-	  TaoL3 = (JumpL3-1) / (JumpL3*JumpL2) ;
-	}
-	else if( E > EdgeEnergy(Z,L3_SHELL) ) {
-	  TaoL1 = 0. ;
-	  TaoL2 = 0. ;
-	  if( JumpL3 <= 0. )
-	return 0. ;
-	  TaoL3 = (JumpL3-1) / JumpL3 ;
-	}
-	else
-	  Factor = 0;
-	Factor *= (TaoL3 + TaoL2 * CosKronTransProb(Z,F23_TRANS) +
-		TaoL1 * (CosKronTransProb(Z,F13_TRANS) + CosKronTransProb(Z,FP13_TRANS)
-		+ CosKronTransProb(Z,F12_TRANS) * CosKronTransProb(Z,F23_TRANS))) ;
-	Factor *= (FluorYield(Z,L3_SHELL) ) ;
-	return Factor;
+  if (E > edgeK && edgeK > 0.0) {
+    JumpK = JumpFactor(Z, K_SHELL, NULL);
+    if (JumpK == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    Factor /= JumpK ;
+  }
+  JumpL1 = JumpFactor(Z, L1_SHELL, NULL);
+  JumpL2 = JumpFactor(Z, L2_SHELL, NULL);
+  JumpL3 = JumpFactor(Z, L3_SHELL, NULL);
+  if (E > edgeL1 && edgeL1 > 0.0) {
+    if (JumpL1 == 0.0 || JumpL2 == 0.0 || JumpL3 == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    TaoL1 = (JumpL1 - 1) / JumpL1 ;
+    TaoL2 = (JumpL2 - 1) / (JumpL2 * JumpL1) ;
+    TaoL3 = (JumpL3 - 1) / (JumpL3 * JumpL2 * JumpL1) ;
+  }
+  else if (E > edgeL2 && edgeL2 > 0.0) {
+    if (JumpL2 == 0.0 || JumpL3 == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    TaoL1 = 0.0;
+    TaoL2 = (JumpL2 - 1) / (JumpL2) ;
+    TaoL3 = (JumpL3 - 1) / (JumpL3 * JumpL2) ;
+  }
+  else if (E > edgeL3 && edgeL3 > 0.0) {
+    TaoL1 = 0.0;
+    TaoL2 = 0.0;
+    if (JumpL3 == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+      return 0.0;
+    }
+    TaoL3 = (JumpL3 - 1) / JumpL3 ;
+  }
+  else {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+    return 0.0;
+  }
 
+  ck_L23 = CosKronTransProb(Z, F23_TRANS, NULL);
+  ck_L13 = CosKronTransProb(Z, F13_TRANS, NULL);
+  ck_LP13 = CosKronTransProb(Z, FP13_TRANS, NULL);
+  ck_L12 = CosKronTransProb(Z, F12_TRANS, NULL);
+
+  if (TaoL2 > 0.0 && ck_L23 == 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_CK);
+    return 0.0;
+  }
+
+  if (TaoL1 > 0.0 && (ck_L13 + ck_LP13 == 0.0 || ck_L12 == 0.0 || ck_L23 == 0.0)) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_CK);
+    return 0.0;
+  }
+
+  Factor *= TaoL3 + TaoL2 * ck_L23 + TaoL1 * (ck_L13 + ck_LP13 + ck_L12 * ck_L23);
+
+  yield = FluorYield(Z, L3_SHELL, NULL);
+  if (yield == 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_FLUOR_YIELD);
+    return 0.0;
+  }
+
+  Factor *= yield;
+  return Factor;
 }
 
-double CS_FluorLine(int Z, int line, double E)
+double CS_FluorLine(int Z, int line, double E, xrl_error **error)
 {
   double JumpK;
-  double cs_line, Factor = 1.;
+  double cs_line, Factor = 1.0;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function CS_FluorLine");
-    return 0;
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+    return 0.0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_FluorLine");
-    return 0;
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
   }
 
-  if (line>=KN5_LINE && line<=KB_LINE) {
-    if (E > EdgeEnergy(Z, K_SHELL)) {
-      JumpK = JumpFactor(Z, K_SHELL);
-      if (JumpK <= 0.)
-	return 0.;
-      Factor = ((JumpK-1)/JumpK) * FluorYield(Z, K_SHELL);
+  if (line >= KN5_LINE && line <= KB_LINE) {
+    double edgeK = EdgeEnergy(Z, K_SHELL, NULL);
+    double cs, rr;
+    if (E > edgeK && edgeK > 0.0) {
+      double yield;
+      JumpK = JumpFactor(Z, K_SHELL, NULL);
+      if (JumpK == 0.0) {
+        xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
+	return 0.0;
+      }
+      yield = FluorYield(Z, K_SHELL, NULL);
+      if (yield == 0.0) {
+        xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_FLUOR_YIELD);
+	return 0.0;
+      }
+      Factor = ((JumpK - 1)/JumpK) * yield;
     }
-    else
-      return 0.;                               
-    cs_line = CS_Photo(Z, E) * Factor * RadRate(Z, line) ;
-  }
+    else {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+      return 0.0;
+    }
 
-  else if (line>=L1P5_LINE && line<=L1L2_LINE) {
-	Factor=Jump_from_L1(Z,E);
-	cs_line = CS_Photo(Z, E) * Factor * RadRate(Z, line) ;
-  }
-  
-  else if (line>=L2Q1_LINE && line<=L2L3_LINE)  {
-	Factor=Jump_from_L2(Z,E);
-	cs_line = CS_Photo(Z, E) * Factor * RadRate(Z, line) ;
-  }
-  /*
-   * it's safe to use LA_LINE since it's only composed of 2 L3-lines
-   */
-  else if ((line>=L3Q1_LINE && line<=L3M1_LINE) || line==LA_LINE) {
-	Factor=Jump_from_L3(Z,E);
-	cs_line = CS_Photo(Z, E) * Factor * RadRate(Z, line) ;
-  }
-  else if (line==LB_LINE) {
-   	/*
-	 * b1->b17
-	 */
-   	cs_line=Jump_from_L2(Z,E)*(RadRate(Z,L2M4_LINE)+RadRate(Z,L2M3_LINE))+
-		   Jump_from_L3(Z,E)*(RadRate(Z,L3N5_LINE)+RadRate(Z,L3O4_LINE)+RadRate(Z,L3O5_LINE)+RadRate(Z,L3O45_LINE)+RadRate(Z,L3N1_LINE)+RadRate(Z,L3O1_LINE)+RadRate(Z,L3N6_LINE)+RadRate(Z,L3N7_LINE)+RadRate(Z,L3N4_LINE)) +
-		   Jump_from_L1(Z,E)*(RadRate(Z,L1M3_LINE)+RadRate(Z,L1M2_LINE)+RadRate(Z,L1M5_LINE)+RadRate(Z,L1M4_LINE));
-   	cs_line*=CS_Photo(Z, E);
-  }
+    cs = CS_Photo(Z, E, NULL);
+    if (cs == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
+      return 0.0;
+    }
 
+    rr = RadRate(Z, line, NULL);
+    if (rr == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_RAD_RATE);
+      return 0.0;
+    }
+
+    cs_line = cs * Factor * rr;
+  }
+  else if ((line <= L1L2_LINE && line >= L3Q1_LINE) || line == LA_LINE) {
+    double cs, rr;
+    cs = CS_Photo(Z, E, NULL);
+    if (cs == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
+      return 0.0;
+    }
+
+    rr = RadRate(Z, line, NULL);
+    if (rr == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_RAD_RATE);
+      return 0.0;
+    }
+
+    if (line >= L1P5_LINE && line <= L1L2_LINE) {
+      Factor = Jump_from_L1(Z, E, error);
+    }
+    else if (line >= L2Q1_LINE && line <= L2L3_LINE)  {
+      Factor = Jump_from_L2(Z, E, error);
+    }
+    /*
+     * it's safe to use LA_LINE since it's only composed of 2 L3-lines
+     */
+    else if ((line >= L3Q1_LINE && line <= L3M1_LINE) || line == LA_LINE) {
+      Factor = Jump_from_L3(Z, E, error);
+    }
+    if (Factor == 0.0) {
+      return 0.0;
+    }
+    cs_line = cs * Factor * rr;
+  }
+  else if (line == LB_LINE) {
+    /*
+     * b1->b17
+     */
+    double cs;
+    cs_line = Jump_from_L2(Z, E, NULL) * (RadRate(Z, L2M4_LINE, NULL) + RadRate(Z, L2M3_LINE, NULL)) +
+      Jump_from_L3(Z, E, NULL) * (RadRate(Z, L3N5_LINE, NULL) + RadRate(Z, L3O4_LINE, NULL) + RadRate(Z, L3O5_LINE, NULL) + RadRate(Z, L3O45_LINE, NULL) + RadRate(Z, L3N1_LINE, NULL) + RadRate(Z, L3O1_LINE, NULL) + RadRate(Z, L3N6_LINE, NULL) + RadRate(Z, L3N7_LINE, NULL) + RadRate(Z, L3N4_LINE, NULL)) +
+      Jump_from_L1(Z, E, NULL) * (RadRate(Z, L1M3_LINE, NULL) + RadRate(Z, L1M2_LINE, NULL) + RadRate(Z, L1M5_LINE, NULL) + RadRate(Z, L1M4_LINE, NULL));
+
+    if (cs_line == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+      return 0.0;
+    }
+    cs = CS_Photo(Z, E, NULL);
+    if (cs == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
+      return 0.0;
+    }
+    cs_line *= cs;
+  }
   else {
-    ErrorExit("Line not allowed in function CS_FluorLine");
-    return 0;
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+    return 0.0;
   }
   
   
-  return (cs_line);
+  return cs_line;
 }            

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2013, Tom Schoonjans, Bruno Golosio
+Copyright (c) 2010-2018, Tom Schoonjans, Bruno Golosio
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -16,101 +16,137 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Bruno Golosio''AS IS'' AND ANY E
 #include "xraylib.h"
 #include <stdlib.h>
 #include <math.h>
+#include "xraylib-error-private.h"
 
-double Refractive_Index_Re(const char compound[], double E, double density) {
-	struct compoundData *cd;
-	double delta = 0.0;
+#define REFR_BEGIN \
+	int nElements = 0; \
+	int *Elements = NULL;\
+	double *massFractions = NULL;\
+	\
+	if ((cd = CompoundParser(compound, NULL)) != NULL) { \
+		nElements = cd->nElements; \
+		Elements = cd->Elements; \
+		massFractions = cd->massFractions; \
+	} \
+	else if ((cdn = GetCompoundDataNISTByName(compound, NULL)) != NULL) { \
+		nElements = cdn->nElements; \
+		Elements = cdn->Elements; \
+		massFractions = cdn->massFractions; \
+		if (density <= 0.0) { \
+			density = cdn->density;\
+		} \
+	} \
+	else { \
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_COMPOUND); \
+		return rv; \
+	} \
+	if (density <= 0.0) { \
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_DENSITY); \
+		return rv; \
+	} \
+	if (E <= 0.0) { \
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY); \
+		return rv; \
+	}
+
+#define REFR_END \
+	if (cd) \
+		FreeCompoundData(cd); \
+	else if (cdn) \
+		FreeCompoundDataNIST(cdn);
+
+double Refractive_Index_Re(const char compound[], double E, double density, xrl_error **error) {
+	struct compoundData *cd = NULL;
+	struct compoundDataNIST *cdn = NULL;
+	double rv = 0.0;
 	int i;
 
-	if ((cd = CompoundParser(compound)) == NULL) {
-		ErrorExit("Refractive_Index_Re: CompoundParser error");
-		return 0.0;
-	} 
-	else if (E <= 0.0) {
-		ErrorExit("Refractive_Index_Re: energy must be greater than zero");
-		return 0.0;
-	}
-	else if (density <= 0.0) {
-		ErrorExit("Refractive_Index_Re: density must be greater than zero");
-		return 0.0;
-	}
+	REFR_BEGIN
 
 	/* Real part is 1-delta */
-	for (i=0 ; i < cd->nElements ; i++) {
-		delta += cd->massFractions[i]*KD*(cd->Elements[i]+Fi(cd->Elements[i],E))/AtomicWeight(cd->Elements[i])/E/E;
+	for (i=0 ; i < nElements ; i++) {
+		double fi = 0.0;
+		double atomic_weight = 0.0;
+		fi = Fi(Elements[i], E, error);
+		if (fi == 0.0)
+			return 0.0;
+		atomic_weight = AtomicWeight(Elements[i], error);
+		if (atomic_weight == 0.0)
+			return 0.0;
+		rv += massFractions[i] * KD * (Elements[i] + fi) / atomic_weight / E / E;
 	}
 
+	REFR_END
 
-	FreeCompoundData(cd);
-
-	return 1.0-(delta*density);
+	/* rv == delta! */
+	return 1.0 - (rv * density);
 }
 
 
 
 
-double Refractive_Index_Im(const char compound[], double E, double density) {
-	struct compoundData *cd;
+double Refractive_Index_Im(const char compound[], double E, double density, xrl_error **error) {
+	struct compoundData *cd = NULL;
+	struct compoundDataNIST *cdn = NULL;
 	int i;
 	double rv = 0.0;
 
-	if ((cd = CompoundParser(compound)) == NULL) {
-		ErrorExit("Refractive_Index_Im: CompoundParser error");
-		return 0.0;
-	} 
-	else if (E <= 0.0) {
-		ErrorExit("Refractive_Index_Im: energy must be greater than zero");
-		return 0.0;
-	}
-	else if (density <= 0.0) {
-		ErrorExit("Refractive_Index_Im: density must be greater than zero");
-		return 0.0;
+	REFR_BEGIN
+
+	for (i = 0 ; i < nElements ; i++) {
+		double cs = 0.0;
+		cs = CS_Total(Elements[i], E, error);
+		if (cs == 0.0)
+			return 0.0;
+		rv += cs * massFractions[i];
 	}
 
-	for (i = 0 ; i < cd->nElements ; i++) 
-		rv += CS_Total(cd->Elements[i], E)*cd->massFractions[i];
+	REFR_END;
 
-	FreeCompoundData(cd);
 	/*9.8663479e-9 is calculated as planck's constant * speed of light / 4Pi */
-	return rv*density*9.8663479e-9/E;	
+	return rv * density * 9.8663479e-9 / E;
 }
 
-xrlComplex Refractive_Index(const char compound[], double E, double density) {
+xrlComplex Refractive_Index(const char compound[], double E, double density, xrl_error **error) {
 	struct compoundData *cd;
+	struct compoundDataNIST *cdn;
 	int i;
-	xrlComplex rv;
+	xrlComplex rv = {0.0, 0.0};
 	double delta = 0.0;
 	double im = 0.0;
 
-	rv.re = 0.0;
-	rv.im = 0.0;
-
-	if ((cd = CompoundParser(compound)) == NULL) {
-		ErrorExit("Refractive_Index: CompoundParser error");
-		return rv;
-	} 
-	else if (E <= 0.0) {
-		ErrorExit("Refractive_Index: energy must be greater than zero");
-		return rv;
-	}
-	else if (density <= 0.0) {
-		ErrorExit("Refractive_Index: density must be greater than zero");
-		return rv;
-	}
+	REFR_BEGIN
 
 	for (i=0 ; i < cd->nElements ; i++) {
-		delta += cd->massFractions[i]*KD*(cd->Elements[i]+Fi(cd->Elements[i],E))/AtomicWeight(cd->Elements[i])/E/E;
-		im += CS_Total(cd->Elements[i], E)*cd->massFractions[i];
+		double fi = 0.0;
+		double atomic_weight = 0.0;
+		double cs = 0.0;
+		fi = Fi(Elements[i], E, error);
+		if (fi == 0.0)
+			return rv;
+
+		atomic_weight = AtomicWeight(Elements[i], error);
+		if (atomic_weight == 0.0)
+			return rv;
+
+		cs = CS_Total(Elements[i], E, error);
+		if (cs == 0.0)
+			return rv;
+
+		im += cs * massFractions[i];
+		delta += massFractions[i] * KD * (Elements[i] + fi) / atomic_weight / E / E;
 	}
 
-	rv.re = 1.0-(delta*density);
-	rv.im = im*density*9.8663479e-9/E;
+	rv.re = 1.0 - (delta*density);
+	rv.im = im * density * 9.8663479e-9 / E;
 
 	return rv;
 }
 
-void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result) {
-	xrlComplex z = Refractive_Index(compound, E, density);
+void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result, xrl_error **error);
+
+void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result, xrl_error **error) {
+	xrlComplex z = Refractive_Index(compound, E, density, error);
 
 	result->re = z.re;
 	result->im = z.im;

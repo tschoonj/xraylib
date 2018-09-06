@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013, Tom Schoonjans
+Copyright (c) 2013-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

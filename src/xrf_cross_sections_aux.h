@@ -13,43 +13,43 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include "xraylib.h"
 
-double PL1_pure_kissel(int Z, double E);
-double PL1_rad_cascade_kissel(int Z, double E, double PK);
-double PL1_auger_cascade_kissel(int Z, double E, double PK);
-double PL1_full_cascade_kissel(int Z, double E, double PK);
+double PL1_pure_kissel(int Z, double E, xrl_error **error);
+double PL1_rad_cascade_kissel(int Z, double E, double PK, xrl_error **error);
+double PL1_auger_cascade_kissel(int Z, double E, double PK, xrl_error **error);
+double PL1_full_cascade_kissel(int Z, double E, double PK, xrl_error **error);
 
-double PL2_pure_kissel(int Z, double E, double PL1);
-double PL2_rad_cascade_kissel(int Z, double E, double PK, double PL1);
-double PL2_auger_cascade_kissel(int Z, double E, double PK, double PL1);
-double PL2_full_cascade_kissel(int Z, double E, double PK, double PL1);
+double PL2_pure_kissel(int Z, double E, double PL1, xrl_error **error);
+double PL2_rad_cascade_kissel(int Z, double E, double PK, double PL1, xrl_error **error);
+double PL2_auger_cascade_kissel(int Z, double E, double PK, double PL1, xrl_error **error);
+double PL2_full_cascade_kissel(int Z, double E, double PK, double PL1, xrl_error **error);
 
-double PL3_pure_kissel(int Z, double E, double PL1, double PL2);
-double PL3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2);
-double PL3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2);
-double PL3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2);
+double PL3_pure_kissel(int Z, double E, double PL1, double PL2, xrl_error **error);
+double PL3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, xrl_error **error);
+double PL3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, xrl_error **error);
+double PL3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, xrl_error **error);
 
-double PM1_pure_kissel(int Z, double E);
-double PM1_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3);
-double PM1_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3);
-double PM1_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3);
+double PM1_pure_kissel(int Z, double E, xrl_error **error);
+double PM1_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, xrl_error **error);
+double PM1_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, xrl_error **error);
+double PM1_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, xrl_error **error);
 
-double PM2_pure_kissel(int Z, double E, double PM1);
-double PM2_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1);
-double PM2_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1);
-double PM2_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1);
+double PM2_pure_kissel(int Z, double E, double PM1, xrl_error **error);
+double PM2_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, xrl_error **error);
+double PM2_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, xrl_error **error);
+double PM2_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, xrl_error **error);
 
-double PM3_pure_kissel(int Z, double E, double PM1, double PM2);
-double PM3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2);
-double PM3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2);
-double PM3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2);
+double PM3_pure_kissel(int Z, double E, double PM1, double PM2, xrl_error **error);
+double PM3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, xrl_error **error);
+double PM3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, xrl_error **error);
+double PM3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, xrl_error **error);
 
-double PM4_pure_kissel(int Z, double E, double PM1, double PM2, double PM3);
-double PM4_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3);
-double PM4_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3);
-double PM4_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3);
+double PM4_pure_kissel(int Z, double E, double PM1, double PM2, double PM3, xrl_error **error);
+double PM4_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, xrl_error **error);
+double PM4_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, xrl_error **error);
+double PM4_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, xrl_error **error);
 
 
-double PM5_pure_kissel(int Z, double E, double PM1, double PM2, double PM3, double PM4);
-double PM5_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4);
-double PM5_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4);
-double PM5_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4);
+double PM5_pure_kissel(int Z, double E, double PM1, double PM2, double PM3, double PM4, xrl_error **error);
+double PM5_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4, xrl_error **error);
+double PM5_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4, xrl_error **error);
+double PM5_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4, xrl_error **error);

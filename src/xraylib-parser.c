@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include "xraylib-aux.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 #include "xrayvars.h"
 #include "xrayglob.h"
 #include <string.h>
@@ -40,13 +41,12 @@ static int compareCompoundAtoms(const void *i1, const void *i2) {
 
 static int compareInt(const void *A, const void *B);
 
-static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca) {
+static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca, xrl_error **error) {
 
 	int nbrackets=0;
 	int nuppers=0;
 	int i,j;
 	char **upper_locs = NULL;
-	char buffer[1024];
 	char **brackets_begin_locs=NULL;
 	char **brackets_end_locs=NULL;
 	int nbracket_pairs=0;
@@ -61,27 +61,23 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 	char *endPtr;
 
 
-
-
 	if (islower(compoundString[0]) || isdigit(compoundString[0])) {
-		sprintf(buffer,"xraylib-parser: invalid chemical formula. Found a lowercase character or digit where not allowed");
-		ErrorExit(buffer);
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: Found a lowercase character or digit where not allowed");
 		return 0;
 	}
-
 
 	for (i = 0 ; compoundString[i] != '\0' ; i++) {
 		if (compoundString[i] == '(') {
 			nbrackets++;
 			if (nbrackets == 1) {
-				brackets_begin_locs = (char **) realloc((char **) brackets_begin_locs,sizeof(char *)*++nbracket_pairs);
+				brackets_begin_locs = realloc(brackets_begin_locs, sizeof(char *) * ++nbracket_pairs);
 				brackets_begin_locs[nbracket_pairs-1] = compoundString+i;
 			}
 		}
 		else if (compoundString[i] == ')') {
 			nbrackets--;
 			if (nbrackets == 0) {
-				brackets_end_locs = (char **) realloc((char **) brackets_end_locs,sizeof(char *)*nbracket_pairs);
+				brackets_end_locs = realloc(brackets_end_locs, sizeof(char *) * nbracket_pairs);
 				brackets_end_locs[nbracket_pairs-1] = compoundString+i;
 			}
 		}
@@ -89,43 +85,37 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 
 		}
 		else if (nbrackets == 0 && isupper(compoundString[i])) {
-			upper_locs =(char **) realloc((char **) upper_locs,sizeof(char *)*++nuppers);
+			upper_locs = realloc(upper_locs, sizeof(char *) * ++nuppers);
 			upper_locs[nuppers-1] = compoundString+i;
 		}
 		else if (compoundString[i] == ' '){
-			sprintf(buffer,"xraylib-parser: spaces are not allowed in compound formula");
-			ErrorExit(buffer);
+			xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: Spaces are not allowed in compound formula");
 			return 0;
 		}
 		else if (i > 0 && islower(compoundString[i]) && isdigit(compoundString[i-1])) {
-			sprintf(buffer,"xraylib-parser: invalid chemical formula. Found a lowercase character where not allowed");
-			ErrorExit(buffer);
+			xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: Found a lowercase character where not allowed");
 			return 0;
 		}
 		else if (islower(compoundString[i]) || isdigit(compoundString[i]) || compoundString[i] == '.') {
-
+			/* this is ok... */
 		}
 		else {
-			sprintf(buffer,"xraylib-parser: invalid character detected %c",compoundString[i]);
-			ErrorExit(buffer);
+			xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: invalid character detected %c",compoundString[i]);
 			return 0;
 		}
 
 		if (nbrackets < 0) {
-			sprintf(buffer,"xraylib-parser: brackets not matching");
-			ErrorExit(buffer);
+			xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: Brackets not matching");
 			return 0;
 		}
-
 	}
+
 	if (nuppers == 0 && nbracket_pairs == 0) {
-		sprintf(buffer,"xraylib-parser: Chemical formula contains no elements");
-		ErrorExit(buffer);
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: No elements found");
 		return 0;
 	}
 	if (nbrackets > 0) {
-		sprintf(buffer,"xraylib-parser: brackets not matching");
-		ErrorExit(buffer);
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: Brackets not matching");
 		return 0;
 	}
 
@@ -135,41 +125,37 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			/*second letter is lowercase and third one isn't -> valid */
 			tempElement = strndup(upper_locs[i],2);
 			/*get corresponding atomic number */
-			res = bsearch(tempElement, MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement), matchMendelElement);
+			res = bsearch(tempElement, MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), matchMendelElement);
 			if (res == NULL) {
-				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
-				ErrorExit(buffer);
+				xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: unknown symbol %s detected", tempElement);
 				return 0;
 			}
 			/*determine element subscript */
-			j=2;
-			ndots=0;
+			j = 2;
+			ndots = 0;
 			while (isdigit(upper_locs[i][j]) || upper_locs[i][j] == '.') {
 				j++;
 				if (upper_locs[i][j] == '.')
 					ndots++;
 			}
 			if (ndots > 1) {
-				sprintf(buffer,"xraylib-parser: only one dot allowed in subscripts of the chemical formula");
-				ErrorExit(buffer);
+				xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: only one dot allowed in subscripts of the chemical formula");
 				return 0;
 			}
-			if (j==2) {
+			if (j == 2) {
 				tempnAtoms = 1.0;
 			}
 			else {
-				tempSubstring = strndup(upper_locs[i]+2,j-2);
-				tempnAtoms =  strtod(tempSubstring,&endPtr);
+				tempSubstring = strndup(upper_locs[i] + 2, j - 2);
+				tempnAtoms =  strtod(tempSubstring, &endPtr);
 				if (endPtr != tempSubstring+strlen(tempSubstring)) {
-					sprintf(buffer,"xraylib-parser: error converting subscript %s of the chemical formula to a real number",tempSubstring);
-					ErrorExit(buffer);
+					xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
 					return 0;
 				}
 
 				/*zero subscript is not allowed */
 				if (tempnAtoms == 0.0) {
-					sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
-					ErrorExit(buffer);
+					xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: zero subscript detected");
 					return 0;
 				}
 				free(tempSubstring);
@@ -178,43 +164,39 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 		}
 		else if (!islower(upper_locs[i][1])) {
 			/*second letter is not lowercase -> valid */
-			tempElement = strndup(upper_locs[i],1);
+			tempElement = strndup(upper_locs[i], 1);
 			/*get corresponding atomic number */
-			res = bsearch(tempElement, MendelArraySorted,MENDEL_MAX,sizeof(struct MendelElement), matchMendelElement);
+			res = bsearch(tempElement, MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), matchMendelElement);
 			if (res == NULL) {
-				sprintf(buffer,"xraylib-parser: invalid element %s in chemical formula",tempElement);
-				ErrorExit(buffer);
+				xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: unknown symbol %s detected", tempElement);
 				return 0;
 			}
 			/*determine element subscript */
-			j=1;
-			ndots=0;
+			j = 1;
+			ndots = 0;
 			while (isdigit(upper_locs[i][j]) || upper_locs[i][j] == '.') {
 				j++;
 				if (upper_locs[i][j] == '.')
 					ndots++;
 			}
 			if (ndots > 1) {
-				sprintf(buffer,"xraylib-parser: only one dot allowed in subscripts of the chemical formula");
-				ErrorExit(buffer);
+				xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: only one dot allowed in subscripts of the chemical formula");
 				return 0;
 			}
-			if (j==1) {
+			if (j == 1) {
 				tempnAtoms = 1.0;
 			}
 			else {
-				tempSubstring = strndup(upper_locs[i]+1,j-1);
-				tempnAtoms =  strtod(tempSubstring,&endPtr);
-				if (endPtr != tempSubstring+strlen(tempSubstring)) {
-					sprintf(buffer,"xraylib-parser: error converting subscript %s of the chemical formula to a real number",tempSubstring);
-					ErrorExit(buffer);
+				tempSubstring = strndup(upper_locs[i] + 1, j - 1);
+				tempnAtoms =  strtod(tempSubstring, &endPtr);
+				if (endPtr != tempSubstring + strlen(tempSubstring)) {
+					xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
 					return 0;
 				}
 
 				/*zero subscript is not allowed */
 				if (tempnAtoms == 0.0) {
-					sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
-					ErrorExit(buffer);
+					xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: zero subscript detected");
 					return 0;
 				}
 				free(tempSubstring);
@@ -222,14 +204,13 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			free(tempElement);
 		}
 		else {
-			sprintf(buffer,"xraylib-parser: invalid chemical formula");
-			ErrorExit(buffer);
+			xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula");
 			return 0;
 		}
 		/*atomic number identification ok -> add it to the array if necessary */
 		if (ca->nElements == 0) {
 			/*array is empty */
-			ca->singleElements = (struct compoundAtom *) malloc(sizeof(struct compoundAtom));
+			ca->singleElements = malloc(sizeof(struct compoundAtom));
 			ca->singleElements[0].Element = res->Zatom;
 			ca->singleElements[0].nAtoms = tempnAtoms;
 			ca->nElements++;
@@ -238,7 +219,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			/*array is not empty */
 			/*check if current element is already present in the array */
 			key2.Element = res->Zatom;
-			res2 = bsearch(&key2,ca->singleElements,ca->nElements,sizeof(struct compoundAtom),compareCompoundAtoms);
+			res2 = bsearch(&key2, ca->singleElements, ca->nElements, sizeof(struct compoundAtom), compareCompoundAtoms);
 			if (res2 == NULL) {
 				/*element not in array -> add it */
 				ca->singleElements = (struct compoundAtom *) realloc((struct compoundAtom *) ca->singleElements,(++ca->nElements)*sizeof(struct compoundAtom));
@@ -258,12 +239,12 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 
 	/*handle the brackets... */
 	for (i = 0 ; i < nbracket_pairs ; i++) {
-		tempBracketAtoms = (struct compoundAtoms *) malloc(sizeof(struct compoundAtoms));
+		tempBracketAtoms = malloc(sizeof(struct compoundAtoms));
 		tempBracketString = strndup(brackets_begin_locs[i]+1,(size_t) (brackets_end_locs[i]-brackets_begin_locs[i]-1));
 		tempBracketAtoms->nElements = 0;
 		tempBracketAtoms->singleElements = NULL;
 		/*recursive call */
-		if (CompoundParserSimple(tempBracketString,tempBracketAtoms) == 0) {
+		if (CompoundParserSimple(tempBracketString, tempBracketAtoms, error) == 0) {
 			return 0;
 		}
 		free(tempBracketString);
@@ -276,8 +257,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 				ndots++;
 		}
 		if (ndots > 1) {
-			sprintf(buffer,"xraylib-parser: only one dot allowed in subscripts of the chemical formula");
-			ErrorExit(buffer);
+			xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: only one dot allowed in subscripts of the chemical formula");
 			return 0;
 		}
 		if (j==1) {
@@ -287,14 +267,12 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 			tempSubstring = strndup(brackets_end_locs[i]+1,j-1);
 			tempnAtoms =  strtod(tempSubstring,&endPtr);
 			if (endPtr != tempSubstring+strlen(tempSubstring)) {
-				sprintf(buffer,"xraylib-parser: error converting subscript %s of the chemical formula to a real number",tempSubstring);
-				ErrorExit(buffer);
+				xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
 				return 0;
 			}
 			/*zero subscript is not allowed */
 			if (tempnAtoms == 0.0) {
-				sprintf(buffer,"xraylib-parser: zero subscript detected in chemical formula");
-				ErrorExit(buffer);
+				xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
 				return 0;
 			}
 			free(tempSubstring);
@@ -311,10 +289,10 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 		else {
 			for (j = 0 ; j < tempBracketAtoms->nElements ; j++) {
 				key2.Element = tempBracketAtoms->singleElements[j].Element;
-				res2 = bsearch(&key2,ca->singleElements,ca->nElements,sizeof(struct compoundAtom),compareCompoundAtoms);
+				res2 = bsearch(&key2,ca->singleElements, ca->nElements, sizeof(struct compoundAtom), compareCompoundAtoms);
 				if (res2 == NULL) {
 					/*element not in array -> add it */
-					ca->singleElements = (struct compoundAtom *) realloc((struct compoundAtom *) ca->singleElements,(++ca->nElements)*sizeof(struct compoundAtom));
+					ca->singleElements = realloc(ca->singleElements,(++ca->nElements)*sizeof(struct compoundAtom));
 					ca->singleElements[ca->nElements-1].Element = key2.Element;
 					ca->singleElements[ca->nElements-1].nAtoms = tempBracketAtoms->singleElements[j].nAtoms*tempnAtoms;
 					/*sort array */
@@ -342,37 +320,42 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca)
 
 
 
-struct compoundData *CompoundParser(const char compoundString[]) {
-	struct compoundAtoms ca = {0.0,NULL};
+struct compoundData* CompoundParser(const char compoundString[], xrl_error **error) {
+	struct compoundAtoms ca = {0.0, NULL};
 	int rvCPS,i;
 	double sum = 0.0;
 
 	char *compoundStringCopy;
 	char *backup_locale;
 
+	if (compoundString == NULL) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Compound cannot be NULL");
+		return NULL;
+	}
+
 	/* the locale is changed to default locale because we'll be using strtod later on */
 	backup_locale = setlocale(LC_NUMERIC, "C");
 
 	compoundStringCopy = strdup(compoundString);
 
-	rvCPS=CompoundParserSimple(compoundStringCopy,&ca);
+	rvCPS = CompoundParserSimple(compoundStringCopy, &ca, error);
 
 	setlocale(LC_NUMERIC, backup_locale);
 
 	if (rvCPS) {
-		struct compoundData *cd = (struct compoundData *) malloc(sizeof(struct compoundData));
+		struct compoundData *cd = malloc(sizeof(struct compoundData));
 		cd->nElements = ca.nElements;
 		cd->nAtomsAll = 0.0;
-		cd->Elements = malloc(sizeof(int)*ca.nElements);
-		cd->massFractions = malloc(sizeof(double)*ca.nElements);
-		cd->nAtoms = malloc(sizeof(double)*ca.nElements);
+		cd->Elements = malloc(sizeof(int) * ca.nElements);
+		cd->massFractions = malloc(sizeof(double) * ca.nElements);
+		cd->nAtoms = malloc(sizeof(double) * ca.nElements);
 		for (i = 0 ; i < ca.nElements ; i++) {
-			sum += AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms;
+			sum += AtomicWeight(ca.singleElements[i].Element, NULL) * ca.singleElements[i].nAtoms;
 			cd->nAtomsAll += ca.singleElements[i].nAtoms;
 		}
 		for (i = 0 ; i < ca.nElements ; i++) {
 			cd->Elements[i] = ca.singleElements[i].Element;
-			cd->massFractions[i] = AtomicWeight(ca.singleElements[i].Element)*ca.singleElements[i].nAtoms/sum;
+			cd->massFractions[i] = AtomicWeight(ca.singleElements[i].Element, NULL) * ca.singleElements[i].nAtoms / sum;
 			cd->nAtoms[i] = ca.singleElements[i].nAtoms;
 		}
 		cd->molarMass = sum;
@@ -381,8 +364,12 @@ struct compoundData *CompoundParser(const char compoundString[]) {
 
 		return cd;
 	}
-	else
+	else {
+		if (ca.singleElements)
+			free(ca.singleElements);
+		free(compoundStringCopy);
 		return NULL;
+	}
 }
 
 void FreeCompoundData(struct compoundData *cd) {
@@ -399,7 +386,7 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
 	double *longestW, *shortestW;
 
 
-	rv = (struct compoundData *) malloc(sizeof(struct compoundData)) ;
+	rv = malloc(sizeof(struct compoundData)) ;
 
 	if (A.nElements >= B.nElements) {
 		longest = &A;
@@ -414,7 +401,7 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
 		shortestW = &weightA;
 	}
 
-	rv->Elements = (int *) malloc(sizeof(int)*longest->nElements);
+	rv->Elements = malloc(sizeof(int) * longest->nElements);
 	memcpy(rv->Elements,longest->Elements, sizeof(int)*longest->nElements);
 	rv->nElements = longest->nElements;
 
@@ -429,7 +416,7 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
 		}
 		if (!found) {
 			/*add to array */
-			rv->Elements = (int *) realloc(rv->Elements, sizeof(int) * ++(rv->nElements));
+			rv->Elements = realloc(rv->Elements, sizeof(int) * ++(rv->nElements));
 			rv->Elements[rv->nElements-1] = shortest->Elements[i];
 		}
 	}
@@ -464,16 +451,16 @@ static int compareInt(const void *A, const void *B) {
 }
 
 
-char *AtomicNumberToSymbol(int Z) {
+char *AtomicNumberToSymbol(int Z, xrl_error **error) {
 	if (Z < 1 || Z > MENDEL_MAX ) {
-		ErrorExit("AtomicNumberToSymbol: Z out of range");
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
 		return NULL;
 	}
 
-	return strdup(MendelArray[Z-1].name );
+	return strdup(MendelArray[Z-1].name);
 }
 
-int SymbolToAtomicNumber(const char *symbol) {
+int SymbolToAtomicNumber(const char *symbol, xrl_error **error) {
 	int i;
 
 	for (i=0 ; i < MENDEL_MAX ; i++) {
@@ -481,7 +468,7 @@ int SymbolToAtomicNumber(const char *symbol) {
 			return MendelArray[i].Zatom;
 	}
 
-	ErrorExit("AtomicNumberToSymbol: unknown symbol");
+	xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical symbol");
 	return 0;
 }
 

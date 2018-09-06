@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, Tom Schoonjans
+Copyright (c) 2014-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -16,12 +16,16 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * Modify at your own risk...
  */
 
+#include "config.h"
+#include "xraylib-error-private.h"
 #include "xrayvars.h"
-#include <xraylib-radionuclides.h>
-#include <xraylib-radionuclides-internal.h>
+#include "xraylib-radionuclides.h"
+#include "xraylib-radionuclides-internal.h"
 #include <string.h>
+#include <errno.h>
 #include <search.h>
-#include <xraylib-aux.h>
+#include "xraylib-aux.h"
+#include "xraylib-error-private.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -31,19 +35,21 @@ static int CompareRadioNuclideData(const void *a, const void *b) {
 	return strcmp(ac->name, bc->name);
 }
 
-struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[]) {
+struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[], xrl_error **error) {
 
-	struct radioNuclideData*key = malloc(sizeof(struct radioNuclideData));
-	struct radioNuclideData*rv;
-	char *buffer;
+	struct radioNuclideData *key = malloc(sizeof(struct radioNuclideData));
+	struct radioNuclideData *rv;
 #ifndef _WIN32
 	size_t nelp;
 #else
 	unsigned int nelp;
 #endif
+	if (key == NULL) {
+		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+		return NULL;
+	}
 	key->name = strdup(radioNuclideString);
 	
-
 #ifndef _WIN32
 	nelp = nNuclideDataList;
 
@@ -53,7 +59,6 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
 
 	rv = _lfind(key, nuclideDataList, &nelp, sizeof(struct radioNuclideData), CompareRadioNuclideData);
 #endif
-
 	free(key->name);
 
 	if (rv != NULL) {
@@ -75,27 +80,26 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
 	}
 	else {
 		free(key);
-		buffer = malloc(sizeof(char)*(strlen("xraylib-radionuclides: no match found for ")+strlen(radioNuclideString)+1));
-		sprintf(buffer,"xraylib-radionuclides: no match found for %s", radioNuclideString);
-		ErrorExit(buffer);
-		free(buffer);
+		xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "%s was not found in the radionuclide database", radioNuclideString);
 		key = NULL;
 	}
 	return key;
 }
 
-struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex) {
+struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex, xrl_error **error) {
 	struct radioNuclideData *key;
 
 	if (radioNuclideIndex < 0 || radioNuclideIndex >= nNuclideDataList) {
-		char buffer[1000];
-		sprintf(buffer,"xraylib-radionuclides: no match found for index %i", radioNuclideIndex);
-		ErrorExit(buffer);
+		xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "%d is out of the range of indices covered by the radionuclide database", radioNuclideIndex);
 		/* radioNuclideIndex out of range */
 		return NULL;
 	}
 
 	key = malloc(sizeof(struct radioNuclideData));
+	if (key == NULL) {
+		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+		return NULL;
+	}
 	key->name = strdup(nuclideDataList[radioNuclideIndex].name);
 	key->Z = nuclideDataList[radioNuclideIndex].Z; 
 	key->A = nuclideDataList[radioNuclideIndex].A; 
@@ -115,7 +119,7 @@ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex) {
 	return key;
 }
 
-char **GetRadioNuclideDataList(int *nRadioNuclides) {
+char **GetRadioNuclideDataList(int *nRadioNuclides, xrl_error **error) {
 	int i;
 	char **rv;
 
@@ -123,6 +127,10 @@ char **GetRadioNuclideDataList(int *nRadioNuclides) {
 		*nRadioNuclides = nNuclideDataList;
 
 	rv = malloc(sizeof(char *)*(nNuclideDataList+1));
+	if (rv == NULL) {
+		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+		return NULL;
+	}
 
 	for (i = 0 ; i < nNuclideDataList; i++)
 		rv[i] = strdup(nuclideDataList[i].name);

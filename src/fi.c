@@ -14,6 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 
 /*////////////////////////////////////////////////////////////////////
@@ -24,25 +25,23 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double Fi(int Z, double E)
+double Fi(int Z, double E, xrl_error **error)
 {
   double fi;
 
-  if (Z<1 || Z>ZMAX || NE_Fi[Z]<0) {
-    ErrorExit("Z out of range in function Fi");
-    return 0;
+  if (Z < 1 || Z > ZMAX || NE_Fi[Z] < 0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+    return 0.0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function fi");
-    return 0;
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
   }
 
   splint(E_Fi_arr[Z]-1, Fi_arr[Z]-1, Fi_arr2[Z]-1,
          NE_Fi[Z], E, &fi);
 
-
   return fi;
-
 }
 

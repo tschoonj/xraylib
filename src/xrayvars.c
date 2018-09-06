@@ -15,7 +15,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include <stdlib.h>
 #include <string.h>
 #include "xraylib-defs.h"
-#include <xrayglob.h>
+#include "xrayglob.h"
+#include "xraylib-deprecated.h"
 
 /*/////////////////////////////////////////////////////////////////////
 /////            Variables                                       /////
@@ -249,11 +250,6 @@ int matchCrystalStruct(const void *i1, const void *i2) {
 }
 
 #define ERROR_MESSAGE " has been deprecated and will be removed in a future release of xraylib.\nPlease remove all occurrences of this method in your code.\n"
-
-void ErrorExit(char *error_message)
-{
-  fprintf(stderr, "ErrorExit" ERROR_MESSAGE);
-}
 
 void SetHardExit(int hard_exit)
 {

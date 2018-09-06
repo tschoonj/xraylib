@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2011, Tom Schoonjans
+Copyright (c) 2011-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -33,23 +34,25 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double AtomicLevelWidth(int Z, int shell)
+double AtomicLevelWidth(int Z, int shell, xrl_error **error)
 {
   double atomic_level_width;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function AtomicLevelWidth");
-    return 0;
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+    return 0.0;
   }
-  if (shell<0 || shell>=SHELLNUM) {
-    ErrorExit("Shell not available in function AtomicLevelWidth");
-    return 0;
+
+  if (shell < 0 || shell >= SHELLNUM) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_SHELL);
+    return 0.0;
   }
+
   atomic_level_width = AtomicLevelWidth_arr[Z][shell];
 
-  if (atomic_level_width < 0.) {
-    ErrorExit("Shell not available in function AtomicLevelWidth");
-    return 0;
+  if (atomic_level_width <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
+    return 0.0;
   }
 
   return atomic_level_width;

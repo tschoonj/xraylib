@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2011, Tom Schoonjans
+Copyright (c) 2009-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,11 +13,30 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 
 #include <math.h>
+#include <stddef.h>
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 #include "xrf_cross_sections_aux.h"
 
+static int LB_LINE_MACROS[] = {
+  L2M4_LINE,
+  L2M3_LINE,
+  L3N5_LINE,
+  L3O4_LINE,
+  L3O5_LINE,
+  L3O45_LINE,
+  L3N1_LINE,
+  L3O1_LINE,
+  L3N6_LINE,
+  L3N7_LINE,
+  L3N4_LINE,
+  L1M3_LINE,
+  L1M2_LINE,
+  L1M5_LINE,
+  L1M4_LINE
+};
 
 /*/////////////////////////////////////////////////////////
 //                                                       //
@@ -28,30 +47,29 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //    E : energy (keV)                                   //
 //                                                       //
 //////////////////////////////////////////////////////// */
-double CSb_Photo_Total(int Z, double E) {
+double CSb_Photo_Total(int Z, double E, xrl_error **error) {
   int shell;
   double rv = 0.0;
 
-  if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel[Z]<0) {
-    ErrorExit("Z out of range in function CSb_Photo_Total");
+  if (Z < 1 || Z > ZMAX || NE_Photo_Total_Kissel[Z] < 0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0.0;
   }
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CSb_Photo_Total");
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0.0;
   }
-/*  ln_E = log((double) E);
-  splint(E_Photo_Total_Kissel[Z]-1, Photo_Total_Kissel[Z]-1, Photo_Total_Kissel2[Z]-1,NE_Photo_Total_Kissel[Z], ln_E, &ln_sigma);
 
-  sigma = exp(ln_sigma);
-
-  return (double) sigma; 
-*/
   for (shell = K_SHELL ; shell <= Q3_SHELL ; shell++) {
-    if (Electron_Config_Kissel[Z][shell] > 1.0E-06 && E >= EdgeEnergy_arr[Z][shell] ) {
-  	rv += CSb_Photo_Partial(Z,shell,E)*Electron_Config_Kissel[Z][shell];
+    if (Electron_Config_Kissel[Z][shell] > 1.0E-06) {
+  	rv += CSb_Photo_Partial(Z, shell, E, NULL) * Electron_Config_Kissel[Z][shell];
     }
   }
+  if (rv == 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
+    return 0.0;
+  }
+
   return rv;
 }
 
@@ -65,8 +83,11 @@ double CSb_Photo_Total(int Z, double E) {
 //                                                       //
 //////////////////////////////////////////////////////// */
 
-double CS_Photo_Total(int Z, double E) {
-  return CSb_Photo_Total(Z, E)*AVOGNUM/AtomicWeight_arr[Z];
+double CS_Photo_Total(int Z, double E, xrl_error **error) {
+  double cs = CSb_Photo_Total(Z, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AVOGNUM / AtomicWeight_arr[Z];
 }
 
 
@@ -81,61 +102,61 @@ double CS_Photo_Total(int Z, double E) {
 //                                                       //
 //////////////////////////////////////////////////////// */
 
-double CSb_Photo_Partial(int Z, int shell, double E) {
+double CSb_Photo_Partial(int Z, int shell, double E, xrl_error **error) {
   double ln_E, ln_sigma, sigma;
   double x0, x1, y0, y1;
   double m;
 
   if (Z < 1 || Z > ZMAX) {
-    ErrorExit("Z out of range in function CSb_Photo_Partial");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0.0;
   }
+
   if (shell < 0 || shell >= SHELLNUM_K) {
-    ErrorExit("shell out of range in function CSb_Photo_Partial");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_SHELL);
     return 0.0;
   }
+
   if (E <= 0.0) {
-    ErrorExit("Energy <= 0.0 in function CSb_Photo_Partial");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0.0;
   }
-  if (Electron_Config_Kissel[Z][shell] < 1.0E-06){
-    ErrorExit("selected orbital is unoccupied");
+
+  if (Electron_Config_Kissel[Z][shell] < 1.0E-06 || EdgeEnergy_arr[Z][shell] <= 0.0){
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
     return 0.0;
   } 
   
   if (EdgeEnergy_arr[Z][shell] > E) {
-    ErrorExit("selected energy cannot excite the orbital: energy must be greater than the absorption edge energy");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
     return 0.0;
   } 
+
+  ln_E = log(E);
+  if (EdgeEnergy_Kissel[Z][shell] > EdgeEnergy_arr[Z][shell] && E < EdgeEnergy_Kissel[Z][shell]) {
+    /*
+     * use log-log extrapolation 
+     */
+    x0 = E_Photo_Partial_Kissel[Z][shell][0];
+    x1 = E_Photo_Partial_Kissel[Z][shell][1];
+    y0 = Photo_Partial_Kissel[Z][shell][0];
+    y1 = Photo_Partial_Kissel[Z][shell][1];
+    /*
+     * do not allow "extreme" slopes... force them to be within -1;1
+     */
+    m = (y1 - y0) / (x1 - x0);
+    if (m > 1.0)
+      m = 1.0;
+    else if (m < -1.0)
+      m = -1.0;
+    ln_sigma = y0 + m * (ln_E - x0);
+  }
   else {
-    ln_E = log((double) E);
-    if (EdgeEnergy_Kissel[Z][shell] > EdgeEnergy_arr[Z][shell] && E < EdgeEnergy_Kissel[Z][shell]) {
-   	/*
-	 * use log-log extrapolation 
-	 */
-	x0 = E_Photo_Partial_Kissel[Z][shell][0];
-	x1 = E_Photo_Partial_Kissel[Z][shell][1];
-	y0 = Photo_Partial_Kissel[Z][shell][0];
-	y1 = Photo_Partial_Kissel[Z][shell][1];
-	/*
-	 * do not allow "extreme" slopes... force them to be within -1;1
-	 */
-	m = (y1-y0)/(x1-x0);
-	if (m > 1.0)
-		m=1.0;
-	else if (m < -1.0)
-		m=-1.0;
-	ln_sigma = y0+m*(ln_E-x0);
-    }
-    else {
-    	splint(E_Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel[Z][shell]-1, Photo_Partial_Kissel2[Z][shell]-1,NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
-   }
+    splint(E_Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel2[Z][shell] - 1, NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
+ }
  sigma = exp(ln_sigma);
 
-
-    return (double) sigma; 
-
-  }
+ return sigma; 
 }
 
 /*/////////////////////////////////////////////////////////
@@ -150,8 +171,11 @@ double CSb_Photo_Partial(int Z, int shell, double E) {
 //////////////////////////////////////////////////////// */
 
 
-double CS_Photo_Partial(int Z, int shell, double E) {
-  return CSb_Photo_Partial(Z, shell, E)*Electron_Config_Kissel[Z][shell]*AVOGNUM/AtomicWeight_arr[Z];
+double CS_Photo_Partial(int Z, int shell, double E, xrl_error **error) {
+  double cs = CSb_Photo_Partial(Z, shell, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * Electron_Config_Kissel[Z][shell] * AVOGNUM / AtomicWeight_arr[Z];
 }
 
 
@@ -169,8 +193,8 @@ double CS_Photo_Partial(int Z, int shell, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CS_FluorLine_Kissel(int Z, int line, double E) {
-	return CS_FluorLine_Kissel_Cascade(Z, line, E);
+double CS_FluorLine_Kissel(int Z, int line, double E, xrl_error **error) {
+  return CS_FluorLine_Kissel_Cascade(Z, line, E, error);
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -187,8 +211,11 @@ double CS_FluorLine_Kissel(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_FluorLine_Kissel(int Z, int line, double E) {
-  return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_FluorLine_Kissel(int Z, int line, double E, xrl_error **error) {
+  double cs = CS_FluorLine_Kissel_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -200,20 +227,31 @@ double CSb_FluorLine_Kissel(int Z, int line, double E) {
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_Total_Kissel(int Z, double E) { 
 
-  if (Z<1 || Z>ZMAX || NE_Photo_Total_Kissel[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
-    ErrorExit("Z out of range in function CS_Total_Kissel");
+static double (*cs_total_kissel_components[])(int, double, xrl_error **) = {CS_Photo_Total, CS_Rayl, CS_Compt};
+
+double CS_Total_Kissel(int Z, double E, xrl_error **error) { 
+  int i;
+  double rv = 0.0;
+
+  if (Z < 1 || Z > ZMAX || NE_Photo_Total_Kissel[Z] < 0 || NE_Rayl[Z] < 0 || NE_Compt[Z] < 0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0.0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_Total_Kissel");
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0.0;
   }
 
-  return CS_Photo_Total(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
+  for (i = 0 ; i < 3 ; i++) {
+    double tmp = cs_total_kissel_components[i](Z, E, error);
+    if (tmp == 0)
+      return 0.0;
+    rv += tmp;
+  }
 
+  return rv;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -226,9 +264,11 @@ double CS_Total_Kissel(int Z, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_Total_Kissel(int Z, double E) {
-
-  return CS_Total_Kissel(Z,E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_Total_Kissel(int Z, double E, xrl_error **error) {
+  double cs = CS_Total_Kissel(Z, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -241,20 +281,26 @@ double CSb_Total_Kissel(int Z, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double ElectronConfig(int Z, int shell) {
-
-  if (Z<1 || Z>ZMAX  ) {
-    ErrorExit("Z out of range in function ElectronConfig");
+double ElectronConfig(int Z, int shell, xrl_error **error) {
+  double rv = 0.0;
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0.0;
   }
 
   if (shell < 0 || shell >= SHELLNUM_K ) {
-    ErrorExit("shell out of range in function ElectronConfig");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_SHELL);
     return 0.0;
   }
 
-  return Electron_Config_Kissel[Z][shell]; 
+  rv = Electron_Config_Kissel[Z][shell];
 
+  if (rv <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
+    return 0.0;
+  }
+
+  return rv;
 }
 
 
@@ -273,121 +319,446 @@ double ElectronConfig(int Z, int shell) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
-  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
+double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error) {
 
-  PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
-
-
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function CS_FluorLine_Kissel_no_Cascade");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0.0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_FluorLine_Kissel_no_Cascade");
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0.0;
   }
 
-  if (line>=KN5_LINE && line<=KB_LINE) {
+  if (line >= KN5_LINE && line <= KB_LINE) {
     /*
      * K lines -> never cascade effect!
      */
-    return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
+    double cs, yield, rr;
+    cs = CS_Photo_Partial(Z, K_SHELL, E, error);
+    if (cs == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, K_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return cs * yield * rr;
   }
   else if (line>=L1P5_LINE && line<=L1M1_LINE) {
     /*
      * L1 lines
      */
-    return PL1_pure_kissel(Z,E)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
+    double yield, rr;
+    double PL1 = PL1_pure_kissel(Z, E, error);
+    if (PL1 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, L1_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PL1 * yield * rr;
   }
-  else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
+  else if (line >= L2Q1_LINE && line <= L2M1_LINE) {
     /*
      * L2 lines
      */
-    PL1 = PL1_pure_kissel(Z,E);
-    return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
-		PL2_pure_kissel(Z, E, PL1);
+    double PL2, yield, rr;
+    {
+      double PL1 = PL1_pure_kissel(Z, E, NULL);
+      PL2 = PL2_pure_kissel(Z, E, PL1, error);
+    }
+    if (PL2 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, L2_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PL2 * yield * rr;
   }
-  else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
+  else if (line >= L3Q1_LINE && line <= L3M1_LINE) {
     /*
      * L3 lines
      */
-    PL1 = PL1_pure_kissel(Z,E);
-    PL2 = PL2_pure_kissel(Z, E, PL1);
-    return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*PL3_pure_kissel(Z, E, PL1, PL2);
+    double PL3, yield, rr;
+    {
+      double PL1, PL2;
+      PL1 = PL1_pure_kissel(Z, E, NULL);
+      PL2 = PL2_pure_kissel(Z, E, PL1, NULL);
+      PL3 = PL3_pure_kissel(Z, E, PL1, PL2, error);
+    }
+    if (PL3 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, L3_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PL3 * yield * rr;
   }
   else if (line == LA_LINE) {
-    return (CS_FluorLine_Kissel_no_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_no_Cascade(Z,L3M5_LINE,E)); 
+    double rv = CS_FluorLine_Kissel_no_Cascade(Z, L3M4_LINE, E, NULL) + CS_FluorLine_Kissel_no_Cascade(Z, L3M5_LINE, E, NULL);
+    if (rv == 0.0)
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+    return rv; 
   }
   else if (line == LB_LINE) {
-    return (CS_FluorLine_Kissel_no_Cascade(Z,L2M4_LINE,E)+
-    	CS_FluorLine_Kissel_no_Cascade(Z,L2M3_LINE,E)+
-        CS_FluorLine_Kissel_no_Cascade(Z,L3N5_LINE,E)+
-        CS_FluorLine_Kissel_no_Cascade(Z,L3O4_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3O5_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3O45_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3N1_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3O1_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3N6_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3N7_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L3N4_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L1M3_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L1M2_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L1M5_LINE,E)+
-	CS_FluorLine_Kissel_no_Cascade(Z,L1M4_LINE,E)
-    );
+    double rv = 0.0;
+    int i;
+    for (i = 0 ; i < sizeof(LB_LINE_MACROS)/sizeof(LB_LINE_MACROS[0]) ; i++)
+      rv += CS_FluorLine_Kissel_no_Cascade(Z, LB_LINE_MACROS[i], E, NULL);
+    if (rv == 0.0)
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+    return rv; 
   }
-  else if (line>=M1P5_LINE && line<=M1N1_LINE) {
+  else if (line >= M1P5_LINE && line <= M1N1_LINE) {
     /*
      * M1 lines
      */
-    return PM1_pure_kissel(Z, E)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
+    double PM1, yield, rr;
+    PM1 = PM1_pure_kissel(Z, E, error);
+    if (PM1 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, M1_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PM1 * yield * rr;
   }
-  else if (line>=M2P5_LINE && line<=M2N1_LINE) {
+  else if (line >= M2P5_LINE && line <= M2N1_LINE) {
     /*
      * M2 lines
      */
-    PM1 = PM1_pure_kissel(Z, E);
-    return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
-		PM2_pure_kissel(Z, E, PM1);
+    double PM2, yield, rr;
+    {
+      double PM1 = PM1_pure_kissel(Z, E, NULL);
+      PM2 = PM2_pure_kissel(Z, E, PM1, error);
+    }
+    if (PM2 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, M2_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PM2 * yield * rr;
   }
-  else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
+  else if (line >= M3Q1_LINE && line <= M3N1_LINE) {
     /*
      * M3 lines
      */
-    PM1 = PM1_pure_kissel(Z, E);
-    PM2 = PM2_pure_kissel(Z, E, PM1);
-    return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
-		PM3_pure_kissel(Z, E, PM1, PM2);
+    double PM3, yield, rr;
+    {
+      double PM1, PM2;
+      PM1 = PM1_pure_kissel(Z, E, NULL);
+      PM2 = PM2_pure_kissel(Z, E, PM1, NULL);
+      PM3 = PM3_pure_kissel(Z, E, PM1, PM2, error);
+    }
+    if (PM3 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, M3_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PM3 * yield * rr;
   }
-  else if (line>=M4P5_LINE && line<=M4N1_LINE) {
+  else if (line >= M4P5_LINE && line <= M4N1_LINE) {
     /*
      * M4 lines
      */
-    PM1 = PM1_pure_kissel(Z, E);
-    PM2 = PM2_pure_kissel(Z, E, PM1);
-    PM3 = PM3_pure_kissel(Z, E, PM1, PM2);
-    return (FluorYield(Z, M4_SHELL)*RadRate(Z,line))*
-		PM4_pure_kissel(Z, E, PM1, PM2, PM3);
+    double PM4, yield, rr;
+    {
+      double PM1, PM2, PM3;
+      PM1 = PM1_pure_kissel(Z, E, NULL);
+      PM2 = PM2_pure_kissel(Z, E, PM1, NULL);
+      PM3 = PM3_pure_kissel(Z, E, PM1, PM2, NULL);
+      PM4 = PM4_pure_kissel(Z, E, PM1, PM2, PM3, error);
+    }
+    if (PM4 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, M4_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PM4 * yield * rr;
   }
-  else if (line>=M5P5_LINE && line<=M5N1_LINE) {
+  else if (line >= M5P5_LINE && line <= M5N1_LINE) {
     /*
      * M5 lines
      */
-    PM1 = PM1_pure_kissel(Z, E);
-    PM2 = PM2_pure_kissel(Z, E, PM1);
-    PM3 = PM3_pure_kissel(Z, E, PM1, PM2);
-    PM4 = PM4_pure_kissel(Z, E, PM1, PM2, PM3);
-    return (FluorYield(Z, M5_SHELL)*RadRate(Z,line))*
-		PM5_pure_kissel(Z, E, PM1, PM2, PM3, PM4);
-
+    double PM5, yield, rr;
+    {
+      double PM1, PM2, PM3, PM4;
+      PM1 = PM1_pure_kissel(Z, E, NULL);
+      PM2 = PM2_pure_kissel(Z, E, PM1, NULL);
+      PM3 = PM3_pure_kissel(Z, E, PM1, PM2, NULL);
+      PM4 = PM4_pure_kissel(Z, E, PM1, PM2, PM3, NULL);
+      PM5 = PM5_pure_kissel(Z, E, PM1, PM2, PM3, PM4, error);
+    }
+    if (PM5 == 0.0)
+      return 0.0;
+    yield = FluorYield(Z, M5_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
+    rr = RadRate(Z, line, error);
+    if (rr == 0.0)
+      return 0.0;
+    return PM5 * yield * rr;
   }
   else {
-    ErrorExit("Line not allowed in function CS_FluorLine_Kissel_no_Cascade");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
     return 0.0;
   }  
 }
+
+#define CS_FLUORLINE_CASCADE_BODY(kind) \
+  if (Z < 1 || Z > ZMAX) { \
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE); \
+    return 0.0; \
+  } \
+  \
+  if (E <= 0.0) { \
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY); \
+    return 0.0; \
+  } \
+  \
+  if (line >= KN5_LINE && line <= KB_LINE) { \
+    /* \
+     * K lines -> never cascade effect! \
+     */ \
+    double cs, yield, rr; \
+    cs = CS_Photo_Partial(Z, K_SHELL, E, error); \
+    if (cs == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, K_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return cs * yield * rr; \
+  } \
+  else if (line >= L1P5_LINE && line <= L1M1_LINE) { \
+    /* \
+     * L1 lines \
+     */ \
+    double PL1, yield, rr; \
+    { \
+      double PK; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, error); \
+    } \
+    if (PL1 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, L1_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PL1 * yield * rr; \
+  } \
+  else if (line>=L2Q1_LINE && line<=L2M1_LINE) { \
+    /* \
+     * L2 lines \
+     */ \
+    double PL2, yield, rr; \
+    { \
+      double PK, PL1; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, error); \
+    } \
+    if (PL2 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, L2_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PL2 * yield * rr; \
+  } \
+  else if (line>=L3Q1_LINE && line<=L3M1_LINE) { \
+    /* \
+     * L3 lines \
+     */ \
+    double PL3, yield, rr; \
+    { \
+      double PK, PL1, PL2; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, NULL); \
+      PL3 = PL3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, error); \
+    } \
+    if (PL3 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, L3_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PL3 * yield * rr; \
+  } \
+  else if (line == LA_LINE) { \
+    double rv = CS_FluorLine_Kissel_Radiative_Cascade(Z, L3M4_LINE, E, NULL) + CS_FluorLine_Kissel_Radiative_Cascade(Z, L3M5_LINE, E, NULL); \
+    if (rv == 0.0) \
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY); \
+    return rv;  \
+  } \
+  else if (line == LB_LINE) { \
+    double rv = 0.0; \
+    int i; \
+    for (i = 0 ; i < sizeof(LB_LINE_MACROS)/sizeof(LB_LINE_MACROS[0]) ; i++) \
+      rv += CS_FluorLine_Kissel_no_Cascade(Z, LB_LINE_MACROS[i], E, NULL); \
+    if (rv == 0.0) \
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY); \
+    return rv;  \
+  } \
+  else if (line>=M1P5_LINE && line<=M1N1_LINE) { \
+    /* \
+     * M1 lines \
+     */ \
+    double PM1, yield, rr; \
+    { \
+      double PK, PL1, PL2, PL3; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, NULL); \
+      PL3 = PL3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, NULL); \
+      PM1 = PM1_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, error); \
+    } \
+    if (PM1 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, M1_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PM1 * yield * rr; \
+  } \
+  else if (line>=M2P5_LINE && line<=M2N1_LINE) { \
+    /* \
+     * M2 lines \
+     */ \
+    double PM2, yield, rr; \
+    { \
+      double PK, PL1, PL2, PL3, PM1; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, NULL); \
+      PL3 = PL3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, NULL); \
+      PM1 = PM1_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, NULL); \
+      PM2 = PM2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, error); \
+    } \
+    if (PM2 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, M2_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PM2 * yield * rr; \
+  } \
+  else if (line>=M3Q1_LINE && line<=M3N1_LINE) { \
+    /* \
+     * M3 lines \
+     */ \
+    double PM3, yield, rr; \
+    { \
+      double PK, PL1, PL2, PL3, PM1, PM2; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, NULL); \
+      PL3 = PL3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, NULL); \
+      PM1 = PM1_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, NULL); \
+      PM2 = PM2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, NULL); \
+      PM3 = PM3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, error); \
+    } \
+    if (PM3 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, M3_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PM3 * yield * rr; \
+  } \
+  else if (line>=M4P5_LINE && line<=M4N1_LINE) { \
+    /* \
+     * M4 lines \
+     */ \
+    double PM4, yield, rr; \
+    { \
+      double PK, PL1, PL2, PL3, PM1, PM2, PM3; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, NULL); \
+      PL3 = PL3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, NULL); \
+      PM1 = PM1_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, NULL); \
+      PM2 = PM2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, NULL); \
+      PM3 = PM3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, NULL); \
+      PM4 = PM4_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, error); \
+    } \
+    if (PM4 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, M4_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PM4 * yield * rr; \
+  } \
+  else if (line>=M5P5_LINE && line<=M5N1_LINE) { \
+    /* \
+     * M5 lines \
+     */ \
+    double PM5, yield, rr; \
+    { \
+      double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4; \
+      PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
+      PL1 = PL1_ ## kind ## _cascade_kissel(Z, E, PK, NULL); \
+      PL2 = PL2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, NULL); \
+      PL3 = PL3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, NULL); \
+      PM1 = PM1_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, NULL); \
+      PM2 = PM2_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, NULL); \
+      PM3 = PM3_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, NULL); \
+      PM4 = PM4_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, NULL); \
+      PM5 = PM5_ ## kind ## _cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, error); \
+    } \
+    if (PM5 == 0.0) \
+      return 0.0; \
+    yield = FluorYield(Z, M5_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) \
+      return 0.0; \
+    return PM5 * yield * rr; \
+  } \
+  else { \
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE); \
+    return 0.0; \
+  }  
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -404,142 +775,8 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
-  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
-
-  PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
-
-
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function CS_FluorLine_Kissel_Radiative_Cascade");
-    return 0.0;
-  }
-
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_FluorLine_Kissel_Radiative_Cascade");
-    return 0.0;
-  }
-
-  if (line>=KN5_LINE && line<=KB_LINE) {
-    /*
-     * K lines -> never cascade effect!
-     */
-    return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    /*
-     * L1 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    return PL1_rad_cascade_kissel(Z, E, PK)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    /*
-     * L2 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z,E, PK);
-    return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
-		PL2_rad_cascade_kissel(Z, E, PK, PL1);
-  }
-  else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    /*
-     * L3 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z, E, PK);
-    PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
-    return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
-  }
-  else if (line == LA_LINE) {
-    return (CS_FluorLine_Kissel_Radiative_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Radiative_Cascade(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
-    return (CS_FluorLine_Kissel_Radiative_Cascade(Z,L2M4_LINE,E)+
-    	CS_FluorLine_Kissel_Radiative_Cascade(Z,L2M3_LINE,E)+
-        CS_FluorLine_Kissel_Radiative_Cascade(Z,L3N5_LINE,E)+
-        CS_FluorLine_Kissel_Radiative_Cascade(Z,L3O4_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3O5_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3O45_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3N1_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3O1_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3N6_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3N7_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L3N4_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L1M3_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L1M2_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L1M5_LINE,E)+
-	CS_FluorLine_Kissel_Radiative_Cascade(Z,L1M4_LINE,E)
-    );
-  }
-  else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    /*
-     * M1 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z, E, PK);
-    PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
-    return PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    /*
-     * M2 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z, E, PK);
-    PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
-		PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-  }
-  else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    /*
-     * M3 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z, E, PK);
-    PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
-		PM3_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-  }
-  else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    /*
-     * M4 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z, E, PK);
-    PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    PM3 = PM3_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-    return (FluorYield(Z, M4_SHELL)*RadRate(Z,line))*
-		PM4_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-  }
-  else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    /*
-     * M5 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_rad_cascade_kissel(Z, E, PK);
-    PL2 = PL2_rad_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_rad_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    PM3 = PM3_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-    PM4 = PM4_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-    return (FluorYield(Z, M5_SHELL)*RadRate(Z,line))*
-		PM5_rad_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4);
-  }
-  else {
-    ErrorExit("Line not allowed in function CS_FluorLine_Kissel_Radiative_Cascade");
-    return 0.0;
-  }  
+double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_error **error) {
+  CS_FLUORLINE_CASCADE_BODY(rad)
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -557,142 +794,8 @@ double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
-  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
-
-  PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
-
-
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function CS_FluorLine_Kissel_Nonradiative_Cascade");
-    return 0.0;
-  }
-
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_FluorLine_Kissel_Nonradiative_Cascade");
-    return 0.0;
-  }
-
-  if (line>=KN5_LINE && line<=KB_LINE) {
-    /*
-     * K lines -> never cascade effect!
-     */
-    return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    /*
-     * L1 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    return PL1_auger_cascade_kissel(Z, E, PK)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    /*
-     * L2 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z,E, PK);
-    return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
-		PL2_auger_cascade_kissel(Z, E, PK, PL1);
-  }
-  else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    /*
-     * L3 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z, E, PK);
-    PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
-    return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
-  }
-  else if (line == LA_LINE) {
-    return (CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
-    return (CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L2M4_LINE,E)+
-    	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L2M3_LINE,E)+
-        CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3N5_LINE,E)+
-        CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3O4_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3O5_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3O45_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3N1_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3O1_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3N6_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3N7_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L3N4_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L1M3_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L1M2_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L1M5_LINE,E)+
-	CS_FluorLine_Kissel_Nonradiative_Cascade(Z,L1M4_LINE,E)
-    );
-  }
-  else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    /*
-     * M1 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z, E, PK);
-    PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
-    return PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    /*
-     * M2 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z, E, PK);
-    PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
-		PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-  }
-  else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    /*
-     * M3 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z, E, PK);
-    PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
-		PM3_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-  }
-  else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    /*
-     * M4 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z, E, PK);
-    PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    PM3 = PM3_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-    return (FluorYield(Z, M4_SHELL)*RadRate(Z,line))*
-		PM4_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-  }
-  else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    /*
-     * M5 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_auger_cascade_kissel(Z, E, PK);
-    PL2 = PL2_auger_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_auger_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    PM3 = PM3_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-    PM4 = PM4_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-    return (FluorYield(Z, M5_SHELL)*RadRate(Z,line))*
-		PM5_auger_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4);
-  }
-  else {
-    ErrorExit("Line not allowed in function CS_FluorLine_Kissel_Nonradiative_Cascade");
-    return 0.0;
-  }  
+double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_error **error) {
+  CS_FLUORLINE_CASCADE_BODY(auger)
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -710,142 +813,8 @@ double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CS_FluorLine_Kissel_Cascade(int Z, int line, double E) {
-  double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4, PM5;
-
-  PK = PL1 = PL2 = PL3 = PM1 = PM2 = PM3 = PM4 = PM5 = 0.0;
-
-
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function CS_FluorLine_Kissel_Cascade");
-    return 0.0;
-  }
-
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_FluorLine_Kissel_Cascade");
-    return 0.0;
-  }
-
-  if (line>=KN5_LINE && line<=KB_LINE) {
-    /*
-     * K lines -> never cascade effect!
-     */
-    return CS_Photo_Partial(Z, K_SHELL, E)*FluorYield(Z, K_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    /*
-     * L1 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    return PL1_full_cascade_kissel(Z, E, PK)*FluorYield(Z, L1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=L2Q1_LINE && line<=L2M1_LINE) {
-    /*
-     * L2 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z,E, PK);
-    return (FluorYield(Z, L2_SHELL)*RadRate(Z,line))*
-		PL2_full_cascade_kissel(Z, E, PK, PL1);
-  }
-  else if (line>=L3Q1_LINE && line<=L3M1_LINE) {
-    /*
-     * L3 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z, E, PK);
-    PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
-    return (FluorYield(Z, L3_SHELL)*RadRate(Z,line))*PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
-  }
-  else if (line == LA_LINE) {
-    return (CS_FluorLine_Kissel_Cascade(Z,L3M4_LINE,E)+CS_FluorLine_Kissel_Cascade(Z,L3M5_LINE,E)); 
-  }
-  else if (line == LB_LINE) {
-    return (CS_FluorLine_Kissel_Cascade(Z,L2M4_LINE,E)+
-    	CS_FluorLine_Kissel_Cascade(Z,L2M3_LINE,E)+
-        CS_FluorLine_Kissel_Cascade(Z,L3N5_LINE,E)+
-        CS_FluorLine_Kissel_Cascade(Z,L3O4_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3O5_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3O45_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3N1_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3O1_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3N6_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3N7_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L3N4_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L1M3_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L1M2_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L1M5_LINE,E)+
-	CS_FluorLine_Kissel_Cascade(Z,L1M4_LINE,E)
-    );
-  }
-  else if (line>=M1P5_LINE && line<=M1N1_LINE) {
-    /*
-     * M1 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z, E, PK);
-    PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
-    return PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3)*FluorYield(Z, M1_SHELL)*RadRate(Z,line);
-  }
-  else if (line>=M2P5_LINE && line<=M2N1_LINE) {
-    /*
-     * M2 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z, E, PK);
-    PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    return (FluorYield(Z, M2_SHELL)*RadRate(Z,line))*
-		PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-  }
-  else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
-    /*
-     * M3 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z, E, PK);
-    PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    return (FluorYield(Z, M3_SHELL)*RadRate(Z,line))*
-		PM3_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-  }
-  else if (line>=M4P5_LINE && line<=M4N1_LINE) {
-    /*
-     * M4 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z, E, PK);
-    PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    PM3 = PM3_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-    return (FluorYield(Z, M4_SHELL)*RadRate(Z,line))*
-		PM4_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-  }
-  else if (line>=M5P5_LINE && line<=M5N1_LINE) {
-    /*
-     * M5 lines
-     */
-    PK = CS_Photo_Partial(Z, K_SHELL, E);
-    PL1 = PL1_full_cascade_kissel(Z, E, PK);
-    PL2 = PL2_full_cascade_kissel(Z, E, PK, PL1);
-    PL3 = PL3_full_cascade_kissel(Z, E, PK, PL1, PL2);
-    PM1 = PM1_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
-    PM2 = PM2_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
-    PM3 = PM3_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-    PM4 = PM4_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-    return (FluorYield(Z, M5_SHELL)*RadRate(Z,line))*
-		PM5_full_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4);
-  }
-  else {
-    ErrorExit("Line not allowed in function CS_FluorLine_Kissel_Cascade");
-    return 0.0;
-  }  
+double CS_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error) {
+  CS_FLUORLINE_CASCADE_BODY(full)
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -863,8 +832,11 @@ double CS_FluorLine_Kissel_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E) {
-  return CS_FluorLine_Kissel_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error) {
+  double cs = CS_FluorLine_Kissel_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -882,8 +854,11 @@ double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
-  return CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_error **error) {
+  double cs = CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -901,8 +876,11 @@ double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
-  return CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_error **error) {
+  double cs = CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -920,6 +898,9 @@ double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
-  return CS_FluorLine_Kissel_no_Cascade(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error) {
+  double cs = CS_FluorLine_Kissel_no_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }

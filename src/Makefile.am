@@ -38,7 +38,9 @@ libprdata_la_SOURCES = \
 		 fi.c \
 		 fii.c \
 		 splint.c \
-		 splint.h
+		 splint.h \
+		 xraylib-error.c \
+		 xraylib-error-private.h
 
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 

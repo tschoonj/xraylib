@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -33,28 +34,26 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-double JumpFactor(int Z, int shell)
+double JumpFactor(int Z, int shell, xrl_error **error)
 {
   double jump_factor;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function JumpFactor");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
-  if (shell<0 || shell>=SHELLNUM) {
-    ErrorExit("Shell not available in function JumpFactor");
+  if (shell < 0 || shell >= SHELLNUM) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_SHELL);
     return 0;
   }
 
   jump_factor = JumpFactor_arr[Z][shell];
+
   if (jump_factor <= 0.) {
-    ErrorExit("Shell not available in function JumpFactor");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
     return 0;
   }
 
   return jump_factor;
 }
-
-                          
-                          

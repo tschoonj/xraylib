@@ -27,15 +27,39 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 #define GNUC_PRINTF( format_idx, arg_idx )
 #endif /* !__GNUC__ */
 
-xrl_error* xrl_error_new(enum xrl_error_code code, const char *format, ...) GNUC_PRINTF (2, 3);
+xrl_error* xrl_error_new(xrl_error_code code, const char *format, ...) GNUC_PRINTF (2, 3);
 
-xrl_error* xrl_error_new_literal(enum xrl_error_code code, const char *message);
+xrl_error* xrl_error_new_literal(xrl_error_code code, const char *message);
 
-xrl_error* xrl_error_new_valist(enum xrl_error_code code, const char *format, va_list args) GNUC_PRINTF(2, 0);
+xrl_error* xrl_error_new_valist(xrl_error_code code, const char *format, va_list args) GNUC_PRINTF(2, 0);
 
-void xrl_set_error(xrl_error **err, enum xrl_error_code code , const char *format, ...) GNUC_PRINTF (3, 4);
+void xrl_set_error(xrl_error **err, xrl_error_code code , const char *format, ...) GNUC_PRINTF (3, 4);
 
-void xrl_set_error_literal(xrl_error **err, enum xrl_error_code code, const char *message);
+void xrl_set_error_literal(xrl_error **err, xrl_error_code code, const char *message);
+
+/* predefined error messages  */
+#define Z_OUT_OF_RANGE "Z out of range"
+#define NEGATIVE_ENERGY "Energy must be strictly positive"
+#define NEGATIVE_DENSITY "Density must be strictly positive"
+#define NEGATIVE_Q "q must be positive"
+#define NEGATIVE_PZ "pz must be positive"
+#define INVALID_SHELL "Invalid shell for this atomic number"
+#define INVALID_LINE "Invalid line for this atomic number"
+#define INVALID_CK "Invalid Coster-Kronig transition for this atomic number"
+#define UNKNOWN_SHELL "Unknown shell macro provided"
+#define UNKNOWN_LINE "Unknown line macro provided"
+#define UNKNOWN_CK "Unknown Coster-Kronig transition macro provided"
+#define UNAVAILABLE_JUMP_FACTOR "Jump factor unavailable for element and shell"
+#define UNAVAILABLE_FLUOR_YIELD "Fluorescence yield unavailable for atomic number and shell"
+#define TOO_LOW_EXCITATION_ENERGY "The excitation energy too low to excite the shell"
+#define UNAVAILABLE_PHOTO_CS "Photoionization cross section unavailable for atomic number and energy"
+#define UNAVAILABLE_RAD_RATE "Radiative rate unavailable for this atomic number and line macro"
+#define UNAVAILABLE_CK "Coster-Kronig transition probability unavailable for this atomic number and transition macro"
+#define UNKNOWN_COMPOUND "Compound is not a valid chemical formula and is not present in the NIST compound database"
+#define MALLOC_ERROR "Could not allocate memory: %s"
+#define INVALID_MILLER "Miller indices cannot all be zero"
+#define NEGATIVE_DEBYE_FACTOR "Debye-Waller factor must be strictly positive"
+#define CRYSTAL_NULL "Crystal cannot be NULL"
 
 #endif
 

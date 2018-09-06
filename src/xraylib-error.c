@@ -25,7 +25,7 @@ static char* xrl_strdup_vprintf(const char *format, va_list args) {
 	return rv;
 }
 
-xrl_error* xrl_error_new_valist(enum xrl_error_code code, const char *format, va_list args) {
+xrl_error* xrl_error_new_valist(xrl_error_code code, const char *format, va_list args) {
 	xrl_error *error;
 
 	if (format == NULL) {
@@ -40,15 +40,14 @@ xrl_error* xrl_error_new_valist(enum xrl_error_code code, const char *format, va
 	return error;
 }
 
-xrl_error* xrl_error_new(enum xrl_error_code code, const char *format, ...) {
+xrl_error* xrl_error_new(xrl_error_code code, const char *format, ...) {
 	xrl_error* error;
+	va_list args;
 	
 	if (format == NULL) {
 		fprintf(stderr, "xrl_error_new: format cannot be NULL!\n");
 		return NULL;
 	}
-
-	va_list args;
 
 	va_start(args, format);
 	error = xrl_error_new_valist(code, format, args);
@@ -57,7 +56,7 @@ xrl_error* xrl_error_new(enum xrl_error_code code, const char *format, ...) {
 	return error;
 }
 
-xrl_error* xrl_error_new_literal(enum xrl_error_code code, const char *message) {
+xrl_error* xrl_error_new_literal(xrl_error_code code, const char *message) {
 	xrl_error *error = NULL;
 
 	if (message == NULL) {
@@ -99,7 +98,7 @@ xrl_error* xrl_error_copy(const xrl_error *error) {
 	return copy;
 }
 
-int xrl_error_matches(const xrl_error *error, enum xrl_error_code code) {
+int xrl_error_matches(const xrl_error *error, xrl_error_code code) {
 	return error && error->code == code;
 }
 
@@ -107,7 +106,7 @@ int xrl_error_matches(const xrl_error *error, enum xrl_error_code code) {
                "This indicates a bug in someone's code. You must ensure an error is NULL before it's set.\n" \
 "The overwriting error message was: %s"
 
-void xrl_set_error(xrl_error **err, enum xrl_error_code code , const char *format, ...) {
+void xrl_set_error(xrl_error **err, xrl_error_code code , const char *format, ...) {
 	xrl_error *new = NULL;
 
 	va_list args;
@@ -127,7 +126,7 @@ void xrl_set_error(xrl_error **err, enum xrl_error_code code , const char *forma
 	}
 }
 
-void xrl_set_error_literal(xrl_error **err, enum xrl_error_code code, const char *message) {
+void xrl_set_error_literal(xrl_error **err, xrl_error_code code, const char *message) {
 	if (err == NULL)
 		return;
 

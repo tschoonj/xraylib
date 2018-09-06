@@ -12,9 +12,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 #include <math.h>
+#include <stddef.h>
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 
 /*////////////////////////////////////////////////////////////////////
@@ -26,19 +28,35 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_Total(int Z, double E)
+double CS_Total(int Z, double E, xrl_error **error)
 {
+  double photo = 0.0;
+  double rayleigh = 0.0;
+  double compton = 0.0;
+
   if (Z<1 || Z>ZMAX || NE_Photo[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
-    ErrorExit("Z out of range in function CS_Total");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_Total");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
-  return CS_Photo(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
+  photo = CS_Photo(Z, E, error);
+  if (error != NULL && *error != NULL)
+	 return 0;
+
+  rayleigh = CS_Rayl(Z, E, error);
+  if (error != NULL && *error != NULL)
+	 return 0;
+
+  compton = CS_Compt(Z, E, error);
+  if (error != NULL && *error != NULL)
+	 return 0;
+
+  return photo + rayleigh + compton;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -49,17 +67,17 @@ double CS_Total(int Z, double E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_Photo(int Z, double E)
+double CS_Photo(int Z, double E, xrl_error **error)
 {
   double ln_E, ln_sigma, sigma;
 
   if (Z<1 || Z>ZMAX || NE_Photo[Z]<0) {
-    ErrorExit("Z out of range in function CS_Photo");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_Photo");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
@@ -81,17 +99,17 @@ double CS_Photo(int Z, double E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_Rayl(int Z, double E)
+double CS_Rayl(int Z, double E, xrl_error **error)
 {
   double ln_E, ln_sigma, sigma;
 
   if (Z<1 || Z>ZMAX || NE_Rayl[Z]<0) {
-    ErrorExit("Z out of range in function CS_Rayl");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_Rayl");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
@@ -112,17 +130,17 @@ double CS_Rayl(int Z, double E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_Compt(int Z, double E) 
+double CS_Compt(int Z, double E, xrl_error **error) 
 {
   double ln_E, ln_sigma, sigma;
 
   if (Z<1 || Z>ZMAX || NE_Compt[Z]<0) {
-    ErrorExit("Z out of range in function CS_Compt");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_Compt");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
@@ -145,15 +163,15 @@ double CS_Compt(int Z, double E)
 //          E : energy (keV)                                        //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_Energy(int Z, double E)
+double CS_Energy(int Z, double E, xrl_error **error)
 {
 	double ln_E, ln_sigma, sigma;
 	if (Z < 1 || Z > 92 || NE_Energy[Z] < 0) {
-		ErrorExit("Z out of range in function CS_Energy");
+    		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
 		return 0;
 	}
 	if (E <= 0.0) {
-		ErrorExit("Z <= 0 in function CS_Energy");
+    		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
 		return 0;
 	}
 	ln_E = log(E);

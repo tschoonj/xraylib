@@ -18,39 +18,45 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 int main(int argc, char *argv[]) {
 	/* taken from https://github.com/KenanY/chemical-formula/blob/master/test/index.js */
 	/* good formulas */
-	assert(CompoundParser("C19H29COOH") != NULL);
-	assert(CompoundParser("C12H10") != NULL);
-	assert(CompoundParser("C12H6O2") != NULL);
-	assert(CompoundParser("C6H5Br") != NULL);
-	assert(CompoundParser("C3H4OH(COOH)3") != NULL);
-	assert(CompoundParser("HOCH2CH2OH") != NULL);
-	assert(CompoundParser("C5H11NO2") != NULL);
-	assert(CompoundParser("CH3CH(CH3)CH3") != NULL);
-	assert(CompoundParser("NH2CH(C4H5N2)COOH") != NULL);
-	assert(CompoundParser("H2O") != NULL);
-	assert(CompoundParser("Ca5(PO4)3F") != NULL);
-	assert(CompoundParser("Ca5(PO4)3OH") != NULL);
-	assert(CompoundParser("Ca5.522(PO4.48)3OH") != NULL);
-	assert(CompoundParser("Ca5.522(PO.448)3OH") != NULL);
+	assert(CompoundParser("C19H29COOH", NULL) != NULL);
+	assert(CompoundParser("C12H10", NULL) != NULL);
+	assert(CompoundParser("C12H6O2", NULL) != NULL);
+	assert(CompoundParser("C6H5Br", NULL) != NULL);
+	assert(CompoundParser("C3H4OH(COOH)3", NULL) != NULL);
+	assert(CompoundParser("HOCH2CH2OH", NULL) != NULL);
+	assert(CompoundParser("C5H11NO2", NULL) != NULL);
+	assert(CompoundParser("CH3CH(CH3)CH3", NULL) != NULL);
+	assert(CompoundParser("NH2CH(C4H5N2)COOH", NULL) != NULL);
+	assert(CompoundParser("H2O", NULL) != NULL);
+	assert(CompoundParser("Ca5(PO4)3F", NULL) != NULL);
+	assert(CompoundParser("Ca5(PO4)3OH", NULL) != NULL);
+	assert(CompoundParser("Ca5.522(PO4.48)3OH", NULL) != NULL);
+	assert(CompoundParser("Ca5.522(PO.448)3OH", NULL) != NULL);
 
 	/* bad formulas */
-	assert(CompoundParser("CuI2ww") == NULL);
-	assert(CompoundParser("0C") == NULL);
-	assert(CompoundParser("2O") == NULL);
-	assert(CompoundParser("13Li") == NULL);
-	assert(CompoundParser("2(NO3)") == NULL);
-	assert(CompoundParser("H(2)") == NULL);
-	assert(CompoundParser("Ba(12)") == NULL);
-	assert(CompoundParser("Cr(5)3") == NULL);
-	assert(CompoundParser("Pb(13)2") == NULL);
-	assert(CompoundParser("Au(22)11") == NULL);
-	assert(CompoundParser("Au11(H3PO4)2)") == NULL);
-	assert(CompoundParser("Au11(H3PO4))2") == NULL);
-	assert(CompoundParser("Au(11(H3PO4))2") == NULL);
-	assert(CompoundParser("Ca5.522(PO.44.8)3OH") == NULL);
-	assert(CompoundParser("Ba[12]") == NULL);
-	assert(CompoundParser("Auu1") == NULL);
-	assert(CompoundParser("AuL1") == NULL);
+	assert(CompoundParser("CuI2ww", NULL) == NULL);
+	assert(CompoundParser("0C", NULL) == NULL);
+	assert(CompoundParser("2O", NULL) == NULL);
+	assert(CompoundParser("13Li", NULL) == NULL);
+	assert(CompoundParser("2(NO3)", NULL) == NULL);
+	assert(CompoundParser("H(2)", NULL) == NULL);
+	assert(CompoundParser("Ba(12)", NULL) == NULL);
+	assert(CompoundParser("Cr(5)3", NULL) == NULL);
+	assert(CompoundParser("Pb(13)2", NULL) == NULL);
+	assert(CompoundParser("Au(22)11", NULL) == NULL);
+	assert(CompoundParser("Au11(H3PO4)2)", NULL) == NULL);
+	assert(CompoundParser("Au11(H3PO4))2", NULL) == NULL);
+	assert(CompoundParser("Au(11(H3PO4))2", NULL) == NULL);
+	assert(CompoundParser("Ca5.522(PO.44.8)3OH", NULL) == NULL);
+	assert(CompoundParser("Ba[12]", NULL) == NULL);
+	assert(CompoundParser("Auu1", NULL) == NULL);
+	assert(CompoundParser("AuL1", NULL) == NULL);
+	assert(CompoundParser(NULL, NULL) == NULL);
+	assert(CompoundParser("  ", NULL) == NULL);
+	assert(CompoundParser("\t", NULL) == NULL);
+	assert(CompoundParser("\n", NULL) == NULL);
+	assert(CompoundParser("Au L1", NULL) == NULL);
+	assert(CompoundParser("Au\tFe", NULL) == NULL);
 
 	return 0;
 }

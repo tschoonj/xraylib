@@ -11,8 +11,11 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <stddef.h>
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
+
 #define KL1 -(int)KL1_LINE-1
 #define KL2 -(int)KL2_LINE-1
 #define KL3 -(int)KL3_LINE-1
@@ -20,6 +23,30 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define KM2 -(int)KM2_LINE-1
 #define KM3 -(int)KM3_LINE-1
 #define KP5 -(int)KP5_LINE-1
+
+static struct {int line; int shell;} lb_pairs[] = {
+  {L2M4_LINE, L2_SHELL}, /* b1 */
+  {L3N5_LINE, L3_SHELL}, /* b2 */
+  {L1M3_LINE, L1_SHELL}, /* b3 */
+  {L1M2_LINE, L1_SHELL}, /* b4 */
+  {L3O3_LINE, L3_SHELL}, /* b5 */
+  {L3O4_LINE, L3_SHELL}, /* b5 */
+  {L3N1_LINE, L3_SHELL}, /* b6 */
+};
+
+static double LineEnergyComposed(int Z, int line1, int line2, xrl_error **error) {
+  double tmp1 = LineEnergy(Z, line1, NULL);
+  double tmp2 = LineEnergy(Z, line2, NULL);
+
+  if (tmp1 > 0.0 && tmp2 > 0.0) {
+    return (tmp1 + tmp2) / 2.0;
+  }
+  else if (tmp1 > 0.0 || tmp2 > 0.0) {
+    return tmp1 + tmp2;
+  }
+  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+  return 0.0;
+}
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -34,130 +61,124 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-double LineEnergy(int Z, int line)
+double LineEnergy(int Z, int line, xrl_error **error)
 {
   double line_energy;
-  double lE[50],rr[50];
-  double tmp=0.0,tmp1=0.0,tmp2=0.0;
+  double lE[50], rr[50];
+  double tmp=0.0, tmp1=0.0, tmp2=0.0;
   int i;
   int temp_line;
   
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function LineEnergy");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
   
-  if (line>=KA_LINE && line<LA_LINE) {
+  if (line == KA_LINE || line == KB_LINE) {
     if (line == KA_LINE) {
-	for (i = KL1; i <= KL3 ; i++) {
-	 lE[i] = LineEnergy_arr[Z][i];
-	 rr[i] = RadRate_arr[Z][i];
-	 tmp1+=rr[i];
-	 tmp+=lE[i]*rr[i];
+      for (i = KL1; i <= KL3 ; i++) {
+        lE[i] = LineEnergy_arr[Z][i];
+        rr[i] = RadRate_arr[Z][i];
+        tmp1 += rr[i];
+        tmp += lE[i] * rr[i];
 
-	 if (lE[i]<0.0 || rr[i]<0.0) {
-	  ErrorExit("Line not available in function LineEnergy");
-	  return 0;
-	 }
-	}
+        if (lE[i] < 0.0 || rr[i] < 0.0) {
+          xrl_set_error_literal(error, XRL_ERROR_RUNTIME, "Invalid internal value detected for line energy or radiative rate");
+          return 0;
+        }
+      }
     }
     else if (line == KB_LINE) {
-    	for (i = KM1; i < KP5; i++) {
-	 lE[i] = LineEnergy_arr[Z][i];
-	 rr[i] = RadRate_arr[Z][i];
-	 tmp1+=rr[i];
-	 tmp+=lE[i]*rr[i];
-	 if (lE[i]<0.0 || rr[i]<0.0) {
-	  ErrorExit("Line not available in function LineEnergy");
-	  return 0;
-	 }
-	}
+      for (i = KM1; i < KP5; i++) {
+        lE[i] = LineEnergy_arr[Z][i];
+        rr[i] = RadRate_arr[Z][i];
+        tmp1 += rr[i];
+        tmp += lE[i] * rr[i];
+        if (lE[i] < 0.0 || rr[i] < 0.0) {
+          xrl_set_error_literal(error, XRL_ERROR_RUNTIME, "Invalid internal value detected for line energy or radiative rate");
+          return 0;
+        }
+      }
     }
-   if (tmp1>0)   return tmp/tmp1;  else return 0.0;
+    if (tmp1 > 0) {
+      return tmp / tmp1;
+    }
+    else {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
   }
   
   if (line == LA_LINE) {
-	temp_line = L3M5_LINE;
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
-	tmp2=tmp1;
-	tmp=LineEnergy(Z,temp_line)*tmp1;
-	temp_line = L3M4_LINE;
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
-  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
+    temp_line = L3M5_LINE;
+    tmp1 = CS_FluorLine(Z, temp_line, EdgeEnergy(Z, L3_SHELL, NULL) + 0.1, NULL);
+    tmp2 = tmp1;
+    tmp = LineEnergy(Z, temp_line, NULL) * tmp1;
+    temp_line = L3M4_LINE;
+    tmp1 = CS_FluorLine(Z, temp_line, EdgeEnergy(Z, L3_SHELL, NULL) + 0.1, NULL);
+    tmp2 += tmp1;
+    tmp += LineEnergy(Z, temp_line, NULL) * tmp1 ;
+    if (tmp2 > 0) {
+      return tmp / tmp2;
+    }
+    else {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
   }
   else if (line == LB_LINE) {
-	temp_line = L2M4_LINE;     /* b1 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L2_SHELL)+0.1);
-	tmp2=tmp1;
-	tmp=LineEnergy(Z,temp_line)*tmp1;
+    tmp2 = 0.0;
+    tmp = 0.0;
 
-	temp_line = L3N5_LINE;     /* b2 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
+    for (i = 0 ; i < sizeof(lb_pairs)/sizeof(lb_pairs[0]) ; i++) {
+      tmp1 = CS_FluorLine(Z, lb_pairs[i].line, EdgeEnergy(Z, lb_pairs[i].shell, NULL) + 0.1, NULL);
+      tmp2 += tmp1;
+      tmp += LineEnergy(Z, lb_pairs[i].line, NULL) * tmp1;
+    }
 
-	temp_line = L1M3_LINE;     /* b3 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L1_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
-
-	temp_line = L1M2_LINE;     /* b4 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L1_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
-
-	temp_line = L3O3_LINE;     /* b5 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
-
-	temp_line = L3O4_LINE;     /* b5 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
-
-	temp_line = L3N1_LINE;     /* b6 */
-	tmp1=CS_FluorLine(Z, temp_line,EdgeEnergy(Z,L3_SHELL)+0.1);
-	tmp2+=tmp1;
-	tmp+=LineEnergy(Z,temp_line)*tmp1 ;
-  	if (tmp2>0)   return tmp/tmp2;  else return 0.0;
+    if (tmp2 > 0) {
+      return tmp / tmp2;
+    }
+    else {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
   }
   /*
    * special cases for composed lines
    */
   else if (line == L1N67_LINE) {
- 	return (LineEnergy(Z, L1N6_LINE)+LineEnergy(Z,L1N7_LINE))/2.0; 
+    return LineEnergyComposed(Z, L1N6_LINE, L1N7_LINE, error);
   }
   else if (line == L1O45_LINE) {
- 	return (LineEnergy(Z, L1O4_LINE)+LineEnergy(Z,L1O5_LINE))/2.0; 
+    return LineEnergyComposed(Z, L1O4_LINE, L1O5_LINE, error);
   }
   else if (line == L1P23_LINE) {
- 	return (LineEnergy(Z, L1P2_LINE)+LineEnergy(Z,L1P3_LINE))/2.0; 
+    return LineEnergyComposed(Z, L1P2_LINE, L1P3_LINE, error);
   }
   else if (line == L2P23_LINE) {
- 	return (LineEnergy(Z, L2P2_LINE)+LineEnergy(Z,L2P3_LINE))/2.0; 
+    return LineEnergyComposed(Z, L2P2_LINE, L2P3_LINE, error);
   }
   else if (line == L3O45_LINE) {
- 	return (LineEnergy(Z, L3O4_LINE)+LineEnergy(Z,L3O5_LINE))/2.0; 
+    return LineEnergyComposed(Z, L3O4_LINE, L3O5_LINE, error);
   }
   else if (line == L3P23_LINE) {
- 	return (LineEnergy(Z, L3P2_LINE)+LineEnergy(Z,L3P3_LINE))/2.0; 
+    return LineEnergyComposed(Z, L3O4_LINE, L3O5_LINE, error);
   }
   else if (line == L3P45_LINE) {
- 	return (LineEnergy(Z, L3P4_LINE)+LineEnergy(Z,L3P5_LINE))/2.0; 
+    return LineEnergyComposed(Z, L3P4_LINE, L3P5_LINE, error);
   }
   
   line = -line - 1;
-  if (line<0 || line>=LINENUM) {
-    ErrorExit("Line not available in function LineEnergy");
+  if (line < 0 || line >= LINENUM) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_LINE);
     return 0;
   }
   
   line_energy = LineEnergy_arr[Z][line];
+
   if (line_energy <= 0.) {
-    ErrorExit("Line not available in function LineEnergy");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
     return 0;
   }
   return line_energy;

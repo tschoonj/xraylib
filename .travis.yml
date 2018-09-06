@@ -66,22 +66,22 @@ install:
 
 script:
   - autoreconf -fi || exit 1
-  - ./configure --enable-php --enable-pascal --enable-java --disable-python --disable-python-numpy || exit 1
-  - make || exit 1
-  - make check || exit 1
-  - make distclean || exit 1
+        #- ./configure --enable-php --enable-pascal --enable-java --disable-python --disable-python-numpy || exit 1
+        #- make || exit 1
+        #- make check || exit 1
+        #- make distclean || exit 1
   - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || exit 1
   - make || exit 1
   - make check || exit 1
   - make distclean || exit 1
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} || exit 1
-  - make || exit 1
-  - make check || exit 1
-  - make distclean || exit 1
-  - ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} || exit 1
-  - make || exit 1
-  - make check || exit 1
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then PYTHON=${XRL_PYTHON2} make distcheck || exit 1 ; fi
+    #- ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} || exit 1
+    #- make || exit 1
+    #- make check || exit 1
+    #- make distclean || exit 1
+    #- ./configure --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} || exit 1
+    #- make || exit 1
+    #- make check || exit 1
+    #- if [ "$TRAVIS_OS_NAME" == "linux" ] ; then PYTHON=${XRL_PYTHON2} make distcheck || exit 1 ; fi
 
 branches:
   only:

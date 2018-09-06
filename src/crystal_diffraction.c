@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2011  David Sagan
+Copyright (c) 2011-2018  David Sagan, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -8,17 +8,21 @@ modification, are permitted provided that the following conditions are met:
     * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
     * The names of the contributors may not be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY David Sagan ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ANYONE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+THIS SOFTWARE IS PROVIDED BY David Sagan AND Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL ANYONE BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "config.h"
+#include "xraylib-aux.h"
 #include "xraylib-crystal-diffraction.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #define sind(x)  sin(x * DEGRAD)
 #define cosd(x)  cos(x * DEGRAD)
@@ -47,17 +51,26 @@ xrlComplex c_mul(xrlComplex x, xrlComplex y) {
 /*-------------------------------------------------------------------------------------------------- */
 /* Private function to extend the crystal array size. */
 
-static void Crystal_ExtendArray (Crystal_Array** c_array, int n_new) {
+static int Crystal_ExtendArray(Crystal_Array** c_array, int n_new, xrl_error **error) {
   int i;
 
   /* Special case */
 
   /* Transfer data to a temp. */
 
-  Crystal_Array* temp_array = malloc(sizeof(Crystal_Array));
+  Crystal_Array *temp_array = malloc(sizeof(Crystal_Array));
+  if (temp_array == NULL) {
+    xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+    return 0;
+  }
   temp_array->n_crystal = (*c_array)->n_crystal;
   temp_array->n_alloc = (*c_array)->n_alloc + n_new;
-  temp_array->crystal = malloc(temp_array->n_alloc * sizeof(Crystal_Array));
+  temp_array->crystal = malloc(temp_array->n_alloc * sizeof(Crystal_Struct));
+  if (temp_array->crystal == NULL) {
+    xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+    free(temp_array);
+    return 0;
+  }
 
   for (i = 0; i < (*c_array)->n_crystal; i++) {
     temp_array->crystal[i] = (*c_array)->crystal[i];
@@ -69,17 +82,17 @@ static void Crystal_ExtendArray (Crystal_Array** c_array, int n_new) {
    */
 
 
-  if ((*c_array)->crystal != Crystal_arr.crystal) free((*c_array)->crystal);
+  if ((*c_array)->crystal != Crystal_arr.crystal)
+    free((*c_array)->crystal);
 
   *c_array = temp_array;
 
-  return;
-
+  return 1;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
 
-void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc) {
+int Crystal_ArrayInit(Crystal_Array *c_array, int n_crystal_alloc, xrl_error **error) {
 
   c_array->n_crystal = 0;
   c_array->n_alloc = n_crystal_alloc;
@@ -88,37 +101,50 @@ void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc) {
     c_array->crystal = NULL;
   } else {
     c_array->crystal = malloc(n_crystal_alloc * sizeof(Crystal_Struct));
+    if (c_array->crystal == NULL) {
+      xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+      c_array->n_alloc = 0;
+      return 0;
+    }
   }
-
+  return 1;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
 
-void Crystal_ArrayFree (Crystal_Array* c_array) {
+void Crystal_ArrayFree(Crystal_Array *c_array) {
 
   int i;
   for (i = 0; i < c_array->n_crystal; i++) {
-    Crystal_Free (&c_array->crystal[i]);
+    Crystal_Free(&c_array->crystal[i]);
   }
   free(c_array);
-
 }
 
 /*-------------------------------------------------------------------------------------------------- */
 
-Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal) {
+Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
   int n;
 
   Crystal_Struct* crystal_out = malloc(sizeof(Crystal_Struct));
+  if (crystal_out == NULL) {
+    xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+    return NULL;
+  }
 
   *crystal_out = *crystal;
   crystal_out->name = strdup(crystal->name);
   n = crystal->n_atom * sizeof(Crystal_Atom);
   crystal_out->atom = malloc(n);
-  memcpy (crystal->atom, crystal_out->atom, n);
+  if (crystal_out->atom == NULL) {
+    xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+    free(crystal_out->name);
+    free(crystal_out);
+    return NULL;
+  }
+  memcpy(crystal->atom, crystal_out->atom, n);
 
   return crystal_out;
-
 }
 
 /*-------------------------------------------------------------------------------------------------- */
@@ -131,7 +157,7 @@ void Crystal_Free (Crystal_Struct* crystal) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals) {
+char** Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error **error) {
   char **rv = NULL;
   int i;
 
@@ -139,6 +165,10 @@ char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals) {
   	c_array = &Crystal_arr;
   }
   rv = malloc(sizeof(char *) * (c_array->n_crystal + 1));
+  if (rv == NULL) {
+    xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+    return NULL;
+  }
   for (i = 0 ; i < c_array->n_crystal ; i++)
     rv[i] = strdup(c_array->crystal[i].name);
 
@@ -152,14 +182,22 @@ char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array) {
-
-  if (c_array == NULL) {
-  	c_array = &Crystal_arr;
+Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array, xrl_error **error) {
+  void *rv;
+  if (material == NULL) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal cannot be NULL");
+    return NULL;
   }
 
-  return bsearch(material, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
+  if (c_array == NULL) {
+    c_array = &Crystal_arr;
+  }
 
+  rv = bsearch(material, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
+  if (rv == NULL) {
+    xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal %s is not present in array", material);
+  }
+  return rv;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
@@ -168,12 +206,18 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
  *
  */
 
-double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller) {
+double Bragg_angle(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, xrl_error **error) {
   double d_spacing, wavelength;
 
-  if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
+  if (energy <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
+  }
 
-  d_spacing = Crystal_dSpacing (crystal, i_miller, j_miller, k_miller);
+  d_spacing = Crystal_dSpacing(crystal, i_miller, j_miller, k_miller, error);
+  if (d_spacing == 0.0)
+    return 0.0;
+
   wavelength = KEV2ANGST / energy;
   return asin(wavelength / (2 * d_spacing));
 
@@ -185,17 +229,17 @@ double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_
  *
  */
 
-double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
-                                    int i_miller, int j_miller, int k_miller, double rel_angle) {
-  double wavelength;
+double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double rel_angle, xrl_error **error) {
 
   if (i_miller == 0 && j_miller == 0 && k_miller == 0)
-    return 0;
-  else {
-    wavelength = KEV2ANGST / energy;
-    return sin(rel_angle * Bragg_angle(crystal, energy, i_miller, j_miller, k_miller)) / wavelength;
+	  return 0.0;
+
+  if (energy <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
   }
 
+  return energy * sin(rel_angle * Bragg_angle(crystal, energy, i_miller, j_miller, k_miller, error)) / KEV2ANGST;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
@@ -204,13 +248,21 @@ double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
  *
  */
 
-void Atomic_Factors (int Z, double energy, double q, double debye_factor,
-                                  double* f0, double* f_prime, double* f_prime2) {
+int Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_prime, double* f_prime2, xrl_error **error) {
 
-  *f0       = FF_Rayl(Z, q) * debye_factor;
-  *f_prime  = Fi(Z, energy) * debye_factor;
-  *f_prime2 = -Fii(Z, energy) * debye_factor;
+  if (debye_factor <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_DEBYE_FACTOR);
+    *f0 = *f_prime = *f_prime2 = 0.0;
+    return 0;
+  }
 
+  if ((*f0 = FF_Rayl(Z, q, error) * debye_factor) == 0.0 ||
+      (*f_prime  = Fi(Z, energy, error) * debye_factor) == 0.0 ||
+      (*f_prime2 = -Fii(Z, energy, error) * debye_factor) == 0.0) {
+    *f0 = *f_prime = *f_prime2 = 0.0;
+    return 0;
+  }
+  return 1;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
@@ -219,17 +271,15 @@ void Atomic_Factors (int Z, double energy, double q, double debye_factor,
  *
  */
 
-xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy,
-                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
-  return Crystal_F_H_StructureFactor_Partial (crystal, energy, i_miller, j_miller, k_miller,
-                                                                          debye_factor, rel_angle, 2, 2, 2);
+xrlComplex Crystal_F_H_StructureFactor(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrl_error **error) {
+  return Crystal_F_H_StructureFactor_Partial(crystal, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, 2, 2, 2, error);
 }
 
-void Crystal_F_H_StructureFactor2 (Crystal_Struct* crystal, double energy,
-                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrlComplex* result) {
+void Crystal_F_H_StructureFactor2(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrlComplex* result, xrl_error **error);
 
-	xrlComplex z = Crystal_F_H_StructureFactor_Partial (crystal, energy, i_miller, j_miller, k_miller,
-                                                                          debye_factor, rel_angle, 2, 2, 2);
+void Crystal_F_H_StructureFactor2(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrlComplex* result, xrl_error **error) {
+
+	xrlComplex z = Crystal_F_H_StructureFactor_Partial(crystal, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, 2, 2, 2, error);
 	result->re = z.re;
 	result->im = z.im;
 }
@@ -240,28 +290,33 @@ void Crystal_F_H_StructureFactor2 (Crystal_Struct* crystal, double energy,
  *
  */
 
-xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy,
-                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
-                      int f0_flag, int f_prime_flag, int f_prime2_flag) {
+xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag, xrl_error **error) {
 
   double f0, f_prime, f_prime2, q;
   double f_re[120], f_im[120], H_dot_r;
   int f_is_computed[120] = {0};
   xrlComplex F_H = {0, 0};
-  char buffer[512];
   int i, Z;
   Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
+  xrl_error *tmp_error = NULL;
 
   /* Loop over all atoms and compute the f values */
 
-  q = Q_scattering_amplitude(cc, energy, i_miller, j_miller, k_miller, rel_angle);
+  /* having a zero amplitude is perfectly acceptable if all Miller indices are zero */
+  q = Q_scattering_amplitude(cc, energy, i_miller, j_miller, k_miller, rel_angle, &tmp_error);
+  if (tmp_error != NULL) {
+    xrl_propagate_error(error, tmp_error);
+    return F_H;
+  }
 
   for (i = 0; i < cc->n_atom; i++) {
 
     Z = cc->atom[i].Zatom;
-    if (f_is_computed[Z]) continue;
+    if (f_is_computed[Z])
+      continue;
 
-    Atomic_Factors (Z, energy, q, debye_factor, &f0, &f_prime, &f_prime2);
+    if (Atomic_Factors(Z, energy, q, debye_factor, &f0, &f_prime, &f_prime2, error) == 0)
+      return F_H;
 
     switch (f0_flag) {
     case 0:
@@ -274,8 +329,7 @@ xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double 
       f_re[Z] = f0;
       break;
     default:
-      sprintf (buffer, "Bad f0_flag argument in Crystal_F_H_StructureFactor_Partial: %i", f0_flag);
-      ErrorExit(buffer);
+      xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid f0_flag argument: %d", f0_flag);
       return F_H;
     }
 
@@ -286,8 +340,7 @@ xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double 
       f_re[Z] = f_re[Z] + f_prime;
       break;
     default:
-      sprintf (buffer, "Bad f_prime_flag argument in Crystal_F_H_StructureFactor_Partial: %i", f_prime_flag);
-      ErrorExit(buffer);
+      xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid f_prime_flag argument: %d", f_prime_flag);
       return F_H;
     }
 
@@ -299,9 +352,8 @@ xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double 
       f_im[Z] = f_prime2;
       break;
     default:
-      sprintf (buffer, "Bad f_prime2_flag argument in Crystal_F_H_StructureFactor_Partial: %i", f_prime2_flag);
-      ErrorExit(buffer);
-      return F_H;;
+      xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid f_prime2_flag argument: %d", f_prime2_flag);
+      return F_H;
     }
 
     f_is_computed[Z] = 1;
@@ -318,15 +370,18 @@ xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double 
   }
 
   return F_H;
-
 }
 
 void Crystal_F_H_StructureFactor_Partial2(Crystal_Struct* crystal, double energy,
 	int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
-	int f0_flag, int f_prime_flag, int f_prime2_flag, xrlComplex* result) {
+	int f0_flag, int f_prime_flag, int f_prime2_flag, xrlComplex* result, xrl_error **error);
+
+void Crystal_F_H_StructureFactor_Partial2(Crystal_Struct* crystal, double energy,
+	int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
+	int f0_flag, int f_prime_flag, int f_prime2_flag, xrlComplex* result, xrl_error **error) {
 
 	xrlComplex z = Crystal_F_H_StructureFactor_Partial(crystal, energy, i_miller, j_miller, k_miller,
-		debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+		debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag, error);
 	result->re = z.re;
 	result->im = z.im;
 }
@@ -337,9 +392,14 @@ void Crystal_F_H_StructureFactor_Partial2(Crystal_Struct* crystal, double energy
  *
  */
 
-double Crystal_UnitCellVolume (Crystal_Struct* crystal) {
+double Crystal_UnitCellVolume(Crystal_Struct* crystal, xrl_error **error) {
 
   Crystal_Struct* cc = crystal;  /* Just for an abbreviation. */
+
+  if (cc == NULL) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, CRYSTAL_NULL);
+    return 0.0;
+  }
 
   return cc->a * cc->b * cc->c *
                   sqrt( (1 - pow2(cosd(cc->alpha)) - pow2(cosd(cc->beta)) - pow2(cosd(cc->gamma))) +
@@ -352,10 +412,18 @@ double Crystal_UnitCellVolume (Crystal_Struct* crystal) {
  *
  */
 
-double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller) {
+double Crystal_dSpacing(Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller, xrl_error **error) {
   Crystal_Struct* cc;
 
-  if (i_miller == 0 && j_miller == 0 && k_miller == 0) return 0;
+  if (crystal == NULL) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, CRYSTAL_NULL);
+    return 0.0;
+  }
+
+  if (i_miller == 0 && j_miller == 0 && k_miller == 0) {
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_MILLER);
+	  return 0;
+  }
 
   cc = crystal;  /* Just for an abbreviation. */
 
@@ -374,10 +442,16 @@ double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, in
  *
  */
 
-int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
+int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error) {
   Crystal_Struct* a_cryst;
 
-  if (c_array == NULL) c_array = &Crystal_arr;
+  if (c_array == NULL)
+    c_array = &Crystal_arr;
+
+  if (crystal == NULL) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, CRYSTAL_NULL);
+    return 0;
+  }
 
   /* See if the crystal material is already present.
    * If so replace it.
@@ -387,15 +461,25 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
   a_cryst = bsearch(crystal->name, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
 
   if (a_cryst == NULL) {
-    if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL);
-    c_array->crystal[c_array->n_crystal++] = *Crystal_MakeCopy(crystal);
+    Crystal_Struct *tmp = NULL;
+    if (c_array->n_crystal == c_array->n_alloc) {
+      if (Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL, error) == 0) {
+        return 0;
+      }
+    }
+    tmp = Crystal_MakeCopy(crystal, error);
+    if (tmp == NULL)
+      return 0;
+    c_array->crystal[c_array->n_crystal++] = *tmp;
+    free(tmp);
     a_cryst = &c_array->crystal[c_array->n_crystal];
   } else {
-    *a_cryst = *Crystal_MakeCopy(crystal);
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal already present in array");
+    return 0;
   }
 
   /* sort and return */
-  a_cryst->volume = Crystal_UnitCellVolume(a_cryst);
+  a_cryst->volume = Crystal_UnitCellVolume(a_cryst, NULL);
   qsort(c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), compareCrystalStructs);
 
   return 1;
@@ -407,7 +491,7 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array) {
  * Read in a set of crystal structs.
  */
 
-int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
+int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **error) {
 
   FILE* fp;
   Crystal_Struct* crystal;
@@ -416,15 +500,22 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
   char tag[21], compound[21], buffer[512];
   long floc;
 
-  if (c_array == NULL) c_array = &Crystal_arr;
+  if (file_name == NULL) {
+    xrl_set_error_literal(error, XRL_ERROR_IO, "NULL filenames are not allowed");
+    return 0;
+  }
+
+  if (c_array == NULL)
+    c_array = &Crystal_arr;
+
 #ifdef _WIN32
   /* necesarry to avoid line-ending issues in windows, as pointed out by Matthew Wormington */
-  if ((fp = fopen(file_name, "rb")) == NULL) {
+  if ((fp = fopen(file_name, "rb")) == NULL)
 #else
-  if ((fp = fopen(file_name, "r")) == NULL) {
+  if ((fp = fopen(file_name, "r")) == NULL)
 #endif
-    sprintf (buffer, "Crystal file: %s not found\n", file_name);
-    ErrorExit(buffer);
+  { 
+    xrl_set_error(error, XRL_ERROR_IO, "Could not open %s for reading: %s", file_name, strerror(errno));
     return 0;
   }
 
@@ -435,16 +526,19 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
     /* Start of compound def looks like: "#S <num> <Compound>" */
 
     fgets (buffer, 100, fp);
-    if (buffer[0] != '#' || buffer[1] != 'S') continue;
+    if (buffer[0] != '#' || buffer[1] != 'S')
+      continue;
 
     ex = sscanf(buffer, "%20s %d %20s", tag, &i, compound);
     if (ex != 3) {
-      sprintf (buffer, "In crystal file: %s\n  Malformed '#S <num> <crystal_name>' construct.", file_name);
-      ErrorExit(buffer);
+      xrl_set_error_literal(error, XRL_ERROR_IO, "Malformed '#S <num> <crystal_name>' construct");
       return 0;
     }
 
-    if (c_array->n_crystal == c_array->n_alloc) Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL);
+    if (c_array->n_crystal == c_array->n_alloc) {
+      if (Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL, error) == 0)
+        return 0;
+    }
     crystal = &(c_array->crystal[c_array->n_crystal++]);
 
     crystal->name = strdup(compound);
@@ -467,15 +561,11 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
         ex = sscanf(buffer,"%20s %lf %lf %lf %lf %lf %lf", tag, &crystal->a, &crystal->b, &crystal->c,
                                                        &crystal->alpha, &crystal->beta, &crystal->gamma);
         if (found_it) {
-          sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Multiple #UCELL lines found.",
-                                                                      file_name, crystal->name);
-          ErrorExit(buffer);
+          xrl_set_error(error, XRL_ERROR_IO, "Multiple #UCELL lines found for crystal %s", crystal->name);
           return 0;
         }
         if (ex != 7) {
-          sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n Malformed '#UCELL' construct",
-                                                                      file_name, crystal->name);
-          ErrorExit(buffer);
+          xrl_set_error(error, XRL_ERROR_IO, "Malformed #UCELL line found for crystal %s", crystal->name);
           return 0;
         }
         found_it = TRUE;
@@ -486,9 +576,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
     /* Error check */
 
     if (!found_it) {
-      sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  No #UCELL line found for crystal.",
-                                                                      file_name, crystal->name);
-      ErrorExit(buffer);
+      xrl_set_error(error, XRL_ERROR_IO, "No #UCELL line found for crystal %s", crystal->name);
       return 0;
     }
 
@@ -506,14 +594,16 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
     }
 
     if (n == 0 && feof(fp)) {
-      sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  End of file before definition complete.",
-                                                                      file_name, crystal->name);
-      ErrorExit(buffer);
+      xrl_set_error_literal(error, XRL_ERROR_IO, "End of file encountered before definition was complete");
       return 0;
     }
 
     crystal->n_atom = n;
     crystal->atom = malloc(n * sizeof(Crystal_Atom));
+    if (crystal->atom == NULL) {
+      xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+      return 0;
+    }
 
     /* Now rewind and fill in the array */
 
@@ -523,9 +613,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
       atom = &(crystal->atom[i]);
       ex = fscanf(fp, "%i %lf %lf %lf %lf", &atom->Zatom, &atom->fraction, &atom->x, &atom->y, &atom->z);
       if (ex != 5) {
-        sprintf (buffer, "In crystal file: %s\n  For crystal definition of: %s.\n  Atom position line %d\n  Error parsing atom position.",
-                                                                      file_name, crystal->name, i);
-        ErrorExit(buffer);
+	xrl_set_error(error, XRL_ERROR_IO, "Could not parse atom position on line %d for crystal %s", i, crystal->name);
         return 0;
       }
     }
@@ -541,7 +629,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array) {
   /* Now calculate the unit cell volumes */
 
   for (i = 0; i < c_array->n_crystal; i++) {
-    c_array->crystal[i].volume = Crystal_UnitCellVolume(&c_array->crystal[i]);
+    c_array->crystal[i].volume = Crystal_UnitCellVolume(&c_array->crystal[i], NULL);
   }
 
   return 1;

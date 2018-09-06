@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, Tom Schoonjans
+Copyright (c) 2014-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -19,6 +19,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #ifndef XRAYLIB_RADIO_NUCLIDES_H
 #define XRAYLIB_RADIO_NUCLIDES_H
+
+#include "xraylib-error.h"
 
 /* 
  * name: a string containing the mass number (A), followed by the chemical element (e.g. 55Fe)
@@ -60,7 +62,7 @@ struct radioNuclideData{
  * The returned struct should be freed after usage with FreeRadioNuclideData.
  *
  */
-struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[]);
+struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[], xrl_error **error);
 
 /*
  *
@@ -73,7 +75,7 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
  * The returned struct should be freed after usage with FreeRadioNuclideData.
  *
  */
-struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex);
+struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex, xrl_error **error);
 
 /*
  *
@@ -85,7 +87,7 @@ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex);
  * all individual strings, and subsequently by using xrlFree to deallocate the array
  *
  */
-char **GetRadioNuclideDataList(int *nRadioNuclides);
+char **GetRadioNuclideDataList(int *nRadioNuclides, xrl_error **error);
 
 /*
  *

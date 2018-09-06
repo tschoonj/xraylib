@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 */
 
 #include "xraylib-error.h"
+#include "xraylib-error-private.h"
 
 #include <assert.h>
 #include <string.h>
