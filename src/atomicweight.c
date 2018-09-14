@@ -26,7 +26,7 @@ double AtomicWeight(int Z, xrl_error **error)
 {
   double atomic_weight;
 
-  if (Z<1 || Z>ZMAX) {
+  if (Z < 1 || Z > ZMAX) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }

@@ -12,10 +12,16 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 int main(int argc, char *argv[]) {
+	xrl_error *error = NULL;
+	char *symbol = NULL;
+	int Z;
+
 	/* taken from https://github.com/KenanY/chemical-formula/blob/master/test/index.js */
 	/* good formulas */
 	assert(CompoundParser("C19H29COOH", NULL) != NULL);
@@ -57,6 +63,43 @@ int main(int argc, char *argv[]) {
 	assert(CompoundParser("\n", NULL) == NULL);
 	assert(CompoundParser("Au L1", NULL) == NULL);
 	assert(CompoundParser("Au\tFe", NULL) == NULL);
+
+	assert(SymbolToAtomicNumber("Fe", &error) == 26);
+	assert(error == NULL);
+
+	assert(SymbolToAtomicNumber("Uu", &error) == 0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, "Invalid chemical symbol") == 0);
+	xrl_clear_error(&error);
+
+	symbol = AtomicNumberToSymbol(26, &error);
+	assert(strcmp(symbol, "Fe") == 0);
+	assert(error == NULL);
+	xrlFree(symbol);
+
+	symbol = AtomicNumberToSymbol(-2, &error);
+	assert(symbol == NULL);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+	xrl_clear_error(&error);
+	
+	/* database currently goes up to Bh */
+	symbol = AtomicNumberToSymbol(108, &error);
+	assert(symbol == NULL);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+	xrl_clear_error(&error);
+
+	/* cross validation */
+	for (Z = 1 ; Z <= 107 ; Z++) {
+		symbol = AtomicNumberToSymbol(Z, NULL);
+		assert(symbol != NULL);
+		assert(SymbolToAtomicNumber(symbol, NULL) == Z);
+		xrlFree(symbol);
+	}
 
 	return 0;
 }

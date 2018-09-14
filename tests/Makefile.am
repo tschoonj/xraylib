@@ -13,7 +13,16 @@
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/src
 
-check_PROGRAMS = test-compoundparser test-error
+NULL=
+
+check_PROGRAMS = \
+	test-compoundparser \
+	test-error \
+	test-atomiclevelwidth \
+	test-atomicweight \
+	test-auger \
+	$(NULL)
+
 TESTS = $(check_PROGRAMS)
 
 test_compoundparser_SOURCES = test-compoundparser.c
@@ -21,4 +30,13 @@ test_compoundparser_LDADD = ../src/libxrl.la
 
 test_error_SOURCES = test-error.c
 test_error_LDADD = ../src/libxrl.la
+
+test_atomiclevelwidth_SOURCES = test-atomiclevelwidth.c
+test_atomiclevelwidth_LDADD = ../src/libxrl.la
+
+test_atomicweight_SOURCES = test-atomicweight.c
+test_atomicweight_LDADD = ../src/libxrl.la
+
+test_auger_SOURCES = test-auger.c
+test_auger_LDADD = ../src/libxrl.la
 
