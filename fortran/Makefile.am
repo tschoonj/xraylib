@@ -25,9 +25,14 @@ BUILT_SOURCES = xraylib.mod
 
 xraylib.mod: libxrlf03.la
 
+xraylib_wrap.F90: xraylib_wrap_generated.F90
+
 clean-local:
 	rm -f xraylib.mod
 
 
+SUBDIRS = tests
+
+EXTRA_DIST = xraylib_wrap_generated.F90
 
 endif

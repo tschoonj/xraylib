@@ -51,12 +51,12 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 	
 	yield = AugerYield(82, K_SHELL, &error);
-	assert(fabs(yield - (1.0 - FluorYield(82, K_SHELL, NULL))) < 1E-6);
 	assert(error == NULL);
+	assert(fabs(yield - (1.0 - FluorYield(82, K_SHELL, NULL))) < 1E-6);
 	
 	yield = AugerYield(82, M3_SHELL, &error);
-	assert(fabs(yield - 0.1719525) < 1E-6);
 	assert(error == NULL);
+	assert(fabs(yield - 0.1719525) < 1E-6);
 	
 	yield = AugerYield(-35, K_SHELL, &error);
 	assert(yield == 0.0);

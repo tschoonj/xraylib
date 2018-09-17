@@ -978,6 +978,7 @@ AC_CONFIG_FILES([Makefile
 				 php/Makefile
 				 pascal/Makefile
 				 tests/Makefile
+				 fortran/tests/Makefile
 ])
 
 

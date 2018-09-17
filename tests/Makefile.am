@@ -16,11 +16,11 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/
 NULL=
 
 check_PROGRAMS = \
-	test-compoundparser \
-	test-error \
 	test-atomiclevelwidth \
 	test-atomicweight \
 	test-auger \
+	test-compoundparser \
+	test-error \
 	$(NULL)
 
 TESTS = $(check_PROGRAMS)

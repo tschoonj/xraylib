@@ -152,7 +152,7 @@ q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 1, 1, 1, 1.0_C_DOUBLE)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 energy = 8.0
 debye_temp_factor = 1.0
-CALL Atomic_Factors (14, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (14, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=14) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -186,7 +186,7 @@ q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 1, 1, 1, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 energy = 8.0
 debye_temp_factor = 1.0
-CALL Atomic_Factors (6, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (6, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=6) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -226,7 +226,7 @@ bragg*180.0/PI
 
 q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 0, 2, 0, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
-CALL Atomic_Factors (8, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (8, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=8) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -255,7 +255,7 @@ bragg*180.0/PI
 
 q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 3, 3, 1, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
-CALL Atomic_Factors (19, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (19, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=19) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
