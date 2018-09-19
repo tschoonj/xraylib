@@ -45,10 +45,8 @@ __version__ = VERSION
 
 #undef c_abs
 /* include numpy headers */
-  #ifndef WITHOUT_NUMPY
     #include <numpy/ndarraytypes.h>
     #include <numpy/ndarrayobject.h>
-  #endif
 #endif
 
 #ifdef SWIGLUA
@@ -97,11 +95,9 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %}
 
 #ifdef SWIGPYTHON
-  #ifndef WITHOUT_NUMPY
 %init %{
     import_array();
 %}
-  #endif
 #endif
 
 #if defined(SWIGPHP) && !defined(SWIGPHP5) && !defined(SWIGPHP7)
@@ -126,6 +122,41 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %ignore radioNuclideData;
 %ignore FreeRadioNuclideData;
 
+%typemap(in, numinputs=0) xrl_error **error (xrl_error *error = NULL) {
+  $1 = &error;
+}
+
+%typemap(freearg) xrl_error **error {
+  xrl_error_free(*($1));
+}
+
+%typemap(out) int Atomic_Factors {}
+
+%typemap(argout) xrl_error **error {
+  if (*$1 != NULL) {
+    switch ((*$1)->code) {
+      case XRL_ERROR_MEMORY:
+        SWIG_exception(SWIG_MemoryError, (*$1)->message);
+        break;
+      case XRL_ERROR_INVALID_ARGUMENT:
+        SWIG_exception(SWIG_ValueError, (*$1)->message);
+        break;
+      case XRL_ERROR_IO:
+        SWIG_exception(SWIG_IOError, (*$1)->message);
+        break;
+      case XRL_ERROR_TYPE:
+        SWIG_exception(SWIG_TypeError, (*$1)->message);
+        break;
+      case XRL_ERROR_UNSUPPORTED:
+      case XRL_ERROR_RUNTIME:
+        SWIG_exception(SWIG_RuntimeError, (*$1)->message);
+        break;
+      default:
+        SWIG_exception(SWIG_RuntimeError, "Unknown xraylib error!");
+    }
+  }
+}
+
 %typemap(newfree) char * {
         if ($1)
                 xrlFree($1);
@@ -133,7 +164,6 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 %newobject AtomicNumberToSymbol;
 
-#ifndef SWIGJAVA
 %typemap(in, numinputs=0) Crystal_Array* c_array {
    /* do not use crystal_array argument for now... */
    $1 = NULL;
@@ -147,7 +177,6 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %typemap(in, numinputs=0) int* nCrystals {
    $1 = NULL;
 }
-#endif
 
 #ifdef SWIGLUA
 %typemap(out) char ** {
@@ -695,25 +724,23 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         char **list = $1;
 
-        PyObject *res = PyList_New(0);
-        for (i = 0 ; list[i] != NULL ; i++) {
-                PyList_Append(res,PyString_FromString(list[i]));
-                xrlFree(list[i]);
-        }
-        xrlFree(list);
+        if (list) {
+                PyObject *res = PyList_New(0);
+                for (i = 0 ; list[i] != NULL ; i++) {
+                        PyList_Append(res,PyString_FromString(list[i]));
+                        xrlFree(list[i]);
+                }
+                xrlFree(list);
 
-        $result = res;
+                $result = res;
+        }
 }
 
 %typemap(out) struct radioNuclideData * {
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd == NULL) {
-                PyErr_WarnEx(NULL, "Error: requested radionuclide not found in database\n",1);
-                $result = Py_None;
-        }
-        else {
+        if (rnd) {
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "name",PyString_FromString(rnd->name));
                 PyDict_SetItemString(dict, "Z",PyInt_FromLong(rnd->Z));
@@ -748,11 +775,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                PyErr_WarnEx(NULL, "Error: requested NIST compound not found in database\n",1);
-                $result = Py_None;
-        }
-        else {
+        if (cdn) {
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name));
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements));
@@ -795,12 +818,6 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 FreeCompoundData(cd);
                 $result=dict;
         }
-        else {
-                PyErr_WarnEx(NULL, "CompoundParser Error",1);
-                $result=Py_None;
-                goto fail;
-        }
-
 }
 
 
@@ -816,11 +833,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
         int i;
-        if (cs == NULL) {
-                PyErr_WarnEx(NULL, "Crystal_GetCrystal Error: crystal not found",1);
-                $result = Py_None;
-        }
-        else {
+        if (cs) {
              PyObject *dict = PyDict_New();
              PyDict_SetItemString(dict, "name",PyString_FromString(cs->name));
              PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a));
@@ -852,6 +865,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
              $result = dict;
         }
 }
+
 %typemap(in) Crystal_Struct * {
         /* cpointer should be used if present and valid */
         PyObject *dict = $input;

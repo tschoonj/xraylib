@@ -21,14 +21,14 @@ make check
 make distclean
 
 export PYTHON=python2
-./configure --disable-python --enable-python-numpy
+./configure --enable-python --enable-python-numpy
 make
 make check
 #make distcheck
 make distclean
 
 export PYTHON=python3
-./configure --disable-python --enable-python-numpy
+./configure --enable-python --enable-python-numpy
 make
 make check
 #make distcheck

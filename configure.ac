@@ -979,6 +979,7 @@ AC_CONFIG_FILES([Makefile
 				 pascal/Makefile
 				 tests/Makefile
 				 fortran/tests/Makefile
+				 python/tests/Makefile
 ])
 
 

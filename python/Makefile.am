@@ -56,4 +56,5 @@ clean-local:
 distclean-local:
 	rm -rf __pycache__
 
+SUBDIRS = tests
 EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx pyfragments.swg
