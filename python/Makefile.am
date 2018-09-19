@@ -32,7 +32,7 @@ endif
 
 if ENABLE_PYTHON_NUMPY
 pyexec_LTLIBRARIES += xraylib_np.la 
-xraylib_np_la_CFLAGS = $(OPENMP_CFLAGS) $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS) -I$(top_srcdir)/src -Wno-cpp -fno-strict-aliasing -Wno-deprecated-declarations -Wno-maybe-uninitialized
+xraylib_np_la_CFLAGS = $(OPENMP_CFLAGS) $(PYTHON_CFLAGS) -I$(top_srcdir)/include $(PYTHON_CPPFLAGS) $(NUMPY_HEADERS) -I$(top_srcdir)/src -Wno-cpp -fno-strict-aliasing -Wno-maybe-uninitialized
 xraylib_np_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_np_la_SOURCES = xraylib_np.c
 xraylib_np_la_LDFLAGS = $(LDFLAGS_PYTHON) -avoid-version -module -shared -export-dynamic $(OPENMP_CFLAGS) -shrext $(PYTHON_EXT)

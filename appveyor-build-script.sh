@@ -14,24 +14,22 @@ make
 make check
 make distclean
 
-#./configure --disable-python --disable-python-numpy
 ./configure --disable-python --disable-python-numpy --enable-fortran2003
 make
 make check
 #make distcheck
 make distclean
 
-exit 0
 export PYTHON=python2
-./configure --enable-python --enable-python-numpy
+./configure --disable-python --enable-python-numpy
 make
 make check
-make distcheck
+#make distcheck
 make distclean
 
 export PYTHON=python3
-./configure --enable-python --enable-python-numpy
+./configure --disable-python --enable-python-numpy
 make
 make check
-make distcheck
+#make distcheck
 make distclean
