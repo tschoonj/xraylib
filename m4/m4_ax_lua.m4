@@ -152,7 +152,7 @@ AC_DEFUN([AX_LUA_VERSION],
 AC_DEFUN([AX_LUA_HEADERS],
   [_AX_LUA_OPTS
   LUA_BASE=`AS_DIRNAME([$LUA])`
-  LUA_BASE="-I$LUA_BASE/../include"
+  LUA_BASE="-I$LUA_BASE/../include -I$LUA_BASE/../include/lua$LUA_VERSION -I$LUA_BASE/../include/lua"
   LUA_OLD_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $LUA_INCLUDE $LUA_BASE"
   AC_CHECK_HEADER([lua.h], [
@@ -177,9 +177,9 @@ AC_DEFUN([AX_LUA_LIBS],
   LIBS="$LIBS $LUA_LIB $LUA_BASE"
   AC_CHECK_LIB([m], [exp], [lua_extra_libs="$lua_extra_libs -lm"], [])
   AC_CHECK_LIB([dl], [dlopen], [lua_extra_libs="$lua_extra_libs -ldl"], [])
-  AC_CHECK_LIB([lua$with_lua_suffix],
+  AC_CHECK_LIB([lua$LUA_VERSION],
     [lua_load],
-    [LUA_LIB="$LUA_LIB -llua$with_lua_suffix $lua_extra_libs"],
+    [LUA_LIB="$LUA_LIB -llua$LUA_VERSION $lua_extra_libs"],
     [LUA_LIB=],
     [$LUA_LIB $lua_extra_libs])
     LIBS="$LUA_OLD_LIBS"

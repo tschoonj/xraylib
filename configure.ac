@@ -681,6 +681,10 @@ elif test "x$SWIG" != xnoswig && test "x$enable_lua" != xno && test "x$DISABLE_B
 	#search for lua interpreter
 	AX_WITH_LUA
 	if test "x$LUA" != x ; then
+		AC_MSG_CHECKING([for lua version])
+		LUA_VERSION=`$LUA -e 'print(_VERSION)' 2>&1 | cut -d' ' -f2`
+		AC_SUBST(LUA_VERSION)
+		AC_MSG_RESULT($LUA_VERSION)
 		AX_LUA_HEADERS
 		AX_LUA_LIBS
 		if test "x$HAVE_LUA_H" != x && test "x$HAVE_LUALIB_H" != x && test "x$LUA_LIB" != x ; then
@@ -713,10 +717,6 @@ elif test "x$SWIG" != xnoswig && test "x$enable_lua" != xno && test "x$DISABLE_B
 		fi
 	else
 		VALID_LUA=yes
-		AC_MSG_CHECKING([for lua version])
-		LUA_VERSION=`$LUA -e 'print(_VERSION)' 2>&1 | cut -d' ' -f2`
-		AC_SUBST(LUA_VERSION)
-		AC_MSG_RESULT($LUA_VERSION)
 
 		AC_MSG_NOTICE([Building with lua bindings])
 	fi
@@ -980,6 +980,7 @@ AC_CONFIG_FILES([Makefile
 				 tests/Makefile
 				 fortran/tests/Makefile
 				 python/tests/Makefile
+				 lua/tests/Makefile
 ])
 
 

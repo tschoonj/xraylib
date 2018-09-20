@@ -183,29 +183,26 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i=0;
         char ** list = $1;
 
-        lua_newtable(L);
-        for (i = 0 ; list[i] != NULL ; i++) {
-                lua_pushinteger(L,i+1);
-                lua_pushstring(L, list[i]);
-                lua_settable(L, -3);
-                xrlFree(list[i]);
-        }
-        xrlFree(list);
-        lua_pushvalue(L,-1);
+        if (list != NULL) {
+                lua_newtable(L);
+                for (i = 0 ; list[i] != NULL ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushstring(L, list[i]);
+                        lua_settable(L, -3);
+                        xrlFree(list[i]);
+                }
+                xrlFree(list);
+                lua_pushvalue(L,-1);
 
-        SWIG_arg++;
+                SWIG_arg++;
+        }
 }
 
 %typemap(out) struct radioNuclideData * {
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd == NULL) {
-                fprintf(stderr,"Error: requested radionuclide not found in database\n");
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (rnd != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "name");
@@ -285,12 +282,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                fprintf(stderr,"Error: requested NIST compound not found in database\n");
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (cdn != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "name");
@@ -336,11 +328,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         struct compoundData *cd = $1;
 
-        if (cd == NULL) {
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (cd != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "nElements");
@@ -410,12 +398,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         Crystal_Struct *cs = $1;
         int i;
 
-        if (cs == NULL) {
-                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (cs != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "name");
@@ -490,11 +473,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 lua_pushvalue(L, -1);
 
                 SWIG_arg++;
-
         }
-
-
-
 }
 
 %typemap(in) xrlComplex {
@@ -707,13 +686,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         SWIG_exception(SWIG_RuntimeError,"atom hash value must be an array (table)");
                 }
        }
-
-
-
-
        $1 = cs;
-
-
 }
 #endif
 
