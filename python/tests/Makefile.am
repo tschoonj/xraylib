@@ -16,3 +16,5 @@ check_SCRIPTS += \
 	$(NULL)
 
 endif
+
+EXTRA_DIST = $(check_SCRIPTS)

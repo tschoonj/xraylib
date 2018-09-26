@@ -18,4 +18,4 @@ check_SCRIPTS += \
 endif
 
 
-EXTRA_DIST = luaunit.lua
+EXTRA_DIST = luaunit.lua $(check_SCRIPTS)

@@ -32,6 +32,7 @@ test-compoundparser.sh: test-compoundparser.pas
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./test-compoundparser$(EXEEXT) || exit 1" >> test-compoundparser.sh
 	@echo "rm -f test-compoundparser$(EXEEXT) test-compoundparser.o" >> test-compoundparser.sh
 
-
 clean-local:
 	rm -f $(check_SCRIPTS) xrltest.o  xrltest.ppu
+
+EXTRA_DIST = xrltest.pas test-atomicweight.pas test-atomiclevelwidth.pas test-auger.pas test-compoundparser.pas
