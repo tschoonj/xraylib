@@ -982,6 +982,7 @@ AC_CONFIG_FILES([Makefile
 				 python/tests/Makefile
 				 lua/tests/Makefile
 				 pascal/tests/Makefile
+				 perl/tests/Makefile
 ])
 
 

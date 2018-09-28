@@ -42,7 +42,7 @@ windows:
 EXTRA_DIST = xraylib.spec.in BUGS Changelog
 
 if !OS_WINDOWS
-DISTCHECK_CONFIGURE_FLAGS = --enable-php --enable-pascal --enable-java
+DISTCHECK_CONFIGURE_FLAGS = --enable-pascal --disable-java --enable-perl
 endif
 
 .PHONY: windows 

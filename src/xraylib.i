@@ -1120,11 +1120,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (rnd == NULL) {
-                fprintf(stderr,"Error: requested radionuclide not found in database\n");
-                $result = &PL_sv_undef;
-        }
-        else {
+        if (rnd != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("name", newSVpvn(rnd->name, strlen(rnd->name)),hash)
                 STORE_HASH("Z", newSViv(rnd->Z),hash)
@@ -1163,11 +1159,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (cdn == NULL) {
-                fprintf(stderr,"Error: requested NIST compound not found in database\n");
-                $result = &PL_sv_undef;
-        }
-        else {
+        if (cdn != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("name", newSVpvn(cdn->name, strlen(cdn->name)),hash)
                 STORE_HASH("nElements", newSViv(cdn->nElements),hash)
@@ -1213,9 +1205,6 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
         }
-        else {
-                $result = &PL_sv_undef;
-        }
 
         argvi++;
 
@@ -1237,7 +1226,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         count = call_pv("Math::Complex::cplx",G_SCALAR);
         SPAGAIN;
         if (count != 1)
-                croak("Big Perl trouble\n");
+                croak("Could not create Math::Complex::cplx variable\n");
         SV *perl_result = newSVsv(POPs);
         PUTBACK;
         FREETMPS;
@@ -1246,17 +1235,14 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         $result = sv_2mortal(perl_result);
         argvi++;
 }
+
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
         int i;
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (cs == NULL) {
-                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found\n");
-                $result = &PL_sv_undef;
-        }
-        else {
+        if (cs != NULL) {
                 HV *rv = newHV();
                 STORE_HASH("name", newSVpvn(cs->name,strlen(cs->name)), rv)
                 STORE_HASH("a", newSVnv(cs->a), rv)
@@ -1489,9 +1475,6 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 }
                 $1 = cs;
                 argvi++;
-        }
-        else {
-                SWIG_exception(SWIG_TypeError,"Argument must be reference to hash");
         }
 }
 #endif
