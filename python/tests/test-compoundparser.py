@@ -79,6 +79,8 @@ class TestSymbolToAtomicNumber(unittest.TestCase):
     def test_bad_type(self):
         with self.assertRaises(TypeError):
             xraylib.SymbolToAtomicNumber(26)
+        with self.assertRaises(ValueError):
+            xraylib.SymbolToAtomicNumber(None)
 
 class TestAtomicNumberToSymbol(unittest.TestCase):
     def test_Fe(self):

@@ -463,6 +463,11 @@ char *AtomicNumberToSymbol(int Z, xrl_error **error) {
 int SymbolToAtomicNumber(const char *symbol, xrl_error **error) {
 	int i;
 
+	if (symbol == NULL) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Symbol cannot be NULL");
+		return 0;
+	}
+
 	for (i=0 ; i < MENDEL_MAX ; i++) {
 		if (strcmp(symbol,MendelArray[i].name) == 0)
 			return MendelArray[i].Zatom;

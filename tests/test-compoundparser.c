@@ -73,6 +73,12 @@ int main(int argc, char *argv[]) {
 	assert(strcmp(error->message, "Invalid chemical symbol") == 0);
 	xrl_clear_error(&error);
 
+	assert(SymbolToAtomicNumber(NULL, &error) == 0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, "Symbol cannot be NULL") == 0);
+	xrl_clear_error(&error);
+
 	symbol = AtomicNumberToSymbol(26, &error);
 	assert(strcmp(symbol, "Fe") == 0);
 	assert(error == NULL);
