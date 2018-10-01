@@ -1,17 +1,27 @@
 language: generic
 
-services:
-  - docker
-
 matrix:
   include:
     - os: linux
       dist: trusty
       sudo: required
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang
       env: CC='/usr/bin/clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
       dist: trusty
       sudo: required
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-7
+            - gfortran-7
       env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     # using Homebrew's bash allows me to circumvent the use of /bin/sh and its SIP problems when running interpreter tests
     - os: osx
@@ -26,6 +36,11 @@ matrix:
 
 before_install:
   - |
+    if [ $TRAVIS_OS_NAME == linux ] ; then
+      sudo apt-get --yes --force-yes update
+      sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy fpc gfortran php5-dev lua5.2 liblua5.2-dev
+    fi
+  - |
     if [ $TRAVIS_OS_NAME == osx ] ; then
       rm -rf $(brew --prefix)/lib/python*
       brew cask uninstall --force oclint
@@ -38,65 +53,37 @@ before_install:
     fi
   - rm -rf $HOME/.phpenv
 
-script:
+install:
   - |
-    if [ "$TRAVIS_OS_NAME" == "linux" ] ; then
-        docker run --name con_job -t -d tomschoonjans/xraylib-travis-ci:ubuntu-bionic /bin/bash
-        echo "#!/bin/sh" > script.sh
-        echo "set -x -e" >> script.sh
-        echo "export CPPFLAGS=\"$CPPFLAGS\"" >> script.sh
-        echo "export CXXFLAGS=\"$CXXFLAGS\"" >> script.sh
-        echo "export CFLAGS=\"$CFLAGS\"" >> script.sh
-        echo "export CC=\"$CC\"" >> script.sh
-        echo "export FC=\"$FC\"" >> script.sh
-        echo "autoreconf -fi" >> script.sh
-        # build most bindings
-        echo "./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java" >> script.sh
-        echo "make" >> script.sh
-        echo "make check" >> script.sh
-        echo "make distclean" >> script.sh
-        # pedantic build
-        echo "./configure --disable-all-bindings CFLAGS=\"-std=c89 -pedantic\"" >> script.sh
-        echo "make" >> script.sh
-        echo "make check" >> script.sh
-        echo "make distclean" >> script.sh
-        # python2 build
-        echo "./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA}" >> script.sh
-        echo "make" >> script.sh
-        echo "make check" >> script.sh
-        echo "make distclean" >> script.sh
-        # python3 build
-        echo "./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA}" >> script.sh
-        echo "make" >> script.sh
-        echo "make check" >> script.sh
-        echo "make clean" >> script.sh
-        # distcheck
-        echo "make distcheck" >> script.sh
-        echo "set +x" >> script.sh
-        chmod a+x script.sh
-        docker cp . con_job:/root
-        docker exec con_job ls -la
-        docker exec con_job cat script.sh
-        docker exec con_job ./script.sh
-    else
-        autoreconf -fi || exit 1
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java ${MYSHELL} || exit 1
-        make || exit 1
-        make check || exit 1
-        make distclean || exit 1
-        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" ${MYSHELL} || exit 1
-        - make || exit 1
-        make check || exit 1
-        make distclean || exit 1
-        ./configure --disable-ruby --disable-perl --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} ${MYSHELL} || exit 1
-        make || exit 1
-        make check || exit 1
-        make distclean || exit 1
-        ./configure --disable-ruby --disable-perl --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} ${MYSHELL} || exit 1
-        make || exit 1
-        make check || exit 1
+    if [ $TRAVIS_OS_NAME == linux ]; then
+      wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz || exit 1
+      tar xfz swig-3.0.12.tar.gz || exit 1
+      cd swig-3.0.12 || exit 1
+      ./configure || exit 1
+      make || exit 1
+      sudo make install || exit 1
+      cd ..
     fi
-        
+
+script:
+  - autoreconf -fi || exit 1
+    #- ./configure --enable-php --enable-pascal --enable-java --disable-python --disable-python-numpy || exit 1
+  - ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java ${MYSHELL} || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" ${MYSHELL} || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --disable-ruby --disable-perl --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} ${MYSHELL} || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --disable-ruby --disable-perl --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} ${MYSHELL} || exit 1
+  - make || exit 1
+  - make check || exit 1
+  - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then PYTHON=${XRL_PYTHON2} make distcheck || exit 1 ; fi
 
 branches:
   only:
