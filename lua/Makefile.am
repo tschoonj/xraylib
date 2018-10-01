@@ -25,5 +25,6 @@ xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 
 clean-local:
 	rm -f xraylib_wrap.c 
-endif
+
 SUBDIRS = tests
+endif

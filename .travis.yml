@@ -76,14 +76,19 @@ script:
   - make || exit 1
   - make check || exit 1
   - make distclean || exit 1
-  - ./configure --disable-ruby --disable-perl --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} ${MYSHELL} || exit 1
+  - ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} ${MYSHELL} || exit 1
   - make || exit 1
   - make check || exit 1
   - make distclean || exit 1
-  - ./configure --disable-ruby --disable-perl --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} ${MYSHELL} || exit 1
+  - ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} ${MYSHELL} || exit 1
   - make || exit 1
   - make check || exit 1
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] ; then PYTHON=${XRL_PYTHON2} make distcheck || exit 1 ; fi
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ] ; then
+      make distclean || exit 1
+      ./configure --disable-all-bindings || exit 1
+      make distcheck PYTHON=${XRL_PYTHON2} || exit 1
+    fi
 
 branches:
   only:

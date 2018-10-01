@@ -10,8 +10,9 @@ check_PROGRAMS = \
 
 check_LTLIBRARIES = libtest.la
 
-TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 endif
+
+TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 
 libtest_la_SOURCES = libtest.f90
 libtest_la_LIBADD = ../libxrlf03.la ../../src/libxrl.la

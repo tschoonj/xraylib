@@ -31,5 +31,5 @@ xraylib.pm: xraylib_wrap.c
 clean-local:
 	rm -rf xraylib.pm xraylib_wrap.c 
 
-endif
 SUBDIRS = tests
+endif
