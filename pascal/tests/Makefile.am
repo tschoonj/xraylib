@@ -1,3 +1,4 @@
+if ENABLE_PASCAL
 NULL=
 
 check_SCRIPTS = \
@@ -8,6 +9,7 @@ check_SCRIPTS = \
 	$(NULL)
 
 TESTS = $(check_SCRIPTS)
+endif
 
 TEST_EXTENSIONS = .sh
 SH_LOG_COMPILER = $(SHELL) 
@@ -34,5 +36,4 @@ test-compoundparser.sh: test-compoundparser.pas
 
 clean-local:
 	rm -f $(check_SCRIPTS) xrltest.o  xrltest.ppu
-
 EXTRA_DIST = xrltest.pas test-atomicweight.pas test-atomiclevelwidth.pas test-auger.pas test-compoundparser.pas

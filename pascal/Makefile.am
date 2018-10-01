@@ -31,6 +31,6 @@ uninstall-local:
 clean-local:
 	rm -rf xraylib.ppu xraylib.o
 
-SUBDIRS = tests
 endif
 EXTRA_DIST = xraylib.pas xraylib_impl.pas xraylib_iface.pas
+SUBDIRS = tests
