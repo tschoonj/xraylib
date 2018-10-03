@@ -983,6 +983,7 @@ AC_CONFIG_FILES([Makefile
 				 lua/tests/Makefile
 				 pascal/tests/Makefile
 				 perl/tests/Makefile
+				 php/tests/Makefile
 ])
 
 

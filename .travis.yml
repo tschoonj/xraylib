@@ -32,7 +32,7 @@ matrix:
       env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='/usr/local/bin/php' PHP_CONFIG='/usr/local/bin/php-config' PHP_BREW='php' MYSHELL='SHELL=/usr/local/bin/bash'
     - os: osx
       osx_image: xcode8.3
-      env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' MYSHELL='SHELL=/usr/local/bin/bash'
+      env: CC='gcc-7' FC='gfortran-7' EXTRA='--enable-fortran2003' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' PHP='/usr/local/bin/php' PHP_CONFIG='/usr/local/bin/php-config' PHP_BREW='php' MYSHELL='SHELL=/usr/local/bin/bash'
 
 before_install:
   - |
@@ -68,7 +68,7 @@ install:
 script:
   - autoreconf -fi || exit 1
     #- ./configure --enable-php --enable-pascal --enable-java --disable-python --disable-python-numpy || exit 1
-  - ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java ${MYSHELL} || exit 1
+  - ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java --enable-php ${MYSHELL} ${EXTRA} || exit 1
   - make || exit 1
   - make check || exit 1
   - make distclean || exit 1

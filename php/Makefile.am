@@ -30,4 +30,6 @@ xraylib.php: xraylib_wrap.c
 
 clean-local:
 	rm -rf xraylib_wrap.c xraylib.php php_xraylib.h
+
+SUBDIRS = tests
 endif

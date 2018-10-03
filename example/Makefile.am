@@ -128,10 +128,7 @@ xrlexample10.sh: ../ruby/xraylib.la xrlexample10.rb
 #Testing PHP bindings
 xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 	@echo "Testing PHP bindings"
-	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
-	@echo "include_path=\"${top_builddir}/php/\"" >> php.ini
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -c ${builddir}  ${top_srcdir}/example/xrlexample12.php" > xrlexample12.sh
-	@echo "rm -f php.ini" >> xrlexample12.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -d extension=\"${top_builddir}/php/.libs/xraylib.so\" -d include_path=\"${top_builddir}/php/\" ${top_srcdir}/example/xrlexample12.php" > xrlexample12.sh
 	@chmod +x xrlexample12.sh
 
 #test the numpy-python bindings
