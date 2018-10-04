@@ -67,8 +67,7 @@ install:
 
 script:
   - autoreconf -fi || exit 1
-    #- ./configure --enable-php --enable-pascal --enable-java --disable-python --disable-python-numpy || exit 1
-  - ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java --enable-php ${MYSHELL} ${EXTRA} || exit 1
+  - ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java --enable-php --enable-ruby ${MYSHELL} ${EXTRA} || exit 1
   - make || exit 1
   - make check || exit 1
   - make distclean || exit 1

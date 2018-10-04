@@ -1496,11 +1496,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd== NULL) {
-                fprintf(stderr, "Error: requested radionuclide not found in database\n");
-                $result = Qnil;
-        }
-        else {
+        if (rnd != NULL) {
                 VALUE rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(rnd->name));
                 rb_hash_aset(rv, rb_str_new2("Z"), INT2FIX(rnd->Z));
@@ -1535,11 +1531,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                fprintf(stderr, "Error: requested NIST compound not found in database\n");
-                $result = Qnil;
-        }
-        else {
+        if (cdn != NULL) {
                 VALUE rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cdn->name));
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cdn->nElements));
@@ -1562,10 +1554,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         struct compoundData *cd = $1;
 
-        if (cd == NULL) {
-               $result = Qnil;
-        }
-        else {
+        if (cd != NULL) {
                 VALUE rv;
                 rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
@@ -1592,11 +1581,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
 
-        if (cs == NULL) {
-                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
-                $result = Qnil;
-        }
-        else {
+        if (cs != NULL) {
                 VALUE rv;
                 rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cs->name));
@@ -1762,7 +1747,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %typemap(out) xrlComplex {
         xrlComplex c = $1;
 %#ifdef T_COMPLEX
-        /* Ruby 1.9 */
+        /* Ruby 1.9+ */
         VALUE cp = rb_Complex2(rb_float_new(c.re),rb_float_new(c.im));
 %#else
         /* Ruby 1.8 */
