@@ -15,8 +15,6 @@ if ENABLE_PASCAL
 all-local: xraylib.ppu
 
 xraylib.ppu: xraylib.pas
-	echo `pwd`/$(srcdir)
-	ls $(srcdir)
 	$(FPC) -FE$(builddir) -Mdelphi $(srcdir)/xraylib.pas
 
 
