@@ -6,6 +6,7 @@ check_PROGRAMS = \
 	test-atomicweight \
 	test-auger \
 	test-compoundparser \
+	test-comptonprofiles \
 	$(NULL)
 
 check_LTLIBRARIES = libtest.la
@@ -40,6 +41,12 @@ nodist_test_compoundparser_SOURCES = libtest.mod
 test_compoundparser_LDADD = libtest.la
 test_compoundparser_CPPFLAGS = -I.. -I.
 test_compoundparser_FCFLAGS = ${test_compoundparser_CPPFLAGS}
+
+dist_test_comptonprofiles_SOURCES = test-comptonprofiles.f90
+nodist_test_comptonprofiles_SOURCES = libtest.mod
+test_comptonprofiles_LDADD = libtest.la
+test_comptonprofiles_CPPFLAGS = -I.. -I.
+test_comptonprofiles_FCFLAGS = ${test_comptonprofiles_CPPFLAGS}
 
 BUILT_SOURCES = libtest.mod
 

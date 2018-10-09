@@ -11,6 +11,7 @@ dist_check_SCRIPTS = \
 	test-atomicweight.lua \
 	test-auger.lua \
 	test-compoundparser.lua \
+	test-comptonprofiles.lua \
 	$(NULL)
 
 endif

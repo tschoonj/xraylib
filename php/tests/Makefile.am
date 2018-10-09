@@ -11,6 +11,7 @@ dist_check_SCRIPTS = \
 	test-atomicweight.php \
 	test-auger.php \
 	test-compoundparser.php \
+	test-comptonprofiles.php \
 	$(NULL)
 endif
 

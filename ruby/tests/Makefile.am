@@ -11,6 +11,7 @@ dist_check_SCRIPTS = \
 	test-atomicweight.rb \
 	test-auger.rb \
 	test-compoundparser.rb \
+	test-comptonprofiles.rb \
 	$(NULL)
 endif
 

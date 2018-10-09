@@ -6,6 +6,7 @@ check_SCRIPTS = \
 	test-atomicweight.sh \
 	test-auger.sh \
 	test-compoundparser.sh \
+	test-comptonprofiles.sh \
 	$(NULL)
 
 TESTS = $(check_SCRIPTS)
@@ -34,6 +35,11 @@ test-compoundparser.sh: test-compoundparser.pas
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./test-compoundparser$(EXEEXT) || exit 1" >> test-compoundparser.sh
 	@echo "rm -f test-compoundparser$(EXEEXT) test-compoundparser.o" >> test-compoundparser.sh
 
+test-comptonprofiles.sh: test-comptonprofiles.pas
+	@echo "$(FPC) -Mdelphi -FE${builddir} -Fu${top_builddir}/pascal -Fl${top_builddir}/src/.libs ${srcdir}/test-comptonprofiles.pas || exit 1" > test-comptonprofiles.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./test-comptonprofiles$(EXEEXT) || exit 1" >> test-comptonprofiles.sh
+	@echo "rm -f test-comptonprofiles$(EXEEXT) test-comptonprofiles.o" >> test-comptonprofiles.sh
+
 clean-local:
 	rm -f $(check_SCRIPTS) xrltest.o  xrltest.ppu
-EXTRA_DIST = xrltest.pas test-atomicweight.pas test-atomiclevelwidth.pas test-auger.pas test-compoundparser.pas
+EXTRA_DIST = xrltest.pas test-atomicweight.pas test-atomiclevelwidth.pas test-auger.pas test-compoundparser.pas test-comptonprofiles.pas

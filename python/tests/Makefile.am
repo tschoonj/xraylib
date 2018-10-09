@@ -11,6 +11,7 @@ dist_check_SCRIPTS = \
 	test-atomicweight.py \
 	test-auger.py \
 	test-compoundparser.py \
+	test-comptonprofiles.py \
 	$(NULL)
 endif
 

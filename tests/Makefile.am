@@ -20,6 +20,7 @@ check_PROGRAMS = \
 	test-atomicweight \
 	test-auger \
 	test-compoundparser \
+	test-comptonprofiles \
 	test-error \
 	$(NULL)
 
@@ -39,4 +40,7 @@ test_atomicweight_LDADD = ../src/libxrl.la
 
 test_auger_SOURCES = test-auger.c
 test_auger_LDADD = ../src/libxrl.la
+
+test_comptonprofiles_SOURCES = test-comptonprofiles.c
+test_comptonprofiles_LDADD = ../src/libxrl.la
 
