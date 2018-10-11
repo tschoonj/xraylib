@@ -35,6 +35,7 @@ end;
 procedure TestRunner.DoRun;
 var
 	testResult: TTestResult;
+	failuresPlusErrors : integer;
 begin
 	testResult := TTestResult.Create;
 	try
@@ -42,8 +43,11 @@ begin
 		GetTestRegistry.Run(testResult);
 		FXMLResultsWriter.WriteResult(testResult);
 	finally
+		failuresPlusErrors := testResult.NumberOfErrors + testResult.NumberOfFailures;
 		testResult.Free;
 	end;
+	if failuresPlusErrors > 0 then
+		ExitCode := 1;	
 	Terminate;
 end;
 end.
