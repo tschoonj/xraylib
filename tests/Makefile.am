@@ -21,6 +21,7 @@ check_PROGRAMS = \
 	test-auger \
 	test-compoundparser \
 	test-comptonprofiles \
+	test-coskron \
 	test-error \
 	$(NULL)
 
@@ -43,4 +44,7 @@ test_auger_LDADD = ../src/libxrl.la
 
 test_comptonprofiles_SOURCES = test-comptonprofiles.c
 test_comptonprofiles_LDADD = ../src/libxrl.la
+
+test_coskron_SOURCES = test-coskron.c
+test_coskron_LDADD = ../src/libxrl.la
 
