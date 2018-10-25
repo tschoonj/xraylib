@@ -22,6 +22,7 @@ check_PROGRAMS = \
 	test-compoundparser \
 	test-comptonprofiles \
 	test-coskron \
+	test-cross_sections \
 	test-error \
 	$(NULL)
 
@@ -47,4 +48,7 @@ test_comptonprofiles_LDADD = ../src/libxrl.la
 
 test_coskron_SOURCES = test-coskron.c
 test_coskron_LDADD = ../src/libxrl.la
+
+test_cross_sections_SOURCES = test-cross_sections.c
+test_cross_sections_LDADD = ../src/libxrl.la
 

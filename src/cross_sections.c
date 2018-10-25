@@ -34,7 +34,7 @@ double CS_Total(int Z, double E, xrl_error **error)
   double rayleigh = 0.0;
   double compton = 0.0;
 
-  if (Z<1 || Z>ZMAX || NE_Photo[Z]<0 || NE_Rayl[Z]<0 || NE_Compt[Z]<0) {
+  if (Z < 1 || Z > ZMAX || NE_Photo[Z] < 0 || NE_Rayl[Z] < 0 || NE_Compt[Z] < 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
@@ -45,15 +45,15 @@ double CS_Total(int Z, double E, xrl_error **error)
   }
 
   photo = CS_Photo(Z, E, error);
-  if (error != NULL && *error != NULL)
+  if (photo == 0.0)
 	 return 0;
 
   rayleigh = CS_Rayl(Z, E, error);
-  if (error != NULL && *error != NULL)
+  if (rayleigh == 0.0)
 	 return 0;
 
   compton = CS_Compt(Z, E, error);
-  if (error != NULL && *error != NULL)
+  if (compton == 0.0)
 	 return 0;
 
   return photo + rayleigh + compton;
@@ -71,7 +71,7 @@ double CS_Photo(int Z, double E, xrl_error **error)
 {
   double ln_E, ln_sigma, sigma;
 
-  if (Z<1 || Z>ZMAX || NE_Photo[Z]<0) {
+  if (Z < 1 || Z > ZMAX || NE_Photo[Z] < 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
@@ -83,8 +83,7 @@ double CS_Photo(int Z, double E, xrl_error **error)
 
   ln_E = log(E * 1000.0);
 
-  splint(E_Photo_arr[Z]-1, CS_Photo_arr[Z]-1, CS_Photo_arr2[Z]-1,
-	 NE_Photo[Z], ln_E, &ln_sigma);
+  splint(E_Photo_arr[Z] - 1, CS_Photo_arr[Z] - 1, CS_Photo_arr2[Z] - 1, NE_Photo[Z], ln_E, &ln_sigma);
 
   sigma = exp(ln_sigma);
 
@@ -103,7 +102,7 @@ double CS_Rayl(int Z, double E, xrl_error **error)
 {
   double ln_E, ln_sigma, sigma;
 
-  if (Z<1 || Z>ZMAX || NE_Rayl[Z]<0) {
+  if (Z < 1 || Z > ZMAX || NE_Rayl[Z] < 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
@@ -115,8 +114,7 @@ double CS_Rayl(int Z, double E, xrl_error **error)
 
   ln_E = log(E * 1000.0);
 
-  splint(E_Rayl_arr[Z]-1, CS_Rayl_arr[Z]-1, CS_Rayl_arr2[Z]-1,
-	 NE_Rayl[Z], ln_E, &ln_sigma);
+  splint(E_Rayl_arr[Z] - 1, CS_Rayl_arr[Z] - 1, CS_Rayl_arr2[Z] - 1, NE_Rayl[Z], ln_E, &ln_sigma);
   sigma = exp(ln_sigma);
 
   return sigma;
@@ -134,7 +132,7 @@ double CS_Compt(int Z, double E, xrl_error **error)
 {
   double ln_E, ln_sigma, sigma;
 
-  if (Z<1 || Z>ZMAX || NE_Compt[Z]<0) {
+  if (Z < 1 || Z > ZMAX || NE_Compt[Z] < 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
@@ -146,8 +144,7 @@ double CS_Compt(int Z, double E, xrl_error **error)
 
   ln_E = log(E * 1000.0);
 
-  splint(E_Compt_arr[Z]-1, CS_Compt_arr[Z]-1, CS_Compt_arr2[Z]-1,
-	 NE_Compt[Z], ln_E, &ln_sigma);
+  splint(E_Compt_arr[Z] - 1, CS_Compt_arr[Z] - 1, CS_Compt_arr2[Z] - 1, NE_Compt[Z], ln_E, &ln_sigma);
 
   sigma = exp(ln_sigma);
 
@@ -175,7 +172,7 @@ double CS_Energy(int Z, double E, xrl_error **error)
 		return 0;
 	}
 	ln_E = log(E);
-	splint(E_Energy_arr[Z]-1, CS_Energy_arr[Z]-1, CS_Energy_arr2[Z]-1, NE_Energy[Z], ln_E, &ln_sigma);
+	splint(E_Energy_arr[Z] - 1, CS_Energy_arr[Z] - 1, CS_Energy_arr2[Z] - 1, NE_Energy[Z], ln_E, &ln_sigma);
 
 	sigma = exp(ln_sigma);
 
