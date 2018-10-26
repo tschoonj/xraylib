@@ -92,22 +92,32 @@ static int Crystal_ExtendArray(Crystal_Array** c_array, int n_new, xrl_error **e
 
 /*-------------------------------------------------------------------------------------------------- */
 
-int Crystal_ArrayInit(Crystal_Array *c_array, int n_crystal_alloc, xrl_error **error) {
+Crystal_Array* Crystal_ArrayInit(int n_crystal_alloc, xrl_error **error) {
+
+  Crystal_Array *c_array = malloc(sizeof(Crystal_Array));
+  if (c_array == NULL) {
+    xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+    return NULL;
+  }
 
   c_array->n_crystal = 0;
   c_array->n_alloc = n_crystal_alloc;
 
   if (n_crystal_alloc == 0) {
     c_array->crystal = NULL;
+  } else if (n_crystal_alloc < 0) {
+    free(c_array);
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Negative n_crystal_alloc is not allowed");
+    return NULL;
   } else {
     c_array->crystal = malloc(n_crystal_alloc * sizeof(Crystal_Struct));
     if (c_array->crystal == NULL) {
       xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
-      c_array->n_alloc = 0;
-      return 0;
+      free(c_array);
+      return NULL;
     }
   }
-  return 1;
+  return c_array;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
@@ -115,9 +125,16 @@ int Crystal_ArrayInit(Crystal_Array *c_array, int n_crystal_alloc, xrl_error **e
 void Crystal_ArrayFree(Crystal_Array *c_array) {
 
   int i;
+  if (c_array == NULL)
+    return;
   for (i = 0; i < c_array->n_crystal; i++) {
-    Crystal_Free(&c_array->crystal[i]);
+    if (c_array->crystal[i].name)
+      free(c_array->crystal[i].name);
+    if (c_array->crystal[i].atom)
+      free(c_array->crystal[i].atom);
   }
+  if (c_array->crystal)
+    free(c_array->crystal);
   free(c_array);
 }
 
@@ -149,7 +166,7 @@ Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-void Crystal_Free (Crystal_Struct* crystal) {
+void Crystal_Free(Crystal_Struct* crystal) {
   free(crystal->name);
   free(crystal->atom);
   free(crystal);
@@ -231,13 +248,13 @@ double Bragg_angle(Crystal_Struct* crystal, double energy, int i_miller, int j_m
 
 double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double rel_angle, xrl_error **error) {
 
-  if (i_miller == 0 && j_miller == 0 && k_miller == 0)
-	  return 0.0;
-
   if (energy <= 0.0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0.0;
   }
+
+  if (i_miller == 0 && j_miller == 0 && k_miller == 0)
+	  return 0.0;
 
   return energy * sin(rel_angle * Bragg_angle(crystal, energy, i_miller, j_miller, k_miller, error)) / KEV2ANGST;
 }
@@ -248,18 +265,28 @@ double Q_scattering_amplitude(Crystal_Struct* crystal, double energy, int i_mill
  *
  */
 
-int Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_prime, double* f_prime2, xrl_error **error) {
+int Atomic_Factors (int Z, double energy, double q, double debye_factor, double *f0, double *f_prime, double *f_prime2, xrl_error **error) {
 
   if (debye_factor <= 0.0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_DEBYE_FACTOR);
-    *f0 = *f_prime = *f_prime2 = 0.0;
+    if (f0)
+      *f0 = 0.0;
+    if (f_prime)
+      *f_prime = 0.0;
+    if (f_prime2)
+      *f_prime2 = 0.0;
     return 0;
   }
 
-  if ((*f0 = FF_Rayl(Z, q, error) * debye_factor) == 0.0 ||
-      (*f_prime  = Fi(Z, energy, error) * debye_factor) == 0.0 ||
-      (*f_prime2 = -Fii(Z, energy, error) * debye_factor) == 0.0) {
-    *f0 = *f_prime = *f_prime2 = 0.0;
+  if ((f0 && (*f0 = FF_Rayl(Z, q, error) * debye_factor) == 0.0) ||
+      (f_prime && (*f_prime  = Fi(Z, energy, error) * debye_factor) == 0.0) ||
+      (f_prime2 && (*f_prime2 = -Fii(Z, energy, error) * debye_factor) == 0.0)) {
+    if (f0)
+      *f0 = 0.0;
+    if (f_prime)
+      *f_prime = 0.0;
+    if (f_prime2)
+      *f_prime2 = 0.0;
     return 0;
   }
   return 1;
@@ -442,7 +469,7 @@ double Crystal_dSpacing(Crystal_Struct* crystal, int i_miller, int j_miller, int
  *
  */
 
-int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error) {
+int Crystal_AddCrystal(Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error) {
   Crystal_Struct* a_cryst;
 
   if (c_array == NULL)

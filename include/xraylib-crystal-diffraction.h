@@ -18,7 +18,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "xraylib-defs.h"
 #include "xraylib-error.h"
 
-/* Note for multithreded programs:
+/* Note for multithreaded programs:
  * The routines Crystal_ReadCrystals and CrystalAddCrystalStruct are not thread safe if crystals are
  * added to the official array. In this case, locking will have to be used.
  *
@@ -31,11 +31,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
  *
  *
  * --------------------------------------------------------------------------------
- *  Initialize a new crystal array.
+ *  Allocate and initialize a new crystal array.
  *
  */
 
-int Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc, xrl_error **error);
+Crystal_Array* Crystal_ArrayInit(int n_crystal_alloc, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * free memory from a crystal array.
@@ -60,6 +60,8 @@ void Crystal_Free (Crystal_Struct* crystal);
  *
  * If c_array is NULL then the official array of crystals is searched.
  * If not found, NULL is returned.
+ * Do not free the returned struct!
+ * If you would like to modify the struct, make a copy of it first!
  */
 
 Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array, xrl_error **error);

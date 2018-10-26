@@ -175,6 +175,7 @@ int main()
   printf ("  F0=FH(0,0,0) structure factor: (%f, %f)\n", F0.re, F0.im);
 
   FHbar = Crystal_F_H_StructureFactor (cryst, energy, -1, -1, -1, debye_temp_factor, rel_angle, NULL);
+  printf ("  FHbar(-1,-1,-1) structure factor: (%f, %f)\n", FHbar.re, FHbar.im);
   dw = 1e10 * 2 * (R_E / cryst->volume) * (KEV2ANGST * KEV2ANGST/ (energy * energy)) *
                                                   sqrt(c_abs(c_mul(FH, FHbar))) / PI / sin(2*bragg);
   printf ("  Darwin width: %f micro-radians\n", 1e6*dw);

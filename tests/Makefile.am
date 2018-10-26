@@ -23,6 +23,7 @@ check_PROGRAMS = \
 	test-comptonprofiles \
 	test-coskron \
 	test-cross_sections \
+	test-crystal_diffraction \
 	test-error \
 	$(NULL)
 
@@ -51,4 +52,7 @@ test_coskron_LDADD = ../src/libxrl.la
 
 test_cross_sections_SOURCES = test-cross_sections.c
 test_cross_sections_LDADD = ../src/libxrl.la
+
+test_crystal_diffraction_SOURCES = test-crystal_diffraction.c
+test_crystal_diffraction_LDADD = ../src/libxrl.la
 

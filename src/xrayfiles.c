@@ -122,7 +122,7 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "Crystals.dat");
 
-  Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX, NULL);
+  Crystal_arr.crystal = malloc(sizeof(Crystal_Struct) * CRYSTALARRAY_MAX);
   stat = Crystal_ReadFile(file_name, NULL, NULL);
   if (stat == 0) {
     fprintf(stderr, "Could not read Crystals.dat");

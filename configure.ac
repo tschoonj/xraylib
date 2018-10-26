@@ -59,14 +59,14 @@ AC_ARG_ENABLE([libxrl],[AS_HELP_STRING([--disable-libxrl],[do not build libxrl s
 AM_CONDITIONAL([LIBXRL_CONVENIENCE_BUILD], [test x$enable_libxrl = xno])
 
 #headers check
-AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h])
+AC_CHECK_HEADERS_ONCE([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h complex.h])
 
 
 
 #libraries check
-AC_CHECK_LIB([m],[log],[],[AC_MSG_ERROR([the log function must be present in libm])])
-AC_CHECK_LIB([m],[exp],[],[AC_MSG_ERROR([the exp function must be present in libm])])
-AC_CHECK_LIB([m],[cos],[],[AC_MSG_ERROR([the cos function must be present in libm])])
+AC_CHECK_LIB([m],[log],[  ],[AC_MSG_ERROR([the log function must be present in libm])])
+AC_CHECK_LIB([m],[exp],[  ],[AC_MSG_ERROR([the exp function must be present in libm])])
+AC_CHECK_LIB([m],[cos],[  ],[AC_MSG_ERROR([the cos function must be present in libm])])
 AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in libm])])
 
 #
