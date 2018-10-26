@@ -34,7 +34,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan AND Tom Schoonjans ''AS IS'' AND ANY EX
 /*-------------------------------------------------------------------------------------------------- */
 
 double c_abs(xrlComplex x) {
-  double ans = x.re * x.re - x.im * x.im;
+  double ans = x.re * x.re + x.im * x.im;
   ans = sqrt(ans);
   return ans;
 }
