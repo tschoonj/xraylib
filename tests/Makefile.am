@@ -24,6 +24,7 @@ check_PROGRAMS = \
 	test-coskron \
 	test-cross_sections \
 	test-crystal_diffraction \
+	test-cs_barns \
 	test-error \
 	$(NULL)
 
@@ -55,4 +56,7 @@ test_cross_sections_LDADD = ../src/libxrl.la
 
 test_crystal_diffraction_SOURCES = test-crystal_diffraction.c
 test_crystal_diffraction_LDADD = ../src/libxrl.la
+
+test_cs_barns_SOURCES = test-cs_barns.c
+test_cs_barns_LDADD = ../src/libxrl.la
 
