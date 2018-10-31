@@ -25,6 +25,7 @@ check_PROGRAMS = \
 	test-cross_sections \
 	test-crystal_diffraction \
 	test-cs_barns \
+	test-cs_cp \
 	test-error \
 	$(NULL)
 
@@ -59,4 +60,7 @@ test_crystal_diffraction_LDADD = ../src/libxrl.la
 
 test_cs_barns_SOURCES = test-cs_barns.c
 test_cs_barns_LDADD = ../src/libxrl.la
+
+test_cs_cp_SOURCES = test-cs_cp.c
+test_cs_cp_LDADD = ../src/libxrl.la
 

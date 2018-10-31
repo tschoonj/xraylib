@@ -81,14 +81,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 		CS_CP_END \
 	}
 
-
-#define CS_CP_IF(function) \
-	double function ## _CP(const char compound[], int line, double E, xrl_error **error) {\
-		CS_CP_BEGIN \
-			tmp = function(Elements[i], line, E, error) * massFractions[i]; \
-		CS_CP_END \
-	}
-
 CS_CP_F(CS_Total)
 CS_CP_F(CS_Photo)
 CS_CP_F(CS_Rayl)
