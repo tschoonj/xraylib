@@ -28,6 +28,7 @@ check_PROGRAMS = \
 	test-cs_cp \
 	test-cs_line \
 	test-error \
+	test-version \
 	$(NULL)
 
 TESTS = $(check_PROGRAMS)
@@ -68,3 +69,5 @@ test_cs_cp_LDADD = ../src/libxrl.la
 test_cs_line_SOURCES = test-cs_line.c
 test_cs_line_LDADD = ../src/libxrl.la
 
+test_version_SOURCES = test-version.c
+test_version_LDADD = ../src/libxrl.la

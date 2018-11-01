@@ -33,6 +33,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_USE_SYSTEM_EXTENSIONS
 AC_CHECK_FUNCS([strndup strdup])
 AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
+AC_CHECK_FUNC([asprintf], [], [AC_MSG_ERROR([asprintf must be present on the system])])
 
 m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 #at least version 2.0 of libtool is required for creating the fortran bindings
