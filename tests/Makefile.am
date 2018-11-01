@@ -26,6 +26,7 @@ check_PROGRAMS = \
 	test-crystal_diffraction \
 	test-cs_barns \
 	test-cs_cp \
+	test-cs_line \
 	test-error \
 	$(NULL)
 
@@ -63,4 +64,7 @@ test_cs_barns_LDADD = ../src/libxrl.la
 
 test_cs_cp_SOURCES = test-cs_cp.c
 test_cs_cp_LDADD = ../src/libxrl.la
+
+test_cs_line_SOURCES = test-cs_line.c
+test_cs_line_LDADD = ../src/libxrl.la
 
