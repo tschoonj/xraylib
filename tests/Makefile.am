@@ -27,6 +27,7 @@ check_PROGRAMS = \
 	test-cs_barns \
 	test-cs_cp \
 	test-cs_line \
+	test-densities \
 	test-error \
 	test-version \
 	$(NULL)
@@ -68,6 +69,9 @@ test_cs_cp_LDADD = ../src/libxrl.la
 
 test_cs_line_SOURCES = test-cs_line.c
 test_cs_line_LDADD = ../src/libxrl.la
+
+test_densities_SOURCES = test-densities.c
+test_densities_LDADD = ../src/libxrl.la
 
 test_version_SOURCES = test-version.c
 test_version_LDADD = ../src/libxrl.la
