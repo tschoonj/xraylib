@@ -30,6 +30,7 @@ check_PROGRAMS = \
 	test-densities \
 	test-edges \
 	test-fi \
+	test-fii \
 	test-error \
 	test-version \
 	$(NULL)
@@ -83,3 +84,6 @@ test_version_LDADD = ../src/libxrl.la
 
 test_fi_SOURCES = test-fi.c
 test_fi_LDADD = ../src/libxrl.la
+
+test_fii_SOURCES = test-fii.c
+test_fii_LDADD = ../src/libxrl.la
