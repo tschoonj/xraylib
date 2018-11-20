@@ -29,6 +29,7 @@ check_PROGRAMS = \
 	test-cs_line \
 	test-densities \
 	test-edges \
+	test-fi \
 	test-error \
 	test-version \
 	$(NULL)
@@ -79,3 +80,6 @@ test_edges_LDADD = ../src/libxrl.la
 
 test_version_SOURCES = test-version.c
 test_version_LDADD = ../src/libxrl.la
+
+test_fi_SOURCES = test-fi.c
+test_fi_LDADD = ../src/libxrl.la
