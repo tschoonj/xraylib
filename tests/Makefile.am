@@ -33,6 +33,7 @@ check_PROGRAMS = \
 	test-fii \
 	test-fluor_lines \
 	test-fluor_yield \
+	test-jump \
 	test-error \
 	test-version \
 	$(NULL)
@@ -95,3 +96,6 @@ test_fluor_lines_LDADD = ../src/libxrl.la
 
 test_fluor_yield_SOURCES = test-fluor_yield.c
 test_fluor_yield_LDADD = ../src/libxrl.la
+
+test_jump_SOURCES = test-jump.c
+test_jump_LDADD = ../src/libxrl.la
