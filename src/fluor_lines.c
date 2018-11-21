@@ -35,14 +35,17 @@ static struct {int line; int shell;} lb_pairs[] = {
 };
 
 static double LineEnergyComposed(int Z, int line1, int line2, xrl_error **error) {
-  double tmp1 = LineEnergy(Z, line1, NULL);
-  double tmp2 = LineEnergy(Z, line2, NULL);
+  double line_tmp1 = LineEnergy(Z, line1, NULL);
+  double line_tmp2 = LineEnergy(Z, line2, NULL);
+  double rate_tmp1 = RadRate(Z, line1, NULL);
+  double rate_tmp2 = RadRate(Z, line2, NULL);
+  double rv = line_tmp1 * rate_tmp1 + line_tmp2 * rate_tmp2;
 
-  if (tmp1 > 0.0 && tmp2 > 0.0) {
-    return (tmp1 + tmp2) / 2.0;
+  if (rv > 0.0) {
+    return rv/(rate_tmp1 + rate_tmp2);
   }
-  else if (tmp1 > 0.0 || tmp2 > 0.0) {
-    return tmp1 + tmp2;
+  else if ((line_tmp1 + line_tmp2) > 0.0) {
+    return (line_tmp1 + line_tmp2)/2.0; /* in case of both radiative rates missing, use the average of both line energies. */
   }
   xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
   return 0.0;
@@ -81,11 +84,6 @@ double LineEnergy(int Z, int line, xrl_error **error)
         rr[i] = RadRate_arr[Z][i];
         tmp1 += rr[i];
         tmp += lE[i] * rr[i];
-
-        if (lE[i] < 0.0 || rr[i] < 0.0) {
-          xrl_set_error_literal(error, XRL_ERROR_RUNTIME, "Invalid internal value detected for line energy or radiative rate");
-          return 0;
-        }
       }
     }
     else if (line == KB_LINE) {
@@ -94,10 +92,6 @@ double LineEnergy(int Z, int line, xrl_error **error)
         rr[i] = RadRate_arr[Z][i];
         tmp1 += rr[i];
         tmp += lE[i] * rr[i];
-        if (lE[i] < 0.0 || rr[i] < 0.0) {
-          xrl_set_error_literal(error, XRL_ERROR_RUNTIME, "Invalid internal value detected for line energy or radiative rate");
-          return 0;
-        }
       }
     }
     if (tmp1 > 0) {
@@ -110,21 +104,7 @@ double LineEnergy(int Z, int line, xrl_error **error)
   }
   
   if (line == LA_LINE) {
-    temp_line = L3M5_LINE;
-    tmp1 = CS_FluorLine(Z, temp_line, EdgeEnergy(Z, L3_SHELL, NULL) + 0.1, NULL);
-    tmp2 = tmp1;
-    tmp = LineEnergy(Z, temp_line, NULL) * tmp1;
-    temp_line = L3M4_LINE;
-    tmp1 = CS_FluorLine(Z, temp_line, EdgeEnergy(Z, L3_SHELL, NULL) + 0.1, NULL);
-    tmp2 += tmp1;
-    tmp += LineEnergy(Z, temp_line, NULL) * tmp1 ;
-    if (tmp2 > 0) {
-      return tmp / tmp2;
-    }
-    else {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
-      return 0.0;
-    }
+    return LineEnergyComposed(Z, L3M4_LINE, L3M5_LINE, error);
   }
   else if (line == LB_LINE) {
     tmp2 = 0.0;

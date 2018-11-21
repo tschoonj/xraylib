@@ -31,6 +31,7 @@ check_PROGRAMS = \
 	test-edges \
 	test-fi \
 	test-fii \
+	test-fluor_lines \
 	test-error \
 	test-version \
 	$(NULL)
@@ -87,3 +88,6 @@ test_fi_LDADD = ../src/libxrl.la
 
 test_fii_SOURCES = test-fii.c
 test_fii_LDADD = ../src/libxrl.la
+
+test_fluor_lines_SOURCES = test-fluor_lines.c
+test_fluor_lines_LDADD = ../src/libxrl.la
