@@ -58,11 +58,10 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
 	xrl_clear_error(&error);
 
-	/* lets try some bad input */
 	cs = CS_FluorLine(ZMAX, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, TOO_LOW_EXCITATION_ENERGY) == 0);
+	assert(strcmp(error->message, INVALID_SHELL) == 0);
 	xrl_clear_error(&error);
 
 	cs = CS_FluorLine(ZMAX + 1, KL3_LINE, 10.0, &error);
@@ -74,7 +73,7 @@ int main(int argc, char **argv) {
 	cs = CS_FluorLine(1, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, UNAVAILABLE_FLUOR_YIELD) == 0);
+	assert(strcmp(error->message, INVALID_SHELL) == 0);
 	xrl_clear_error(&error);
 
 	/* M-lines are not supported at all due to missing jump factors for the M-subshells */

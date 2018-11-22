@@ -34,6 +34,7 @@ check_PROGRAMS = \
 	test-fluor_lines \
 	test-fluor_yield \
 	test-jump \
+	test-kissel_pe \
 	test-error \
 	test-version \
 	$(NULL)
@@ -99,3 +100,6 @@ test_fluor_yield_LDADD = ../src/libxrl.la
 
 test_jump_SOURCES = test-jump.c
 test_jump_LDADD = ../src/libxrl.la
+
+test_kissel_pe_SOURCES = test-kissel_pe.c
+test_kissel_pe_LDADD = ../src/libxrl.la

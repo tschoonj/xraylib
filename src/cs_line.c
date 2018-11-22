@@ -227,36 +227,35 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
   }
 
   if (line >= KN5_LINE && line <= KB_LINE) {
-    double edgeK = EdgeEnergy(Z, K_SHELL, NULL);
+    double edgeK = EdgeEnergy(Z, K_SHELL, error);
     double cs, rr;
     if (E > edgeK && edgeK > 0.0) {
       double yield;
-      JumpK = JumpFactor(Z, K_SHELL, NULL);
+      JumpK = JumpFactor(Z, K_SHELL, error);
       if (JumpK == 0.0) {
-        xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_JUMP_FACTOR);
 	return 0.0;
       }
-      yield = FluorYield(Z, K_SHELL, NULL);
+      yield = FluorYield(Z, K_SHELL, error);
       if (yield == 0.0) {
-        xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_FLUOR_YIELD);
 	return 0.0;
       }
       Factor = ((JumpK - 1)/JumpK) * yield;
+    }
+    else if (edgeK == 0.0) {
+      return 0.0;
     }
     else {
       xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
       return 0.0;
     }
 
-    cs = CS_Photo(Z, E, NULL);
+    cs = CS_Photo(Z, E, error);
     if (cs == 0.0) {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
       return 0.0;
     }
 
-    rr = RadRate(Z, line, NULL);
+    rr = RadRate(Z, line, error);
     if (rr == 0.0) {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_RAD_RATE);
       return 0.0;
     }
 
@@ -264,15 +263,13 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
   }
   else if ((line <= L1L2_LINE && line >= L3Q1_LINE) || line == LA_LINE) {
     double cs, rr;
-    cs = CS_Photo(Z, E, NULL);
+    cs = CS_Photo(Z, E, error);
     if (cs == 0.0) {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
       return 0.0;
     }
 
-    rr = RadRate(Z, line, NULL);
+    rr = RadRate(Z, line, error);
     if (rr == 0.0) {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_RAD_RATE);
       return 0.0;
     }
 
@@ -306,9 +303,8 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
       xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
       return 0.0;
     }
-    cs = CS_Photo(Z, E, NULL);
+    cs = CS_Photo(Z, E, error);
     if (cs == 0.0) {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_PHOTO_CS);
       return 0.0;
     }
     cs_line *= cs;
