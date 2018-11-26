@@ -81,6 +81,11 @@ double RadRate(int Z, int line, xrl_error **error)
     }
     return rr;
   }
+  /* LB is not allowed! */
+  else if (line == LB_LINE) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+    return 0.0;
+  }
   /*
    * in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
    */

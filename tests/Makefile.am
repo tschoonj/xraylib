@@ -36,6 +36,7 @@ check_PROGRAMS = \
 	test-jump \
 	test-kissel_pe \
 	test-polarized \
+	test-radrate \
 	test-error \
 	test-version \
 	$(NULL)
@@ -107,3 +108,6 @@ test_kissel_pe_LDADD = ../src/libxrl.la
 
 test_polarized_SOURCES = test-polarized.c
 test_polarized_LDADD = ../src/libxrl.la
+
+test_radrate_SOURCES = test-radrate.c
+test_radrate_LDADD = ../src/libxrl.la
