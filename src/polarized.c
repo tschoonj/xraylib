@@ -46,19 +46,13 @@ double DCSP_Rayl(int Z, double E, double theta, double phi, xrl_error **error)
     return 0.0;
   }
 
-  q = MomentTransf(E, theta, &tmp_error);
-  if (tmp_error != NULL) {
-    xrl_propagate_error(error, tmp_error);
-    return 0.0;
-  }
+  /* this will always return a valid value */
+  q = MomentTransf(E, theta, NULL);
 
-  F = FF_Rayl(Z, q, &tmp_error);
-  if (tmp_error != NULL) {
-    xrl_propagate_error(error, tmp_error);
-    return 0.0;
-  }
+  /* this will always return a valid value */
+  F = FF_Rayl(Z, q, NULL);
 
-  return  AVOGNUM / AtomicWeight(Z, NULL) * F * F * DCSP_Thoms(theta, phi, error);
+  return  AVOGNUM / AtomicWeight(Z, NULL) * F * F * DCSP_Thoms(theta, phi, NULL);
 }                                                                              
 
 /*////////////////////////////////////////////////////////////////////
@@ -71,7 +65,7 @@ double DCSP_Rayl(int Z, double E, double theta, double phi, xrl_error **error)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCSP_Compt(int Z, double E, double theta, double phi, xrl_error **error)
+double DCSP_Compt(int Z, double E, double theta, double phi, xrl_error **error)
 { 
   double S, q;
   xrl_error *tmp_error = NULL;
@@ -86,19 +80,17 @@ double  DCSP_Compt(int Z, double E, double theta, double phi, xrl_error **error)
     return 0.0;
   }
 
-  q = MomentTransf(E, theta, &tmp_error);
-  if (tmp_error != NULL) {
-    xrl_propagate_error(error, tmp_error);
-    return 0.0;
-  }
+  /* this will always return a valid value */
+  q = MomentTransf(E, theta, NULL);
 
+  /* this may error out if beta/q is zero */
   S = SF_Compt(Z, q, &tmp_error);
   if (tmp_error != NULL) {
     xrl_propagate_error(error, tmp_error);
     return 0.0;
   }
 
-  return AVOGNUM / AtomicWeight(Z, NULL) * S * DCSP_KN(E, theta, phi, error);
+  return AVOGNUM / AtomicWeight(Z, NULL) * S * DCSP_KN(E, theta, phi, NULL);
 }
 
 
@@ -143,7 +135,7 @@ double DCSP_KN(double E, double theta, double phi, xrl_error **error)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCSP_Thoms(double theta, double phi, xrl_error **error)
+double DCSP_Thoms(double theta, double phi, xrl_error **error)
 { 
   double sin_th, cos_phi ;
 

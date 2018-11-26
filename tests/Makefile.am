@@ -35,6 +35,7 @@ check_PROGRAMS = \
 	test-fluor_yield \
 	test-jump \
 	test-kissel_pe \
+	test-polarized \
 	test-error \
 	test-version \
 	$(NULL)
@@ -103,3 +104,6 @@ test_jump_LDADD = ../src/libxrl.la
 
 test_kissel_pe_SOURCES = test-kissel_pe.c
 test_kissel_pe_LDADD = ../src/libxrl.la
+
+test_polarized_SOURCES = test-polarized.c
+test_polarized_LDADD = ../src/libxrl.la
