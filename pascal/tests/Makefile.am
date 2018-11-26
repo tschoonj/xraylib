@@ -7,6 +7,7 @@ check_SCRIPTS = \
 	test-auger.sh \
 	test-compoundparser.sh \
 	test-comptonprofiles.sh \
+	test-refractive_indices.sh \
 	$(NULL)
 
 TESTS = $(check_SCRIPTS)
@@ -40,6 +41,11 @@ test-comptonprofiles.sh: test-comptonprofiles.pas
 	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./test-comptonprofiles$(EXEEXT) || exit 1" >> test-comptonprofiles.sh
 	@echo "rm -f test-comptonprofiles$(EXEEXT) test-comptonprofiles.o" >> test-comptonprofiles.sh
 
+test-refractive_indices.sh: test-refractive_indices.pas
+	@echo "$(FPC) -Mdelphi -FE${builddir} -Fu${top_builddir}/pascal -Fl${top_builddir}/src/.libs ${srcdir}/test-refractive_indices.pas || exit 1" > test-refractive_indices.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./test-refractive_indices$(EXEEXT) || exit 1" >> test-refractive_indices.sh
+	@echo "rm -f test-refractive_indices$(EXEEXT) test-refractive_indices.o" >> test-refractive_indices.sh
+
 clean-local:
 	rm -f $(check_SCRIPTS) xrltest.o  xrltest.ppu
-EXTRA_DIST = xrltest.pas test-atomicweight.pas test-atomiclevelwidth.pas test-auger.pas test-compoundparser.pas test-comptonprofiles.pas
+EXTRA_DIST = xrltest.pas test-atomicweight.pas test-atomiclevelwidth.pas test-auger.pas test-compoundparser.pas test-comptonprofiles.pas test-refractive_indices.pas

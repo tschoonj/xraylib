@@ -7,6 +7,7 @@ check_PROGRAMS = \
 	test-auger \
 	test-compoundparser \
 	test-comptonprofiles \
+	test-refractive_indices \
 	$(NULL)
 
 check_LTLIBRARIES = libtest.la
@@ -47,6 +48,12 @@ nodist_test_comptonprofiles_SOURCES = libtest.mod
 test_comptonprofiles_LDADD = libtest.la
 test_comptonprofiles_CPPFLAGS = -I.. -I.
 test_comptonprofiles_FCFLAGS = ${test_comptonprofiles_CPPFLAGS}
+
+dist_test_refractive_indices_SOURCES = test-refractive_indices.f90
+nodist_test_refractive_indices_SOURCES = libtest.mod
+test_refractive_indices_LDADD = libtest.la
+test_refractive_indices_CPPFLAGS = -I.. -I.
+test_refractive_indices_FCFLAGS = ${test_refractive_indices_CPPFLAGS}
 
 BUILT_SOURCES = libtest.mod
 

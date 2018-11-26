@@ -23,6 +23,10 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Bruno Golosio''AS IS'' AND ANY E
 	int *Elements = NULL;\
 	double *massFractions = NULL;\
 	\
+	if (compound == NULL) { \
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "NULL is not a valid value for compound"); \
+		return rv; \
+	} \
 	if ((cd = CompoundParser(compound, NULL)) != NULL) { \
 		nElements = cd->nElements; \
 		Elements = cd->Elements; \
@@ -64,7 +68,7 @@ double Refractive_Index_Re(const char compound[], double E, double density, xrl_
 	REFR_BEGIN
 
 	/* Real part is 1-delta */
-	for (i=0 ; i < nElements ; i++) {
+	for (i = 0 ; i < nElements ; i++) {
 		double fi = 0.0;
 		double atomic_weight = 0.0;
 		fi = Fi(Elements[i], E, error);
@@ -101,7 +105,7 @@ double Refractive_Index_Im(const char compound[], double E, double density, xrl_
 		rv += cs * massFractions[i];
 	}
 
-	REFR_END;
+	REFR_END
 
 	/*9.8663479e-9 is calculated as planck's constant * speed of light / 4Pi */
 	return rv * density * 9.8663479e-9 / E;
@@ -117,7 +121,7 @@ xrlComplex Refractive_Index(const char compound[], double E, double density, xrl
 
 	REFR_BEGIN
 
-	for (i=0 ; i < cd->nElements ; i++) {
+	for (i = 0 ; i < nElements ; i++) {
 		double fi = 0.0;
 		double atomic_weight = 0.0;
 		double cs = 0.0;
@@ -137,7 +141,9 @@ xrlComplex Refractive_Index(const char compound[], double E, double density, xrl
 		delta += massFractions[i] * KD * (Elements[i] + fi) / atomic_weight / E / E;
 	}
 
-	rv.re = 1.0 - (delta*density);
+	REFR_END
+
+	rv.re = 1.0 - (delta * density);
 	rv.im = im * density * 9.8663479e-9 / E;
 
 	return rv;

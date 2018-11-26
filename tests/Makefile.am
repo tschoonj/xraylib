@@ -37,6 +37,7 @@ check_PROGRAMS = \
 	test-kissel_pe \
 	test-polarized \
 	test-radrate \
+	test-refractive_indices \
 	test-error \
 	test-version \
 	$(NULL)
@@ -111,3 +112,6 @@ test_polarized_LDADD = ../src/libxrl.la
 
 test_radrate_SOURCES = test-radrate.c
 test_radrate_LDADD = ../src/libxrl.la
+
+test_refractive_indices_SOURCES = test-refractive_indices.c
+test_refractive_indices_LDADD = ../src/libxrl.la
