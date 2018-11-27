@@ -30,7 +30,7 @@ double FF_Rayl(int Z, double q, xrl_error **error)
 {
   double FF;
 
-  if (Z < 1 || Z > ZMAX) {
+  if (Z < 1 || Z > ZMAX || Nq_Rayl[Z] <= 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
@@ -62,7 +62,7 @@ double SF_Compt(int Z, double q, xrl_error **error)
 {
   double SF;
 
-  if (Z < 1 || Z > ZMAX) {
+  if (Z < 1 || Z > ZMAX || Nq_Compt[Z] <= 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
@@ -142,11 +142,7 @@ double DCS_Rayl(int Z, double E, double theta, xrl_error **error)
     return 0;
   }
 
-  q = MomentTransf(E, theta, &tmp_error);
-  if (tmp_error != NULL) {
-    xrl_propagate_error(error, tmp_error);
-    return 0.0;
-  }
+  q = MomentTransf(E, theta, NULL);
 
   F = FF_Rayl(Z, q, &tmp_error);
   if (tmp_error != NULL) {
@@ -154,7 +150,7 @@ double DCS_Rayl(int Z, double E, double theta, xrl_error **error)
     return 0.0;
   }
 
-  return AVOGNUM / AtomicWeight_arr[Z] * F * F * DCS_Thoms(theta, error);
+  return AVOGNUM / AtomicWeight(Z, error) * F * F * DCS_Thoms(theta, error);
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -181,11 +177,7 @@ double DCS_Compt(int Z, double E, double theta, xrl_error **error)
     return 0;
   }
 
-  q = MomentTransf(E, theta, &tmp_error);
-  if (tmp_error != NULL) {
-    xrl_propagate_error(error, tmp_error);
-    return 0.0;
-  }
+  q = MomentTransf(E, theta, NULL);
 
   S = SF_Compt(Z, q, &tmp_error);
   if (tmp_error != NULL) {
@@ -193,7 +185,7 @@ double DCS_Compt(int Z, double E, double theta, xrl_error **error)
     return 0.0;
   }
 
-  return AVOGNUM / AtomicWeight_arr[Z] * S * DCS_KN(E, theta, error);
+  return AVOGNUM / AtomicWeight(Z, error) * S * DCS_KN(E, theta, error);
 }
 
 /*////////////////////////////////////////////////////////////////////

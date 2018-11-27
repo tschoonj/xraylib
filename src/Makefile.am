@@ -39,6 +39,7 @@ libprdata_la_SOURCES = \
 		 fii.c \
 		 splint.c \
 		 splint.h \
+		 atomicweight.c \
 		 xraylib-error.c \
 		 xraylib-error-private.h
 

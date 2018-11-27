@@ -38,6 +38,7 @@ check_PROGRAMS = \
 	test-polarized \
 	test-radrate \
 	test-refractive_indices \
+	test-scattering \
 	test-error \
 	test-version \
 	$(NULL)
@@ -115,3 +116,6 @@ test_radrate_LDADD = ../src/libxrl.la
 
 test_refractive_indices_SOURCES = test-refractive_indices.c
 test_refractive_indices_LDADD = ../src/libxrl.la
+
+test_scattering_SOURCES = test-scattering.c
+test_scattering_LDADD = ../src/libxrl.la

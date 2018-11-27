@@ -49,8 +49,11 @@ double DCSP_Rayl(int Z, double E, double theta, double phi, xrl_error **error)
   /* this will always return a valid value */
   q = MomentTransf(E, theta, NULL);
 
-  /* this will always return a valid value */
-  F = FF_Rayl(Z, q, NULL);
+  F = FF_Rayl(Z, q, &tmp_error);
+  if (tmp_error != NULL) {
+    xrl_propagate_error(error, tmp_error);
+    return 0.0;
+  }
 
   return  AVOGNUM / AtomicWeight(Z, NULL) * F * F * DCSP_Thoms(theta, phi, NULL);
 }                                                                              
