@@ -15,7 +15,19 @@ set_exception_handler(function ($exception) {
 
 
 function assertAlmostEqual($actual, $expected, $threshold = 1.0E-6) {
-	if (abs($actual - $expected) > $threshold) {
+	if (is_array($actual) && is_array($expected)) {
+		if (count($actual) != count($expected)) {
+			throw new Exception("assertAlmostEqual: actual and expected have different array lengths!");
+		}
+		$lambda = function($a, $e) {
+			if (abs($a - $e) > $threshold) {
+				throw new Exception("assertAlmostEqual: $a and $e differ by too much!");
+			}
+			return TRUE;
+		};
+		array_map($lambda, $actual, $expected);
+	}
+	else if (abs($actual - $expected) > $threshold) {
 		throw new Exception("assertAlmostEqual: actual and expected differ too much");
 	}
 }

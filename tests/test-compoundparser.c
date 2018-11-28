@@ -16,10 +16,12 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <assert.h>
 #include <stddef.h>
 #include <string.h>
+#include <math.h>
 
 int main(int argc, char *argv[]) {
 	xrl_error *error = NULL;
 	char *symbol = NULL;
+	struct compoundData *cd = NULL;
 	int Z;
 
 	/* taken from https://github.com/KenanY/chemical-formula/blob/master/test/index.js */
@@ -63,6 +65,22 @@ int main(int argc, char *argv[]) {
 	assert(CompoundParser("\n", NULL) == NULL);
 	assert(CompoundParser("Au L1", NULL) == NULL);
 	assert(CompoundParser("Au\tFe", NULL) == NULL);
+
+	cd = CompoundParser("H2SO4", NULL);
+	assert(cd != NULL);
+	assert(cd->nElements == 3);
+	assert(fabs(cd->molarMass - 98.09) < 1E-6);
+	assert(fabs(cd->nAtomsAll- 7.0) < 1E-6);
+	assert(cd->Elements[0] == 1);
+	assert(cd->Elements[1] == 8);
+	assert(cd->Elements[2] == 16);
+	assert(fabs(cd->massFractions[0] - 0.02059333265368539) < 1E-6);
+	assert(fabs(cd->massFractions[1] - 0.6524620246712203) < 1E-6);
+	assert(fabs(cd->massFractions[2] - 0.32694464267509427) < 1E-6);
+	assert(fabs(cd->nAtoms[0] - 2.0) < 1E-6);
+	assert(fabs(cd->nAtoms[1] - 4.0) < 1E-6);
+	assert(fabs(cd->nAtoms[2] - 1.0) < 1E-6);
+	FreeCompoundData(cd);
 
 	assert(SymbolToAtomicNumber("Fe", &error) == 26);
 	assert(error == NULL);

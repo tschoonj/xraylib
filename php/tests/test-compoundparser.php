@@ -61,6 +61,15 @@ class TestCompoundParser extends XrlTest {
 			test_bad_compound($compound);
 		}
 	}
+	function test_H2SO4() {
+		$cd = CompoundParser("H2SO4");
+		assertEqual($cd['nElements'], 3);
+		assertAlmostEqual($cd['molarMass'], 98.09);
+		assertAlmostEqual($cd['nAtomsAll'], 7.0);
+		assertEqual($cd['Elements'], array(1, 8, 16));
+		assertEqual($cd['massFractions'], array(0.02059333265368539, 0.6524620246712203, 0.32694464267509427));
+		assertEqual($cd['nAtoms'], array(2.0, 4.0, 1.0));
+	}
 }
 
 class TestSymbolToAtomicNumber extends XrlTest {

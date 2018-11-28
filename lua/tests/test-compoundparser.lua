@@ -46,6 +46,18 @@ TestCompoundParser = {}
 		luaunit.assertError(xraylib.CompoundParser, 26)
 	end
 
+	function TestCompoundParser:test_H2SO4()
+		cd = xraylib.CompoundParser("H2SO4")
+		luaunit.assertEquals(cd['nElements'], 3)
+		luaunit.assertAlmostEquals(cd['molarMass'], 98.09)
+		luaunit.assertAlmostEquals(cd['nAtomsAll'], 7.0)
+		luaunit.assertEquals(cd['Elements'], {1, 8, 16})
+		luaunit.assertAlmostEquals(cd['massFractions'][1], 0.02059333265368539, 1E-6)
+		luaunit.assertAlmostEquals(cd['massFractions'][2], 0.6524620246712203, 1E-6)
+		luaunit.assertAlmostEquals(cd['massFractions'][3], 0.32694464267509427, 1E-6)
+		luaunit.assertEquals(cd['nAtoms'], {2.0, 4.0, 1.0})
+	end
+
 TestSymbolToAtomicNumber = {}
 	function TestSymbolToAtomicNumber:test_Fe()
 		luaunit.assertEquals(xraylib.SymbolToAtomicNumber('Fe'), 26)

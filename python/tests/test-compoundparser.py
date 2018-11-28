@@ -68,6 +68,15 @@ class TestCompoundParser(unittest.TestCase):
         with self.assertRaises(TypeError):
             xraylib.CompoundParser(26)
 
+    def test_H2SO4(self):
+        cd = xraylib.CompoundParser('H2SO4')
+        self.assertEqual(cd['nElements'], 3)
+        self.assertEqual(cd['molarMass'], 98.09)
+        self.assertEqual(cd['nAtomsAll'], 7.0)
+        self.assertEqual(cd['Elements'], [1, 8, 16])
+        self.assertAlmostEqual(cd['massFractions'], [0.02059333265368539, 0.6524620246712203, 0.32694464267509427])
+        self.assertAlmostEqual(cd['nAtoms'], [2.0, 4.0, 1.0])
+
 class TestSymbolToAtomicNumber(unittest.TestCase):
     def test_Fe(self):
         self.assertEqual(xraylib.SymbolToAtomicNumber('Fe'), 26)

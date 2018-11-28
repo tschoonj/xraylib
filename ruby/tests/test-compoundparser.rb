@@ -56,6 +56,20 @@ class TestCompoundParser < Test::Unit::TestCase
 			Xraylib.CompoundParser("H2O", "H2SO4")
 		}
 	end
+
+	def test_H2SO4
+		cd = Xraylib.CompoundParser("H2SO4")
+		assert_equal(cd['nElements'], 3)
+		assert_in_delta(cd['molarMass'], 98.09, 1E-6)
+		assert_in_delta(cd['nAtomsAll'], 7.0, 1E-6)
+		assert_equal(cd['Elements'], [1, 8, 16])
+		[0.02059333265368539, 0.6524620246712203, 0.32694464267509427].each_with_index do |v, i|
+			assert_in_delta(cd['massFractions'][i], v, 1E-6)
+		end
+		[2.0, 4.0, 1.0].each_with_index do |v, i|
+			assert_in_delta(cd['nAtoms'][i], v, 1E-6)
+		end
+	end
 end
 
 class TestSymbolToAtomicNumber < Test::Unit::TestCase

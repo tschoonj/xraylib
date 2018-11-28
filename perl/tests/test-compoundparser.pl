@@ -58,6 +58,16 @@ for my $compound (@bad_compounds) {
 	like($@, qr/Error/, "TestCompoundParser::test_bad_compound ".$compound);
 }
 
+my $cd = xraylib::CompoundParser("H2SO4");
+ok($cd->{'nElements'} eq 3, "TestCompoundParser::test_H2SO4::nElements");
+ok(xrltest::almost_equal($cd->{'molarMass'}, 98.09), "TestCompoundParser::test_H2SO4::molarMass");
+ok(xrltest::almost_equal($cd->{'nAtomsAll'}, 7.0), "TestCompoundParser::test_H2SO4::nAtomsAll");
+ok($cd->{'Elements'} ~~ [1, 8, 16], "TestCompoundParser::test_H2SO4::Elements");
+ok($cd->{'massFractions'} ~~ [0.02059333265368539, 0.6524620246712203, 0.32694464267509427], "TestCompoundParser::test_H2SO4::massFractions");
+ok($cd->{'nAtoms'} ~~ [2.0, 4.0, 1.0], "TestCompoundParser::test_H2SO4::nAtoms");
+
+
+
 ok(xraylib::SymbolToAtomicNumber("Fe") eq 26, "TestSymbolToAtomicNumber::test_Fe");
 eval {
 	xraylib::SymbolToAtomicNumber('Uu');
