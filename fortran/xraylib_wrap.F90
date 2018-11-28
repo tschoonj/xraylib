@@ -39,9 +39,9 @@ ENDTYPE
 TYPE :: compoundData
         INTEGER (C_INT) :: nElements
         REAL (C_DOUBLE) :: nAtomsAll
-        INTEGER (C_INT),DIMENSION(:),POINTER :: Elements
-        REAL (C_DOUBLE),DIMENSION(:),POINTER :: massFractions
-        REAL (C_DOUBLE),DIMENSION(:),POINTER :: nAtoms
+        INTEGER (C_INT),DIMENSION(:),ALLOCATABLE:: Elements
+        REAL (C_DOUBLE),DIMENSION(:),ALLOCATABLE:: massFractions
+        REAL (C_DOUBLE),DIMENSION(:),ALLOCATABLE:: nAtoms
         REAL (C_DOUBLE) :: molarMass
 ENDTYPE
 
@@ -2287,15 +2287,6 @@ INTERFACE
                 TYPE (C_PTR),INTENT(IN),VALUE :: error
         ENDFUNCTION CSb_Total_KisselC
 
-        FUNCTION CompoundParserC(compoundString, error) BIND(C,NAME='CompoundParser')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: compoundString
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION CompoundParserC
-
         !compound parser based functions
         FUNCTION CS_Total_CPC(compound,E, error) BIND(C,NAME='CS_Total_CP')
                 USE, INTRINSIC :: ISO_C_BINDING
@@ -3270,6 +3261,27 @@ FUNCTION CompoundParser(compoundString, error) RESULT(rv)
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+        INTEGER (C_INT), DIMENSION(:), POINTER :: Elements
+        REAL (C_DOUBLE), DIMENSION(:), POINTER:: massFractions
+        REAL (C_DOUBLE), DIMENSION(:), POINTER:: nAtoms
+
+        INTERFACE
+                FUNCTION CompoundParserC(compoundString, error) BIND(C,NAME='CompoundParser')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: compoundString
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION CompoundParserC
+
+                SUBROUTINE FreeCompoundDataC(compoundData)&
+                BIND(C,NAME='FreeCompoundData')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: compoundData
+                ENDSUBROUTINE FreeCompoundDataC
+        ENDINTERFACE
 
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
@@ -3295,28 +3307,23 @@ FUNCTION CompoundParser(compoundString, error) RESULT(rv)
                 CALL C_F_POINTER(rv_c_ptr, rv_C)
                 rv%nElements = rv_C%nElements
                 rv%nAtomsAll = rv_C%nAtomsAll
-                CALL C_F_POINTER(rv_C%Elements, rv%Elements, [rv%nElements])
-                CALL C_F_POINTER(rv_C%massFractions, rv%massFractions, [rv%nElements])
-                CALL C_F_POINTER(rv_C%nAtoms, rv%nAtoms, [rv%nElements])
+                CALL C_F_POINTER(rv_C%Elements, Elements, [rv%nElements])
+                CALL C_F_POINTER(rv_C%massFractions, massFractions, [rv%nElements])
+                CALL C_F_POINTER(rv_C%nAtoms, nAtoms, [rv%nElements])
+                ALLOCATE(rv%Elements(rv%nElements))
+                ALLOCATE(rv%massFractions(rv%nElements))
+                ALLOCATE(rv%nAtoms(rv%nElements))
+                rv%Elements = Elements
+                rv%massFractions = massFractions
+                rv%nAtoms = nAtoms 
                 rv%molarMass = rv_C%molarMass
-                CALL xrlFree(rv_c_ptr)
+                CALL FreeCompoundDataC(rv_c_ptr)
         ELSEIF (C_ASSOCIATED(errorPtr)) THEN
                 CALL process_error(errorPtr, error)
         ENDIF
 
         RETURN
 ENDFUNCTION CompoundParser
-
-SUBROUTINE FreeCompoundData(cd)
-        USE, INTRINSIC :: ISO_C_BINDING
-        IMPLICIT NONE
-        TYPE (compoundData), POINTER, INTENT(INOUT) :: cd
-
-        CALL xrlFree(C_LOC(cd%Elements(1)))
-        CALL xrlFree(C_LOC(cd%massFractions(1)))
-        CALL xrlFree(C_LOC(cd%nAtoms(1)))
-        DEALLOCATE(cd)
-ENDSUBROUTINE
 
 FUNCTION AtomicNumberToSymbol(Z, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING

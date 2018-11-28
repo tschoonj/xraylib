@@ -6,9 +6,10 @@ USE :: xraylib
 USE :: libtest
 IMPLICIT NONE
 
-TYPE(xrl_error), POINTER :: error => NULL()
+TYPE (xrl_error), POINTER :: error => NULL()
 CHARACTER (KIND=C_CHAR,LEN=3) :: symbol
 INTEGER :: Z
+TYPE (compoundData), POINTER :: cd
 
 CALL assert(ASSOCIATED(CompoundParser("C19H29COOH")))
 CALL assert(ASSOCIATED(CompoundParser("C12H10")))
@@ -24,6 +25,18 @@ CALL assert(ASSOCIATED(CompoundParser("Ca5(PO4)3F")))
 CALL assert(ASSOCIATED(CompoundParser("Ca5(PO4)3OH")))
 CALL assert(ASSOCIATED(CompoundParser("Ca5.522(PO4.48)3OH")))
 CALL assert(ASSOCIATED(CompoundParser("Ca5.522(PO.448)3OH")))
+
+cd => CompoundParser('H2SO4')
+CALL assert(cd%nElements == 3)
+CALL assert(ABS(cd%molarMass - 98.09_C_DOUBLE) < 1E-6_C_DOUBLE)
+CALL assert(ALL(cd%Elements - [1, 8, 16] == 0))
+CALL assert(ALL(ABS(cd%massFractions - [0.02059333265368539_C_DOUBLE, &
+        0.6524620246712203_C_DOUBLE, 0.32694464267509427_C_DOUBLE]) &
+        < 1E-6_C_DOUBLE))
+CALL assert(ALL(ABS(cd%nAtoms - [2.0_C_DOUBLE, 4.0_C_DOUBLE, &
+        1.0_C_DOUBLE]) < 1E-6_C_DOUBLE))
+CALL assert(ABS(cd%nAtomsAll - 7.0) < 1E-6)
+DEALLOCATE(cd)
 
 CALL assert(.NOT. ASSOCIATED(CompoundParser("CuI2ww")))
 CALL assert(.NOT. ASSOCIATED(CompoundParser("0C")))

@@ -63,7 +63,7 @@ DO i=1,cd%nElements
 ENDDO
 
 !Free the memory allocated for the arrays
-CALL FreeCompoundData(cd)
+DEALLOCATE(cd)
 
 cd => CompoundParser(compound2)
 IF (.NOT. ASSOCIATED(cd)) THEN
@@ -78,7 +78,7 @@ DO i=1,cd%nElements
 ENDDO
 
 !Free the memory allocated for the arrays
-CALL FreeCompoundData(cd)
+DEALLOCATE(cd)
 
 WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2',10.0_C_DOUBLE)
 
