@@ -289,7 +289,7 @@ DO i=1,cdn%nElements
         cdn%Elements(i),': ', &
         cdn%massFractions(i)*100.0, ' %'
 ENDDO
-CALL FreeCompoundDataNIST(cdn)
+DEALLOCATE(cdn)
 
 cdn => GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
 WRITE (6, '(A)') 'NIST_COMPOUND_BRAIN_ICRP'
@@ -300,7 +300,7 @@ DO i=1,cdn%nElements
         cdn%Elements(i),': ', &
         cdn%massFractions(i)*100.0, ' %'
 ENDDO
-CALL FreeCompoundDataNIST(cdn)
+DEALLOCATE(cdn)
 
 nistCompounds => GetCompoundDataNISTList()
 WRITE (6, '(A)') 'List of available NIST compounds'

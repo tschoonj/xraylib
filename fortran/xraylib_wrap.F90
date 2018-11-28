@@ -95,8 +95,8 @@ ENDTYPE
 TYPE :: compoundDataNIST
         CHARACTER(LEN=_NIST_LIST_STRING_LENGTH, KIND=C_CHAR):: name
         INTEGER (C_INT) :: nElements
-        INTEGER (C_INT), POINTER, DIMENSION(:) :: Elements
-        REAL (C_DOUBLE), POINTER, DIMENSION(:)  :: massFractions
+        INTEGER (C_INT), ALLOCATABLE, DIMENSION(:) :: Elements
+        REAL (C_DOUBLE), ALLOCATABLE, DIMENSION(:)  :: massFractions
         REAL (C_DOUBLE) :: density
 ENDTYPE
 
@@ -3157,26 +3157,6 @@ INTERFACE
                 TYPE (C_PTR),INTENT(IN),VALUE :: error
         ENDFUNCTION Crystal_dSpacingC
 
-        FUNCTION GetCompoundDataNISTByNameC(compoundString, error)&
-        BIND (C,NAME='GetCompoundDataNISTByName')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: compoundString
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION GetCompoundDataNISTByNameC
-
-        FUNCTION GetCompoundDataNISTByIndexC(index, error)&
-        BIND (C,NAME='GetCompoundDataNISTByIndex')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                INTEGER (C_INT), INTENT(IN), VALUE :: index
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION GetCompoundDataNISTByIndexC
-
         FUNCTION GetCompoundDataNISTListC(nCompounds, error)&
         BIND (C,NAME='GetCompoundDataNISTList')&
         RESULT(rv)
@@ -3950,10 +3930,31 @@ FUNCTION GetCompoundDataNISTByName(compoundString, error) RESULT(rv)
         TYPE (compoundDataNIST_C), POINTER :: rv_C
         TYPE (C_PTR) :: rv_c_ptr
         INTEGER :: i
+        INTEGER (C_INT), DIMENSION(:), POINTER :: Elements
+        REAL (C_DOUBLE), DIMENSION(:), POINTER :: massFractions
 
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION GetCompoundDataNISTByNameC(compoundString, error)&
+                BIND (C,NAME='GetCompoundDataNISTByName')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: compoundString
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION GetCompoundDataNISTByNameC
+
+                SUBROUTINE FreeCompoundDataNISTC(compoundData)&
+                BIND(C,NAME='FreeCompoundDataNIST')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: compoundData
+                ENDSUBROUTINE FreeCompoundDataNISTC
+        ENDINTERFACE
 
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
@@ -3983,8 +3984,13 @@ FUNCTION GetCompoundDataNISTByName(compoundString, error) RESULT(rv)
                 ENDDO
                 rv%nElements = rv_C%nElements
                 rv%density = rv_C%density
-                CALL C_F_POINTER(rv_C%Elements, rv%Elements, [rv%nElements])
-                CALL C_F_POINTER(rv_C%massFractions, rv%massFractions, [rv%nElements])
+                CALL C_F_POINTER(rv_C%Elements, Elements, [rv%nElements])
+                CALL C_F_POINTER(rv_C%massFractions, massFractions, [rv%nElements])
+                ALLOCATE(rv%Elements(rv%nElements))
+                ALLOCATE(rv%massFractions(rv%nElements))
+                rv%Elements = Elements
+                rv%massFractions = massFractions
+                CALL FreeCompoundDataNISTC(rv_c_ptr)
         ELSEIF (C_ASSOCIATED(errorPtr)) THEN
                 CALL process_error(errorPtr, error)
         ENDIF
@@ -4003,10 +4009,31 @@ FUNCTION GetCompoundDataNISTByIndex(index, error) RESULT(rv)
         TYPE (C_PTR) :: rv_c_ptr
         INTEGER :: i
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_C
+        INTEGER (C_INT), DIMENSION(:), POINTER :: Elements
+        REAL (C_DOUBLE), DIMENSION(:), POINTER :: massFractions
 
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION GetCompoundDataNISTByIndexC(index, error)&
+                BIND (C,NAME='GetCompoundDataNISTByIndex')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        INTEGER (C_INT), INTENT(IN), VALUE :: index
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION GetCompoundDataNISTByIndexC
+
+                SUBROUTINE FreeCompoundDataNISTC(compoundData)&
+                BIND(C,NAME='FreeCompoundDataNIST')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: compoundData
+                ENDSUBROUTINE FreeCompoundDataNISTC
+        ENDINTERFACE
 
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
@@ -4036,27 +4063,21 @@ FUNCTION GetCompoundDataNISTByIndex(index, error) RESULT(rv)
                         rv%name(i:i)=' '
                 ENDDO
                 NULLIFY(name_C)
-                CALL xrlFree(rv_C%name)
                 rv%nElements = rv_C%nElements
                 rv%density = rv_C%density
-                CALL C_F_POINTER(rv_C%Elements, rv%Elements, [rv%nElements])
-                CALL C_F_POINTER(rv_C%massFractions, rv%massFractions, [rv%nElements])
+                CALL C_F_POINTER(rv_C%Elements, Elements, [rv%nElements])
+                CALL C_F_POINTER(rv_C%massFractions, massFractions, [rv%nElements])
+                ALLOCATE(rv%Elements(rv%nElements))
+                ALLOCATE(rv%massFractions(rv%nElements))
+                rv%Elements = Elements
+                rv%massFractions = massFractions
+                CALL FreeCompoundDataNISTC(rv_c_ptr)
         ELSEIF (C_ASSOCIATED(errorPtr)) THEN
                 CALL process_error(errorPtr, error)
         ENDIF
 
         RETURN
 ENDFUNCTION GetCompoundDataNISTByIndex
-
-SUBROUTINE FreeCompoundDataNIST(cdn)
-        USE, INTRINSIC :: ISO_C_BINDING
-        IMPLICIT NONE
-        TYPE (compoundDataNIST), POINTER, INTENT(INOUT) :: cdn
-
-        CALL xrlFree(C_LOC(cdn%Elements(1)))
-        CALL xrlFree(C_LOC(cdn%massFractions(1)))
-        DEALLOCATE(cdn)
-ENDSUBROUTINE FreeCompoundDataNIST
 
 FUNCTION GetCompoundDataNISTList(error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING

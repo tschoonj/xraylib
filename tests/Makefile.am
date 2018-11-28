@@ -39,6 +39,7 @@ check_PROGRAMS = \
 	test-radrate \
 	test-refractive_indices \
 	test-scattering \
+	test-nist-compounds \
 	test-error \
 	test-version \
 	$(NULL)
@@ -119,3 +120,6 @@ test_refractive_indices_LDADD = ../src/libxrl.la
 
 test_scattering_SOURCES = test-scattering.c
 test_scattering_LDADD = ../src/libxrl.la
+
+test_nist_compounds_SOURCES = test-nist-compounds.c
+test_nist_compounds_LDADD = ../src/libxrl.la

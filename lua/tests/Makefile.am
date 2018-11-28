@@ -12,6 +12,7 @@ dist_check_SCRIPTS = \
 	test-auger.lua \
 	test-compoundparser.lua \
 	test-comptonprofiles.lua \
+	test-nist-compounds.lua \
 	$(NULL)
 
 endif

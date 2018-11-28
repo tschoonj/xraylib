@@ -8,6 +8,7 @@ check_PROGRAMS = \
 	test-compoundparser \
 	test-comptonprofiles \
 	test-refractive_indices \
+	test-nist-compounds \
 	$(NULL)
 
 check_LTLIBRARIES = libtest.la
@@ -54,6 +55,12 @@ nodist_test_refractive_indices_SOURCES = libtest.mod
 test_refractive_indices_LDADD = libtest.la
 test_refractive_indices_CPPFLAGS = -I.. -I.
 test_refractive_indices_FCFLAGS = ${test_refractive_indices_CPPFLAGS}
+
+dist_test_nist_compounds_SOURCES = test-nist-compounds.f90
+nodist_test_nist_compounds_SOURCES = libtest.mod
+test_nist_compounds_LDADD = libtest.la
+test_nist_compounds_CPPFLAGS = -I.. -I.
+test_nist_compounds_FCFLAGS = ${test_nist_compounds_CPPFLAGS}
 
 BUILT_SOURCES = libtest.mod
 
