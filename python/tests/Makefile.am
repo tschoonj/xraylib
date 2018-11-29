@@ -12,6 +12,7 @@ dist_check_SCRIPTS = \
 	test-auger.py \
 	test-compoundparser.py \
 	test-comptonprofiles.py \
+	test-nist-compounds.py \
 	$(NULL)
 endif
 

@@ -12,6 +12,7 @@ dist_check_SCRIPTS = \
 	test-auger.pl \
 	test-compoundparser.pl \
 	test-comptonprofiles.pl \
+	test-nist-compounds.pl \
 	$(NULL)
 endif
 

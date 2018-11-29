@@ -12,6 +12,7 @@ dist_check_SCRIPTS = \
 	test-auger.php \
 	test-compoundparser.php \
 	test-comptonprofiles.php \
+	test-nist-compounds.php \
 	$(NULL)
 endif
 

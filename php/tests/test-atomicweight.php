@@ -12,13 +12,7 @@ class TestAtomicWeight extends XrlTest {
 		assertAlmostEqual($weight, 238.070);
 	}
 	function test_bad_Z() {
-		try {
-			$weight = AtomicWeight(185);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AtomicWeight", 185);
 	}
 }
 

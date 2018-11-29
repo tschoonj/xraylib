@@ -9,7 +9,8 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
 });
 
 set_exception_handler(function ($exception) {
-	printf("\nTraceback: %s\n", $exception->getTraceAsString());
+	printf("\nMessage: %s\n", $exception->getMessage());
+	printf("Traceback: %s\n", $exception->getTraceAsString());
 	exit(1);
 });
 
@@ -19,7 +20,7 @@ function assertAlmostEqual($actual, $expected, $threshold = 1.0E-6) {
 		if (count($actual) != count($expected)) {
 			throw new Exception("assertAlmostEqual: actual and expected have different array lengths!");
 		}
-		$lambda = function($a, $e) {
+		$lambda = function($a, $e) use ($threshold) {
 			if (abs($a - $e) > $threshold) {
 				throw new Exception("assertAlmostEqual: $a and $e differ by too much!");
 			}
@@ -42,6 +43,16 @@ function assertEqual($actual, $expected) {
 	if ($actual != $expected) {
 		throw new Exception("assertEqual: actual and expected are not equal!");
 	}
+}
+
+function assertException($code, $function, ...$args) {
+	try {
+		call_user_func_array($function, $args);
+	} catch (Exception $exception) {
+		assertEqual($exception->getCode(), $code);
+		return;
+	}
+	throw new Exception("assertException: no exception was thrown!");
 }
 
 // taken from http://php.net/manual/en/function.get-class-methods.php#118330

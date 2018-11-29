@@ -30,9 +30,15 @@ TestNISTCompounds = {}
 	end
 
 	function TestNISTCompounds:test_bad()
-		luaunit.assertError(GetCompoundDataNISTByIndex, -1)
-		luaunit.assertError(GetCompoundDataNISTByIndex, 180)
-		luaunit.assertError(GetCompoundDataNISTByName, "non-existent-compound")
+		luaunit.assertError(xraylib.GetCompoundDataNISTByIndex, -1)
+		luaunit.assertError(xraylib.GetCompoundDataNISTByIndex, 180)
+		luaunit.assertError(xraylib.GetCompoundDataNISTByIndex, nil)
+		luaunit.assertError(xraylib.GetCompoundDataNISTByIndex, "jpjffpjwf")
+		luaunit.assertError(xraylib.GetCompoundDataNISTByIndex, {2, 3})
+		luaunit.assertError(xraylib.GetCompoundDataNISTByName, "non-existent-compound")
+		luaunit.assertError(xraylib.GetCompoundDataNISTByName, nil)
+		luaunit.assertError(xraylib.GetCompoundDataNISTByName, 2)
+		luaunit.assertError(xraylib.GetCompoundDataNISTByName, {"Air, Dry (near sea level)"})
 	end
 
 os.exit(luaunit.LuaUnit.run('-v', '-o', 'tap'))

@@ -12,31 +12,13 @@ class TestAugerRate extends XrlTest {
 		assertAlmostEqual($rate, 0.0024327572005);
 	}
 	function test_bad_Z() {
-		try {
-			$rate = AugerRate(-35, L3_M4N7_AUGER);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AugerRate", -35, L3_M4N7_AUGER);
 	}
 	function test_bad_trans() {
-		try {
-			$rate = AugerRate(82, M4_M5Q3_AUGER);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AugerRate", 82, M4_M5Q3_AUGER);
 	}
 	function test_invalid_trans() {
-		try {
-			$rate = AugerRate(62, L3_M4N7_AUGER);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AugerRate", 62, L3_M4N7_AUGER);
 	}
 }
 
@@ -50,22 +32,10 @@ class TestAugerYield extends XrlTest {
 		assertAlmostEqual($ayield, 0.1719525);
 	}
 	function test_bad_Z() {
-		try {
-			$ayield = AugerYield(-35, K_SHELL);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AugerYield", -35, K_SHELL);
 	}
 	function test_bad_shell() {
-		try {
-			$ayield = AugerYield(82, N2_SHELL);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AugerYield", 82, N2_SHELL);
 	}
 }
 

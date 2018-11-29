@@ -67,7 +67,7 @@ class TestCompoundParser extends XrlTest {
 		assertAlmostEqual($cd['molarMass'], 98.09);
 		assertAlmostEqual($cd['nAtomsAll'], 7.0);
 		assertEqual($cd['Elements'], array(1, 8, 16));
-		assertEqual($cd['massFractions'], array(0.02059333265368539, 0.6524620246712203, 0.32694464267509427));
+		assertAlmostEqual($cd['massFractions'], array(0.02059333265368539, 0.6524620246712203, 0.32694464267509427));
 		assertEqual($cd['nAtoms'], array(2.0, 4.0, 1.0));
 	}
 }
@@ -77,21 +77,9 @@ class TestSymbolToAtomicNumber extends XrlTest {
 		assertEqual(SymbolToAtomicNumber("Fe"), 26);
 	}
 	function test_bad_symbol() {
-		try {
-			$an = SymbolToAtomicNumber('Uu');
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
-		try {
-			$an = SymbolToAtomicNumber(26);
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
-		try {
-			$an = SymbolToAtomicNumber(NULL);
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
+		assertException(ValueError, "SymbolToAtomicNumber", "Uu");
+		assertException(ValueError, "SymbolToAtomicNumber", 26);
+		assertException(ValueError, "SymbolToAtomicNumber", NULL);
 	}
 }
 
@@ -100,26 +88,10 @@ class TestAtomicNumberToSymbol extends XrlTest {
 		assertEqual(AtomicNumberToSymbol(26), "Fe");
 	}
 	function test_bad_symbol() {
-		try {
-			$symbol = AtomicNumberToSymbol(-2);
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
-		try {
-			$symbol = AtomicNumberToSymbol(108);
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
-		try {
-			$symbol = AtomicNumberToSymbol("Fe");
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
-		try {
-			$symbol = AtomicNumberToSymbol(NULL);
-		} catch (Exception $exception) {
-			assertEqual($exception->getCode(), ValueError);	
-		}
+		assertException(ValueError, "AtomicNumberToSymbol", -2);
+		assertException(ValueError, "AtomicNumberToSymbol", 108);
+		assertException(ValueError, "AtomicNumberToSymbol", "Fe");
+		assertException(ValueError, "AtomicNumberToSymbol", NULL);
 	}
 }
 

@@ -12,6 +12,7 @@ dist_check_SCRIPTS = \
 	test-auger.rb \
 	test-compoundparser.rb \
 	test-comptonprofiles.rb \
+	test-nist-compounds.rb \
 	$(NULL)
 endif
 

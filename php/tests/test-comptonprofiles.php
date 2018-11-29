@@ -36,74 +36,16 @@ class TestComptonProfiles extends XrlTest {
 	}
 	
 	function test_bad_input() {
-		$exception_found = TRUE;
-		try {
-			$profile = ComptonProfile(0, 0.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
+		assertException(ValueError, "ComptonProfile", 0, 0.0);
 		$profile = ComptonProfile(102, 0.0);
-
-		try {
-			$profile = ComptonProfile(103, 0.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
-		try {
-			$profile = ComptonProfile(26, -1.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
-		try {
-			$profile = ComptonProfile_Partial(0, K_SHELL, 0.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
+		assertException(ValueError, "ComptonProfile", 103, 0.0);
+		assertException(ValueError, "ComptonProfile", 26, -1.0);
+		assertException(ValueError, "ComptonProfile_Partial", 0, K_SHELL, 0.0);
 		$profile = ComptonProfile_Partial(102, K_SHELL, 0.0);
-
-		try {
-			$profile = ComptonProfile_Partial(103, K_SHELL, 0.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
-		try {
-			$profile = ComptonProfile_Partial(26, K_SHELL, -1.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
-		try {
-			$profile = ComptonProfile_Partial(26, -1, 0.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
-
-		try {
-			$profile = ComptonProfile_Partial(26, N2_SHELL, 0.0);
-			$exception_found = FALSE;
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-		}
-		assertEqual($exception_found, TRUE);
+		assertException(ValueError, "ComptonProfile_Partial", 103, K_SHELL, 0.0);
+		assertException(ValueError, "ComptonProfile_Partial", 26, K_SHELL, -1.0);
+		assertException(ValueError, "ComptonProfile_Partial", 26, -1, 0.0);
+		assertException(ValueError, "ComptonProfile_Partial", 26, N2_SHELL, 0.0);
 	}
 }
 

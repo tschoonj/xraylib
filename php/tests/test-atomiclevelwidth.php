@@ -12,31 +12,13 @@ class TestAtomicLevelWidth extends XrlTest {
 		assertAlmostEqual($width, 0.31E-3);
 	}
 	function test_bad_Z() {
-		try {
-			$width = AtomicLevelWidth(185, K_SHELL);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AtomicLevelWidth", 185, K_SHELL);
 	}
 	function test_bad_shell() {
-		try {
-			$width = AtomicLevelWidth(26, -5);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AtomicLevelWidth", 26, -5);
 	}
 	function test_invalid_shell() {
-		try {
-			$width = AtomicLevelWidth(26, N3_SHELL);
-		} catch (Exception $e) {
-			assertEqual($e->getCode(), ValueError);
-			return;
-		}
-		throw new Exception();
+		assertException(ValueError, "AtomicLevelWidth", 26, N3_SHELL);
 	}
 }
 
