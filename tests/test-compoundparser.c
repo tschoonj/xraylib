@@ -12,45 +12,118 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
+#include <math.h>
 
 int main(int argc, char *argv[]) {
+	xrl_error *error = NULL;
+	char *symbol = NULL;
+	struct compoundData *cd = NULL;
+	int Z;
+
 	/* taken from https://github.com/KenanY/chemical-formula/blob/master/test/index.js */
 	/* good formulas */
-	assert(CompoundParser("C19H29COOH") != NULL);
-	assert(CompoundParser("C12H10") != NULL);
-	assert(CompoundParser("C12H6O2") != NULL);
-	assert(CompoundParser("C6H5Br") != NULL);
-	assert(CompoundParser("C3H4OH(COOH)3") != NULL);
-	assert(CompoundParser("HOCH2CH2OH") != NULL);
-	assert(CompoundParser("C5H11NO2") != NULL);
-	assert(CompoundParser("CH3CH(CH3)CH3") != NULL);
-	assert(CompoundParser("NH2CH(C4H5N2)COOH") != NULL);
-	assert(CompoundParser("H2O") != NULL);
-	assert(CompoundParser("Ca5(PO4)3F") != NULL);
-	assert(CompoundParser("Ca5(PO4)3OH") != NULL);
-	assert(CompoundParser("Ca5.522(PO4.48)3OH") != NULL);
-	assert(CompoundParser("Ca5.522(PO.448)3OH") != NULL);
+	assert(CompoundParser("C19H29COOH", NULL) != NULL);
+	assert(CompoundParser("C12H10", NULL) != NULL);
+	assert(CompoundParser("C12H6O2", NULL) != NULL);
+	assert(CompoundParser("C6H5Br", NULL) != NULL);
+	assert(CompoundParser("C3H4OH(COOH)3", NULL) != NULL);
+	assert(CompoundParser("HOCH2CH2OH", NULL) != NULL);
+	assert(CompoundParser("C5H11NO2", NULL) != NULL);
+	assert(CompoundParser("CH3CH(CH3)CH3", NULL) != NULL);
+	assert(CompoundParser("NH2CH(C4H5N2)COOH", NULL) != NULL);
+	assert(CompoundParser("H2O", NULL) != NULL);
+	assert(CompoundParser("Ca5(PO4)3F", NULL) != NULL);
+	assert(CompoundParser("Ca5(PO4)3OH", NULL) != NULL);
+	assert(CompoundParser("Ca5.522(PO4.48)3OH", NULL) != NULL);
+	assert(CompoundParser("Ca5.522(PO.448)3OH", NULL) != NULL);
 
 	/* bad formulas */
-	assert(CompoundParser("CuI2ww") == NULL);
-	assert(CompoundParser("0C") == NULL);
-	assert(CompoundParser("2O") == NULL);
-	assert(CompoundParser("13Li") == NULL);
-	assert(CompoundParser("2(NO3)") == NULL);
-	assert(CompoundParser("H(2)") == NULL);
-	assert(CompoundParser("Ba(12)") == NULL);
-	assert(CompoundParser("Cr(5)3") == NULL);
-	assert(CompoundParser("Pb(13)2") == NULL);
-	assert(CompoundParser("Au(22)11") == NULL);
-	assert(CompoundParser("Au11(H3PO4)2)") == NULL);
-	assert(CompoundParser("Au11(H3PO4))2") == NULL);
-	assert(CompoundParser("Au(11(H3PO4))2") == NULL);
-	assert(CompoundParser("Ca5.522(PO.44.8)3OH") == NULL);
-	assert(CompoundParser("Ba[12]") == NULL);
-	assert(CompoundParser("Auu1") == NULL);
-	assert(CompoundParser("AuL1") == NULL);
+	assert(CompoundParser("CuI2ww", NULL) == NULL);
+	assert(CompoundParser("0C", NULL) == NULL);
+	assert(CompoundParser("2O", NULL) == NULL);
+	assert(CompoundParser("13Li", NULL) == NULL);
+	assert(CompoundParser("2(NO3)", NULL) == NULL);
+	assert(CompoundParser("H(2)", NULL) == NULL);
+	assert(CompoundParser("Ba(12)", NULL) == NULL);
+	assert(CompoundParser("Cr(5)3", NULL) == NULL);
+	assert(CompoundParser("Pb(13)2", NULL) == NULL);
+	assert(CompoundParser("Au(22)11", NULL) == NULL);
+	assert(CompoundParser("Au11(H3PO4)2)", NULL) == NULL);
+	assert(CompoundParser("Au11(H3PO4))2", NULL) == NULL);
+	assert(CompoundParser("Au(11(H3PO4))2", NULL) == NULL);
+	assert(CompoundParser("Ca5.522(PO.44.8)3OH", NULL) == NULL);
+	assert(CompoundParser("Ba[12]", NULL) == NULL);
+	assert(CompoundParser("Auu1", NULL) == NULL);
+	assert(CompoundParser("AuL1", NULL) == NULL);
+	assert(CompoundParser(NULL, NULL) == NULL);
+	assert(CompoundParser("  ", NULL) == NULL);
+	assert(CompoundParser("\t", NULL) == NULL);
+	assert(CompoundParser("\n", NULL) == NULL);
+	assert(CompoundParser("Au L1", NULL) == NULL);
+	assert(CompoundParser("Au\tFe", NULL) == NULL);
+
+	cd = CompoundParser("H2SO4", NULL);
+	assert(cd != NULL);
+	assert(cd->nElements == 3);
+	assert(fabs(cd->molarMass - 98.09) < 1E-6);
+	assert(fabs(cd->nAtomsAll- 7.0) < 1E-6);
+	assert(cd->Elements[0] == 1);
+	assert(cd->Elements[1] == 8);
+	assert(cd->Elements[2] == 16);
+	assert(fabs(cd->massFractions[0] - 0.02059333265368539) < 1E-6);
+	assert(fabs(cd->massFractions[1] - 0.6524620246712203) < 1E-6);
+	assert(fabs(cd->massFractions[2] - 0.32694464267509427) < 1E-6);
+	assert(fabs(cd->nAtoms[0] - 2.0) < 1E-6);
+	assert(fabs(cd->nAtoms[1] - 4.0) < 1E-6);
+	assert(fabs(cd->nAtoms[2] - 1.0) < 1E-6);
+	FreeCompoundData(cd);
+
+	assert(SymbolToAtomicNumber("Fe", &error) == 26);
+	assert(error == NULL);
+
+	assert(SymbolToAtomicNumber("Uu", &error) == 0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, "Invalid chemical symbol") == 0);
+	xrl_clear_error(&error);
+
+	assert(SymbolToAtomicNumber(NULL, &error) == 0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, "Symbol cannot be NULL") == 0);
+	xrl_clear_error(&error);
+
+	symbol = AtomicNumberToSymbol(26, &error);
+	assert(strcmp(symbol, "Fe") == 0);
+	assert(error == NULL);
+	xrlFree(symbol);
+
+	symbol = AtomicNumberToSymbol(-2, &error);
+	assert(symbol == NULL);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+	xrl_clear_error(&error);
+	
+	/* database currently goes up to Bh */
+	symbol = AtomicNumberToSymbol(108, &error);
+	assert(symbol == NULL);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+	xrl_clear_error(&error);
+
+	/* cross validation */
+	for (Z = 1 ; Z <= 107 ; Z++) {
+		symbol = AtomicNumberToSymbol(Z, NULL);
+		assert(symbol != NULL);
+		assert(SymbolToAtomicNumber(symbol, NULL) == Z);
+		xrlFree(symbol);
+	}
 
 	return 0;
 }

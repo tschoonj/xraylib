@@ -14,9 +14,6 @@ namespace Test
             sw.Start();
 
             XrayLib xl = XrayLib.Instance;
-            // If something goes wrong, the test will end with EXIT_FAILURE
-            // xl.SetHardExit(1);
-            xl.SetErrorMessages(0);
            
             Console.Title = String.Format("XrayLib.NET v{0}.{1}", 
                 XrayLib.VERSION_MAJOR, XrayLib.VERSION_MINOR);

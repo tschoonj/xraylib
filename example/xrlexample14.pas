@@ -26,16 +26,13 @@ begin
   try
     XrayInit();
 
-    // If something goes wrong, the test will end with EXIT_FAILURE
-    // SetHardExit(1);
-    SetErrorMessages(0);
-
     WriteLn(Format('XrayLib v%d.%d', [XRAYLIB_MAJOR,XRAYLIB_MINOR]));
     WriteLn('Example Delphi program using XrayLib');
 
     WriteLn;
+    WriteLn('Atomic weight of Al: ', AtomicWeight(13),' g/mol');
     WriteLn('Density of pure Al: ', ElementDensity(13),' g/cm3');
-  	WriteLn('Ca K-alpha Fluorescence Line Energy: ', LineEnergy(20,KA_LINE));
+    WriteLn('Ca K-alpha Fluorescence Line Energy: ', LineEnergy(20,KA_LINE));
     WriteLn('Fe partial photoionization cs of L3 at 6.0 keV: ', CS_Photo_Partial(26,L3_SHELL,6.0));
     WriteLn('Zr L1 edge energy: ', EdgeEnergy(40,L1_SHELL));
     WriteLn('Pb Lalpha XRF production cs at 20.0 keV (jump approx): ', CS_FluorLine(82,LA_LINE,20.0));
@@ -264,6 +261,7 @@ begin
     on E: Exception do
     begin
       Writeln(E.ClassName, ': ', E.Message);
+      Halt(1);
     end;
   end;
 end.

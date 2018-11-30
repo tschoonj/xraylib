@@ -13,6 +13,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
+#include <stddef.h>
+
 #define KL1 -(int)KL1_LINE-1
 #define KL2 -(int)KL2_LINE-1
 #define KL3 -(int)KL3_LINE-1
@@ -32,60 +35,70 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-double RadRate(int Z, int line)
+double RadRate(int Z, int line, xrl_error **error)
 {
   double rad_rate, rr;
   int i;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function RadRate");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (line == KA_LINE) {
-        rr=0.0;
-    	for (i=KL1 ; i <= KL3 ; i++)
-		rr += RadRate_arr[Z][i];
-    	if (rr == 0.0) {
-      		ErrorExit("Line not available in function RadRate");
-      		return 0.0;
-    	}
-    	return rr;
+    rr=0.0;
+    for (i=KL1 ; i <= KL3 ; i++)
+      rr += RadRate_arr[Z][i];
+    if (rr == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
+    return rr;
   }
   else if (line == KB_LINE) {
-    	/*
-	 * we assume that RR(Ka)+RR(Kb) = 1.0
-	 */
-    	rr = RadRate(Z,KA_LINE);
-    	if (rr == 1.0) {
-      		ErrorExit("Line not available in function RadRate");
-      		return 0.0;
-    	}
-	else if (rr == 0.0) {
-		return 0.0;
-	}
-    	return 1.0-rr;
+    /*
+     * we assume that RR(Ka)+RR(Kb) = 1.0
+     */
+    rr = RadRate(Z,KA_LINE, NULL);
+    if (rr == 1.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
+    else if (rr == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
+    return 1.0 - rr;
   }
   else if (line == LA_LINE) {
-	line = -L3M5_LINE-1;
-	rr=RadRate_arr[Z][line];
-	line = -L3M4_LINE-1;
-	rr+=RadRate_arr[Z][line];
-	return rr;
+    line = -L3M5_LINE - 1;
+    rr = RadRate_arr[Z][line];
+    line = -L3M4_LINE - 1;
+    rr += RadRate_arr[Z][line];
+    if (rr == 0.0) {
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+      return 0.0;
+    }
+    return rr;
+  }
+  /* LB is not allowed! */
+  else if (line == LB_LINE) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+    return 0.0;
   }
   /*
    * in Siegbahn notation: use only KA, KB and LA. The radrates of other lines are nonsense
    */
 
   line = -line - 1;
-  if (line<0 || line>=LINENUM) {
-    ErrorExit("Line not available in function RadRate");
+  if (line < 0 || line >= LINENUM) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_LINE);
     return 0;
   }
 
   rad_rate = RadRate_arr[Z][line];
   if (rad_rate <= 0.) {
-    ErrorExit("Line not available in function RadRate");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
     return 0;
   }
 

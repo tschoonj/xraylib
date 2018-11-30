@@ -18,10 +18,6 @@ use Math::Complex;
 
 
 xraylib::XRayInit();
-#xraylib::SetHardExit(1);
-xraylib::SetErrorMessages(0);
-
-
 
 printf "Example of perl program using xraylib\n";
 printf("Density of pure Al: %f g/cm3\n", xraylib::ElementDensity(13));

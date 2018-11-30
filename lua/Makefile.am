@@ -20,10 +20,11 @@ xraylib_la_CFLAGS = $(LUA_INCLUDE) -I${top_builddir} -I${top_srcdir}/include -I$
 
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -I$(top_srcdir)/src -I${top_srcdir}/include -includeall -o xraylib_wrap.c -lua ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I$(top_srcdir)/src -I${top_srcdir}/include -o xraylib_wrap.c -lua ${top_srcdir}/src/xraylib.i
 
 
 clean-local:
 	rm -f xraylib_wrap.c 
-endif
 
+SUBDIRS = tests
+endif

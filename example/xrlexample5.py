@@ -19,7 +19,7 @@ import numpy as np
 
 
 xraylib.XRayInit()
-xraylib.SetErrorMessages(0)
+
 print("Example of python program using xraylib")
 print("xraylib version: {}".format(xraylib.__version__))
 print("Density of pure Al : {} g/cm3".format(xraylib.ElementDensity(13)))

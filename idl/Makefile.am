@@ -28,9 +28,6 @@ libxrlidl_la_LIBADD = ../src/libxrl.la @IDL_LIBADD@
 libxrlidl_la_SOURCES = xraylib_idl.c
 libxrlidl_la_LDFLAGS = -avoid-version -module -shared -export-dynamic $(LDFLAGS_IDL)
 
-
-
-
 endif
 
 

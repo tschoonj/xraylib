@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009-2018, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -45,10 +45,8 @@ __version__ = VERSION
 
 #undef c_abs
 /* include numpy headers */
-  #ifndef WITHOUT_NUMPY
     #include <numpy/ndarraytypes.h>
     #include <numpy/ndarrayobject.h>
-  #endif
 #endif
 
 #ifdef SWIGLUA
@@ -59,6 +57,37 @@ __version__ = VERSION
   #endif
 #endif
 
+/* taken from glib */
+#ifdef __ICC
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
+  _Pragma ("warning (push)")                            \
+  _Pragma ("warning (disable:1478)")
+#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
+  _Pragma ("warning (pop)")
+#elif    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
+  _Pragma ("GCC diagnostic push")                       \
+  _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
+  _Pragma ("GCC diagnostic pop")
+#elif defined (_MSC_VER) && (_MSC_VER >= 1500)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
+  __pragma (warning (push))  \
+  __pragma (warning (disable : 4996))
+#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
+  __pragma (warning (pop))
+#elif defined (__clang__)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+#define G_GNUC_END_IGNORE_DEPRECATIONS \
+  _Pragma("clang diagnostic pop")
+#else
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+#define G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include "xraylib.h"
 #include "xrf_cross_sections_aux.h"
 
@@ -66,11 +95,9 @@ __version__ = VERSION
 %}
 
 #ifdef SWIGPYTHON
-  #ifndef WITHOUT_NUMPY
 %init %{
     import_array();
 %}
-  #endif
 #endif
 
 #if defined(SWIGPHP) && !defined(SWIGPHP5) && !defined(SWIGPHP7)
@@ -95,6 +122,41 @@ __version__ = VERSION
 %ignore radioNuclideData;
 %ignore FreeRadioNuclideData;
 
+%typemap(in, numinputs=0) xrl_error **error (xrl_error *error = NULL) {
+  $1 = &error;
+}
+
+%typemap(freearg) xrl_error **error {
+  xrl_error_free(*($1));
+}
+
+%typemap(out) int Atomic_Factors {}
+
+%typemap(argout) xrl_error **error {
+  if (*$1 != NULL) {
+    switch ((*$1)->code) {
+      case XRL_ERROR_MEMORY:
+        SWIG_exception(SWIG_MemoryError, (*$1)->message);
+        break;
+      case XRL_ERROR_INVALID_ARGUMENT:
+        SWIG_exception(SWIG_ValueError, (*$1)->message);
+        break;
+      case XRL_ERROR_IO:
+        SWIG_exception(SWIG_IOError, (*$1)->message);
+        break;
+      case XRL_ERROR_TYPE:
+        SWIG_exception(SWIG_TypeError, (*$1)->message);
+        break;
+      case XRL_ERROR_UNSUPPORTED:
+      case XRL_ERROR_RUNTIME:
+        SWIG_exception(SWIG_RuntimeError, (*$1)->message);
+        break;
+      default:
+        SWIG_exception(SWIG_RuntimeError, "Unknown xraylib error!");
+    }
+  }
+}
+
 %typemap(newfree) char * {
         if ($1)
                 xrlFree($1);
@@ -102,7 +164,6 @@ __version__ = VERSION
 
 %newobject AtomicNumberToSymbol;
 
-#ifndef SWIGJAVA
 %typemap(in, numinputs=0) Crystal_Array* c_array {
    /* do not use crystal_array argument for now... */
    $1 = NULL;
@@ -116,36 +177,32 @@ __version__ = VERSION
 %typemap(in, numinputs=0) int* nCrystals {
    $1 = NULL;
 }
-#endif
 
 #ifdef SWIGLUA
 %typemap(out) char ** {
         int i=0;
         char ** list = $1;
 
-        lua_newtable(L);
-        for (i = 0 ; list[i] != NULL ; i++) {
-                lua_pushinteger(L,i+1);
-                lua_pushstring(L, list[i]);
-                lua_settable(L, -3);
-                xrlFree(list[i]);
-        }
-        xrlFree(list);
-        lua_pushvalue(L,-1);
+        if (list != NULL) {
+                lua_newtable(L);
+                for (i = 0 ; list[i] != NULL ; i++) {
+                        lua_pushinteger(L,i+1);
+                        lua_pushstring(L, list[i]);
+                        lua_settable(L, -3);
+                        xrlFree(list[i]);
+                }
+                xrlFree(list);
+                lua_pushvalue(L,-1);
 
-        SWIG_arg++;
+                SWIG_arg++;
+        }
 }
 
 %typemap(out) struct radioNuclideData * {
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd == NULL) {
-                fprintf(stderr,"Error: requested radionuclide not found in database\n");
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (rnd != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "name");
@@ -225,12 +282,7 @@ __version__ = VERSION
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                fprintf(stderr,"Error: requested NIST compound not found in database\n");
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (cdn != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "name");
@@ -276,11 +328,7 @@ __version__ = VERSION
         int i;
         struct compoundData *cd = $1;
 
-        if (cd == NULL) {
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (cd != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "nElements");
@@ -350,12 +398,7 @@ __version__ = VERSION
         Crystal_Struct *cs = $1;
         int i;
 
-        if (cs == NULL) {
-                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
-                lua_pushnil(L);
-                SWIG_arg++;
-        }
-        else {
+        if (cs != NULL) {
                 lua_newtable(L);
 
                 lua_pushstring(L, "name");
@@ -430,11 +473,7 @@ __version__ = VERSION
                 lua_pushvalue(L, -1);
 
                 SWIG_arg++;
-
         }
-
-
-
 }
 
 %typemap(in) xrlComplex {
@@ -647,13 +686,7 @@ __version__ = VERSION
                         SWIG_exception(SWIG_RuntimeError,"atom hash value must be an array (table)");
                 }
        }
-
-
-
-
        $1 = cs;
-
-
 }
 #endif
 
@@ -664,25 +697,23 @@ __version__ = VERSION
         int i;
         char **list = $1;
 
-        PyObject *res = PyList_New(0);
-        for (i = 0 ; list[i] != NULL ; i++) {
-                PyList_Append(res,PyString_FromString(list[i]));
-                xrlFree(list[i]);
-        }
-        xrlFree(list);
+        if (list) {
+                PyObject *res = PyList_New(0);
+                for (i = 0 ; list[i] != NULL ; i++) {
+                        PyList_Append(res,PyString_FromString(list[i]));
+                        xrlFree(list[i]);
+                }
+                xrlFree(list);
 
-        $result = res;
+                $result = res;
+        }
 }
 
 %typemap(out) struct radioNuclideData * {
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd == NULL) {
-                PyErr_WarnEx(NULL, "Error: requested radionuclide not found in database\n",1);
-                $result = Py_None;
-        }
-        else {
+        if (rnd) {
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "name",PyString_FromString(rnd->name));
                 PyDict_SetItemString(dict, "Z",PyInt_FromLong(rnd->Z));
@@ -717,11 +748,7 @@ __version__ = VERSION
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                PyErr_WarnEx(NULL, "Error: requested NIST compound not found in database\n",1);
-                $result = Py_None;
-        }
-        else {
+        if (cdn) {
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name));
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements));
@@ -764,12 +791,6 @@ __version__ = VERSION
                 FreeCompoundData(cd);
                 $result=dict;
         }
-        else {
-                PyErr_WarnEx(NULL, "CompoundParser Error",1);
-                $result=Py_None;
-                goto fail;
-        }
-
 }
 
 
@@ -785,11 +806,7 @@ __version__ = VERSION
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
         int i;
-        if (cs == NULL) {
-                PyErr_WarnEx(NULL, "Crystal_GetCrystal Error: crystal not found",1);
-                $result = Py_None;
-        }
-        else {
+        if (cs) {
              PyObject *dict = PyDict_New();
              PyDict_SetItemString(dict, "name",PyString_FromString(cs->name));
              PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a));
@@ -821,6 +838,7 @@ __version__ = VERSION
              $result = dict;
         }
 }
+
 %typemap(in) Crystal_Struct * {
         /* cpointer should be used if present and valid */
         PyObject *dict = $input;
@@ -1102,11 +1120,7 @@ __version__ = VERSION
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (rnd == NULL) {
-                fprintf(stderr,"Error: requested radionuclide not found in database\n");
-                $result = &PL_sv_undef;
-        }
-        else {
+        if (rnd != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("name", newSVpvn(rnd->name, strlen(rnd->name)),hash)
                 STORE_HASH("Z", newSViv(rnd->Z),hash)
@@ -1145,11 +1159,7 @@ __version__ = VERSION
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (cdn == NULL) {
-                fprintf(stderr,"Error: requested NIST compound not found in database\n");
-                $result = &PL_sv_undef;
-        }
-        else {
+        if (cdn != NULL) {
                 HV *hash = newHV();
                 STORE_HASH("name", newSVpvn(cdn->name, strlen(cdn->name)),hash)
                 STORE_HASH("nElements", newSViv(cdn->nElements),hash)
@@ -1195,9 +1205,6 @@ __version__ = VERSION
 
                 $result = sv_2mortal(newRV_noinc((SV*) hash));
         }
-        else {
-                $result = &PL_sv_undef;
-        }
 
         argvi++;
 
@@ -1219,7 +1226,7 @@ __version__ = VERSION
         count = call_pv("Math::Complex::cplx",G_SCALAR);
         SPAGAIN;
         if (count != 1)
-                croak("Big Perl trouble\n");
+                croak("Could not create Math::Complex::cplx variable\n");
         SV *perl_result = newSVsv(POPs);
         PUTBACK;
         FREETMPS;
@@ -1228,17 +1235,14 @@ __version__ = VERSION
         $result = sv_2mortal(perl_result);
         argvi++;
 }
+
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
         int i;
         if (argvi >= items) {
                 EXTEND(sp,1);
         }
-        if (cs == NULL) {
-                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found\n");
-                $result = &PL_sv_undef;
-        }
-        else {
+        if (cs != NULL) {
                 HV *rv = newHV();
                 STORE_HASH("name", newSVpvn(cs->name,strlen(cs->name)), rv)
                 STORE_HASH("a", newSVnv(cs->a), rv)
@@ -1472,9 +1476,6 @@ __version__ = VERSION
                 $1 = cs;
                 argvi++;
         }
-        else {
-                SWIG_exception(SWIG_TypeError,"Argument must be reference to hash");
-        }
 }
 #endif
 
@@ -1495,11 +1496,7 @@ __version__ = VERSION
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd== NULL) {
-                fprintf(stderr, "Error: requested radionuclide not found in database\n");
-                $result = Qnil;
-        }
-        else {
+        if (rnd != NULL) {
                 VALUE rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(rnd->name));
                 rb_hash_aset(rv, rb_str_new2("Z"), INT2FIX(rnd->Z));
@@ -1534,11 +1531,7 @@ __version__ = VERSION
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                fprintf(stderr, "Error: requested NIST compound not found in database\n");
-                $result = Qnil;
-        }
-        else {
+        if (cdn != NULL) {
                 VALUE rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cdn->name));
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cdn->nElements));
@@ -1561,10 +1554,7 @@ __version__ = VERSION
         int i;
         struct compoundData *cd = $1;
 
-        if (cd == NULL) {
-               $result = Qnil;
-        }
-        else {
+        if (cd != NULL) {
                 VALUE rv;
                 rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("nElements"), INT2FIX(cd->nElements));
@@ -1591,11 +1581,7 @@ __version__ = VERSION
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
 
-        if (cs == NULL) {
-                fprintf(stderr,"Crystal_GetCrystal Error: crystal not found");
-                $result = Qnil;
-        }
-        else {
+        if (cs != NULL) {
                 VALUE rv;
                 rv = rb_hash_new();
                 rb_hash_aset(rv, rb_str_new2("name"), rb_str_new2(cs->name));
@@ -1761,7 +1747,7 @@ __version__ = VERSION
 %typemap(out) xrlComplex {
         xrlComplex c = $1;
 %#ifdef T_COMPLEX
-        /* Ruby 1.9 */
+        /* Ruby 1.9+ */
         VALUE cp = rb_Complex2(rb_float_new(c.re),rb_float_new(c.im));
 %#else
         /* Ruby 1.8 */
@@ -1795,98 +1781,92 @@ __version__ = VERSION
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd == NULL) {
-                php_log_err("Error: requested radionuclide not found in database\n");
-                RETURN_NULL();
-        }
-        array_init(return_value);
-        add_assoc_string(return_value, "name", rnd->name, 1);
-        add_assoc_long(return_value, "Z", rnd->Z);
-        add_assoc_long(return_value, "A", rnd->A);
-        add_assoc_long(return_value, "N", rnd->N);
-        add_assoc_long(return_value, "Z_xray", rnd->Z_xray);
-        add_assoc_long(return_value, "nXrays", rnd->nXrays);
-        add_assoc_long(return_value, "nGammas", rnd->nGammas);
-        zval *XrayLines, *XrayIntensities, *GammaEnergies, *GammaIntensities;
+        if (rnd != NULL) {
+                array_init(return_value);
+                add_assoc_string(return_value, "name", rnd->name, 1);
+                add_assoc_long(return_value, "Z", rnd->Z);
+                add_assoc_long(return_value, "A", rnd->A);
+                add_assoc_long(return_value, "N", rnd->N);
+                add_assoc_long(return_value, "Z_xray", rnd->Z_xray);
+                add_assoc_long(return_value, "nXrays", rnd->nXrays);
+                add_assoc_long(return_value, "nGammas", rnd->nGammas);
+                zval *XrayLines, *XrayIntensities, *GammaEnergies, *GammaIntensities;
 
-        ALLOC_INIT_ZVAL(XrayLines);
-        ALLOC_INIT_ZVAL(XrayIntensities);
-        ALLOC_INIT_ZVAL(GammaEnergies);
-        ALLOC_INIT_ZVAL(GammaIntensities);
-        array_init(XrayLines);
-        array_init(XrayIntensities);
-        array_init(GammaEnergies);
-        array_init(GammaIntensities);
-        for (i = 0 ; i < rnd->nXrays ; i++) {
-                add_index_long(XrayLines, i, rnd->XrayLines[i]);
-                add_index_double(XrayIntensities, i, rnd->XrayIntensities[i]);
+                ALLOC_INIT_ZVAL(XrayLines);
+                ALLOC_INIT_ZVAL(XrayIntensities);
+                ALLOC_INIT_ZVAL(GammaEnergies);
+                ALLOC_INIT_ZVAL(GammaIntensities);
+                array_init(XrayLines);
+                array_init(XrayIntensities);
+                array_init(GammaEnergies);
+                array_init(GammaIntensities);
+                for (i = 0 ; i < rnd->nXrays ; i++) {
+                        add_index_long(XrayLines, i, rnd->XrayLines[i]);
+                        add_index_double(XrayIntensities, i, rnd->XrayIntensities[i]);
+                }
+                for (i = 0 ; i < rnd->nGammas ; i++) {
+                        add_index_double(GammaEnergies, i, rnd->GammaEnergies[i]);
+                        add_index_double(GammaIntensities, i, rnd->GammaIntensities[i]);
+                }
+                add_assoc_zval(return_value, "XrayLines", XrayLines);
+                add_assoc_zval(return_value, "XrayIntensities", XrayIntensities);
+                add_assoc_zval(return_value, "GammaEnergies", GammaEnergies);
+                add_assoc_zval(return_value, "GammaIntensities", GammaIntensities);
+                FreeRadioNuclideData(rnd);
         }
-        for (i = 0 ; i < rnd->nGammas ; i++) {
-                add_index_double(GammaEnergies, i, rnd->GammaEnergies[i]);
-                add_index_double(GammaIntensities, i, rnd->GammaIntensities[i]);
-        }
-        add_assoc_zval(return_value, "XrayLines", XrayLines);
-        add_assoc_zval(return_value, "XrayIntensities", XrayIntensities);
-        add_assoc_zval(return_value, "GammaEnergies", GammaEnergies);
-        add_assoc_zval(return_value, "GammaIntensities", GammaIntensities);
-        FreeRadioNuclideData(rnd);
 }
 %typemap(out) struct compoundDataNIST * {
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                php_log_err("Error: requested NIST compound not found in database\n");
-                RETURN_NULL();
-        }
-        array_init(return_value);
-        add_assoc_string(return_value, "name", cdn->name, 1);
-        add_assoc_long(return_value, "nElements", cdn->nElements);
-        add_assoc_double(return_value, "density", cdn->density);
-        zval *Elements, *massFractions;
+        if (cdn != NULL) {
+                array_init(return_value);
+                add_assoc_string(return_value, "name", cdn->name, 1);
+                add_assoc_long(return_value, "nElements", cdn->nElements);
+                add_assoc_double(return_value, "density", cdn->density);
+                zval *Elements, *massFractions;
 
-        ALLOC_INIT_ZVAL(Elements);
-        ALLOC_INIT_ZVAL(massFractions);
-        array_init(Elements);
-        array_init(massFractions);
-        for (i = 0 ; i < cdn->nElements ; i++) {
-                add_index_long(Elements, i, cdn->Elements[i]);
-                add_index_double(massFractions, i, cdn->massFractions[i]);
+                ALLOC_INIT_ZVAL(Elements);
+                ALLOC_INIT_ZVAL(massFractions);
+                array_init(Elements);
+                array_init(massFractions);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        add_index_long(Elements, i, cdn->Elements[i]);
+                        add_index_double(massFractions, i, cdn->massFractions[i]);
+                }
+                add_assoc_zval(return_value, "Elements", Elements);
+                add_assoc_zval(return_value, "massFractions", massFractions);
+                FreeCompoundDataNIST(cdn);
         }
-        add_assoc_zval(return_value, "Elements", Elements);
-        add_assoc_zval(return_value, "massFractions", massFractions);
-        FreeCompoundDataNIST(cdn);
 }
 
 %typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1;
 
-        if (cd == NULL) {
-                php_log_err("CompoundParser Error\n");
-                RETURN_NULL();
-        }
-        array_init(return_value);
-        add_assoc_long(return_value, "nElements", cd->nElements);
-        add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
-        zval *Elements, *massFractions, *nAtoms;
+        if (cd != NULL) {
+                array_init(return_value);
+                add_assoc_long(return_value, "nElements", cd->nElements);
+                add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
+                zval *Elements, *massFractions, *nAtoms;
 
-        ALLOC_INIT_ZVAL(Elements);
-        ALLOC_INIT_ZVAL(massFractions);
-        ALLOC_INIT_ZVAL(nAtoms);
-        array_init(Elements);
-        array_init(massFractions);
-        array_init(nAtoms);
-        for (i = 0 ; i < cd->nElements ; i++) {
-                add_index_long(Elements, i, cd->Elements[i]);
-                add_index_double(massFractions, i, cd->massFractions[i]);
-                add_index_double(nAtoms, i, cd->nAtoms[i]);
+                ALLOC_INIT_ZVAL(Elements);
+                ALLOC_INIT_ZVAL(massFractions);
+                ALLOC_INIT_ZVAL(nAtoms);
+                array_init(Elements);
+                array_init(massFractions);
+                array_init(nAtoms);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        add_index_long(Elements, i, cd->Elements[i]);
+                        add_index_double(massFractions, i, cd->massFractions[i]);
+                        add_index_double(nAtoms, i, cd->nAtoms[i]);
+                }
+                add_assoc_zval(return_value, "Elements", Elements);
+                add_assoc_zval(return_value, "massFractions", massFractions);
+                add_assoc_zval(return_value, "nAtoms", nAtoms);
+                add_assoc_double(return_value, "molarMass", cd->molarMass);
+                FreeCompoundData(cd);
         }
-        add_assoc_zval(return_value, "Elements", Elements);
-        add_assoc_zval(return_value, "massFractions", massFractions);
-        add_assoc_zval(return_value, "nAtoms", nAtoms);
-        add_assoc_double(return_value, "molarMass", cd->molarMass);
-        FreeCompoundData(cd);
 }
 
 %typemap(out) xrlComplex {
@@ -1896,6 +1876,7 @@ __version__ = VERSION
         add_assoc_double(return_value, "re", c.re);
         add_assoc_double(return_value, "im", c.im);
 }
+
 %typemap(in) xrlComplex {
         xrlComplex c;
 
@@ -1921,38 +1902,37 @@ __version__ = VERSION
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
         int i;
-        if (cs == NULL) {
-                php_log_err("Crystal_GetCrystal Error: crystal not found");
-                RETURN_NULL();
-        }
 
-        array_init(return_value);
-        add_assoc_string(return_value, "name", cs->name, 1);
-        add_assoc_double(return_value, "a", cs->a);
-        add_assoc_double(return_value, "b", cs->b);
-        add_assoc_double(return_value, "c", cs->c);
-        add_assoc_double(return_value, "alpha", cs->alpha);
-        add_assoc_double(return_value, "beta", cs->beta);
-        add_assoc_double(return_value, "gamma", cs->gamma);
-        add_assoc_double(return_value, "volume", cs->volume);
-        add_assoc_long(return_value, "n_atom", cs->n_atom);
-        zval *atom;
-        ALLOC_INIT_ZVAL(atom);
-        array_init(atom);
-        add_assoc_zval(return_value, "atom", atom);
-        for (i = 0 ; i < cs->n_atom ; i++) {
-                zval *dict_temp;
-                ALLOC_INIT_ZVAL(dict_temp);
-                array_init(dict_temp);
-                add_assoc_long(dict_temp, "Zatom", cs->atom[i].Zatom);
-                add_assoc_double(dict_temp, "fraction", cs->atom[i].fraction);
-                add_assoc_double(dict_temp, "x", cs->atom[i].x);
-                add_assoc_double(dict_temp, "y", cs->atom[i].y);
-                add_assoc_double(dict_temp, "z", cs->atom[i].z);
-                add_index_zval(atom, i, dict_temp);
+        if (cs != NULL) {
+                array_init(return_value);
+                add_assoc_string(return_value, "name", cs->name, 1);
+                add_assoc_double(return_value, "a", cs->a);
+                add_assoc_double(return_value, "b", cs->b);
+                add_assoc_double(return_value, "c", cs->c);
+                add_assoc_double(return_value, "alpha", cs->alpha);
+                add_assoc_double(return_value, "beta", cs->beta);
+                add_assoc_double(return_value, "gamma", cs->gamma);
+                add_assoc_double(return_value, "volume", cs->volume);
+                add_assoc_long(return_value, "n_atom", cs->n_atom);
+                zval *atom;
+                ALLOC_INIT_ZVAL(atom);
+                array_init(atom);
+                add_assoc_zval(return_value, "atom", atom);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        zval *dict_temp;
+                        ALLOC_INIT_ZVAL(dict_temp);
+                        array_init(dict_temp);
+                        add_assoc_long(dict_temp, "Zatom", cs->atom[i].Zatom);
+                        add_assoc_double(dict_temp, "fraction", cs->atom[i].fraction);
+                        add_assoc_double(dict_temp, "x", cs->atom[i].x);
+                        add_assoc_double(dict_temp, "y", cs->atom[i].y);
+                        add_assoc_double(dict_temp, "z", cs->atom[i].z);
+                        add_index_zval(atom, i, dict_temp);
+                }
+                add_assoc_zval(return_value, "cpointer", (zval*) cs);
         }
-        add_assoc_zval(return_value, "cpointer", (zval*) cs);
 }
+
 %typemap(in) Crystal_Struct * {
         /* cpointer should be used if present and valid */
 
@@ -2093,88 +2073,83 @@ __version__ = VERSION
         int i;
         struct radioNuclideData *rnd = $1;
 
-        if (rnd == NULL) {
-                php_log_err("Error: requested radionuclide not found in database\n");
-                RETURN_NULL();
-        }
-        array_init(return_value);
-        add_assoc_string(return_value, "name", rnd->name);
-        add_assoc_long(return_value, "Z", rnd->Z);
-        add_assoc_long(return_value, "A", rnd->A);
-        add_assoc_long(return_value, "N", rnd->N);
-        add_assoc_long(return_value, "Z_xray", rnd->Z_xray);
-        add_assoc_long(return_value, "nXrays", rnd->nXrays);
-        add_assoc_long(return_value, "nGammas", rnd->nGammas);
-        zval XrayLines, XrayIntensities, GammaEnergies, GammaIntensities;
+        if (rnd != NULL) {
+                array_init(return_value);
+                add_assoc_string(return_value, "name", rnd->name);
+                add_assoc_long(return_value, "Z", rnd->Z);
+                add_assoc_long(return_value, "A", rnd->A);
+                add_assoc_long(return_value, "N", rnd->N);
+                add_assoc_long(return_value, "Z_xray", rnd->Z_xray);
+                add_assoc_long(return_value, "nXrays", rnd->nXrays);
+                add_assoc_long(return_value, "nGammas", rnd->nGammas);
+                zval XrayLines, XrayIntensities, GammaEnergies, GammaIntensities;
 
-        array_init(&XrayLines);
-        array_init(&XrayIntensities);
-        array_init(&GammaEnergies);
-        array_init(&GammaIntensities);
-        for (i = 0 ; i < rnd->nXrays ; i++) {
-                add_index_long(&XrayLines, i, rnd->XrayLines[i]);
-                add_index_double(&XrayIntensities, i, rnd->XrayIntensities[i]);
+                array_init(&XrayLines);
+                array_init(&XrayIntensities);
+                array_init(&GammaEnergies);
+                array_init(&GammaIntensities);
+                for (i = 0 ; i < rnd->nXrays ; i++) {
+                        add_index_long(&XrayLines, i, rnd->XrayLines[i]);
+                        add_index_double(&XrayIntensities, i, rnd->XrayIntensities[i]);
+                }
+                for (i = 0 ; i < rnd->nGammas ; i++) {
+                        add_index_double(&GammaEnergies, i, rnd->GammaEnergies[i]);
+                        add_index_double(&GammaIntensities, i, rnd->GammaIntensities[i]);
+                }
+                add_assoc_zval(return_value, "XrayLines", &XrayLines);
+                add_assoc_zval(return_value, "XrayIntensities", &XrayIntensities);
+                add_assoc_zval(return_value, "GammaEnergies", &GammaEnergies);
+                add_assoc_zval(return_value, "GammaIntensities", &GammaIntensities);
+                FreeRadioNuclideData(rnd);
         }
-        for (i = 0 ; i < rnd->nGammas ; i++) {
-                add_index_double(&GammaEnergies, i, rnd->GammaEnergies[i]);
-                add_index_double(&GammaIntensities, i, rnd->GammaIntensities[i]);
-        }
-        add_assoc_zval(return_value, "XrayLines", &XrayLines);
-        add_assoc_zval(return_value, "XrayIntensities", &XrayIntensities);
-        add_assoc_zval(return_value, "GammaEnergies", &GammaEnergies);
-        add_assoc_zval(return_value, "GammaIntensities", &GammaIntensities);
-        FreeRadioNuclideData(rnd);
 }
 %typemap(out) struct compoundDataNIST * {
         int i;
         struct compoundDataNIST *cdn = $1;
 
-        if (cdn == NULL) {
-                php_log_err("Error: requested NIST compound not found in database\n");
-                RETURN_NULL();
-        }
-        array_init(return_value);
-        add_assoc_string(return_value, "name", cdn->name);
-        add_assoc_long(return_value, "nElements", cdn->nElements);
-        add_assoc_double(return_value, "density", cdn->density);
-        zval Elements, massFractions;
+        if (cdn != NULL) {
+                array_init(return_value);
+                add_assoc_string(return_value, "name", cdn->name);
+                add_assoc_long(return_value, "nElements", cdn->nElements);
+                add_assoc_double(return_value, "density", cdn->density);
+                zval Elements, massFractions;
 
-        array_init(&Elements);
-        array_init(&massFractions);
-        for (i = 0 ; i < cdn->nElements ; i++) {
-                add_index_long(&Elements, i, cdn->Elements[i]);
-                add_index_double(&massFractions, i, cdn->massFractions[i]);
+                array_init(&Elements);
+                array_init(&massFractions);
+                for (i = 0 ; i < cdn->nElements ; i++) {
+                        add_index_long(&Elements, i, cdn->Elements[i]);
+                        add_index_double(&massFractions, i, cdn->massFractions[i]);
+                }
+                add_assoc_zval(return_value, "Elements", &Elements);
+                add_assoc_zval(return_value, "massFractions", &massFractions);
+                FreeCompoundDataNIST(cdn);
         }
-        add_assoc_zval(return_value, "Elements", &Elements);
-        add_assoc_zval(return_value, "massFractions", &massFractions);
-        FreeCompoundDataNIST(cdn);
 }
+
 %typemap(out) struct compoundData * {
         int i;
         struct compoundData *cd = $1;
 
-        if (cd == NULL) {
-                php_log_err("CompoundParser Error\n");
-                RETURN_NULL();
-        }
-        array_init(return_value);
-        add_assoc_long(return_value, "nElements", cd->nElements);
-        add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
-        zval Elements, massFractions, nAtoms;
+        if (cd != NULL) {
+                array_init(return_value);
+                add_assoc_long(return_value, "nElements", cd->nElements);
+                add_assoc_double(return_value, "nAtomsAll", cd->nAtomsAll);
+                zval Elements, massFractions, nAtoms;
 
-        array_init(&Elements);
-        array_init(&massFractions);
-        array_init(&nAtoms);
-        for (i = 0 ; i < cd->nElements ; i++) {
-                add_index_long(&Elements, i, cd->Elements[i]);
-                add_index_double(&massFractions, i, cd->massFractions[i]);
-                add_index_double(&nAtoms, i, cd->nAtoms[i]);
+                array_init(&Elements);
+                array_init(&massFractions);
+                array_init(&nAtoms);
+                for (i = 0 ; i < cd->nElements ; i++) {
+                        add_index_long(&Elements, i, cd->Elements[i]);
+                        add_index_double(&massFractions, i, cd->massFractions[i]);
+                        add_index_double(&nAtoms, i, cd->nAtoms[i]);
+                }
+                add_assoc_zval(return_value, "Elements", &Elements);
+                add_assoc_zval(return_value, "massFractions", &massFractions);
+                add_assoc_zval(return_value, "nAtoms", &nAtoms);
+                add_assoc_double(return_value, "molarMass", cd->molarMass);
+                FreeCompoundData(cd);
         }
-        add_assoc_zval(return_value, "Elements", &Elements);
-        add_assoc_zval(return_value, "massFractions", &massFractions);
-        add_assoc_zval(return_value, "nAtoms", &nAtoms);
-        add_assoc_double(return_value, "molarMass", cd->molarMass);
-        FreeCompoundData(cd);
 }
 %typemap(out) xrlComplex {
         xrlComplex c = $1;
@@ -2207,36 +2182,34 @@ __version__ = VERSION
 %typemap(out) Crystal_Struct * {
         Crystal_Struct *cs = $1;
         int i;
-        if (cs == NULL) {
-                php_log_err("Crystal_GetCrystal Error: crystal not found");
-                RETURN_NULL();
+        if (cs != NULL) {
+                array_init(return_value);
+                add_assoc_string(return_value, "name", cs->name);
+                add_assoc_double(return_value, "a", cs->a);
+                add_assoc_double(return_value, "b", cs->b);
+                add_assoc_double(return_value, "c", cs->c);
+                add_assoc_double(return_value, "alpha", cs->alpha);
+                add_assoc_double(return_value, "beta", cs->beta);
+                add_assoc_double(return_value, "gamma", cs->gamma);
+                add_assoc_double(return_value, "volume", cs->volume);
+                add_assoc_long(return_value, "n_atom", cs->n_atom);
+                zval atom;
+                array_init(&atom);
+                add_assoc_zval(return_value, "atom", &atom);
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                        zval dict_temp;
+                        array_init(&dict_temp);
+                        add_assoc_long(&dict_temp, "Zatom", cs->atom[i].Zatom);
+                        add_assoc_double(&dict_temp, "fraction", cs->atom[i].fraction);
+                        add_assoc_double(&dict_temp, "x", cs->atom[i].x);
+                        add_assoc_double(&dict_temp, "y", cs->atom[i].y);
+                        add_assoc_double(&dict_temp, "z", cs->atom[i].z);
+                        add_index_zval(&atom, i, &dict_temp);
+                }
+                add_assoc_long(return_value, "cpointer", (zend_long) cs);
         }
-
-        array_init(return_value);
-        add_assoc_string(return_value, "name", cs->name);
-        add_assoc_double(return_value, "a", cs->a);
-        add_assoc_double(return_value, "b", cs->b);
-        add_assoc_double(return_value, "c", cs->c);
-        add_assoc_double(return_value, "alpha", cs->alpha);
-        add_assoc_double(return_value, "beta", cs->beta);
-        add_assoc_double(return_value, "gamma", cs->gamma);
-        add_assoc_double(return_value, "volume", cs->volume);
-        add_assoc_long(return_value, "n_atom", cs->n_atom);
-        zval atom;
-        array_init(&atom);
-        add_assoc_zval(return_value, "atom", &atom);
-        for (i = 0 ; i < cs->n_atom ; i++) {
-                zval dict_temp;
-                array_init(&dict_temp);
-                add_assoc_long(&dict_temp, "Zatom", cs->atom[i].Zatom);
-                add_assoc_double(&dict_temp, "fraction", cs->atom[i].fraction);
-                add_assoc_double(&dict_temp, "x", cs->atom[i].x);
-                add_assoc_double(&dict_temp, "y", cs->atom[i].y);
-                add_assoc_double(&dict_temp, "z", cs->atom[i].z);
-                add_index_zval(&atom, i, &dict_temp);
-        }
-        add_assoc_long(return_value, "cpointer", (zend_long) cs);
 }
+
 %typemap(in) Crystal_Struct * {
         /* cpointer should be used if present and valid */
 
@@ -2357,10 +2330,18 @@ __version__ = VERSION
                 }
                 $1 = cs;
         }
-
 }
 #endif
 
 
-%include "xraylib.h"
+%include "xraylib-auger.h"
+%include "xraylib-crystal-diffraction.h"
+%include "xraylib-defs.h"
+%include "xraylib-lines.h"
+%include "xraylib-nist-compounds.h"
+%include "xraylib-parser.h"
+%include "xraylib-radionuclides.h"
+%include "xraylib-shells.h"
+%include "xraylib-deprecated.h"
 %include "xrf_cross_sections_aux.h"
+%include "xraylib.h"

@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -27,28 +28,26 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-double CosKronTransProb(int Z, int trans)
+double CosKronTransProb(int Z, int trans, xrl_error **error)
 {
   double trans_prob;
 
-  if (Z<1 || Z>ZMAX){
-    ErrorExit("Z out of range in function CosKronTransProb");
+  if (Z < 1 || Z > ZMAX){
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
-  if (trans<0 || trans>=TRANSNUM) {
-    ErrorExit("Transition not available in function CosKronTransProb");
+  if (trans < 0 || trans >= TRANSNUM) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_CK);
     return 0;
   }
 
   trans_prob = CosKron_arr[Z][trans];
+
   if (trans_prob <= 0.) {
-    ErrorExit("Transition not available in function CosKronTransProb");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_CK);
     return 0;
   }
 
   return trans_prob;
 }
-
-                          
-                          

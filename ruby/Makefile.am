@@ -20,7 +20,7 @@ xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(RU
 
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -I$(top_srcdir)/src -I${top_srcdir}/include -includeall -o xraylib_wrap_temp.c -ruby ${top_srcdir}/src/xraylib.i
+	$(SWIG) -I$(top_srcdir)/src -I${top_srcdir}/include -o xraylib_wrap_temp.c -ruby ${top_srcdir}/src/xraylib.i
 	$(SED) -e 's/^[[:space:]]*\/\/.\{1,\}//' xraylib_wrap_temp.c > xraylib_wrap.c
 	rm xraylib_wrap_temp.c
 
@@ -30,4 +30,6 @@ xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
 
 clean-local:
 	rm -rf xraylib_wrap.c
+
+SUBDIRS = tests
 endif

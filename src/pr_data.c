@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2011, Teemu Ikonen and Tom Schoonjans
+Copyright (c) 2009-2018, Teemu Ikonen and Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -160,7 +160,7 @@ static double AugerYield_prdata(int Z, int shell) {
 		return rv;
 	}
 
-	rv = FluorYield(Z, shell);
+	rv = FluorYield(Z, shell, NULL);
 
 	if (rv == 0.0)
 		return 0.0;
@@ -168,29 +168,29 @@ static double AugerYield_prdata(int Z, int shell) {
 	rv = 1.0 - rv;
 
 	if (shell == L1_SHELL) {
-		rv -= CosKronTransProb(Z, FL12_TRANS);
-		rv -= CosKronTransProb(Z, FL13_TRANS);
+		rv -= CosKronTransProb(Z, FL12_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FL13_TRANS, NULL);
 	}
 	else if (shell == L2_SHELL) {
-		rv -= CosKronTransProb(Z, FL23_TRANS);
+		rv -= CosKronTransProb(Z, FL23_TRANS, NULL);
 	}
 	else if (shell == M1_SHELL) {
-		rv -= CosKronTransProb(Z, FM12_TRANS);
-		rv -= CosKronTransProb(Z, FM13_TRANS);
-		rv -= CosKronTransProb(Z, FM14_TRANS);
-		rv -= CosKronTransProb(Z, FM15_TRANS);
+		rv -= CosKronTransProb(Z, FM12_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FM13_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FM14_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FM15_TRANS, NULL);
 	}
 	else if (shell == M2_SHELL) {
-		rv -= CosKronTransProb(Z, FM23_TRANS);
-		rv -= CosKronTransProb(Z, FM24_TRANS);
-		rv -= CosKronTransProb(Z, FM25_TRANS);
+		rv -= CosKronTransProb(Z, FM23_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FM24_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FM25_TRANS, NULL);
 	}
 	else if (shell == M3_SHELL) {
-		rv -= CosKronTransProb(Z, FM34_TRANS);
-		rv -= CosKronTransProb(Z, FM35_TRANS);
+		rv -= CosKronTransProb(Z, FM34_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FM35_TRANS, NULL);
 	}
 	else if (shell == M4_SHELL) {
-		rv -= CosKronTransProb(Z, FM45_TRANS);
+		rv -= CosKronTransProb(Z, FM45_TRANS, NULL);
 	}
 
 	return rv;
@@ -1002,6 +1002,8 @@ static double AugerRate_prdata(int Z, int auger_trans) {
 
 /*----------------------------------------------------- */
 
+void print_mendelvec(int arrmax, struct MendelElement *arr);
+
 void print_mendelvec(int arrmax, struct MendelElement *arr)
 {
   int i;
@@ -1015,6 +1017,8 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
   fprintf(f, "}");
   fprintf(f, ";\n\n");
 }
+
+void print_doublevec(int arrmax, double *arr);
 
 void print_doublevec(int arrmax, double *arr)
 {
@@ -1033,6 +1037,8 @@ void print_doublevec(int arrmax, double *arr)
   }
   fprintf(f, "}");
 }
+
+void print_intvec(int arrmax, int *arr);
 
 void print_intvec(int arrmax, int *arr)
 {
@@ -1199,10 +1205,6 @@ int main(void)
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles,"Partial_ComptonProfiles");
   PR_DYNMAT_3DD_C(Npz_ComptonProfiles, NShells_ComptonProfiles, UOCCUP_ComptonProfiles, Partial_ComptonProfiles2,"Partial_ComptonProfiles2");
 
-  SetHardExit(0);
-  SetErrorMessages(0);
-
-
   for (i = 1 ; i < ZMAX ; i++) {
   	for (j = K_L1L1_AUGER ; j <= M4_M5Q3_AUGER ; j++)
 		Auger_Rates[i][j] = AugerRate_prdata(i, j);
@@ -1215,8 +1217,6 @@ int main(void)
   fprintf(f, "double Auger_Rates[ZMAX+1][AUGERNUM] = {\n");
   PR_MATD(ZMAX+1, AUGERNUM, Auger_Rates);
 
-  SetHardExit(1);
-  SetErrorMessages(1);
   fclose(f);
 
   return 0;

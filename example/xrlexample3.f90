@@ -38,8 +38,6 @@ CHARACTER (KIND=C_CHAR, LEN=CRYSTAL_STRING_LENGTH), POINTER, &
 DIMENSION(:) :: crystals
 
 CALL XRayInit()
-!CALL SetHardExit(1)
-CALL SetErrorMessages(0)
 
 WRITE (6,'(A)') 'Example of fortran program using xraylib'
 WRITE (6,'(A,F12.6,A)') 'Density of pure Al: ',ElementDensity(13),' g/cm3'
@@ -65,7 +63,7 @@ DO i=1,cd%nElements
 ENDDO
 
 !Free the memory allocated for the arrays
-CALL FreeCompoundData(cd)
+DEALLOCATE(cd)
 
 cd => CompoundParser(compound2)
 IF (.NOT. ASSOCIATED(cd)) THEN
@@ -80,7 +78,7 @@ DO i=1,cd%nElements
 ENDDO
 
 !Free the memory allocated for the arrays
-CALL FreeCompoundData(cd)
+DEALLOCATE(cd)
 
 WRITE (6,'(A,F12.6)') 'Ca(HCO3)2 Rayleigh cs at 10.0 keV: ',CS_Rayl_CP('Ca(HCO3)2',10.0_C_DOUBLE)
 
@@ -154,7 +152,7 @@ q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 1, 1, 1, 1.0_C_DOUBLE)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 energy = 8.0
 debye_temp_factor = 1.0
-CALL Atomic_Factors (14, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (14, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=14) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -188,7 +186,7 @@ q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 1, 1, 1, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
 energy = 8.0
 debye_temp_factor = 1.0
-CALL Atomic_Factors (6, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (6, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=6) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -228,7 +226,7 @@ bragg*180.0/PI
 
 q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 0, 2, 0, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
-CALL Atomic_Factors (8, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (8, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=8) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -257,7 +255,7 @@ bragg*180.0/PI
 
 q = Q_scattering_amplitude (cryst, 8.0_C_DOUBLE, 3, 3, 1, rel_angle)
 WRITE (6, '(A, F12.6)') '  Q Scattering amplitude: ',q
-CALL Atomic_Factors (19, energy, q, debye_temp_factor, f0, fp, fpp)
+i = Atomic_Factors (19, energy, q, debye_temp_factor, f0, fp, fpp)
 
 WRITE (6, '(A,F12.6,A,F12.6,A,F12.6)')&
 '  Atomic factors (Z=19) f0, fp, fpp: ', f0, ', ',fp, ', i*',fpp
@@ -291,7 +289,7 @@ DO i=1,cdn%nElements
         cdn%Elements(i),': ', &
         cdn%massFractions(i)*100.0, ' %'
 ENDDO
-CALL FreeCompoundDataNIST(cdn)
+DEALLOCATE(cdn)
 
 cdn => GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP)
 WRITE (6, '(A)') 'NIST_COMPOUND_BRAIN_ICRP'
@@ -302,7 +300,7 @@ DO i=1,cdn%nElements
         cdn%Elements(i),': ', &
         cdn%massFractions(i)*100.0, ' %'
 ENDDO
-CALL FreeCompoundDataNIST(cdn)
+DEALLOCATE(cdn)
 
 nistCompounds => GetCompoundDataNISTList()
 WRITE (6, '(A)') 'List of available NIST compounds'
@@ -333,7 +331,7 @@ DO i=1,rnd%nGammas
         rnd%GammaEnergies(i),' keV -> ', &
         rnd%GammaIntensities(i)
 ENDDO
-CALL FreeRadioNuclideData(rnd)
+DEALLOCATE(rnd)
 
 rnd => GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I)
 WRITE (6, '(A)') 'RADIO_NUCLIDE_125I'
@@ -354,7 +352,7 @@ DO i=1,rnd%nGammas
         rnd%GammaEnergies(i),' keV -> ', &
         rnd%GammaIntensities(i)
 ENDDO
-CALL FreeRadioNuclideData(rnd)
+DEALLOCATE(rnd)
 
 radioNuclides => GetRadioNuclideDataList()
 WRITE (6, '(A)') 'List of available radionuclides'

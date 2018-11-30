@@ -100,7 +100,7 @@ xrlexample2.sh: ../perl/xraylib.la xrlexample2.pl
 #test the python bindings
 xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 	@echo "Testing python bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" > xrlexample5.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" > xrlexample5.sh
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
@@ -116,7 +116,7 @@ xrlexample7.sh: ../java/com.github.tschoonj.xraylib-$(VERSION).jar xrlexample7.j
 #test the lua bindings
 xrlexample9.sh: ../lua/xraylib.la xrlexample9.lua
 	@echo "Testing lua bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" lua  ${top_srcdir}/example/xrlexample9.lua" > xrlexample9.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" LUA_CPATH=\"${top_builddir}/lua/.libs/?.so\" $(LUA) ${top_srcdir}/example/xrlexample9.lua" > xrlexample9.sh
 	@chmod +x xrlexample9.sh
 
 #test the ruby bindings
@@ -128,16 +128,13 @@ xrlexample10.sh: ../ruby/xraylib.la xrlexample10.rb
 #Testing PHP bindings
 xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 	@echo "Testing PHP bindings"
-	@echo "extension=\"${top_builddir}/php/.libs/xraylib.so\"" > php.ini
-	@echo "include_path=\"${top_builddir}/php/\"" >> php.ini
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -c ${builddir}  ${top_srcdir}/example/xrlexample12.php" > xrlexample12.sh
-	@echo "rm -f php.ini" >> xrlexample12.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" $(PHP) -d extension=\"${top_builddir}/php/.libs/xraylib.so\" -d include_path=\"${top_builddir}/php/\" ${top_srcdir}/example/xrlexample12.php" > xrlexample12.sh
 	@chmod +x xrlexample12.sh
 
 #test the numpy-python bindings
 xrlexample13.sh: ../python/xraylib_np.la xrlexample13.py
 	@echo "Testing python-numpy bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample13.py" > xrlexample13.sh
+	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample13.py" > xrlexample13.sh
 	@chmod +x xrlexample13.sh
 
 

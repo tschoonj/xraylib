@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -21,18 +22,18 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          Z : atomic number                                       //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double AtomicWeight(int Z)
+double AtomicWeight(int Z, xrl_error **error)
 {
   double atomic_weight;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function AtomicWeight");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   atomic_weight = AtomicWeight_arr[Z];
   if (atomic_weight < 0.) {
-    ErrorExit("Atomic Weight not available in function AtomicWeight");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
   return atomic_weight;

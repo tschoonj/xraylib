@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2011, Tom Schoonjans
+Copyright (c) 2009-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,6 +13,38 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 
 #include <stdio.h>
+
+/* taken from glib */
+#ifdef __ICC
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
+  _Pragma ("warning (push)")                            \
+  _Pragma ("warning (disable:1478)")
+#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
+  _Pragma ("warning (pop)")
+#elif    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
+  _Pragma ("GCC diagnostic push")                       \
+  _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
+  _Pragma ("GCC diagnostic pop")
+#elif defined (_MSC_VER) && (_MSC_VER >= 1500)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
+  __pragma (warning (push))  \
+  __pragma (warning (disable : 4996))
+#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
+  __pragma (warning (pop))
+#elif defined (__clang__)
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+#define G_GNUC_END_IGNORE_DEPRECATIONS \
+  _Pragma("clang diagnostic pop")
+#else
+#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+#define G_GNUC_END_IGNORE_DEPRECATIONS
+#endif
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include "xraylib.h"
 #include <string.h>
 #include <stdlib.h>
@@ -384,7 +416,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z);\
+  out_var->value.d = name(Z, NULL);\
   \
   return out_var;\
 }
@@ -402,7 +434,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(E);\
+  out_var->value.d = name(E, NULL);\
   \
   return out_var;\
 }
@@ -426,7 +458,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, E);\
+  out_var->value.d = name(Z, E, NULL);\
   \
   return out_var;\
 }
@@ -449,7 +481,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2);\
+  out_var->value.d = name(Z, Z2, NULL);\
   \
   return out_var;\
 }
@@ -472,7 +504,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2);\
+  out_var->value.d = name(Z, Z2, NULL);\
   \
   return out_var;\
 }
@@ -500,7 +532,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3);\
+  out_var->value.d = name(Z, Z2, Z3, NULL);\
   \
   return out_var;\
 }
@@ -528,7 +560,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3);\
+  out_var->value.d = name(Z, Z2, Z3, NULL);\
   \
   return out_var;\
 }
@@ -556,7 +588,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3);\
+  out_var->value.d = name(Z, Z2, Z3, NULL);\
   \
   return out_var;\
 }
@@ -589,7 +621,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, NULL);\
   \
   return out_var;\
 }
@@ -626,7 +658,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4, Z5);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, NULL);\
   \
   return out_var;\
 }
@@ -668,7 +700,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, NULL);\
   \
   return out_var;\
 }
@@ -715,7 +747,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, NULL);\
   \
   return out_var;\
 }
@@ -767,7 +799,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, NULL);\
   \
   return out_var;\
 }
@@ -824,7 +856,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, NULL);\
   \
   return out_var;\
 }
@@ -885,7 +917,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, Z10);\
+  out_var->value.d = name(Z, Z2, Z3, Z4, Z5, Z6, Z7, Z8, Z9, Z10, NULL);\
   \
   return out_var;\
 }
@@ -907,7 +939,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(compound, E);\
+  out_var->value.d = name(compound, E, NULL);\
   \
   return out_var;\
 }
@@ -934,7 +966,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(compound, E,theta);\
+  out_var->value.d = name(compound, E, theta, NULL);\
   \
   return out_var;\
 }
@@ -966,7 +998,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(compound, E,theta,phi);\
+  out_var->value.d = name(compound, E, theta, phi, NULL);\
   \
   return out_var;\
 }
@@ -993,7 +1025,7 @@ void IDL_CDECL IDL_XRayInit(int argc, IDL_VPTR argv[])
   \
   out_var = IDL_Gettmp();\
   out_var->type = IDL_TYP_DOUBLE;\
-  out_var->value.d = name(compound, shell,E);\
+  out_var->value.d = name(compound, shell, E, NULL);\
   \
   return out_var;\
 }
@@ -1129,7 +1161,7 @@ IDL_VPTR IDL_CDECL IDL_CompoundParser(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRING(argv[0]);
 	IDL_ENSURE_SCALAR(argv[0]);
 
-	if ((cd = CompoundParser(IDL_VarGetString(argv[0]))) == NULL) {
+	if ((cd = CompoundParser(IDL_VarGetString(argv[0]), NULL)) == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
 
@@ -1190,7 +1222,7 @@ IDL_VPTR IDL_CDECL IDL_AtomicNumberToSymbol(int argc, IDL_VPTR argv[]) {
   	IDL_ENSURE_SIMPLE(argv[0]);
 	Z = IDL_LongScalar(argv[0]);
 
-	symbol = AtomicNumberToSymbol(Z);
+	symbol = AtomicNumberToSymbol(Z, NULL);
 
 	if (symbol == NULL) {
 		return IDL_StrToSTRING("");
@@ -1207,7 +1239,7 @@ IDL_VPTR IDL_CDECL IDL_SymbolToAtomicNumber(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRING(argv[0]);
   	IDL_ENSURE_SIMPLE(argv[0]);
 
-	out_var = IDL_GettmpLong((IDL_LONG) SymbolToAtomicNumber(IDL_VarGetString(argv[0])));
+	out_var = IDL_GettmpLong((IDL_LONG) SymbolToAtomicNumber(IDL_VarGetString(argv[0]), NULL));
 
 	return out_var;
 }
@@ -1219,7 +1251,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystal(int argc, IDL_VPTR argv[]) {
 	IDL_ENSURE_STRING(argv[0]);
   	IDL_ENSURE_SIMPLE(argv[0]);
 
-	Crystal_Struct *cryst = Crystal_GetCrystal(IDL_VarGetString(argv[0]), NULL);
+	Crystal_Struct *cryst = Crystal_GetCrystal(IDL_VarGetString(argv[0]), NULL, NULL);
 
 	if (cryst == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
@@ -1340,7 +1372,7 @@ IDL_VPTR IDL_CDECL IDL_Bragg_angle(int argc, IDL_VPTR argv[]) {
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DOUBLE;
-  	rv->value.d = Bragg_angle(cs, energy, i_miller, j_miller, k_miller);
+  	rv->value.d = Bragg_angle(cs, energy, i_miller, j_miller, k_miller, NULL);
 
 	free(cs);
 	return rv;
@@ -1358,7 +1390,7 @@ IDL_VPTR IDL_CDECL IDL_Q_scattering_amplitude(int argc, IDL_VPTR argv[]) {
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DOUBLE;
-  	rv->value.d = Q_scattering_amplitude(cs, energy, i_miller, j_miller, k_miller, rel_angle);
+  	rv->value.d = Q_scattering_amplitude(cs, energy, i_miller, j_miller, k_miller, rel_angle, NULL);
 
 	free(cs);
 	return rv;
@@ -1376,7 +1408,7 @@ void IDL_CDECL IDL_Atomic_Factors(int argc, IDL_VPTR argv[]) {
 
 	double f0, f_primep, f_prime2;
 
-	Atomic_Factors(Z, energy, q , debye_factor, &f0, &f_primep, &f_prime2);
+	Atomic_Factors(Z, energy, q , debye_factor, &f0, &f_primep, &f_prime2, NULL);
 
 	IDL_StoreScalar(argv[4], IDL_TYP_DOUBLE, (IDL_ALLTYPES *) &f0);
 	IDL_StoreScalar(argv[5], IDL_TYP_DOUBLE, (IDL_ALLTYPES *) &f_primep);
@@ -1397,7 +1429,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor(int argc, IDL_VPTR argv[]) {
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DCOMPLEX;
-	xrlComplex F = Crystal_F_H_StructureFactor (cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
+	xrlComplex F = Crystal_F_H_StructureFactor (cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, NULL);
   	rv->value.dcmp.r = F.re;
   	rv->value.dcmp.i = F.im;
 
@@ -1423,7 +1455,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_F_H_StructureFactor_Partial(int argc, IDL_VPTR ar
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DCOMPLEX;
-	xrlComplex F = Crystal_F_H_StructureFactor_Partial(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+	xrlComplex F = Crystal_F_H_StructureFactor_Partial(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag, NULL);
   	rv->value.dcmp.r = F.re;
   	rv->value.dcmp.i = F.im;
 
@@ -1440,7 +1472,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_UnitCellVolume(int argc, IDL_VPTR argv[]) {
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DOUBLE;
-  	rv->value.d = Crystal_UnitCellVolume(cs);
+  	rv->value.d = Crystal_UnitCellVolume(cs, NULL);
 
 	free(cs);
 	return rv;
@@ -1456,7 +1488,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_dSpacing(int argc, IDL_VPTR argv[]) {
 	Crystal_Struct *cs = Get_Crystal_Struct(argv[0]);
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DOUBLE;
-  	rv->value.d = Crystal_dSpacing(cs, i_miller, j_miller, k_miller);
+  	rv->value.d = Crystal_dSpacing(cs, i_miller, j_miller, k_miller, NULL);
 
 	free(cs);
 	return rv;
@@ -1512,7 +1544,7 @@ IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByName(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	char * compoundString = IDL_VarGetString(argv[0]);
-	struct compoundDataNIST *cdn = GetCompoundDataNISTByName(compoundString);
+	struct compoundDataNIST *cdn = GetCompoundDataNISTByName(compoundString, NULL);
 	if (cdn == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
@@ -1534,7 +1566,7 @@ IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTByIndex(int argc, IDL_VPTR argv[]) {
 	int index = (int) IDL_LongScalar(argv[0]);
 
 
-	struct compoundDataNIST *cdn = GetCompoundDataNISTByIndex(index);
+	struct compoundDataNIST *cdn = GetCompoundDataNISTByIndex(index, NULL);
 	if (cdn == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
@@ -1550,7 +1582,7 @@ IDL_VPTR IDL_CDECL IDL_GetCompoundDataNISTList(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	int nCompounds;
-	char **list = GetCompoundDataNISTList(&nCompounds);
+	char **list = GetCompoundDataNISTList(&nCompounds, NULL);
 	IDL_STRING *list_IDL;
 	IDL_MEMINT dims[IDL_MAX_ARRAY_DIM];
 	dims[0] = nCompounds;
@@ -1582,7 +1614,7 @@ IDL_VPTR IDL_CDECL IDL_Refractive_Index(int argc, IDL_VPTR argv[]) {
 
 	IDL_VPTR rv = IDL_Gettmp();
   	rv->type = IDL_TYP_DCOMPLEX;
-	xrlComplex F = Refractive_Index(compound, energy, density);
+	xrlComplex F = Refractive_Index(compound, energy, density, NULL);
 
   	rv->value.dcmp.r = F.re;
   	rv->value.dcmp.i = F.im;
@@ -1659,7 +1691,7 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByName(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	char *radioNuclideString = IDL_VarGetString(argv[0]);
-	struct radioNuclideData *rnd = GetRadioNuclideDataByName(radioNuclideString);
+	struct radioNuclideData *rnd = GetRadioNuclideDataByName(radioNuclideString, NULL);
 	if (rnd == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
@@ -1681,7 +1713,7 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataByIndex(int argc, IDL_VPTR argv[]) {
 	int index = (int) IDL_LongScalar(argv[0]);
 
 
-	struct radioNuclideData *rnd = GetRadioNuclideDataByIndex(index);
+	struct radioNuclideData *rnd = GetRadioNuclideDataByIndex(index, NULL);
 	if (rnd == NULL) {
 		IDL_Message(IDL_M_NAMED_GENERIC,IDL_MSG_LONGJMP,"Error: check preceding error messages");
 	}
@@ -1697,7 +1729,7 @@ IDL_VPTR IDL_CDECL IDL_GetRadioNuclideDataList(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	int nRadioNuclides;
-	char **list = GetRadioNuclideDataList(&nRadioNuclides);
+	char **list = GetRadioNuclideDataList(&nRadioNuclides, NULL);
 	IDL_STRING *list_IDL;
 	IDL_MEMINT dims[IDL_MAX_ARRAY_DIM];
 	dims[0] = nRadioNuclides;
@@ -1723,7 +1755,7 @@ IDL_VPTR IDL_CDECL IDL_Crystal_GetCrystalsList(int argc, IDL_VPTR argv[]) {
 	IDL_VPTR rv;
 
 	int nCrystals;
-	char **list = Crystal_GetCrystalsList(NULL, &nCrystals);
+	char **list = Crystal_GetCrystalsList(NULL, &nCrystals, NULL);
 	IDL_STRING *list_IDL;
 	IDL_MEMINT dims[IDL_MAX_ARRAY_DIM];
 	dims[0] = nCrystals;

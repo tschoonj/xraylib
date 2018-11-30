@@ -26,10 +26,6 @@ int compareCrystalStructs (const void *i1, const void *i2);
 int matchMendelElement (const void *i1, const void *i2);
 int matchCrystalStruct (const void *i1, const void *i2);
 
-void XRayInit(void);
-void ErrorExit(char *error_message);
-
-
 /*////////////////////////////////////////////////////////////////////
 /////            Variables                                       /////
 /////////////////////////////////////////////////////////////////// */

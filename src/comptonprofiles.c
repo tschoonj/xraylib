@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010, Tom Schoonjans
+Copyright (c) 2010-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -16,6 +16,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrayglob.h"
 #include "xraylib.h"
 #include "math.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -27,27 +28,27 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 /////////////////////////////////////////////////////////////////// */
 
 
-double ComptonProfile(int Z, double pz) {
+double ComptonProfile(int Z, double pz, xrl_error **error) {
 	double q, ln_q;
 	double ln_pz;
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
-		ErrorExit("Z out of range in function ComptonProfile");
-		return 0;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+		return 0.0;
 	}  
 
 	if (pz < 0.0) {
-		ErrorExit("pz < 0 in function ComptonProfile");
-		return 0;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_PZ);
+		return 0.0;
 	}
 	
-	ln_pz = log((double) pz + 1.0);
+	ln_pz = log(pz + 1.0);
 
 	splint(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,  Npz_ComptonProfiles[Z],ln_pz,&ln_q);
 
 	q = exp(ln_q); 
 
-	return (double) q;
+	return q;
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -62,42 +63,46 @@ double ComptonProfile(int Z, double pz) {
 
 
 
-double ComptonProfile_Partial(int Z, int shell, double pz) {
+double ComptonProfile_Partial(int Z, int shell, double pz, xrl_error **error) {
 	double q, ln_q;
 	double ln_pz;
 
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 1) {
-		ErrorExit("Z out of range in function ComptonProfile_Partial");
-		return 0;
-	}  
-	if (shell >= NShells_ComptonProfiles[Z] || shell < K_SHELL || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
-		ErrorExit("Shell unavailable in function ComptonProfile_Partial");
-		return 0;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+		return 0.0;
 	}
+
+	if (shell >= NShells_ComptonProfiles[Z] || shell < K_SHELL || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
+		return 0.0;
+	}
+
 	if (pz < 0.0) {
-		ErrorExit("pz < 0 in function ComptonProfile");
-		return 0;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_PZ);
+		return 0.0;
 	}
 	
-
-	ln_pz = log((double) pz + 1.0);
+	ln_pz = log(pz + 1.0);
 
 	splint(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z],ln_pz,&ln_q);
 
 	q = exp(ln_q); 
 
-	return (double) q;
+	return q;
 }
 
-double ElectronConfig_Biggs(int Z, int shell) {
+double ElectronConfig_Biggs(int Z, int shell, xrl_error **error);
+
+double ElectronConfig_Biggs(int Z, int shell, xrl_error **error) {
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
-		ErrorExit("Z out of range in function ComptonProfile_Partial");
-		return 0;
-	}  
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+		return 0.0;
+	}
+
 	if (shell >= NShells_ComptonProfiles[Z] || UOCCUP_ComptonProfiles[Z][shell] == 0.0 ) {
-		ErrorExit("Shell unavailable in function ComptonProfile_Partial");
-		return 0;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
+		return 0.0;
 	}
 
   	return UOCCUP_ComptonProfiles[Z][shell]; 

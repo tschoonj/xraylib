@@ -16,6 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
+#include <stddef.h>
 
 
 /*////////////////////////////////////////////////////////////////////
@@ -29,23 +31,31 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCSP_Rayl(int Z, double E, double theta, double phi)
+double DCSP_Rayl(int Z, double E, double theta, double phi, xrl_error **error)
 {
-  double F, q;                                                      
+  double F, q;
+  xrl_error *tmp_error = NULL;
                                                         
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function DCSP_Rayl");
-    return 0;
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+    return 0.0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function DCSP_Rayl");
-    return 0;
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
   }
 
-  q = MomentTransf(E , theta);
-  F = FF_Rayl(Z, q);
-  return  AVOGNUM / AtomicWeight(Z) * F*F * DCSP_Thoms(theta, phi);
+  /* this will always return a valid value */
+  q = MomentTransf(E, theta, NULL);
+
+  F = FF_Rayl(Z, q, &tmp_error);
+  if (tmp_error != NULL) {
+    xrl_propagate_error(error, tmp_error);
+    return 0.0;
+  }
+
+  return  AVOGNUM / AtomicWeight(Z, NULL) * F * F * DCSP_Thoms(theta, phi, NULL);
 }                                                                              
 
 /*////////////////////////////////////////////////////////////////////
@@ -58,23 +68,32 @@ double  DCSP_Rayl(int Z, double E, double theta, double phi)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCSP_Compt(int Z, double E, double theta, double phi)
+double DCSP_Compt(int Z, double E, double theta, double phi, xrl_error **error)
 { 
-  double S, q;                                                      
+  double S, q;
+  xrl_error *tmp_error = NULL;
                                                         
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function DCSP_Compt");
-    return 0;
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+    return 0.0;
   }
 
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function DCSP_Compt");
-    return 0;
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
   }
 
-  q = MomentTransf(E, theta);
-  S = SF_Compt(Z, q);
-  return  AVOGNUM / AtomicWeight(Z) * S * DCSP_KN(E, theta, phi);
+  /* this will always return a valid value */
+  q = MomentTransf(E, theta, NULL);
+
+  /* this may error out if beta/q is zero */
+  S = SF_Compt(Z, q, &tmp_error);
+  if (tmp_error != NULL) {
+    xrl_propagate_error(error, tmp_error);
+    return 0.0;
+  }
+
+  return AVOGNUM / AtomicWeight(Z, NULL) * S * DCSP_KN(E, theta, phi, NULL);
 }
 
 
@@ -88,13 +107,13 @@ double  DCSP_Compt(int Z, double E, double theta, double phi)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double DCSP_KN(double E, double theta, double phi)
+double DCSP_KN(double E, double theta, double phi, xrl_error **error)
 { 
   double k0_k, k_k0, k_k0_2, cos_th, sin_th, cos_phi;
   
-  if (E <= 0.) {
-    ErrorExit("Energy <=0 in function DCSP_KN");
-    return 0;
+  if (E <= 0.0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
+    return 0.0;
   }
 
   cos_th = cos(theta);
@@ -119,7 +138,7 @@ double DCSP_KN(double E, double theta, double phi)
 //          phi : scattering azimuthal angle (rad)                  //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCSP_Thoms(double theta, double phi)
+double DCSP_Thoms(double theta, double phi, xrl_error **error)
 { 
   double sin_th, cos_phi ;
 
@@ -127,6 +146,3 @@ double  DCSP_Thoms(double theta, double phi)
   cos_phi = cos(phi);
   return RE2 * (1.0 - sin_th * sin_th * cos_phi * cos_phi);
 }
-
-
-

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, Tom Schoonjans
+Copyright (c) 2014-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -12,14 +12,18 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 
-
+#include "config.h"
+#include "xraylib-aux.h"
 #include "xrayvars.h"
+#include "xraylib.h"
+#include "xraylib-error-private.h"
 #include "xraylib-nist-compounds-internal.h" 
 #include <string.h>
 #include <search.h>
-#include <xraylib-aux.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
+
 
 static int CompareCompoundDataNIST(const void *a, const void *b) {
 	struct compoundDataNIST *ac = (struct compoundDataNIST *) a;
@@ -27,16 +31,23 @@ static int CompareCompoundDataNIST(const void *a, const void *b) {
 	return strcmp(ac->name, bc->name);
 }
 
-struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]) {
+struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[], xrl_error **error) {
 
 	struct compoundDataNIST *key = malloc(sizeof(struct compoundDataNIST));
 	struct compoundDataNIST *rv;
-	char *buffer;
 #ifndef _WIN32
 	size_t nelp;
 #else
 	unsigned int nelp;
 #endif
+	if (key == NULL) {
+		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+		return NULL;
+	}
+	if (compoundString == NULL) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "compoundString cannot be NULL");
+		return NULL;
+	}
 	key->name = strdup(compoundString);
 	
 
@@ -63,27 +74,25 @@ struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[]) 
 	}
 	else {
 		free(key);
-		buffer = malloc(sizeof(char)*(strlen("xraylib-nist-compounds: no match found for ")+strlen(compoundString)+1));
-		sprintf(buffer,"xraylib-nist-compounds: no match found for %s", compoundString);
-		ErrorExit(buffer);
-		free(buffer);
+		xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "%s was not found in the NIST compound database", compoundString);
 		key = NULL;
 	}
 	return key;
 }
 
-struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex) {
+struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex, xrl_error **error) {
 	struct compoundDataNIST *key;
 
 	if (compoundIndex < 0 || compoundIndex >= nCompoundDataNISTList) {
-		char buffer[1000];
-		sprintf(buffer,"xraylib-nist-compounds: no match found for index %i", compoundIndex);
-		ErrorExit(buffer);
-		/* compoundIndex out of range */
+		xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "%d is out of the range of indices covered by the NIST compound database", compoundIndex);
 		return NULL;
 	}
 
 	key = malloc(sizeof(struct compoundDataNIST));
+	if (key == NULL) {
+		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+		return NULL;
+	}
 	key->name = strdup(compoundDataNISTList[compoundIndex].name);
 	key->nElements = compoundDataNISTList[compoundIndex].nElements; 
 	key->Elements = malloc(sizeof(int)*compoundDataNISTList[compoundIndex].nElements);
@@ -95,7 +104,7 @@ struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex) {
 	return key;
 }
 
-char **GetCompoundDataNISTList(int *nCompounds) {
+char **GetCompoundDataNISTList(int *nCompounds, xrl_error **error) {
 	int i;
 	char **rv;
 
@@ -103,6 +112,10 @@ char **GetCompoundDataNISTList(int *nCompounds) {
 		*nCompounds = nCompoundDataNISTList;
 
 	rv = malloc(sizeof(char *)*(nCompoundDataNISTList+1));
+	if (rv == NULL) {
+		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
+		return NULL;
+	}
 
 	for (i = 0 ; i < nCompoundDataNISTList; i++)
 		rv[i] = strdup(compoundDataNISTList[i].name);

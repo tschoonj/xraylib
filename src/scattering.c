@@ -12,9 +12,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 #include <math.h>
+#include <stddef.h>
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -24,19 +26,20 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //          q : momentum transfer                                   //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double FF_Rayl(int Z, double q)
+double FF_Rayl(int Z, double q, xrl_error **error)
 {
   double FF;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function FF_Rayl");
+  if (Z < 1 || Z > ZMAX || Nq_Rayl[Z] <= 0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
-  if (q == 0) return Z;
+  if (q == 0)
+    return Z;
 
   if (q < 0.) {
-    ErrorExit("q < 0 in function FF_Rayl");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_Q);
     return 0;
   }
 
@@ -55,17 +58,17 @@ double FF_Rayl(int Z, double q)
 //          q : momentum transfer                                   //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double SF_Compt(int Z, double q)
+double SF_Compt(int Z, double q, xrl_error **error)
 {
   double SF;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function SF_Compt");
+  if (Z < 1 || Z > ZMAX || Nq_Compt[Z] <= 0) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (q <= 0.) {
-    ErrorExit("q <=0 in function SF_Compt");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_Q);
     return 0;
   }
 
@@ -82,7 +85,7 @@ double SF_Compt(int Z, double q)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCS_Thoms(double theta)
+double DCS_Thoms(double theta, xrl_error **error)
 { 
   double cos_theta;
 
@@ -99,12 +102,12 @@ double  DCS_Thoms(double theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCS_KN(double E, double theta)
+double DCS_KN(double E, double theta, xrl_error **error)
 { 
   double cos_theta, t1, t2;
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function DCS_KN");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
@@ -124,23 +127,30 @@ double  DCS_KN(double E, double theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCS_Rayl(int Z, double E, double theta)
+double DCS_Rayl(int Z, double E, double theta, xrl_error **error)
 { 
-  double F, q ;                                                      
-                                                        
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function DCS_Rayl");
+  double F, q;
+  xrl_error *tmp_error = NULL;             
+
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function DCS_Rayl");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
-  q = MomentTransf(E, theta);
-  F = FF_Rayl(Z, q);
-  return  AVOGNUM / AtomicWeight_arr[Z] * F*F * DCS_Thoms(theta);
+  q = MomentTransf(E, theta, NULL);
+
+  F = FF_Rayl(Z, q, &tmp_error);
+  if (tmp_error != NULL) {
+    xrl_propagate_error(error, tmp_error);
+    return 0.0;
+  }
+
+  return AVOGNUM / AtomicWeight(Z, error) * F * F * DCS_Thoms(theta, error);
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -152,23 +162,30 @@ double  DCS_Rayl(int Z, double E, double theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  DCS_Compt(int Z, double E, double theta)
+double DCS_Compt(int Z, double E, double theta, xrl_error **error)
 { 
-  double S, q ;                                                      
+  double S, q;
+  xrl_error *tmp_error = NULL;
                                                         
   if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function DCS_Compt");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function DCS_Compt");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
-  q = MomentTransf(E, theta);
-  S = SF_Compt(Z, q);
-  return  AVOGNUM / AtomicWeight_arr[Z] * S * DCS_KN(E, theta);
+  q = MomentTransf(E, theta, NULL);
+
+  S = SF_Compt(Z, q, &tmp_error);
+  if (tmp_error != NULL) {
+    xrl_propagate_error(error, tmp_error);
+    return 0.0;
+  }
+
+  return AVOGNUM / AtomicWeight(Z, error) * S * DCS_KN(E, theta, error);
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -179,10 +196,10 @@ double  DCS_Compt(int Z, double E, double theta)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double  MomentTransf(double E, double theta)
+double MomentTransf(double E, double theta, xrl_error **error)
 {
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function MomentTransf");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
   
@@ -196,13 +213,13 @@ double  MomentTransf(double E, double theta)
 //          E : Energy (keV)                                        //   
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double CS_KN(double E)
+double CS_KN(double E, xrl_error **error)
 { 
   double a, a3, b, b2, lb;
   double sigma;
 
   if (E <= 0.) {
-    ErrorExit("Energy <=0 in function CS_KN");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
@@ -225,17 +242,17 @@ double CS_KN(double E)
 //          theta : scattering polar angle (rad)                    //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double ComptonEnergy(double E0, double theta)
+double ComptonEnergy(double E0, double theta, xrl_error **error)
 { 
   double cos_theta, alpha;
 
   if (E0 <= 0.) {
-    ErrorExit("Energy <=0 in function ComptonEnergy");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY);
     return 0;
   }
 
   cos_theta = cos(theta);
-  alpha = E0/MEC2;
+  alpha = E0 / MEC2;
 
   return E0 / (1 + alpha*(1 - cos_theta));
 }

@@ -16,8 +16,9 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define XRAYLIB_CRYSTAL_DIFFRACTION_H
 
 #include "xraylib-defs.h"
+#include "xraylib-error.h"
 
-/* Note for multithreded programs:
+/* Note for multithreaded programs:
  * The routines Crystal_ReadCrystals and CrystalAddCrystalStruct are not thread safe if crystals are
  * added to the official array. In this case, locking will have to be used.
  *
@@ -30,11 +31,11 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
  *
  *
  * --------------------------------------------------------------------------------
- *  Initialize a new crystal array.
+ *  Allocate and initialize a new crystal array.
  *
  */
 
-void Crystal_ArrayInit (Crystal_Array* c_array, int n_crystal_alloc);
+Crystal_Array* Crystal_ArrayInit(int n_crystal_alloc, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * free memory from a crystal array.
@@ -46,7 +47,7 @@ void Crystal_ArrayFree (Crystal_Array* c_array);
  * Copy a CrystalStruct.
  */
 
-Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal);
+Crystal_Struct* Crystal_MakeCopy (Crystal_Struct* crystal, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Free malloc'd memory in a CrystalStruct.
@@ -59,28 +60,30 @@ void Crystal_Free (Crystal_Struct* crystal);
  *
  * If c_array is NULL then the official array of crystals is searched.
  * If not found, NULL is returned.
+ * Do not free the returned struct!
+ * If you would like to modify the struct, make a copy of it first!
  */
 
-Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array);
+Crystal_Struct* Crystal_GetCrystal(const char* material, Crystal_Array* c_array, xrl_error **error);
 
 /*--------------------------------------------------------------------------------------------------
  * Bragg angle in radians.
  */
 
-double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller);
+double Bragg_angle (Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, xrl_error **error);
 
 /*--------------------------------------------------------------------------------------------------
  * Q scattering factor = Sin(theta) / wavelength
  */
 
 double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
-                                    int i_miller, int j_miller, int k_miller, double rel_angle);
+                                    int i_miller, int j_miller, int k_miller, double rel_angle, xrl_error **error);
 
 /*--------------------------------------------------------------------------------------------------
  * Atomic Factors f0, f', f''
  */
 
-void Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_primep, double* f_prime2);
+int Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_primep, double* f_prime2, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Compute F_H
@@ -88,7 +91,7 @@ void Atomic_Factors (int Z, double energy, double q, double debye_factor, double
  */
 
 xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy,
-                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle);
+                      int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrl_error **error);
 
 /*--------------------------------------------------------------------------------------------------
  * Compute F_H
@@ -102,14 +105,14 @@ xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy,
  */
 xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
-                      int f0_flag, int f_prime_flag, int f_prime2_flag);
+                      int f0_flag, int f_prime_flag, int f_prime2_flag, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Compute unit cell volume.
  * Note: Structures obtained from crystal array will have their volume in .volume.
  */
 
-double Crystal_UnitCellVolume (Crystal_Struct* crystal);
+double Crystal_UnitCellVolume(Crystal_Struct* crystal, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Compute d-spacing between planes.
@@ -117,7 +120,7 @@ double Crystal_UnitCellVolume (Crystal_Struct* crystal);
  * If (i, j, k) = (0, 0, 0) then zero is returned.
  */
 
-double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller);
+double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, int k_miller, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Add a new CrystalStruct to crystal_array.
@@ -127,7 +130,7 @@ double Crystal_dSpacing (Crystal_Struct* crystal, int i_miller, int j_miller, in
  * Return: 1 on success and 0 on error.
  */
 
-int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array);
+int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Read in a set of crystal structs to crystal_array.
@@ -136,7 +139,7 @@ int Crystal_AddCrystal (Crystal_Struct* crystal, Crystal_Array* c_array);
  * Return: 1 on success and 0 on error.
  */
 
-int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array);
+int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Returns a NULL-terminated array of strings containing the names of the crystals
@@ -146,7 +149,7 @@ int Crystal_ReadFile (const char* file_name, Crystal_Array* c_array);
  * all individual strings, and subsequently by using xrlFree to deallocate the array
  */
 
-char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals);
+char **Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error **error);
 
 
 #endif

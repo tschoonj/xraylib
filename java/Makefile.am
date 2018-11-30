@@ -41,6 +41,7 @@ clean-local:
 	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar xraylib.dat com build .gradle META-INF xrlexample7.class prdata_java.dSYM
 
 endif
+
 EXTRA_DIST = \
 	$(java_source) \
 	gradlew \

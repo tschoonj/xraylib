@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2011, Tom Schoonjans
+Copyright (c) 2009-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -14,6 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xraylib.h"
 #include "xrayvars.h"
 #include "xrayglob.h"
+#include "xraylib-error-private.h"
 
 
 /*////////////////////////////////////////////////////////////////////
@@ -27,21 +28,26 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double AugerRate(int Z, int auger_trans) {
+double AugerRate(int Z, int auger_trans, xrl_error **error) {
 	double rv;
 
-	rv = 0.0;
-
 	if (Z > ZMAX || Z < 1) {
-		ErrorExit("Invalid Z detected in AugerRate");
-		return rv;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+		return 0.0;
 	}
-	else if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5Q3_AUGER) {
-		ErrorExit("Invalid Auger transition detected in AugerRate");
-		return rv;
+
+	if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5Q3_AUGER) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_CK);
+		return 0.0;
 	}
 
 	rv = Auger_Rates[Z][auger_trans];
+
+	if (rv <= 0.0) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_CK);
+		return 0.0;
+	}
+
 	return rv;
 }
 
@@ -54,22 +60,24 @@ double AugerRate(int Z, int auger_trans) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double AugerYield(int Z, int shell) {
-
+double AugerYield(int Z, int shell, xrl_error **error) {
 	double rv;
 
-	rv = 0.0;
-
 	if (Z > ZMAX || Z < 1) {
-		ErrorExit("Invalid Z detected in AugerYield");
-		return rv;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
+		return 0.0;
 	}
 	else if (shell < K_SHELL || shell > M5_SHELL) {
-		ErrorExit("Invalid Auger transition detected in AugerYield");
-		return rv;
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_SHELL);
+		return 0.0;
 	}
 
 	rv = Auger_Yields[Z][shell];
+
+	if (rv <= 0.0) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
+		return 0.0;
+	}
 
 	return rv;
 }

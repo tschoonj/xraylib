@@ -38,7 +38,10 @@ libprdata_la_SOURCES = \
 		 fi.c \
 		 fii.c \
 		 splint.c \
-		 splint.h
+		 splint.h \
+		 atomicweight.c \
+		 xraylib-error.c \
+		 xraylib-error-private.h
 
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 
@@ -80,7 +83,9 @@ libxrl_la_SOURCES = xrayvars.c \
 		    xraylib-nist-compounds-internal.h \
 		    densities.c \
 		    xraylib-radionuclides-internal.h \
-		    xraylib-radionuclides.c
+		    xraylib-radionuclides.c \
+		    xraylib-error.c \
+		    xraylib-error-private.h
 
 libxrl_la_CFLAGS = $(ARCHFLAGS)
 
@@ -98,4 +103,4 @@ xrayglob_inline.c: prdata$(EXEEXT)
 	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
 clean-local:
-	rm -rf xrayglob_inline.c xraylib.mod prdata.dSYM
+	rm -rf xrayglob_inline.c xraylib.mod prdata.dSYM libxrl-$(LIB_CURRENT_MINUS_AGE).def

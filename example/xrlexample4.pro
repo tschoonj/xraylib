@@ -21,8 +21,6 @@ CATCH, Error_status
 
 IF Error_status NE 0 THEN EXIT,STATUS=0
 
-SetErrorMessages,0
-
 PRINT,'Example of IDL program using xraylib'
 PRINT,'Density of pure Al: ', ElementDensity(13), ' g/cm3'
 PRINT,'Ca K-alpha Fluorescence Line Energy: ',LineEnergy(20,KA_LINE)

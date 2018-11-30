@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2013, Tom Schoonjans
+Copyright (c) 2013-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -21,18 +22,19 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 //          Z : atomic number                                       //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-double ElementDensity(int Z)
+double ElementDensity(int Z, xrl_error **error)
 {
   double element_density;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function ElementDensity");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
 
   element_density = ElementDensity_arr[Z];
+
   if (element_density < 0.) {
-    ErrorExit("Element density not available in function ElementDensity");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
   return element_density;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009-2018, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -33,22 +34,23 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
-double EdgeEnergy(int Z, int shell)
+double EdgeEnergy(int Z, int shell, xrl_error **error)
 {
   double edge_energy;
 
-  if (Z<1 || Z>ZMAX) {
-    ErrorExit("Z out of range in function EdgeEnergy");
+  if (Z < 1 || Z > ZMAX) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }
-  if (shell<0 || shell>=SHELLNUM) {
-    ErrorExit("Shell not available in function EdgeEnergy");
+  if (shell < 0 || shell >= SHELLNUM) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_SHELL);
     return 0;
   }
+
   edge_energy = EdgeEnergy_arr[Z][shell];
 
   if (edge_energy <= 0.) {
-    ErrorExit("Shell not available in function EdgeEnergy");
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
     return 0;
   }
 

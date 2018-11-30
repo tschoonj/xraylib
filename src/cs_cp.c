@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2013, Tom Schoonjans
+Copyright (c) 2009-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -14,159 +14,74 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xraylib.h"
 #include "xrayvars.h"
 #include <stdlib.h>
+#include "xraylib-error-private.h"
 
-double CS_Total_CP(const char compound[], double E) {
-	struct compoundData *cd;
-	struct compoundDataNIST *cdn;
-	int i;
-	double rv = 0.0;
-
-	if ((cd = CompoundParser(compound)) == NULL) {
-		ErrorExit("CS_Total_CP: CompoundParser failed. Trying NIST compound database.");
-		if ((cdn = GetCompoundDataNISTByName(compound)) == NULL) {
-			ErrorExit("CS_Total_CP: Compound not found in NIST compound database.");
-			return rv;
-		}
-		else {
-			for (i = 0 ; i < cdn->nElements ; i++)
-				rv += CS_Total(cdn->Elements[i], E)*cdn->massFractions[i];
-
-			FreeCompoundDataNIST(cdn);
-		}
-	}
-	else {
-		for (i = 0 ; i < cd->nElements ; i++)
-			rv += CS_Total(cd->Elements[i], E)*cd->massFractions[i];
-
-		FreeCompoundData(cd);
-	}
-
-	return rv;
-}
-
-#define CS_CP_F(function) \
-	double function ## _CP(const char compound[], double E) {\
-		struct compoundData *cd;\
-		struct compoundDataNIST *cdn;\
+#define CS_CP_BEGIN \
+		struct compoundData *cd = NULL; \
+		struct compoundDataNIST *cdn = NULL; \
 		int i;\
 		double rv = 0.0;\
+		int nElements = 0; \
+		int *Elements = NULL;\
+		double *massFractions = NULL;\
 		\
-		if ((cd = CompoundParser(compound)) == NULL) { \
-			ErrorExit(#function ": CompoundParser failed. Trying NIST compound database."); \
-			if ((cdn = GetCompoundDataNISTByName(compound)) == NULL) { \
-				ErrorExit(#function ": Compound not found in NIST compound database."); \
-				return rv; \
-			} \
-			else {\
-				for (i = 0 ; i < cdn->nElements ; i++) \
-					rv += function(cdn->Elements[i], E)*cdn->massFractions[i]; \
-				\
-				FreeCompoundDataNIST(cdn);\
-			}\
+		if ((cd = CompoundParser(compound, NULL)) != NULL) { \
+			nElements = cd->nElements; \
+			Elements = cd->Elements; \
+			massFractions = cd->massFractions; \
 		} \
-		else {\
-			for (i = 0 ; i < cd->nElements ; i++) \
-				rv += function(cd->Elements[i], E)*cd->massFractions[i]; \
-			\
-			FreeCompoundData(cd);\
-		}\
+		else if ((cdn = GetCompoundDataNISTByName(compound, NULL)) != NULL) { \
+			nElements = cdn->nElements; \
+			Elements = cdn->Elements; \
+			massFractions = cdn->massFractions; \
+		} \
+		else { \
+			xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_COMPOUND); \
+			return 0.0; \
+		} \
 		\
-		return rv;\
+		for (i = 0 ; i < nElements ; i++) { \
+			double tmp = 0.0;
+
+#define CS_CP_END \
+			if (tmp == 0.0) { \
+				rv = 0.0; \
+				break; \
+			} \
+			rv += tmp; \
+		} \
+		\
+		if (cd) \
+			FreeCompoundData(cd);\
+		else if (cdn) \
+			FreeCompoundDataNIST(cdn);\
+		\
+		return rv;
+
+#define CS_CP_F(function) \
+	double function ## _CP(const char compound[], double E, xrl_error **error) {\
+		CS_CP_BEGIN \
+			tmp = function(Elements[i], E, error) * massFractions[i]; \
+		CS_CP_END \
 	}
 
 
 #define CS_CP_FF(function) \
-	double function ## _CP(const char compound[], double E, double theta) {\
-		struct compoundData *cd;\
-		struct compoundDataNIST *cdn;\
-		int i;\
-		double rv = 0.0;\
-		\
-		if ((cd = CompoundParser(compound)) == NULL) { \
-			ErrorExit(#function ": CompoundParser failed. Trying NIST compound database."); \
-			if ((cdn = GetCompoundDataNISTByName(compound)) == NULL) { \
-				ErrorExit(#function ": Compound not found in NIST compound database."); \
-				return rv; \
-			} \
-			else {\
-				for (i = 0 ; i < cdn->nElements ; i++) \
-					rv += function(cdn->Elements[i], E, theta)*cdn->massFractions[i]; \
-				\
-				FreeCompoundDataNIST(cdn);\
-			}\
-		} \
-		else {\
-			for (i = 0 ; i < cd->nElements ; i++) \
-				rv += function(cd->Elements[i], E, theta)*cd->massFractions[i]; \
-			\
-			FreeCompoundData(cd);\
-		}\
-		\
-		return rv;\
+	double function ## _CP(const char compound[], double E, double theta, xrl_error **error) {\
+		CS_CP_BEGIN \
+			tmp = function(Elements[i], E, theta, error) * massFractions[i]; \
+		CS_CP_END \
 	}
 
 
 #define CS_CP_FFF(function) \
-	double function ## _CP(const char compound[], double E, double theta, double phi) {\
-		struct compoundData *cd;\
-		struct compoundDataNIST *cdn;\
-		int i;\
-		double rv = 0.0;\
-		\
-		if ((cd = CompoundParser(compound)) == NULL) { \
-			ErrorExit(#function ": CompoundParser failed. Trying NIST compound database."); \
-			if ((cdn = GetCompoundDataNISTByName(compound)) == NULL) { \
-				ErrorExit(#function ": Compound not found in NIST compound database."); \
-				return rv; \
-			} \
-			else {\
-				for (i = 0 ; i < cdn->nElements ; i++) \
-					rv += function(cdn->Elements[i], E, theta, phi)*cdn->massFractions[i]; \
-				\
-				FreeCompoundDataNIST(cdn);\
-			}\
-		} \
-		else {\
-			for (i = 0 ; i < cd->nElements ; i++) \
-				rv += function(cd->Elements[i], E, theta, phi)*cd->massFractions[i]; \
-			\
-			FreeCompoundData(cd);\
-		}\
-		\
-		return rv;\
+	double function ## _CP(const char compound[], double E, double theta, double phi, xrl_error **error) {\
+		CS_CP_BEGIN \
+			tmp = function(Elements[i], E, theta, phi, error) * massFractions[i]; \
+		CS_CP_END \
 	}
 
-
-#define CS_CP_IF(function) \
-	double function ## _CP(const char compound[], int line, double E) {\
-		struct compoundData *cd;\
-		struct compoundDataNIST *cdn;\
-		int i;\
-		double rv = 0.0;\
-		\
-		if ((cd = CompoundParser(compound)) == NULL) { \
-			ErrorExit(#function ": CompoundParser failed. Trying NIST compound database."); \
-			if ((cdn = GetCompoundDataNISTByName(compound)) == NULL) { \
-				ErrorExit(#function ": Compound not found in NIST compound database."); \
-				return rv; \
-			} \
-			else {\
-				for (i = 0 ; i < cdn->nElements ; i++) \
-					rv += function(cdn->Elements[i], line, E)*cdn->massFractions[i]; \
-				\
-				FreeCompoundDataNIST(cdn);\
-			}\
-		} \
-		else {\
-			for (i = 0 ; i < cd->nElements ; i++) \
-				rv += function(cd->Elements[i], line, E)*cd->massFractions[i]; \
-			\
-			FreeCompoundData(cd);\
-		}\
-		\
-		return rv;\
-	}
-
+CS_CP_F(CS_Total)
 CS_CP_F(CS_Photo)
 CS_CP_F(CS_Rayl)
 CS_CP_F(CS_Compt)

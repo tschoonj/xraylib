@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "xrayglob.h"
 #include "xraylib.h"
+#include "xraylib-error-private.h"
 
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
@@ -21,48 +22,82 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
-double CSb_Total(int Z, double E)
-{
-  return CS_Total(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+#define INIT \
+	double cs, aw; \
+	aw = AtomicWeight(Z, error); \
+	if (aw == 0.0) \
+		return 0.0;
+
+
+double CSb_Total(int Z, double E, xrl_error **error) {
+	INIT
+	cs = CS_Total(Z, E, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double CSb_Photo(int Z, double E)
-{
-  return CS_Photo(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_Photo(int Z, double E, xrl_error **error) {
+	INIT
+	cs = CS_Photo(Z, E, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double CSb_Rayl(int Z, double E)
-{
-  return CS_Rayl(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_Rayl(int Z, double E, xrl_error **error) {
+	INIT
+	cs = CS_Rayl(Z, E, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double CSb_Compt(int Z, double E)
-{
-  return CS_Compt(Z, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_Compt(int Z, double E, xrl_error **error) {
+	INIT
+	cs = CS_Compt(Z, E, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double CSb_FluorLine(int Z, int line, double E)
-{
-  return CS_FluorLine(Z, line, E)*AtomicWeight_arr[Z]/AVOGNUM;
+double CSb_FluorLine(int Z, int line, double E, xrl_error **error) {
+	INIT
+	cs = CS_FluorLine(Z, line, E, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double DCSb_Rayl(int Z, double E, double theta)
-{
-  return DCS_Rayl(Z, E, theta)*AtomicWeight_arr[Z]/AVOGNUM;
+double DCSb_Rayl(int Z, double E, double theta, xrl_error **error) {
+	INIT
+	cs = DCS_Rayl(Z, E, theta, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double DCSb_Compt(int Z, double E, double theta)
-{
-  return DCS_Compt(Z, E, theta)*AtomicWeight_arr[Z]/AVOGNUM;
+double DCSb_Compt(int Z, double E, double theta, xrl_error **error) {
+	INIT
+	cs = DCS_Compt(Z, E, theta, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double DCSPb_Rayl(int Z, double E, double theta, double phi)
-{
-  return DCSP_Rayl(Z, E, theta, phi)*AtomicWeight_arr[Z]/AVOGNUM;
+double DCSPb_Rayl(int Z, double E, double theta, double phi, xrl_error **error) {
+	INIT
+	cs = DCSP_Rayl(Z, E, theta, phi, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 
-double DCSPb_Compt(int Z, double E, double theta, double phi)
-{
-  return DCSP_Compt(Z, E, theta, phi)*AtomicWeight_arr[Z]/AVOGNUM;
+double DCSPb_Compt(int Z, double E, double theta, double phi, xrl_error **error) {
+	INIT
+	cs = DCSP_Compt(Z, E, theta, phi, error);
+	if (cs == 0.0)
+		return 0.0;
+	return cs * aw / AVOGNUM;
 }
 

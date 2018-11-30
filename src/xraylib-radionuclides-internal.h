@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, Tom Schoonjans
+Copyright (c) 2014-2018, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -16,7 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * Modify at your own risk...
  */
 
-#include <xraylib.h>
+#include "xraylib.h"
+#include "xraylib-error-private.h"
 
 static const int nNuclideDataList = 10;
 static int __NuclideDataList_XrayLines_0[] = {LL_LINE, LH_LINE, LA2_LINE, LA1_LINE, LB1_LINE, LB4_LINE, LB3_LINE, KA3_LINE, KA2_LINE, KA1_LINE, KB3_LINE, KB1_LINE, KB5_LINE};

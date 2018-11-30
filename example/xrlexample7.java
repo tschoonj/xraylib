@@ -16,8 +16,6 @@ import org.apache.commons.math3.complex.Complex;
 
 public class xrlexample7 {
 	public static void main(String argv[]) {
-		//Xraylib.SetErrorMessages(0);
-//		Xraylib.SetHardExit(1);
 		System.out.println("Example of java program using Xraylib");
 		System.out.println("Atomic weight of Fe: "+Xraylib.AtomicWeight(26)+" g/mol");
 		System.out.println("Density of pure Al: "+Xraylib.ElementDensity(13)+" g/cm3");

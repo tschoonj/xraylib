@@ -11,7 +11,7 @@
 
 
 
-AC_INIT([xraylib],[3.3.1],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[3.99.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -19,9 +19,9 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CANONICAL_HOST
 
 
-LIB_CURRENT=10
+LIB_CURRENT=11
 LIB_REVISION=0
-LIB_AGE=3
+LIB_AGE=0
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
@@ -32,9 +32,8 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_USE_SYSTEM_EXTENSIONS
 AC_CHECK_FUNCS([strndup strdup])
-
-
-
+AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
+AC_CHECK_FUNC([asprintf], [], [AC_MSG_ERROR([asprintf must be present on the system])])
 
 m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 #at least version 2.0 of libtool is required for creating the fortran bindings
@@ -61,14 +60,14 @@ AC_ARG_ENABLE([libxrl],[AS_HELP_STRING([--disable-libxrl],[do not build libxrl s
 AM_CONDITIONAL([LIBXRL_CONVENIENCE_BUILD], [test x$enable_libxrl = xno])
 
 #headers check
-AC_CHECK_HEADERS([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h])
+AC_CHECK_HEADERS_ONCE([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h complex.h])
 
 
 
 #libraries check
-AC_CHECK_LIB([m],[log],[],[AC_MSG_ERROR([the log function must be present in libm])])
-AC_CHECK_LIB([m],[exp],[],[AC_MSG_ERROR([the exp function must be present in libm])])
-AC_CHECK_LIB([m],[cos],[],[AC_MSG_ERROR([the cos function must be present in libm])])
+AC_CHECK_LIB([m],[log],[  ],[AC_MSG_ERROR([the log function must be present in libm])])
+AC_CHECK_LIB([m],[exp],[  ],[AC_MSG_ERROR([the exp function must be present in libm])])
+AC_CHECK_LIB([m],[cos],[  ],[AC_MSG_ERROR([the cos function must be present in libm])])
 AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in libm])])
 
 #
@@ -683,6 +682,10 @@ elif test "x$SWIG" != xnoswig && test "x$enable_lua" != xno && test "x$DISABLE_B
 	#search for lua interpreter
 	AX_WITH_LUA
 	if test "x$LUA" != x ; then
+		AC_MSG_CHECKING([for lua version])
+		LUA_VERSION=`$LUA -e 'print(_VERSION)' 2>&1 | cut -d' ' -f2`
+		AC_SUBST(LUA_VERSION)
+		AC_MSG_RESULT($LUA_VERSION)
 		AX_LUA_HEADERS
 		AX_LUA_LIBS
 		if test "x$HAVE_LUA_H" != x && test "x$HAVE_LUALIB_H" != x && test "x$LUA_LIB" != x ; then
@@ -715,10 +718,6 @@ elif test "x$SWIG" != xnoswig && test "x$enable_lua" != xno && test "x$DISABLE_B
 		fi
 	else
 		VALID_LUA=yes
-		AC_MSG_CHECKING([for lua version])
-		LUA_VERSION=`$LUA -e 'print(_VERSION)' 2>&1 | cut -d' ' -f2`
-		AC_SUBST(LUA_VERSION)
-		AC_MSG_RESULT($LUA_VERSION)
 
 		AC_MSG_NOTICE([Building with lua bindings])
 	fi
@@ -980,6 +979,13 @@ AC_CONFIG_FILES([Makefile
 				 php/Makefile
 				 pascal/Makefile
 				 tests/Makefile
+				 fortran/tests/Makefile
+				 python/tests/Makefile
+				 lua/tests/Makefile
+				 pascal/tests/Makefile
+				 perl/tests/Makefile
+				 php/tests/Makefile
+				 ruby/tests/Makefile
 ])
 
 

@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009, 2010, 2011, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans, Teemu Ikonen, and David Sagan
+Copyright (c) 2009-2018 Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans, Teemu Ikonen, and David Sagan
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -11,6 +11,8 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THERE BE ANY LIABILIBY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include "config.h"
+#include "xraylib-aux.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -45,9 +47,6 @@ void XRayInit(void)
   int read_error=0;
   int NZ;
 
-  SetHardExit(1);
-  SetExitStatus(0);
-
   /* Setup the Mendel table and the sorted Mendel table. */
 
 
@@ -62,8 +61,8 @@ void XRayInit(void)
 
   if ((path = getenv("XRAYLIB_DIR")) == NULL) {
     if ((path = getenv("HOME")) == NULL) {
-      ErrorExit("Environment variables XRAYLIB_DIR and HOME not defined");
-      return;
+      fprintf(stderr, "Environment variables XRAYLIB_DIR and HOME not defined");
+      exit(1);
     }
     strcpy(XRayLibDir, path);
     strcat(XRayLibDir, "/.xraylib/data/");
@@ -83,8 +82,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "atomicweight.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File atomicweight.dat not found");
-    return;
+    fprintf(stderr, "File atomicweight.dat not found");
+    exit(1);
   }
 
   while ( !feof(fp) ) {
@@ -103,8 +102,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "densities.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File densities.dat not found");
-    return;
+    fprintf(stderr, "File densities.dat not found");
+    exit(1);
   }
 
   while ( !feof(fp) ) {
@@ -123,19 +122,19 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "Crystals.dat");
 
-  Crystal_ArrayInit(&Crystal_arr, CRYSTALARRAY_MAX);
-  stat = Crystal_ReadFile (file_name, NULL);
+  Crystal_arr.crystal = malloc(sizeof(Crystal_Struct) * CRYSTALARRAY_MAX);
+  stat = Crystal_ReadFile(file_name, NULL, NULL);
   if (stat == 0) {
-    ErrorExit("Could not read Crystals.dat");
-    return;
+    fprintf(stderr, "Could not read Crystals.dat");
+    exit(1);
   } 
 
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "CS_Photo.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File CS_Photo.dat not found");
-    return;
+    fprintf(stderr, "File CS_Photo.dat not found");
+    exit(1);
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Photo[Z]);
@@ -156,8 +155,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "CS_Rayl.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File CS_Rayl.dat not found");
-    return;
+    fprintf(stderr, "File CS_Rayl.dat not found");
+    exit(1);
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &NE_Rayl[Z]);
@@ -178,8 +177,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "CS_Compt.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File CS_Compt.dat not found");
-    return;
+    fprintf(stderr, "File CS_Compt.dat not found");
+    exit(1);
   }
 
   for (Z=1; Z<=ZMAX; Z++) {
@@ -201,8 +200,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "FF.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File FF.dat not found");
-    return;
+    fprintf(stderr, "File FF.dat not found");
+    exit(1);
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &Nq_Rayl[Z]);
@@ -223,8 +222,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "SF.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File SF.dat not found");
-    return;
+    fprintf(stderr, "File SF.dat not found");
+    exit(1);
   }
   for (Z=1; Z<=ZMAX; Z++) {
     ex = fscanf(fp, "%d", &Nq_Compt[Z]);
@@ -245,8 +244,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "edges.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File edges.dat not found");
-    return;
+    fprintf(stderr, "File edges.dat not found");
+    exit(1);
   }
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
@@ -267,10 +266,10 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fluor_lines.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File fluor_lines.dat not found");
-    return;
+    fprintf(stderr, "File fluor_lines.dat not found");
+    exit(1);
   }
-  SetHardExit(0);
+
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -291,8 +290,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
-		ErrorExit(buffer);
+	    	fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(line_name);
 	}
@@ -305,8 +303,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
-			ErrorExit(buffer);
+	    		fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(line_name);
 		}
@@ -314,20 +311,18 @@ void XRayInit(void)
     }
   }
   fclose(fp);
-  SetHardExit(1);
   if (nerror_lines > 0) {
-    sprintf(buffer,"Exiting due to too many errors\n");
-    ErrorExit(buffer);
+    fprintf(stderr,"Exiting due to too many errors\n");
+    exit(1);
   }
 
   /*atomic level widths*/
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "atomiclevelswidth.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File atomiclevelswidth.dat not found");
-    return;
+    fprintf(stderr, "File atomiclevelswidth.dat not found");
+    exit(1);
   }
-  SetHardExit(0);
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -346,8 +341,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
-		ErrorExit(buffer);
+	    	fprintf(stderr,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(shell_name);
 	}
@@ -360,8 +354,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
-			ErrorExit(buffer);
+	    		fprintf(stderr,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(shell_name);
 		}
@@ -369,18 +362,17 @@ void XRayInit(void)
     }
   }
   fclose(fp);
-  SetHardExit(1);
   if (nerror_lines > 0) {
-    sprintf(buffer,"Exiting due to too many errors\n");
-    ErrorExit(buffer);
+    fprintf(stderr,"Exiting due to too many errors\n");
+    exit(1);
   }
 
 
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fluor_yield.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File fluor_yield.dat not found");
-    return;
+    fprintf(stderr, "File fluor_yield.dat not found");
+    exit(1);
   }
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
@@ -399,8 +391,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "jump.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File jump.dat not found");
-    return;
+    fprintf(stderr, "File jump.dat not found");
+    exit(1);
   }
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
@@ -420,8 +412,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "coskron.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File coskron.dat not found");
-    return;
+    fprintf(stderr, "File coskron.dat not found");
+    exit(1);
   }
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
@@ -445,10 +437,9 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "radrate.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File radrate.dat not found");
-    return;
+    fprintf(stderr, "File radrate.dat not found");
+    exit(1);
   }
-  SetHardExit(0);
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -469,8 +460,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
-		ErrorExit(buffer);
+	    	fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(line_name);
 	}
@@ -483,8 +473,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
-			ErrorExit(buffer);
+	    		fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(line_name);
 		}
@@ -492,20 +481,18 @@ void XRayInit(void)
     }
   }
   fclose(fp);
-  SetHardExit(1);
   if (nerror_lines > 0) {
-    sprintf(buffer,"Exiting due to too many errors\n");
-    ErrorExit(buffer);
+    fprintf(stderr,"Exiting due to too many errors\n");
+    exit(1);
   }
 
   /*auger non-radiative transitions*/
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "auger_rates.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File auger_rates.dat not found");
-    return;
+    fprintf(stderr, "File auger_rates.dat not found");
+    exit(1);
   }
-  SetHardExit(0);
   while ( !feof(fp) ) {
     ex = fscanf(fp,"%d", &Z);
     if (ex != 1) break;
@@ -530,8 +517,7 @@ void XRayInit(void)
     }
     if (read_error) {
         if (nerror_lines == 0) {
-	    	sprintf(buffer,"%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
-		ErrorExit(buffer);
+	    	fprintf(stderr, "%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
 		error_lines = (char **) malloc(sizeof(char *) * ++nerror_lines);
 		error_lines[0] = strdup(auger_name);
 	}
@@ -544,8 +530,7 @@ void XRayInit(void)
 			}
 		}
 		if (!found_error_line) {
-	    		sprintf(buffer,"%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
-			ErrorExit(buffer);
+	    		fprintf(stderr, "%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
 			error_lines[nerror_lines-1] = strdup(auger_name);
 		}
@@ -554,10 +539,9 @@ void XRayInit(void)
   }
 
   fclose(fp);
-  SetHardExit(1);
   if (nerror_lines > 0) {
-    sprintf(buffer,"Exiting due to too many errors\n");
-    ErrorExit(buffer);
+    fprintf(stderr, "Exiting due to too many errors\n");
+    exit(1);
   }
 
   /*anomalous scattering factors */
@@ -565,8 +549,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fi.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File fi.dat not found");
-    return;
+    fprintf(stderr, "File fi.dat not found");
+    exit(1);
   }
 
   for (Z=1; Z<=ZMAX; Z++) {
@@ -588,8 +572,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name, "fii.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File fii.dat not found");
-    return;
+    fprintf(stderr, "File fii.dat not found");
+    exit(1);
   }
 
   for (Z=1; Z<=ZMAX; Z++) {
@@ -613,8 +597,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name,"kissel_pe.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File kissel_pe.dat not found");
-    return;
+    fprintf(stderr, "File kissel_pe.dat not found");
+    exit(1);
   }
 
   for (Z=1; Z<=ZMAX; Z++) {
@@ -651,8 +635,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name,"comptonprofiles.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File comptonprofiles.dat not found");
-    return;
+    fprintf(stderr, "File comptonprofiles.dat not found");
+    exit(1);
   }
 
   for (Z = 1 ; Z <= ZMAX ; Z++) {
@@ -707,8 +691,8 @@ void XRayInit(void)
   strcpy(file_name, XRayLibDir);
   strcat(file_name,"CS_Energy.dat");
   if ((fp = fopen(file_name,"r")) == NULL) {
-    ErrorExit("File CS_Energy.dat not found");
-    return;
+    fprintf(stderr, "File CS_Energy.dat not found");
+    exit(1);
   }
   
   ex = fscanf(fp, "%i", &NZ);
