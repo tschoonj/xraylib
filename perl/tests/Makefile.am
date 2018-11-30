@@ -13,6 +13,7 @@ dist_check_SCRIPTS = \
 	test-compoundparser.pl \
 	test-comptonprofiles.pl \
 	test-nist-compounds.pl \
+	test-radionuclides.pl \
 	$(NULL)
 endif
 

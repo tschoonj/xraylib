@@ -331,7 +331,7 @@ DO i=1,rnd%nGammas
         rnd%GammaEnergies(i),' keV -> ', &
         rnd%GammaIntensities(i)
 ENDDO
-CALL FreeRadioNuclideData(rnd)
+DEALLOCATE(rnd)
 
 rnd => GetRadioNuclideDataByIndex(RADIO_NUCLIDE_125I)
 WRITE (6, '(A)') 'RADIO_NUCLIDE_125I'
@@ -352,7 +352,7 @@ DO i=1,rnd%nGammas
         rnd%GammaEnergies(i),' keV -> ', &
         rnd%GammaIntensities(i)
 ENDDO
-CALL FreeRadioNuclideData(rnd)
+DEALLOCATE(rnd)
 
 radioNuclides => GetRadioNuclideDataList()
 WRITE (6, '(A)') 'List of available radionuclides'

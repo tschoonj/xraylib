@@ -13,6 +13,7 @@ dist_check_SCRIPTS = \
 	test-compoundparser.rb \
 	test-comptonprofiles.rb \
 	test-nist-compounds.rb \
+	test-radionuclides.rb \
 	$(NULL)
 endif
 

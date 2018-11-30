@@ -13,6 +13,7 @@ dist_check_SCRIPTS = \
 	test-compoundparser.php \
 	test-comptonprofiles.php \
 	test-nist-compounds.php \
+	test-radionuclides.php \
 	$(NULL)
 endif
 

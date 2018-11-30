@@ -27,15 +27,6 @@ IMPLICIT NONE
 PUBLIC
 PRIVATE :: stringF2C, process_error, convert_to_crystal_c
 
-TYPE, BIND(C) :: compoundData_C
-        INTEGER (C_INT) :: nElements
-        REAL (C_DOUBLE) :: nAtomsAll
-        TYPE (C_PTR) :: Elements
-        TYPE (C_PTR) :: massFractions
-        TYPE (C_PTR) :: nAtoms
-        REAL (C_DOUBLE) :: molarMass
-ENDTYPE
-
 TYPE :: compoundData
         INTEGER (C_INT) :: nElements
         REAL (C_DOUBLE) :: nAtomsAll
@@ -84,14 +75,6 @@ TYPE :: Crystal_Struct
         TYPE (Crystal_Atom), DIMENSION(:), POINTER :: atom
 ENDTYPE
 
-TYPE, BIND(C) :: compoundDataNIST_C
-        TYPE (C_PTR) :: name
-        INTEGER (C_INT) :: nElements
-        TYPE (C_PTR) :: Elements
-        TYPE (C_PTR) :: massFractions
-        REAL (C_DOUBLE) :: density
-ENDTYPE
-
 TYPE :: compoundDataNIST
         CHARACTER(LEN=_NIST_LIST_STRING_LENGTH, KIND=C_CHAR):: name
         INTEGER (C_INT) :: nElements
@@ -106,20 +89,6 @@ TYPE, BIND(C) :: Crystal_Array
         TYPE (C_PTR) :: crystal
 ENDTYPE
 
-TYPE, BIND(C) :: radioNuclideData_C
-        TYPE (C_PTR) :: name
-        INTEGER (C_INT) :: Z
-        INTEGER (C_INT) :: A
-        INTEGER (C_INT) :: N
-        INTEGER (C_INT) :: Z_xray
-        INTEGER (C_INT) :: nXrays
-        TYPE (C_PTR) :: XrayLines
-        TYPE (C_PTR) :: XrayIntensities
-        INTEGER (C_INT) :: nGammas
-        TYPE (C_PTR) :: GammaEnergies
-        TYPE (C_PTR) :: GammaIntensities
-ENDTYPE
-
 TYPE :: radioNuclideData
         CHARACTER(LEN=_RADIO_NUCLIDE_STRING_LENGTH, KIND=C_CHAR):: name
         INTEGER (C_INT) :: Z
@@ -127,11 +96,11 @@ TYPE :: radioNuclideData
         INTEGER (C_INT) :: N
         INTEGER (C_INT) :: Z_xray
         INTEGER (C_INT) :: nXrays
-        INTEGER (C_INT), POINTER, DIMENSION(:) :: XrayLines
-        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: XrayIntensities
+        INTEGER (C_INT), ALLOCATABLE, DIMENSION(:) :: XrayLines
+        REAL (C_DOUBLE), ALLOCATABLE, DIMENSION(:) :: XrayIntensities
         INTEGER (C_INT) :: nGammas
-        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaEnergies
-        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaIntensities
+        REAL (C_DOUBLE), ALLOCATABLE, DIMENSION(:) :: GammaEnergies
+        REAL (C_DOUBLE), ALLOCATABLE, DIMENSION(:) :: GammaIntensities
 ENDTYPE
 
 ENUM, BIND(C)
@@ -142,11 +111,6 @@ ENUM, BIND(C)
         ENUMERATOR :: XRL_ERROR_UNSUPPORTED ! set in case an unsupported feature has been requested
         ENUMERATOR :: XRL_ERROR_RUNTIME ! set in case an unexpected runtime error occurred
 ENDENUM
-
-TYPE, BIND(C) :: xrl_errorC
-        INTEGER (C_INT) :: code
-        TYPE (C_PTR) :: message
-ENDTYPE
 
 TYPE :: xrl_error
         INTEGER (KIND(xrl_error_memory)) :: code
@@ -3148,45 +3112,6 @@ INTERFACE
                 TYPE (C_PTR),INTENT(IN),VALUE :: error
         ENDFUNCTION Crystal_dSpacingC
 
-        FUNCTION GetCompoundDataNISTListC(nCompounds, error)&
-        BIND (C,NAME='GetCompoundDataNISTList')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                INTEGER (C_INT), INTENT(OUT) :: nCompounds
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION GetCompoundDataNISTListC
-
-        FUNCTION GetRadioNuclideDataByNameC(string, error)&
-        BIND (C,NAME='GetRadioNuclideDataByName')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: string
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION GetRadioNuclideDataByNameC
-
-        FUNCTION GetRadioNuclideDataByIndexC(index,error)&
-        BIND (C,NAME='GetRadioNuclideDataByIndex')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                INTEGER (C_INT), INTENT(IN), VALUE :: index
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION GetRadioNuclideDataByIndexC
-
-        FUNCTION GetRadioNuclideDataListC(nNuclides, error)&
-        BIND (C,NAME='GetRadioNuclideDataList')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                INTEGER (C_INT), INTENT(OUT) :: nNuclides
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION GetRadioNuclideDataListC
 
         FUNCTION Crystal_GetCrystalsListC(c_array, nCrystals, error)&
         BIND (C,NAME='Crystal_GetCrystalsList')&
@@ -3206,12 +3131,6 @@ INTERFACE
                 INTEGER (C_SIZE_T) :: xrlstrlen
         ENDFUNCTION xrlstrlen
 
-        SUBROUTINE xrl_error_free(error) BIND(C,NAME='xrl_error_free')
-                USE,INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: error
-        ENDSUBROUTINE xrl_error_free
-
 ENDINTERFACE
 
 
@@ -3223,11 +3142,24 @@ SUBROUTINE process_error(errorPtr, error)
         USE, INTRINSIC :: ISO_C_BINDING
         IMPLICIT NONE
 
+        TYPE, BIND(C) :: xrl_errorC
+                INTEGER (C_INT) :: code
+                TYPE (C_PTR) :: message
+        ENDTYPE
+
         TYPE(xrl_error), POINTER :: error
         TYPE(xrl_errorC), POINTER :: errorC
         TYPE(C_PTR) :: errorPtr
         CHARACTER (KIND=C_CHAR), POINTER, DIMENSION(:) :: messageC
         INTEGER (KIND=C_SIZE_T) :: i, strlen
+
+        INTERFACE
+                SUBROUTINE xrl_error_free(error) BIND(C,NAME='xrl_error_free')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: error
+                ENDSUBROUTINE xrl_error_free
+        ENDINTERFACE
 
         IF (C_ASSOCIATED(errorPtr)) THEN
                 CALL C_F_POINTER(errorPtr, errorC)
@@ -3250,6 +3182,15 @@ FUNCTION CompoundParser(compoundString, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
+
+        TYPE, BIND(C) :: compoundData_C
+                INTEGER (C_INT) :: nElements
+                REAL (C_DOUBLE) :: nAtomsAll
+                TYPE (C_PTR) :: Elements
+                TYPE (C_PTR) :: massFractions
+                TYPE (C_PTR) :: nAtoms
+                REAL (C_DOUBLE) :: molarMass
+        ENDTYPE
 
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compoundString
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
@@ -3930,6 +3871,14 @@ FUNCTION GetCompoundDataNISTByName(compoundString, error) RESULT(rv)
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
 
+        TYPE, BIND(C) :: compoundDataNIST_C
+                TYPE (C_PTR) :: name
+                INTEGER (C_INT) :: nElements
+                TYPE (C_PTR) :: Elements
+                TYPE (C_PTR) :: massFractions
+                REAL (C_DOUBLE) :: density
+        ENDTYPE
+
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: compoundString
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         compoundString_F
@@ -4009,6 +3958,14 @@ FUNCTION GetCompoundDataNISTByIndex(index, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
+
+        TYPE, BIND(C) :: compoundDataNIST_C
+                TYPE (C_PTR) :: name
+                INTEGER (C_INT) :: nElements
+                TYPE (C_PTR) :: Elements
+                TYPE (C_PTR) :: massFractions
+                REAL (C_DOUBLE) :: density
+        ENDTYPE
 
         INTEGER (C_INT), INTENT(IN) :: index
         TYPE (compoundDataNIST), POINTER :: rv
@@ -4101,6 +4058,18 @@ FUNCTION GetCompoundDataNISTList(error) RESULT(rv)
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+                FUNCTION GetCompoundDataNISTListC(nCompounds, error)&
+                BIND (C,NAME='GetCompoundDataNISTList')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        INTEGER (C_INT), INTENT(OUT) :: nCompounds
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION GetCompoundDataNISTListC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
         NULLIFY(rv)
@@ -4185,16 +4154,54 @@ FUNCTION GetRadioNuclideDataByName(radioNuclideDataString, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
+
+        TYPE, BIND(C) :: radioNuclideData_C
+                TYPE (C_PTR) :: name
+                INTEGER (C_INT) :: Z
+                INTEGER (C_INT) :: A
+                INTEGER (C_INT) :: N
+                INTEGER (C_INT) :: Z_xray
+                INTEGER (C_INT) :: nXrays
+                TYPE (C_PTR) :: XrayLines
+                TYPE (C_PTR) :: XrayIntensities
+                INTEGER (C_INT) :: nGammas
+                TYPE (C_PTR) :: GammaEnergies
+                TYPE (C_PTR) :: GammaIntensities
+        ENDTYPE
+
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: radioNuclideDataString
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: &
         radioNuclideDataString_F
         TYPE (radioNuclideData), POINTER :: rv
         TYPE (radioNuclideData_C), POINTER :: rv_C
+        INTEGER (C_INT), POINTER, DIMENSION(:) :: XrayLines
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: XrayIntensities
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaEnergies
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaIntensities
         TYPE (C_PTR) :: rv_c_ptr
         INTEGER :: i
         TYPE (C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION GetRadioNuclideDataByNameC(string, error)&
+                BIND (C,NAME='GetRadioNuclideDataByName')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: string
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION GetRadioNuclideDataByNameC
+
+                SUBROUTINE FreeRadioNuclideDataC(rnd)&
+                BIND(C,NAME='FreeRadioNuclideData')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: rnd
+                ENDSUBROUTINE FreeRadioNuclideDataC
+        ENDINTERFACE
 
         NULLIFY(rv)
         errorPtr = C_NULL_PTR
@@ -4228,10 +4235,19 @@ FUNCTION GetRadioNuclideDataByName(radioNuclideDataString, error) RESULT(rv)
                 rv%Z_xray = rv_C%Z_xray
                 rv%nXrays = rv_C%nXrays
                 rv%nGammas = rv_C%nGammas
-                CALL C_F_POINTER(rv_C%XrayLines, rv%XrayLines, [rv%nXrays])
-                CALL C_F_POINTER(rv_C%XrayIntensities, rv%XrayIntensities, [rv%nXrays])
-                CALL C_F_POINTER(rv_C%GammaEnergies, rv%GammaEnergies, [rv%nGammas])
-                CALL C_F_POINTER(rv_C%GammaIntensities, rv%GammaIntensities, [rv%nGammas])
+                CALL C_F_POINTER(rv_C%XrayLines, XrayLines, [rv%nXrays])
+                ALLOCATE(rv%XrayLines(rv%nXrays))
+                rv%XrayLines = XrayLines
+                CALL C_F_POINTER(rv_C%XrayIntensities, XrayIntensities, [rv%nXrays])
+                ALLOCATE(rv%XrayIntensities(rv%nXrays))
+                rv%XrayIntensities = XrayIntensities
+                CALL C_F_POINTER(rv_C%GammaEnergies, GammaEnergies, [rv%nGammas])
+                ALLOCATE(rv%GammaEnergies(rv%nGammas))
+                rv%GammaEnergies = GammaEnergies
+                CALL C_F_POINTER(rv_C%GammaIntensities, GammaIntensities, [rv%nGammas])
+                ALLOCATE(rv%GammaIntensities(rv%nGammas))
+                rv%GammaIntensities = GammaIntensities
+                CALL FreeRadioNuclideDataC(rv_c_ptr)
         ELSEIF (C_ASSOCIATED(errorPtr)) THEN
                 CALL process_error(errorPtr, error)
         ENDIF
@@ -4243,6 +4259,21 @@ FUNCTION GetRadioNuclideDataByIndex(index,error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
+
+        TYPE, BIND(C) :: radioNuclideData_C
+                TYPE (C_PTR) :: name
+                INTEGER (C_INT) :: Z
+                INTEGER (C_INT) :: A
+                INTEGER (C_INT) :: N
+                INTEGER (C_INT) :: Z_xray
+                INTEGER (C_INT) :: nXrays
+                TYPE (C_PTR) :: XrayLines
+                TYPE (C_PTR) :: XrayIntensities
+                INTEGER (C_INT) :: nGammas
+                TYPE (C_PTR) :: GammaEnergies
+                TYPE (C_PTR) :: GammaIntensities
+        ENDTYPE
+
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         INTEGER (C_INT), INTENT(IN) :: index
         TYPE (radioNuclideData), POINTER :: rv
@@ -4252,6 +4283,29 @@ FUNCTION GetRadioNuclideDataByIndex(index,error) RESULT(rv)
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_C
         TYPE (C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+        INTEGER (C_INT), POINTER, DIMENSION(:) :: XrayLines
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: XrayIntensities
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaEnergies
+        REAL (C_DOUBLE), POINTER, DIMENSION(:) :: GammaIntensities
+
+        INTERFACE
+                FUNCTION GetRadioNuclideDataByIndexC(index,error)&
+                BIND (C,NAME='GetRadioNuclideDataByIndex')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        INTEGER (C_INT), INTENT(IN), VALUE :: index
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION GetRadioNuclideDataByIndexC
+
+                SUBROUTINE FreeRadioNuclideDataC(rnd)&
+                BIND(C,NAME='FreeRadioNuclideData')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: rnd
+                ENDSUBROUTINE FreeRadioNuclideDataC
+        ENDINTERFACE
 
         NULLIFY(rv)
         errorPtr = C_NULL_PTR
@@ -4280,35 +4334,31 @@ FUNCTION GetRadioNuclideDataByIndex(index,error) RESULT(rv)
                         rv%name(i:i)=' '
                 ENDDO
                 NULLIFY(name_C)
-                CALL xrlFree(rv_C%name)
                 rv%Z = rv_C%Z
                 rv%A = rv_C%A
                 rv%N = rv_C%N
                 rv%Z_xray = rv_C%Z_xray
                 rv%nXrays = rv_C%nXrays
                 rv%nGammas = rv_C%nGammas
-                CALL C_F_POINTER(rv_C%XrayLines, rv%XrayLines, [rv%nXrays])
-                CALL C_F_POINTER(rv_C%XrayIntensities, rv%XrayIntensities, [rv%nXrays])
-                CALL C_F_POINTER(rv_C%GammaEnergies, rv%GammaEnergies, [rv%nGammas])
-                CALL C_F_POINTER(rv_C%GammaIntensities, rv%GammaIntensities, [rv%nGammas])
+                CALL C_F_POINTER(rv_C%XrayLines, XrayLines, [rv%nXrays])
+                ALLOCATE(rv%XrayLines(rv%nXrays))
+                rv%XrayLines = XrayLines
+                CALL C_F_POINTER(rv_C%XrayIntensities, XrayIntensities, [rv%nXrays])
+                ALLOCATE(rv%XrayIntensities(rv%nXrays))
+                rv%XrayIntensities = XrayIntensities
+                CALL C_F_POINTER(rv_C%GammaEnergies, GammaEnergies, [rv%nGammas])
+                ALLOCATE(rv%GammaEnergies(rv%nGammas))
+                rv%GammaEnergies = GammaEnergies
+                CALL C_F_POINTER(rv_C%GammaIntensities, GammaIntensities, [rv%nGammas])
+                ALLOCATE(rv%GammaIntensities(rv%nGammas))
+                rv%GammaIntensities = GammaIntensities
+                CALL FreeRadioNuclideDataC(rv_c_ptr)
         ELSEIF (C_ASSOCIATED(errorPtr)) THEN
                 CALL process_error(errorPtr, error)
         ENDIF
 
         RETURN
 ENDFUNCTION GetRadioNuclideDataByIndex
-
-SUBROUTINE FreeRadioNuclideData(cdn)
-        USE, INTRINSIC :: ISO_C_BINDING
-        IMPLICIT NONE
-        TYPE (radioNuclideData), POINTER, INTENT(INOUT) :: cdn
-
-        CALL xrlFree(C_LOC(cdn%XrayLines(1)))
-        CALL xrlFree(C_LOC(cdn%XrayIntensities(1)))
-        CALL xrlFree(C_LOC(cdn%GammaEnergies(1)))
-        CALL xrlFree(C_LOC(cdn%GammaIntensities(1)))
-        DEALLOCATE(cdn)
-ENDSUBROUTINE FreeRadioNuclideData
 
 FUNCTION GetRadioNuclideDataList(error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
@@ -4324,6 +4374,18 @@ FUNCTION GetRadioNuclideDataList(error) RESULT(rv)
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: list_f
         TYPE (C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION GetRadioNuclideDataListC(nNuclides, error)&
+                BIND (C,NAME='GetRadioNuclideDataList')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        INTEGER (C_INT), INTENT(OUT) :: nNuclides
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION GetRadioNuclideDataListC
+        ENDINTERFACE
 
         NULLIFY(rv)
         errorPtr = C_NULL_PTR

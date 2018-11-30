@@ -40,6 +40,7 @@ check_PROGRAMS = \
 	test-refractive_indices \
 	test-scattering \
 	test-nist-compounds \
+	test-radionuclides \
 	test-error \
 	test-version \
 	$(NULL)
@@ -123,3 +124,6 @@ test_scattering_LDADD = ../src/libxrl.la
 
 test_nist_compounds_SOURCES = test-nist-compounds.c
 test_nist_compounds_LDADD = ../src/libxrl.la
+
+test_radionuclides_SOURCES = test-radionuclides.c
+test_radionuclides_LDADD = ../src/libxrl.la

@@ -9,6 +9,7 @@ check_PROGRAMS = \
 	test-comptonprofiles \
 	test-refractive_indices \
 	test-nist-compounds \
+	test-radionuclides \
 	$(NULL)
 
 check_LTLIBRARIES = libtest.la
@@ -61,6 +62,12 @@ nodist_test_nist_compounds_SOURCES = libtest.mod
 test_nist_compounds_LDADD = libtest.la
 test_nist_compounds_CPPFLAGS = -I.. -I.
 test_nist_compounds_FCFLAGS = ${test_nist_compounds_CPPFLAGS}
+
+dist_test_radionuclides_SOURCES = test-radionuclides.f90
+nodist_test_radionuclides_SOURCES = libtest.mod
+test_radionuclides_LDADD = libtest.la
+test_radionuclides_CPPFLAGS = -I.. -I.
+test_radionuclides_FCFLAGS = ${test_radionuclides_CPPFLAGS}
 
 BUILT_SOURCES = libtest.mod
 

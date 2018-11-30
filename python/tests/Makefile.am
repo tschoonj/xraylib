@@ -13,6 +13,7 @@ dist_check_SCRIPTS = \
 	test-compoundparser.py \
 	test-comptonprofiles.py \
 	test-nist-compounds.py \
+	test-radionuclides.py \
 	$(NULL)
 endif
 

@@ -48,6 +48,10 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
 		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
 		return NULL;
 	}
+	if (radioNuclideString == NULL) {
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "radioNuclideString cannot be NULL");
+		return NULL;
+	}
 	key->name = strdup(radioNuclideString);
 	
 #ifndef _WIN32

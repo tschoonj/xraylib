@@ -13,6 +13,7 @@ dist_check_SCRIPTS = \
 	test-compoundparser.lua \
 	test-comptonprofiles.lua \
 	test-nist-compounds.lua \
+	test-radionuclides.lua \
 	$(NULL)
 
 endif
