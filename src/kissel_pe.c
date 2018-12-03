@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 
+#include "config.h"
 #include <math.h>
 #include <stddef.h>
 #include "splint.h"

@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 */
 
 
+#include "config.h"
 #include <math.h>
 #include "splint.h"
 #include "xrayglob.h"

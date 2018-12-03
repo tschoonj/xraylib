@@ -41,8 +41,10 @@ typedef struct {
 } xrlComplex;
 #ifndef c_abs
 /* this is giving a lot of trouble with python */
+XRL_EXTERN
 double c_abs(xrlComplex x);
 #endif
+XRL_EXTERN
 xrlComplex c_mul(xrlComplex x, xrlComplex y);
 
 /* Struct for an atom in a crystal. */

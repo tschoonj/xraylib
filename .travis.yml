@@ -153,6 +153,10 @@ script:
   - ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} ${MYSHELL} || exit 1
   - make || exit 1
   - make check || exit 1
+  - make distclean || exit 1
+  - ./configure --disable-all-bindings --disable-shared --enable-static || exit 1
+  - make || exit 1
+  - make check || exit 1
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ] ; then
       make distclean || exit 1

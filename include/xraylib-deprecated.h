@@ -18,19 +18,24 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 /* Taken from glib */
 #if    __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1)
-#define XRL_DEPRECATED __attribute__((__deprecated__))
+#define XRL_DEPRECATED __attribute__((__deprecated__)) XRL_EXTERN
 #elif defined(_MSC_VER) && (_MSC_VER >= 1300)
-#define XRL_DEPRECATED __declspec(deprecated)
+#define XRL_DEPRECATED __declspec(deprecated) XRL_EXTERN
 #else
-#define XRL_DEPRECATED
+#define XRL_DEPRECATED XRL_EXTERN
 #endif
 
 /* Error Handling */
-void SetHardExit(int hard_exit) XRL_DEPRECATED;
-void SetExitStatus(int exit_status) XRL_DEPRECATED;
-int GetExitStatus(void) XRL_DEPRECATED;
-void SetErrorMessages(int status) XRL_DEPRECATED;
-int GetErrorMessages(void) XRL_DEPRECATED;
+XRL_EXTERN
+void SetHardExit(int hard_exit);
+XRL_EXTERN
+void SetExitStatus(int exit_status);
+XRL_EXTERN
+int GetExitStatus(void);
+XRL_EXTERN
+void SetErrorMessages(int status);
+XRL_EXTERN
+int GetErrorMessages(void);
 
 #endif
 

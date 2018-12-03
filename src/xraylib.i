@@ -2334,14 +2334,5 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #endif
 
 
-%include "xraylib-auger.h"
-%include "xraylib-crystal-diffraction.h"
-%include "xraylib-defs.h"
-%include "xraylib-lines.h"
-%include "xraylib-nist-compounds.h"
-%include "xraylib-parser.h"
-%include "xraylib-radionuclides.h"
-%include "xraylib-shells.h"
-%include "xraylib-deprecated.h"
 %include "xrf_cross_sections_aux.h"
 %include "xraylib.h"

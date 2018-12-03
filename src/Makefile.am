@@ -87,7 +87,7 @@ libxrl_la_SOURCES = xrayvars.c \
 		    xraylib-error.c \
 		    xraylib-error-private.h
 
-libxrl_la_CFLAGS = $(ARCHFLAGS)
+libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS)
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 

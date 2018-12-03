@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 
+#include "config.h"
 #include "splint.h"
 #include "xrayglob.h"
 #include "xraylib.h"
@@ -92,6 +93,7 @@ double ComptonProfile_Partial(int Z, int shell, double pz, xrl_error **error) {
 	return q;
 }
 
+XRL_EXTERN
 double ElectronConfig_Biggs(int Z, int shell, xrl_error **error);
 
 double ElectronConfig_Biggs(int Z, int shell, xrl_error **error) {

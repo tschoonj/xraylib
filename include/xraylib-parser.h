@@ -67,6 +67,7 @@ struct compoundData {
  * to set the value of the struct to NULL after calling this function.
  */
 
+XRL_EXTERN
 void FreeCompoundData(struct compoundData *);
 
 
@@ -77,6 +78,7 @@ void FreeCompoundData(struct compoundData *);
  */
 
 
+XRL_EXTERN
 struct compoundData *CompoundParser(const char compoundString[], xrl_error **error);
 
 
@@ -88,6 +90,7 @@ struct compoundData *CompoundParser(const char compoundString[], xrl_error **err
  */
 
 
+XRL_EXTERN
 struct compoundData * add_compound_data(struct compoundData A, double weightA, struct compoundData B, double weightB);
 
 /*
@@ -96,6 +99,7 @@ struct compoundData * add_compound_data(struct compoundData A, double weightA, s
  * The string should be freed after usage with the xrlFree function
  */
 
+XRL_EXTERN
 char* AtomicNumberToSymbol(int Z, xrl_error **error);
 
 /*
@@ -103,6 +107,7 @@ char* AtomicNumberToSymbol(int Z, xrl_error **error);
  * If the element does not exist, 0 is returned
  */
 
+XRL_EXTERN
 int SymbolToAtomicNumber(const char *symbol, xrl_error **error);
 
 
@@ -111,6 +116,7 @@ int SymbolToAtomicNumber(const char *symbol, xrl_error **error);
  *  in combination with AtomicNumberToSymbol and add_compound_data
  */
 
+XRL_EXTERN
 void xrlFree(void *);
 
 
