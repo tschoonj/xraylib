@@ -17,6 +17,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 extern "C" {
 #endif
 
+#ifndef SWIG
+
 typedef enum {
 	XRL_ERROR_MEMORY, /* set in case of a memory allocation problem */
 	XRL_ERROR_INVALID_ARGUMENT, /* set in case an invalid argument gets passed to a routine */
@@ -43,15 +45,22 @@ struct _xrl_error
   char *message;
 };
 
+XRL_EXTERN
 void xrl_error_free(xrl_error *error);
 
+XRL_EXTERN
 xrl_error* xrl_error_copy(const xrl_error *error);
 
+XRL_EXTERN
 int xrl_error_matches(const xrl_error *error, xrl_error_code code);
 
+XRL_EXTERN
 void xrl_propagate_error(xrl_error **dest, xrl_error *src);
 
+XRL_EXTERN
 void xrl_clear_error(xrl_error **err);
+
+#endif
 
 #ifdef __cplusplus
 }

@@ -81,6 +81,7 @@ struct radioNuclideData{
  * The returned struct should be freed after usage with FreeRadioNuclideData.
  *
  */
+XRL_EXTERN
 struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString[], xrl_error **error);
 
 /*
@@ -94,6 +95,7 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
  * The returned struct should be freed after usage with FreeRadioNuclideData.
  *
  */
+XRL_EXTERN
 struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex, xrl_error **error);
 
 /*
@@ -106,6 +108,7 @@ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex, xrl_e
  * all individual strings, and subsequently by using xrlFree to deallocate the array
  *
  */
+XRL_EXTERN
 char **GetRadioNuclideDataList(int *nRadioNuclides, xrl_error **error);
 
 /*
@@ -114,6 +117,7 @@ char **GetRadioNuclideDataList(int *nRadioNuclides, xrl_error **error);
  * It is recommended to set the pointer to NULL after calling this function.
  *
  */
+XRL_EXTERN
 void FreeRadioNuclideData(struct radioNuclideData *radioNuclideData);
 
 '''

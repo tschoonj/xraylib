@@ -41,6 +41,7 @@ struct compoundDataNIST {
  * The returned struct should be freed after usage with FreeCompoundDataNIST.
  *
  */
+XRL_EXTERN
 struct compoundDataNIST* GetCompoundDataNISTByName(const char compoundString[], xrl_error **error);
 
 /*
@@ -54,6 +55,7 @@ struct compoundDataNIST* GetCompoundDataNISTByName(const char compoundString[], 
  * The returned struct should be freed after usage with FreeCompoundDataNIST.
  *
  */
+XRL_EXTERN
 struct compoundDataNIST* GetCompoundDataNISTByIndex(int compoundIndex, xrl_error **error);
 
 /*
@@ -66,6 +68,7 @@ struct compoundDataNIST* GetCompoundDataNISTByIndex(int compoundIndex, xrl_error
  * all individual strings, and subsequently by using xrlFree to deallocate the array
  *
  */
+XRL_EXTERN
 char **GetCompoundDataNISTList(int *nCompounds, xrl_error **error);
 
 /*
@@ -74,6 +77,7 @@ char **GetCompoundDataNISTList(int *nCompounds, xrl_error **error);
  * It is recommended to set the pointer to NULL after calling this function.
  *
  */
+XRL_EXTERN
 void FreeCompoundDataNIST(struct compoundDataNIST *compoundData);
 
 #define NIST_COMPOUND_A_150_TISSUE_EQUIVALENT_PLASTIC 0

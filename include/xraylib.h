@@ -38,6 +38,9 @@ extern "C" {
 #define RADEG     ( 180.0 / PI )
 #define DEGRAD    ( PI / 180.0 )
 
+#ifndef XRL_EXTERN
+#define XRL_EXTERN extern
+#endif
 
 /*
  *
@@ -55,6 +58,7 @@ extern "C" {
 #include "xraylib-lines.h"
 #include "xraylib-parser.h"
 #include "xraylib-auger.h"
+#include "xraylib-defs.h"
 #include "xraylib-crystal-diffraction.h"
 #include "xraylib-nist-compounds.h"
 #include "xraylib-radionuclides.h"
@@ -137,147 +141,232 @@ extern "C" {
 
 
 /* Initialization */
+XRL_EXTERN
 void XRayInit(void);
 
 /* Atomic weights */
+XRL_EXTERN
 double AtomicWeight(int Z, xrl_error **error);
 
 /* Density of pure atomic element */
+XRL_EXTERN
 double ElementDensity(int Z, xrl_error **error);
 
 /* Cross sections (cm2/g) */
+XRL_EXTERN
 double CS_Total(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CS_Photo(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CS_Rayl(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CS_Compt(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CS_KN(double E, xrl_error **error);
+XRL_EXTERN
 double CS_Energy(int Z, double E, xrl_error **error);
 
 /* barn/atom */
+XRL_EXTERN
 double CSb_Total(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Photo(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Rayl(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Compt(int Z, double E, xrl_error **error);
 
 
 /* Unpolarized differential scattering cross sections */
+XRL_EXTERN
 double DCS_Thoms(double theta, xrl_error **error);
+XRL_EXTERN
 double DCS_KN(double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCS_Rayl(int Z, double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCS_Compt(int Z, double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCSb_Rayl(int Z, double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCSb_Compt(int Z, double E, double theta, xrl_error **error);
 
 /* Polarized differential scattering cross sections */
+XRL_EXTERN
 double DCSP_Thoms(double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSP_KN(double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSP_Rayl(int Z, double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSP_Compt(int Z, double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSPb_Rayl(int Z, double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSPb_Compt(int Z, double E, double theta, double phi, xrl_error **error);
 
 /* Scattering factors */
-double  FF_Rayl(int Z, double q, xrl_error **error);
-double  SF_Compt(int Z, double q, xrl_error **error);
-double  MomentTransf(double E, double theta, xrl_error **error);
+XRL_EXTERN
+double FF_Rayl(int Z, double q, xrl_error **error);
+XRL_EXTERN
+double SF_Compt(int Z, double q, xrl_error **error);
+XRL_EXTERN
+double MomentTransf(double E, double theta, xrl_error **error);
 
 /* X-ray fluorescent line energy */
+XRL_EXTERN
 double LineEnergy(int Z, int line, xrl_error **error);
 
 /* Fluorescence yield */
-double  FluorYield(int Z, int shell, xrl_error **error);
+XRL_EXTERN
+double FluorYield(int Z, int shell, xrl_error **error);
 
 /* Coster-Kronig transition Probability */
-double  CosKronTransProb(int Z, int trans, xrl_error **error);
+XRL_EXTERN
+double CosKronTransProb(int Z, int trans, xrl_error **error);
 
 /* Absorption-edge energies */
+XRL_EXTERN
 double EdgeEnergy(int Z, int shell, xrl_error **error);
 
 /* Jump ratio */
-double  JumpFactor(int Z, int shell, xrl_error **error);
+XRL_EXTERN
+double JumpFactor(int Z, int shell, xrl_error **error);
 
 /* Fluorescent-lines cross sections */
+XRL_EXTERN
 double CS_FluorLine(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_FluorLine(int Z, int line, double E, xrl_error **error);
 
 /* Fractional radiative rate */
-double  RadRate(int Z, int line, xrl_error **error);
+XRL_EXTERN
+double RadRate(int Z, int line, xrl_error **error);
 
 /* Photon energy after Compton scattering */
+XRL_EXTERN
 double ComptonEnergy(double E0, double theta, xrl_error **error);
 
 /* Anomalous Scattering Factors */
+XRL_EXTERN
 double Fi(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double Fii(int Z, double E, xrl_error **error);
 
 /* Kissel Photoelectric cross sections */
+XRL_EXTERN
 double CS_Photo_Total(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Photo_Total(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CS_Photo_Partial(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Photo_Partial(int Z, int shell, double E, xrl_error **error);
 
 /* XRF cross sections using Kissel partial photoelectric cross sections */
+XRL_EXTERN
 double CS_FluorLine_Kissel(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_FluorLine_Kissel(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CS_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error);
 
 
 
 /* Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections */
+XRL_EXTERN
 double CS_Total_Kissel(int Z, double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Total_Kissel(int Z, double E, xrl_error **error);
 
 /* Electron configuration (according to Kissel) */
+XRL_EXTERN
 double ElectronConfig(int Z, int shell, xrl_error **error);
 
 
 /* Cross Section functions using the compound parser */
+XRL_EXTERN
 double CS_Total_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CS_Photo_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CS_Rayl_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CS_Compt_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Total_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Photo_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Rayl_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Compt_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double DCS_Rayl_CP(const char compound[], double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCS_Compt_CP(const char compound[], double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCSb_Rayl_CP(const char compound[], double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCSb_Compt_CP(const char compound[], double E, double theta, xrl_error **error);
+XRL_EXTERN
 double DCSP_Rayl_CP(const char compound[], double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSP_Compt_CP(const char compound[], double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSPb_Rayl_CP(const char compound[], double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double DCSPb_Compt_CP(const char compound[], double E, double theta, double phi, xrl_error **error);
+XRL_EXTERN
 double CS_Photo_Total_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Photo_Total_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CS_Total_Kissel_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CSb_Total_Kissel_CP(const char compound[], double E, xrl_error **error);
+XRL_EXTERN
 double CS_Energy_CP(const char compound[], double E, xrl_error **error);
 
 /* Refractive indices functions */
+XRL_EXTERN
 double Refractive_Index_Re(const char compound[], double E, double density, xrl_error **error);
+XRL_EXTERN
 double Refractive_Index_Im(const char compound[], double E, double density, xrl_error **error);
+XRL_EXTERN
 xrlComplex Refractive_Index(const char compound[], double E, double density, xrl_error **error);
 
 /* ComptonProfiles */
+XRL_EXTERN
 double ComptonProfile(int Z, double pz, xrl_error **error);
+XRL_EXTERN
 double ComptonProfile_Partial(int Z, int shell, double pz, xrl_error **error);
 
 /* Atomic level widths */
+XRL_EXTERN
 double AtomicLevelWidth(int Z, int shell, xrl_error **error);
 
 
 /* Auger non-radiative rates */
+XRL_EXTERN
 double AugerRate(int Z, int auger_trans, xrl_error **error);
 
 /* Auger yield */
+XRL_EXTERN
 double AugerYield(int Z, int shell, xrl_error **error);
 
 #ifdef __cplusplus

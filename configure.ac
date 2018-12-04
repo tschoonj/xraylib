@@ -15,7 +15,7 @@ AC_INIT([xraylib],[3.99.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AC_CANONICAL_HOST
 
 
@@ -39,7 +39,7 @@ m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 #at least version 2.0 of libtool is required for creating the fortran bindings
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
-LT_INIT([dlopen disable-fast-install win32-dll])
+LT_INIT([dlopen disable-fast-install win32-dll disable-static])
 #AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 
@@ -141,13 +141,48 @@ AC_SUBST(OS_WINDOWS)
 AC_SUBST(OS_WINDOWS_32)
 AC_SUBST(OS_WINDOWS_64)
 
+if test $OS_WINDOWS = 1 ; then
+	if test x$enable_static = xyes -a x$enable_shared = xyes; then
+		AC_MSG_ERROR([Can not build both shared and static at the same time on Windows.])
+	fi
+fi
 
 AC_SUBST(LDFLAGS_LIBXRL)
 AC_SUBST(LDFLAGS_FORTRAN)
 AC_SUBST(LDFLAGS_IDL)
 AC_SUBST(LDFLAGS_PYTHON)
 
+# Symbol visibility handling.
+#
+# Taken from gtksourceview and modified where necessary
+HIDDEN_VISIBILITY_CFLAGS=""
+case "$host" in
+    *-*-mingw*)
+        dnl on mingw32 we do -fvisibility=hidden and __declspec(dllexport)
+        AC_DEFINE([XRL_EXTERN], [__attribute__((visibility("default"))) __declspec(dllexport) extern],
+                  [defines how to decorate public symbols while building])
+        HIDDEN_VISIBILITY_CFLAGS="-fvisibility=hidden"
+        ;;
+    *)
+        dnl on other compilers, check if we can do -fvisibility=hidden
+        SAVED_CFLAGS="${CFLAGS}"
+        CFLAGS="-fvisibility=hidden"
+        AC_MSG_CHECKING([for -fvisibility=hidden compiler flag])
+        AC_TRY_COMPILE([], [return 0],
+                       AC_MSG_RESULT(yes)
+                       enable_fvisibility_hidden=yes,
+                       AC_MSG_RESULT(no)
+                       enable_fvisibility_hidden=no)
+        CFLAGS="${SAVED_CFLAGS}"
 
+        AS_IF([test "${enable_fvisibility_hidden}" = "yes"], [
+            AC_DEFINE([XRL_EXTERN], [__attribute__((visibility("default"))) extern],
+                      [defines how to decorate public symbols while building])
+            HIDDEN_VISIBILITY_CFLAGS="-fvisibility=hidden"
+        ])
+        ;;
+esac
+AC_SUBST(HIDDEN_VISIBILITY_CFLAGS)
 
 AM_CONDITIONAL([ENABLE_CROSS],[test x$CROSS_COMPILING = xyes])
 

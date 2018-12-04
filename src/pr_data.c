@@ -12,6 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 */
 
 
+#include "config.h"
 #include <stdio.h>
 #include "xraylib.h"
 #include "xrayglob.h"
@@ -1076,7 +1077,8 @@ int main(void)
   fprintf(f, "/* File created from program in pr_data.c\n");
   fprintf(f, "// Do not directly modify this file.*/\n\n");
 
-  fprintf(f, "#include \"xraylib-defs.h\"\n\n");
+  fprintf(f, "#include \"config.h\"\n\n");
+  fprintf(f, "#include \"xraylib.h\"\n\n");
   fprintf(f, "#include \"xrayglob.h\"\n\n");
   fprintf(f, "#include \"stddef.h\"\n\n");
 
@@ -1089,7 +1091,7 @@ int main(void)
 
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "Crystal_Atom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
+    fprintf(f, "static Crystal_Atom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
     for (j = 0; j < crystal->n_atom; j++) {
       if (j % 2 == 0) fprintf(f, "\n  ");
       atom = &crystal->atom[j];
@@ -1098,7 +1100,7 @@ int main(void)
     fprintf (f, "\n};\n\n");
   }
 
-  fprintf(f, "Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
+  fprintf(f, "static Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
     fprintf(f, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name,

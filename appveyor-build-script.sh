@@ -14,6 +14,11 @@ make
 make check
 make distclean
 
+./configure --disable-all-bindings --disable-shared --enable-static
+make
+make check
+make distclean
+
 ./configure --disable-python --disable-python-numpy --enable-fortran2003
 make
 make check
