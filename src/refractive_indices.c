@@ -150,6 +150,7 @@ xrlComplex Refractive_Index(const char compound[], double E, double density, xrl
 	return rv;
 }
 
+XRL_EXTERN
 void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result, xrl_error **error);
 
 void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result, xrl_error **error) {
