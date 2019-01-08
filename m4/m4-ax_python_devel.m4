@@ -320,7 +320,9 @@ EOD`
 	if test -z "$PYTHON_EXT"; then
 		PYTHON_EXT=`cat<<EOD | $PYTHON -
 from distutils.sysconfig import *
-e = get_config_var('SO')
+e = get_config_var('EXT_SUFFIX')
+if e is None:
+  e = get_config_var('SO')
 if e is not None:
   print(e)
 EOD`
