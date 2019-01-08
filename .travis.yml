@@ -97,9 +97,6 @@ matrix:
     # using Homebrew's bash allows me to circumvent the use of /bin/sh and its SIP problems when running interpreter tests
     - os: osx
       osx_image: xcode8.3
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='/usr/local/opt/php@5.6/bin/php' PHP_CONFIG='/usr/local/opt/php@5.6/bin/php-config' PHP_BREW='php@5.6' MYSHELL='SHELL=/usr/local/bin/bash'
-    - os: osx
-      osx_image: xcode8.3
       env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='/usr/local/bin/php' PHP_CONFIG='/usr/local/bin/php-config' PHP_BREW='php' MYSHELL='SHELL=/usr/local/bin/bash'
     - os: osx
       osx_image: xcode8.3
