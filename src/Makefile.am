@@ -100,7 +100,7 @@ all:
 #$(EXEEXT) is necessary to allow compilation in cygwin
 #wine is necessary when cross-compiling
 xrayglob_inline.c: prdata$(EXEEXT)
-	XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
+	$(AM_V_GEN) XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata$(EXEEXT)
 
 clean-local:
 	rm -rf xrayglob_inline.c xraylib.mod prdata.dSYM libxrl-$(LIB_CURRENT_MINUS_AGE).def
