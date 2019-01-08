@@ -24,7 +24,7 @@ perldir = $(PERL_EXT_LIB)
 nodist_perl_DATA = xraylib.pm
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h
-	$(SWIG) -includeall -I$(top_srcdir)/src -I${top_srcdir}/include -o xraylib_wrap.c -perl ${top_srcdir}/src/xraylib.i
+	$(AM_V_GEN) $(SWIG) -includeall -I$(top_srcdir)/src -I${top_srcdir}/include -o xraylib_wrap.c -perl ${top_srcdir}/src/xraylib.i
 
 xraylib.pm: xraylib_wrap.c
 
