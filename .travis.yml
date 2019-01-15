@@ -111,6 +111,7 @@ before_install:
   - |
     if [ $TRAVIS_OS_NAME == osx ] ; then
       rm -rf $(brew --prefix)/lib/python*
+      rm -rf $(brew --prefix)/bin/f2py*
       brew cask uninstall --force oclint
       brew uninstall --force --ignore-dependencies $(brew list) || exit 1
       brew update || exit 1
