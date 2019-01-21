@@ -1,9 +1,6 @@
 program test_compoundparser;
 
 {$APPTYPE CONSOLE}
-{$IFDEF FPC}
-{$linklib libxrl}
-{$ENDIF}
 {$mode objfpc}
 {$h+}
 

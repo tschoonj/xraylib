@@ -1,9 +1,6 @@
 program test_comptonprofiles;
 
 {$APPTYPE CONSOLE}
-{$IFDEF FPC}
-{$linklib libxrl}
-{$ENDIF}
 {$mode objfpc}
 {$h+}
 

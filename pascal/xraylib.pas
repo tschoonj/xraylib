@@ -36,6 +36,10 @@ const
     External_library = 'libxrl-11.dll'; {Setup as you need}
   {$ENDIF}
 
+{$IFNDEF windows}
+  {$LINKLIB libxrl}
+{$ENDIF windows}
+
 {$IFDEF FPC}
   {$PACKRECORDS C}
 {$ENDIF}
