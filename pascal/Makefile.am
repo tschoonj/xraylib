@@ -32,4 +32,4 @@ clean-local:
 SUBDIRS = tests
 endif
 
-EXTRA_DIST = xraylib.pas xraylib_impl.pas xraylib_iface.pas
+EXTRA_DIST = xraylib.pas xraylib_impl.pas xraylib_iface.pas xraylib_const.pas
