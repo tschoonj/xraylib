@@ -27,7 +27,7 @@ uninstall-local:
 	rm -rf $(DESTDIR)$(FPC_DIR)/xraylib.ppu
 
 clean-local:
-	rm -rf xraylib.ppu xraylib.o
+	rm -rf xraylib.ppu xraylib.o libimpxraylib.a
 
 SUBDIRS = tests
 endif
