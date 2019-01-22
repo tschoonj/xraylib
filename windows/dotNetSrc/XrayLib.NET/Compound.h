@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010-2017 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2019 Matthew Wormington. All rights reserved.
 
 	File: Compound.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2010
+	Compiler: Microsoft Visual Studio 2017
 	Created: September 5, 2010
 	$Version:$
 	$Revision:$
@@ -128,7 +128,9 @@ namespace Science {
 			try
 			{					
 				char* pCompound = static_cast<char*>(p.ToPointer());
-				cdA = ::CompoundParser(pCompound);
+				::xrl_error *error = nullptr;
+				cdA = ::CompoundParser(pCompound, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -141,7 +143,9 @@ namespace Science {
 			try
 			{					
 				char* pCompound = static_cast<char*>(p.ToPointer());
-				cdB = ::CompoundParser(pCompound);
+				::xrl_error *error = nullptr;
+				cdB = ::CompoundParser(pCompound, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -191,7 +195,9 @@ namespace Science {
 			try
 			{					
 				char* pCompound = static_cast<char*>(p.ToPointer());
-				cd = ::CompoundParser(pCompound);
+				::xrl_error *error = nullptr;
+				cd = ::CompoundParser(pCompound, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -297,7 +303,9 @@ namespace Science {
 		/// <returns>Atomic symbol, else null if it fails.</returns>
 		static String^ AtomicNumberToSymbol(int Z)
 		{
-			char* pSymbol = ::AtomicNumberToSymbol(Z);
+			::xrl_error *error = nullptr;
+			char* pSymbol = ::AtomicNumberToSymbol(Z, &error);
+			Errors::HandleError(error);
 
 			String^ symbol = gcnew String(pSymbol);
 
@@ -315,9 +323,11 @@ namespace Science {
 			
 			IntPtr p = Marshal::StringToHGlobalAnsi(symbol);
 			try
-			{					
+			{				
+				::xrl_error *error = nullptr;
 				char* pSymbol = static_cast<char*>(p.ToPointer());
-				result = ::SymbolToAtomicNumber(pSymbol);
+				result = ::SymbolToAtomicNumber(pSymbol, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{

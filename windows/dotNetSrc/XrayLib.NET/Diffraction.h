@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010-2013 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2019 Matthew Wormington. All rights reserved.
 
 	File: Diffraction.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2010
+	Compiler: Microsoft Visual Studio 2017
 	Created: July 17, 2012
 	$Version:$
 	$Revision:$
@@ -95,12 +95,12 @@ namespace Science {
 
 		double CosD(Double x)
 		{
-			return Math::Cos(x * Math::PI / 180.0);
+			return Math::Cos(x * PI / 180.0);
 		}
 
 		double SinD(Double x)
 		{
-			return Math::Sin(x * Math::PI / 180.0);
+			return Math::Sin(x * PI / 180.0);
 		}
 		
 		::Crystal_Struct* ToCrystal_Struct()
@@ -219,7 +219,9 @@ namespace Science {
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				result = ::Bragg_angle(cs, E, h, k, l);
+				::xrl_error *error = nullptr;
+				result = ::Bragg_angle(cs, E, h, k, l, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -243,7 +245,9 @@ namespace Science {
 			double fp_ = fp;
 			double fpp_ = fpp;
 
-			::Atomic_Factors(Z, E, q, debyeFactor, &f0_, &fp_, &fpp_);  
+			::xrl_error *error = nullptr;
+			::Atomic_Factors(Z, E, q, debyeFactor, &f0_, &fp_, &fpp_, &error);  
+			Errors::HandleError(error);
 
 			f0 = f0_;
 			fp = fp_;
@@ -269,7 +273,9 @@ namespace Science {
 				//::xrlComplex z = ::Crystal_F_H_StructureFactor(cs, E, h, k, l, debyeFactor, relativeAngle);
 				
 				::xrlComplex z;
-				::Crystal_F_H_StructureFactor2(cs, E, h, k, l, debyeFactor, relativeAngle, &z);  
+				::xrl_error *error = nullptr;
+				::Crystal_F_H_StructureFactor2(cs, E, h, k, l, debyeFactor, relativeAngle, &z, &error);  
+				Errors::HandleError(error);
 				result = Numerics::Complex(z.re, z.im);
 			}
 			finally
@@ -309,7 +315,9 @@ namespace Science {
 				//::xrlComplex z = ::Crystal_F_H_StructureFactor_Partial(cs, E, h, k, l, debyeFactor, relativeAngle, f0Flag, fpFlag, fppFlag);
 				
 				::xrlComplex z;
-				::Crystal_F_H_StructureFactor_Partial2(cs, E, h, k, l, debyeFactor, relativeAngle, f0Flag, fpFlag, fppFlag, &z);
+				::xrl_error *error = nullptr;
+				::Crystal_F_H_StructureFactor_Partial2(cs, E, h, k, l, debyeFactor, relativeAngle, f0Flag, fpFlag, fppFlag, &z, &error);
+				Errors::HandleError(error);
 				result = Numerics::Complex(z.re, z.im);
 			}
 			finally
@@ -329,7 +337,9 @@ namespace Science {
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				result = ::Crystal_UnitCellVolume(cs);
+				::xrl_error *error = nullptr;
+				result = ::Crystal_UnitCellVolume(cs, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -355,7 +365,9 @@ namespace Science {
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				result = ::Crystal_dSpacing(cs, h, k, l);
+				::xrl_error *error = nullptr;
+				result = ::Crystal_dSpacing(cs, h, k, l, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -479,7 +491,9 @@ namespace Science {
 			::Crystal_Struct* cs = ToCrystal_Struct();
 			try
 			{
-				result = ::Q_scattering_amplitude(cs, E, h, k, l, relativeAngle);
+				::xrl_error *error = nullptr;
+				result = ::Q_scattering_amplitude(cs, E, h, k, l, relativeAngle, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -571,14 +585,17 @@ namespace Science {
 			if (ca != nullptr)
 				::Crystal_ArrayFree(ca);
 			
-			ca = new ::Crystal_Array;
-			::Crystal_ArrayInit(ca, capacity);
+			::xrl_error *error = nullptr;
+			ca = ::Crystal_ArrayInit(capacity, &error);
+			Errors::HandleError(error);
 			
 			IntPtr p = Marshal::StringToHGlobalAnsi(fileName);
 			try
 			{					
 				char* pFileName = static_cast<char*>(p.ToPointer());
-				result = ::Crystal_ReadFile(pFileName, ca);
+				::xrl_error *error = nullptr;
+				result = ::Crystal_ReadFile(pFileName, ca, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -600,7 +617,9 @@ namespace Science {
 			try
 			{					
 				char* name = static_cast<char*>(p.ToPointer());
-				cs = ::Crystal_GetCrystal(name, ca);
+				::xrl_error *error = nullptr;
+				cs = ::Crystal_GetCrystal(name, ca, &error);
+				Errors::HandleError(error);
 			}
 			finally
 			{
@@ -668,7 +687,9 @@ namespace Science {
 
 			result = gcnew List<String^>;
 
-			names = ::Crystal_GetCrystalsList(NULL, 0);
+			::xrl_error *error = nullptr;
+			names = ::Crystal_GetCrystalsList(NULL, 0, &error);
+			Errors::HandleError(error);
 			for (i = 0; names[i] != NULL; i++) 
 			{
 				result->Add(gcnew String(names[i]));

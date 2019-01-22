@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010-2013 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2019 Matthew Wormington. All rights reserved.
 	
 	File: XrayLib.NET.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2010
+	Compiler: Microsoft Visual Studio 2017
 	Created: September 4, 2010
 	$Version:$
 	$Revision:$
@@ -69,7 +69,7 @@ namespace Science {
 	{
 	public:
 		// Overloading the constructor for passing the message associated with the exception
-		XrayLibException(System::String ^message);
+		XrayLibException(System::String ^message) : Exception(message) { }
 	};
 
 	/// <summary>
@@ -77,6 +77,9 @@ namespace Science {
 	/// for X-ray fluorescence applications. 
 	/// <para>The XrayLib is a library of X-ray matter interaction data for X-ray fluorescence,
 	/// and other, applications. </para>
+	/// <para>Notes:</para>
+	/// <para>Version 3.4 contains improved error handling for the library functions and exposes the functions
+	/// as static methods of the XrayLib class. </para>
 	/// <para>References:</para>
 	/// <para>1) A library for X-ray matter interaction cross sections for X-ray fluorescence applications.</para>
 	/// <para>A. Brunetti, M. Sanchez del Rio, B. Golosio, A. Simionovici, A. Somogyi, 
@@ -90,8 +93,6 @@ namespace Science {
 	public ref class XrayLib
 	{
 	private:
-		static initonly XrayLib ^_instance = gcnew XrayLib();
-
 		// Only the main lines are included in the following arrays
 		static array<System::String^> ^IUPACLineNames = 
 			{"KL3","KL2","KM3","KN2","KM2","L3M5","L3M4","L2M4","L3N5",
@@ -106,15 +107,10 @@ namespace Science {
 			{KA1_LINE,KA2_LINE,KB1_LINE,KB2_LINE,KB3_LINE,LA1_LINE,LA2_LINE,LB1_LINE,LB2_LINE,
 			LB3_LINE,LB4_LINE,LB6_LINE,LG1_LINE,LG2_LINE,LG3_LINE,LN_LINE,LL_LINE};
 
-		/// <summary>
-		/// Constructor.
-		/// </summary>
-		XrayLib();
-
 	public:
 		#pragma region  Constants
-		literal int VERSION_MAJOR = 3;
-		literal int VERSION_MINOR = 1;
+		literal int VERSION_MAJOR = 4;
+		literal int VERSION_MINOR = 0;
 		literal double PI = 3.14159265359;
 
 		// Values taken from physics.nist.gov
@@ -1628,65 +1624,30 @@ namespace Science {
 		#pragma endregion
 
 		/// <summary>
-		/// Gets the single instance of the class.
+		/// Initialize the library.
 		/// </summary>
-		static property XrayLib ^Instance
-		{
-			XrayLib ^get()
-			{
-				return _instance;
-			}
-		}
-
-		// Error Handling
-		/// <summary>
-		/// Sets the hard error exit code.
-		/// </summary>
-		/// <param name="hard_exit">Hard exit code</param>
-		void SetHardExit(int hard_exit);
-
-		/// <summary>
-		/// Sets the exit status code.
-		/// </summary>
-		/// <param name="exit_status">Exit status code</param>
-		void SetExitStatus(int exit_status);
-
-		/// <summary>
-		/// Gets the exit status code.
-		/// </summary>
-		/// <returns>Exit status code</returns>
-		int GetExitStatus();
-
-		/// <summary>	
-		/// Sets whether, or not, error messages are displayed. 
-		/// </summary>
-		/// <param name="status">status is non-zero to display messages</param>
-		void SetErrorMessages(int status);
-
-		/// <summary>Gets whether, or now, error messages are displayed. </summary>
-		/// <returns>Returns a non-zero if messages are displayed</returns>
-		int GetErrorMessages(void);
+		static void XrayInit();
 
 		/// <summary>
 		/// Gets the atomic weight of the element with the specified atomic number.
 		/// </summary>
 		/// <param name="Z">Atomic number</param>
 		/// <returns>Atomic weight</returns>
-		double AtomicWeight(int Z);
+		static double AtomicWeight(int Z);
 
 		/// <summary>
 		/// Gets the density of a pure atomic element.
 		/// </summary>
 		/// <param name="Z">Atomic number</param>
 		/// <returns>Density (g/cm3)</returns>
-		double ElementDensity(int Z);
+		static double ElementDensity(int Z);
 
 		/// <summary>
 		/// Gets element information for the specified atomic number.
 		/// </summary>
 		/// <param name="Z">Atomic number</param>
 		/// <returns>Element information</returns>
-		Science::ElementData GetElementData(int Z);
+		static Science::ElementData GetElementData(int Z);
 
 		// Cross sections 
 		/// <summary>
@@ -1695,7 +1656,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Total(int Z, double E);
+		static double CS_Total(int Z, double E);
 
 		/// <summary>
 		/// Calculates the photoelectric absorption cross section.
@@ -1703,7 +1664,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Photo(int Z, double E);
+		static double CS_Photo(int Z, double E);
 
 		/// <summary>
 		/// Calculates the Rayleigh scattering cross section.
@@ -1711,7 +1672,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Rayl(int Z, double E);
+		static double CS_Rayl(int Z, double E);
 
 		/// <summary>
 		/// Calculates the Compton scattering cross section.
@@ -1719,7 +1680,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Compt(int Z, double E);
+		static double CS_Compt(int Z, double E);
 
 		/// <summary>
 		/// Calculates the mass energy-absorption coefficient.
@@ -1727,7 +1688,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Energy(int Z, double E);
+		static double CS_Energy(int Z, double E);
 
 		/// <summary>
 		/// Calculates the total cross section.
@@ -1735,7 +1696,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Total(int Z, double E);
+		static double CSb_Total(int Z, double E);
 
 		/// <summary>
 		/// Calculates the photoelectric absorption cross section.
@@ -1743,7 +1704,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Photo(int Z, double E);
+		static double CSb_Photo(int Z, double E);
 
 		/// <summary>
 		/// Calculates the Rayleigh scattering cross section.
@@ -1751,7 +1712,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Rayl(int Z, double E);
+		static double CSb_Rayl(int Z, double E);
 
 		/// <summary>
 		/// Calculates the Compton scattering cross section.
@@ -1759,14 +1720,14 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Compt(int Z, double E);
+		static double CSb_Compt(int Z, double E);
 
 		/// <summary>
 		/// Calculates the total Klein-Nishina cross section.
 		/// </summary>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CS_KN(double E);
+		static double CS_KN(double E);
 
 		// Unpolarized differential scattering cross sections
 		/// <summary>
@@ -1774,7 +1735,7 @@ namespace Science {
 		/// </summary>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCS_Thoms(double theta);
+		static double DCS_Thoms(double theta);
 
 		/// <summary>
 		/// Calculates the Klein-Nishina differential scattering cross section.
@@ -1782,7 +1743,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCS_KN(double E, double theta);
+		static double DCS_KN(double E, double theta);
 
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section.
@@ -1791,7 +1752,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCS_Rayl(int Z, double E, double theta);
+		static double DCS_Rayl(int Z, double E, double theta);
 
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section.
@@ -1800,7 +1761,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCS_Compt(int Z, double E, double theta);
+		static double DCS_Compt(int Z, double E, double theta);
 
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section.
@@ -1809,7 +1770,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCSb_Rayl(int Z, double E, double theta);
+		static double DCSb_Rayl(int Z, double E, double theta);
 
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section.
@@ -1818,7 +1779,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCSb_Compt(int Z, double E, double theta);
+		static double DCSb_Compt(int Z, double E, double theta);
 
 		// Polarized differential scattering cross sections
 		/// <summary>
@@ -1827,7 +1788,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCSP_Thoms(double theta, double phi);
+		static double DCSP_Thoms(double theta, double phi);
 
 		// Polarized differential scattering cross sections
 		/// <summary>
@@ -1836,7 +1797,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCSP_KN(double E, double theta, double phi);
+		static double DCSP_KN(double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section for polarized beam.
@@ -1846,7 +1807,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCSP_Rayl(int Z, double E, double theta, double phi);
+		static double DCSP_Rayl(int Z, double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section for polarized beam.
@@ -1856,7 +1817,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCSP_Compt(int Z, double E, double theta, double phi);
+		static double DCSP_Compt(int Z, double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section for polarized beam.
@@ -1866,7 +1827,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCSPb_Rayl(int Z, double E, double theta, double phi);
+		static double DCSPb_Rayl(int Z, double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section for polarized beam.
@@ -1876,7 +1837,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (barn)</returns>
-		double DCSPb_Compt(int Z, double E, double theta, double phi);
+		static double DCSPb_Compt(int Z, double E, double theta, double phi);
 
 		// Scattering factors
 		/// <summary>
@@ -1885,7 +1846,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="q">Momentum transfer</param>
 		/// <returns>Form factor</returns> 
-		double FF_Rayl(int Z, double q);
+		static double FF_Rayl(int Z, double q);
 
 		/// <summary>
 		/// Calculates the Incoherent scattering function for Compton scattering.
@@ -1893,7 +1854,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="q">Momentum transfer</param>
 		/// <returns>Form factor</returns> 
-		double  SF_Compt(int Z, double q);
+		static double  SF_Compt(int Z, double q);
 
 		/// <summary>
 		/// Calculates the Momentum transfer for X-ray photon scattering.
@@ -1901,7 +1862,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Momentum transfer (1/A)</returns> 
-		double  MomentTransf(double E, double theta);
+		static double  MomentTransf(double E, double theta);
 
 		/// <summary>
 		/// Gets X-ray fluorescent line energy.
@@ -1909,7 +1870,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="line">Emission line ID</param>
 		/// <returns>X-ray fluorescent line energy (keV)</returns> 
-		double LineEnergy(int Z, int line);
+		static double LineEnergy(int Z, int line);
 
 		/// <summary>
 		/// Gets the fluorescence yield 
@@ -1917,7 +1878,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="shell">Atomic shell ID</param>
 		/// <returns>Fluorescence yield</returns> 
-		double FluorYield(int Z, int shell);
+		static double FluorYield(int Z, int shell);
 
 		/// <summary>
 		/// Gets the Coster-Kronig transition probability
@@ -1925,7 +1886,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="trans">Atomic transition ID</param>
 		/// <returns>Transition probability</returns> 
-		double CosKronTransProb(int Z, int trans);
+		static double CosKronTransProb(int Z, int trans);
 
 		/// <summary>
 		/// Gets the absorption-edge energy     
@@ -1933,7 +1894,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="shell">Atomic shell ID</param>
 		/// <returns>Edge energy (keV)</returns> 
-		double EdgeEnergy(int Z, int shell);
+		static double EdgeEnergy(int Z, int shell);
 
 		/// <summary>
 		/// Gets the jump ratio     
@@ -1941,7 +1902,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="shell">Atomic shell ID</param>
 		/// <returns>Jump ratio</returns> 
-		double JumpFactor(int Z, int shell);
+		static double JumpFactor(int Z, int shell);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section    
@@ -1950,7 +1911,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns> 
-		double CS_FluorLine(int Z, int line, double E);
+		static double CS_FluorLine(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section    
@@ -1959,7 +1920,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns> 
-		double CSb_FluorLine(int Z, int line, double E);
+		static double CSb_FluorLine(int Z, int line, double E);
 
 		/// <summary>
 		/// Gets the fractional radiative rate    
@@ -1967,7 +1928,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="line">Atomic line ID</param>
 		/// <returns>Fractional radiative rate</returns> 
-		double RadRate(int Z, int line);
+		static double RadRate(int Z, int line);
 
 		/// <summary>
 		/// Calculates the photon energy after Compton scattering   
@@ -1975,7 +1936,7 @@ namespace Science {
 		/// <param name="E0">Photon energy before scattering (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Energy after scattering (keV)</returns> 
-		double ComptonEnergy(double E0, double theta);
+		static double ComptonEnergy(double E0, double theta);
 
 		// Anomalous scattering factors
 		/// <summary>
@@ -1984,7 +1945,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Real-part of anomalous scattering factor</returns> 
-		double Fi(int Z, double E);
+		static double Fi(int Z, double E);
 		
 		/// <summary>
 		/// Calculates the imaginary-part of the anomalous scattering factor 
@@ -1992,7 +1953,7 @@ namespace Science {
 		/// <param name="Z">Atomic number</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Imaginary-part of anomalous scattering factor</returns> 
-		double Fii(int Z, double E);
+		static double Fii(int Z, double E);
 
 		// Kissel Photoelectric cross sections
 		/// <summary>
@@ -2001,7 +1962,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Photo_Total(int Z, double E);
+		static double CS_Photo_Total(int Z, double E);
 
 		/// <summary>
 		/// Calculates the total photoelectric absorption cross section using Kissel partial photoelectric cross sections.
@@ -2009,7 +1970,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Photo_Total(int Z, double E);
+		static double CSb_Photo_Total(int Z, double E);
 
 		/// <summary>
 		/// Calculates the partial photoelectric absorption cross section using Kissel partial photoelectric cross sections.
@@ -2018,7 +1979,7 @@ namespace Science {
 		/// <param name="shell">Atomic shell ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Photo_Partial(int Z, int shell, double E);
+		static double CS_Photo_Partial(int Z, int shell, double E);
 
 		/// <summary>
 		/// Calculates the partial photoelectric absorption cross section using Kissel partial photoelectric cross sections.
@@ -2027,7 +1988,7 @@ namespace Science {
 		/// <param name="shell">Atomic shell ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Photo_Partial(int Z, int shell, double E);
+		static double CSb_Photo_Partial(int Z, int shell, double E);
 
 		// XRF cross sections using Kissel partial photoelectric cross sections
 		/// <summary>
@@ -2037,7 +1998,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns> 
-		double CS_FluorLine_Kissel(int Z, int line, double E); 
+		static double CS_FluorLine_Kissel(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section using Kissel partial photoelectric cross sections   
@@ -2046,7 +2007,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns> 
-		double CSb_FluorLine_Kissel(int Z, int line, double E); 
+		static double CSb_FluorLine_Kissel(int Z, int line, double E);
 
 		// Total cross sections (photoionization + Rayleigh + Compton) using Kissel total photoelectric cross sections
 		/// <summary>
@@ -2055,7 +2016,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Total_Kissel(int Z, double E); 
+		static double CS_Total_Kissel(int Z, double E);
 
 		// Total cross sections (photoionization + Rayleigh + Compton) using Kissel total photoelectric cross sections
 		/// <summary>
@@ -2064,7 +2025,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Total_Kissel(int Z, double E); 
+		static double CSb_Total_Kissel(int Z, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section including cascade effects.  
@@ -2073,7 +2034,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns> 
-		double CS_FluorLine_Kissel_Cascade(int Z, int line, double E); 
+		static double CS_FluorLine_Kissel_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section including cascade effects.  
@@ -2082,7 +2043,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns> 
-		double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E);
+		static double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section with non-radiative cascade effects.  
@@ -2091,7 +2052,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
+		static double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section with non-radiative cascade effects.  
@@ -2100,7 +2061,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
+		static double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section with radiative cascade effects.  
@@ -2109,7 +2070,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
+		static double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section with non-radiative cascade effects.  
@@ -2118,7 +2079,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
+		static double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section without cascade effects.  
@@ -2127,7 +2088,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
+		static double CS_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
 
 		/// <summary>
 		/// Calculates the fluorescent line cross section without cascade effects.  
@@ -2136,7 +2097,7 @@ namespace Science {
 		/// <param name="line">Atomic line ID</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
+		static double CSb_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
 
 		//Cross Section functions using the compound parser
 		/// <summary>
@@ -2145,7 +2106,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Total_CP(String^ compound, double E);
+		static double CS_Total_CP(String^ compound, double E);
 		
 		/// <summary>
 		/// Calculates the photoelectric absorption cross section of a compound.
@@ -2153,7 +2114,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Photo_CP(String^ compound, double E);
+		static double CS_Photo_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the Rayleigh scattering cross section of a compound.
@@ -2161,7 +2122,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Rayl_CP(String^ compound, double E);
+		static double CS_Rayl_CP(String^ compound, double E);
 		
 		/// <summary>
 		/// Calculates the Compton scattering cross section of a compound.
@@ -2169,7 +2130,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Compt_CP(String^ compound, double E); 
+		static double CS_Compt_CP(String^ compound, double E);
 		
 		/// <summary>
 		/// Calculates the total cross section of a compound.
@@ -2177,7 +2138,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Total_CP(String^ compound, double E);
+		static double CSb_Total_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the photoelectric absorption cross section of a compound.
@@ -2185,7 +2146,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Photo_CP(String^ compound, double E);
+		static double CSb_Photo_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the Rayleigh scattering cross section of a compound.
@@ -2193,7 +2154,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Rayl_CP(String^ compound, double E);
+		static double CSb_Rayl_CP(String^ compound, double E);
 		
 		/// <summary>
 		/// Calculates the Compton scattering cross section of a compound.
@@ -2201,7 +2162,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Compt_CP(String^ compound, double E); 
+		static double CSb_Compt_CP(String^ compound, double E);
 		
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section of a compound.
@@ -2210,7 +2171,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCS_Rayl_CP(String^ compound, double E, double theta);
+		static double DCS_Rayl_CP(String^ compound, double E, double theta);
 		
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section of a compound.
@@ -2219,7 +2180,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>		
-		double DCS_Compt_CP(String^ compound, double E, double theta);
+		static double DCS_Compt_CP(String^ compound, double E, double theta);
 		
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section of a compound.
@@ -2228,7 +2189,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (barn/sterad)</returns>
-		double DCSb_Rayl_CP(String^ compound, double E, double theta);
+		static double DCSb_Rayl_CP(String^ compound, double E, double theta);
 		
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section of a compound.
@@ -2237,7 +2198,7 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <returns>Cross section (barn/sterad)</returns>
-		double DCSb_Compt_CP(String^ compound, double E, double theta);
+		static double DCSb_Compt_CP(String^ compound, double E, double theta);
 		
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section for polarized beam for a compound.
@@ -2247,7 +2208,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCSP_Rayl_CP(String^ compound, double E, double theta, double phi);
+		static double DCSP_Rayl_CP(String^ compound, double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section for polarized beam for a compound.
@@ -2257,7 +2218,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (cm2/g/sterad)</returns>
-		double DCSP_Compt_CP(String^ compound, double E, double theta, double phi);
+		static double DCSP_Compt_CP(String^ compound, double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Rayleigh differential scattering cross section for polarized beam for a compound.
@@ -2267,7 +2228,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (barn/sterad)</returns>
-		double DCSPb_Rayl_CP(String^ compound, double E, double theta, double phi);
+		static double DCSPb_Rayl_CP(String^ compound, double E, double theta, double phi);
 
 		/// <summary>
 		/// Calculates the Compton differential scattering cross section for polarized beam for a compound.
@@ -2277,7 +2238,7 @@ namespace Science {
 		/// <param name="theta">Scattering polar angle (rad)</param>
 		/// <param name="phi">Scattering azimuthal angle (rad)</param>
 		/// <returns>Cross section (barn/sterad)</returns>
-		double DCSPb_Compt_CP(String^ compound, double E, double theta, double phi);
+		static double DCSPb_Compt_CP(String^ compound, double E, double theta, double phi);
 	
 		/// <summary>
 		/// Calculates the total photoelectric absorption cross section for a compound.
@@ -2285,7 +2246,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>		
-		double CS_Photo_Total_CP(String^ compound, double E);
+		static double CS_Photo_Total_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the total photoelectric absorption cross section for a compound.
@@ -2293,7 +2254,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>	
-		double CSb_Photo_Total_CP(String^ compound, double E);
+		static double CSb_Photo_Total_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the total photoelectric absorption cross section for a compound
@@ -2302,7 +2263,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (cm2/g)</returns>
-		double CS_Total_Kissel_CP(String^ compound, double E);
+		static double CS_Total_Kissel_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the total photoelectric absorption cross section for a compound
@@ -2311,7 +2272,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CSb_Total_Kissel_CP(String^ compound, double E); 
+		static double CSb_Total_Kissel_CP(String^ compound, double E);
 
 		/// <summary>
 		/// Calculates the mass energy-absorption coefficient for a compound.
@@ -2319,7 +2280,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
-		double CS_Energy_CP(String^ compound, double E);
+		static double CS_Energy_CP(String^ compound, double E);
 
 		//Refractive indices functions
 		/// <summary>
@@ -2328,7 +2289,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Real part of refractive index (electrons)</returns>
-		double Refractive_Index_Re(String^ compound, double E, double density);
+		static double Refractive_Index_Re(String^ compound, double E, double density);
 		
 		/// <summary>
 		/// Calculates the imaginary part of the refractive index.
@@ -2336,7 +2297,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Imaginary part of refractive index (electrons)</returns>
-		double Refractive_Index_Im(String^ compound, double E, double density);
+		static double Refractive_Index_Im(String^ compound, double E, double density);
 
 		/// <summary>
 		/// Calculates the refractive index.
@@ -2344,7 +2305,7 @@ namespace Science {
 		/// <param name="compound">Chemical formula of the compound</param>
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Refractive index (electrons)</returns>
-		Numerics::Complex Refractive_Index(String^ compound, double E, double density);
+		static Numerics::Complex Refractive_Index(String^ compound, double E, double density);
 
 		/// <summary>
 		/// Calculates the electron configuration according to Kissel.
@@ -2352,7 +2313,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="shell">Atomic shell ID</param>
 		/// <returns>Electron configuration</returns> 
-		double ElectronConfig(int Z, int shell);
+		static double ElectronConfig(int Z, int shell);
 
 		//ComptonProfiles
 		/// <summary>
@@ -2361,7 +2322,7 @@ namespace Science {
 		/// <param name="Z">Atomic number of the element</param>
 		/// <param name="pz">Momentum</param>
 		/// <returns>Compton profile</returns> 
-		double ComptonProfile(int Z, double pz);
+		static double ComptonProfile(int Z, double pz);
 
 		/// <summary>
 		/// Calculates the sub-shell Compton scattering profile.
@@ -2370,46 +2331,46 @@ namespace Science {
 		/// <param name="shell">Atomic shell ID</param>
 		/// <param name="pz">Momentum</param>
 		/// <returns>Compton profile</returns> 
-		double ComptonProfile_Partial(int Z, int shell, double pz);
+		static double ComptonProfile_Partial(int Z, int shell, double pz);
 
 		/// <summary>Calculates the atomic level width. </summary>
 		/// <param name="Z">Atomic number of the element. </param>
 		/// <param name="shell">Atomic shell ID. </param>
 		/// <returns>Level width (keV)</returns>
-		double AtomicLevelWidth(int Z, int shell);
+		static double AtomicLevelWidth(int Z, int shell);
 
 		/// <summary>Calculates the Auger non-radiative rate. </summary>
 		/// <param name="Z">Atomic number of the element. </param>
 		/// <param name="auger_trans">Value identifying initial ionized shell and two resulting ejected electrons</param>
 		/// <returns>Non-radiative rate</returns>
-		double AugerRate(int Z, int auger_trans);
+		static double AugerRate(int Z, int auger_trans);
 
 		/// <summary>Calculates the Auger non-radiative yeild. </summary>
 		/// <param name="Z">Atomic number of the element. </param>
 		/// <param name="shell">Atomic shell ID. </param>
 		/// <returns>Non-radiative yeild</returns>
-		double AugerYield(int Z, int shell);
+		static double AugerYield(int Z, int shell);
 
 		/// <summary>
 		/// Returns the Siegbahn line name corresponding to the specified IUPAC name.
 		/// </summary>
 		/// <param name="name">IUPAC line name</param>
 		/// <returns>Siegbahn line name </returns> 
-		System::String ^IUPACToSiegbahnLineName(System::String ^name);
+		static System::String ^IUPACToSiegbahnLineName(System::String ^name);
 
 		/// <summary>
 		/// Returns IUPAC line name corresponding to the specified Siegbahn name.
 		/// </summary>
 		/// <param name="name">Siegbahn line name</param>
 		/// <returns>IUPAC line name </returns> 
-		System::String ^SiegbahnToIUPACLineName(System::String ^name);
+		static System::String ^SiegbahnToIUPACLineName(System::String ^name);
 
 		/// <summary>
 		/// Returns the energy of the specified fluorescent line string.
 		/// </summary>
 		/// <param name="lineName">String containing the element and emission line, e.g. Cu Ka1</param>
 		/// <returns>Fluorescent line energy (keV)</returns> 
-		double LineEnergyFromName(System::String ^lineName);
+		static double LineEnergyFromName(System::String ^lineName);
 
 		/// <summary>
 		/// Returns the atomic number and line ID of the specified fluorescent line string.
@@ -2417,35 +2378,35 @@ namespace Science {
 		/// <param name="elementLine">String containing the element and emission line, e.g. Cu Ka1</param>
 		/// <param name="Z">Atomic number</param>
 		/// <param name="line">Emission line ID</param>
-		void ElementAndLineFromName(System::String ^elementLine, int %Z, int %line);
+		static void ElementAndLineFromName(System::String ^elementLine, int %Z, int %line);
 
 		/// <summary>
 		/// Returns the line ID of the specified emission line name.
 		/// </summary>
 		/// <param name="name">String containing the emission line name, e.g. Ka1</param>
 		/// <returns>ID of the emission line</returns> 
-		int SiegbahnLineIndex(System::String ^name);
+		static int SiegbahnLineIndex(System::String ^name);
 
 		/// <summary>
 		/// Returns the atomic number from the specified element name.
 		/// </summary>
 		/// <param name="name">Element name, e.g. Cu</param>
 		/// <returns>Atomic number</returns> 
-		int AtomicNumber(System::String ^name);
+		static int AtomicNumber(System::String ^name);
 
 		/// <summary>
 		/// Calculates the energy of the escape peak for a Si detector.
 		/// </summary>
 		/// <param name="energy">Energy of the incident X-ray peak (keV)</param>
 		/// <returns>Energy of the escape peak (keV)</returns> 
-		double SiEscapeEnergy(double energy);
+		static double SiEscapeEnergy(double energy);
 
 		/// <summary>
 		/// Calculates the fraction of photons in the escape peak for a Si detector.
 		/// </summary>
 		/// <param name="energy">Energy of the incident X-ray peak (keV)</param>
 		/// <returns>Fraction of incident photons in the escape peak</returns> 
-		double SiEscapeFraction(double energy);;
+		static double SiEscapeFraction(double energy); 
 	};
 
 }
