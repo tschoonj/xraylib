@@ -12,6 +12,7 @@ environment:
       MSYSTEM: MINGW64
 
 before_build:
+    - choco install lazarus
     - set PATH=C:\%MSYS2_DIR%\%MSYSTEM%\bin;C:\%MSYS2_DIR%\usr\bin;%PATH%
     - bash -lc "for i in {1..3}; do pacman -Syyuu --force --ask 20 --noconfirm && break || sleep 15; done"
     - bash -lc "for i in {1..3}; do pacman -Suu --force --ask 20 --noconfirm && break || sleep 15; done"

@@ -41,7 +41,9 @@ windows:
 
 EXTRA_DIST = xraylib.spec.in BUGS Changelog
 
-if !OS_WINDOWS
+if OS_WINDOWS
+DISTCHECK_CONFIGURE_FLAGS = --enable-pascal --enable-python --enable-python-numpy --enable-fortran
+else
 DISTCHECK_CONFIGURE_FLAGS = --enable-pascal --enable-java --enable-perl --enable-lua --enable-python --enable-python-numpy --enable-php --enable-ruby
 endif
 

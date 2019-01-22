@@ -142,7 +142,7 @@ xrlexample13.sh: ../python/xraylib_np.la xrlexample13.py
 xrlexample14.sh: ../pascal/xraylib.ppu xrlexample14.pas
 	@echo "Testing Pascal bindings"
 	@echo "$(FPC) -Mdelphi -FE${builddir} -Fu${top_builddir}/pascal -Fl${top_builddir}/src/.libs ${srcdir}/xrlexample14.pas || exit 1" > xrlexample14.sh
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./xrlexample14$(EXEEXT) || exit 1" >> xrlexample14.sh
+	@echo "PATH=\"${top_builddir}/src/.libs\" LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" ./xrlexample14$(EXEEXT) || exit 1" >> xrlexample14.sh
 	@echo "rm -f xrlexample14$(EXEEXT) xrlexample14.o" >> xrlexample14.sh
 	@chmod +x xrlexample14.sh
 
