@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010-2011 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2019 Matthew Wormington. All rights reserved.
 	
 	File: Element.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2010
+	Compiler: Microsoft Visual Studio 2017
 	Created: September 4, 2010
 	$Version:$
 	$Revision:$
