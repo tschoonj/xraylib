@@ -1,9 +1,6 @@
 program xrlexample14;
 
 {$APPTYPE CONSOLE}
-{$IFDEF FPC}
-{$linklib libxrl}
-{$ENDIF}
 uses SysUtils, xraylib;
 
 var
