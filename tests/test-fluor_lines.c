@@ -152,5 +152,32 @@ int main(int argc, char **argv) {
 	assert(fabs(line_energy - 0.3956) < 1E-6);
 	assert(error == NULL);
 
+	/* test KO_LINE and KP_LINE */
+	/* KO_LINE starts at 48 */
+	line_energy = LineEnergy(47, KO_LINE, &error);
+	assert(line_energy == 0.0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, INVALID_LINE) == 0);
+	xrl_clear_error(&error);
+
+	line_energy = LineEnergy(48, KO_LINE, &error);
+	assert(fabs(line_energy - 26.709) < 1E-6);
+	assert(fabs(line_energy - LineEnergy(48, KO1_LINE, NULL)) < 1E-6);
+	assert(error == NULL);
+
+	/* KP_LINE starts at 82 */
+	line_energy = LineEnergy(81, KP_LINE, &error);
+	assert(line_energy == 0.0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, INVALID_LINE) == 0);
+	xrl_clear_error(&error);
+
+	line_energy = LineEnergy(82, KP_LINE, &error);
+	assert(fabs(line_energy - 88.0014) < 1E-6);
+	assert(fabs(line_energy - LineEnergy(82, KP1_LINE, NULL)) < 1E-6);
+	assert(error == NULL);
+
 	return 0;
 }

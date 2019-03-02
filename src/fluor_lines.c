@@ -149,6 +149,18 @@ double LineEnergy(int Z, int line, xrl_error **error)
   else if (line == L3P45_LINE) {
     return LineEnergyComposed(Z, L3P4_LINE, L3P5_LINE, error);
   }
+  /*
+   * KO_LINE and KP_LINE only have entries in the radrate database, not in the fluor_lines one.
+   * So to get the line energies, we should map to a macro that will work as long as there is an appropriate
+   * line energy in the fluor_lines database.
+   */
+  else if (line == KO_LINE) {
+    line = KO1_LINE;
+  }
+  else if (line == KP_LINE) {
+    line = KP1_LINE;
+  }
+
   
   line = -line - 1;
   if (line < 0 || line >= LINENUM) {
