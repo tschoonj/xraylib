@@ -1,4 +1,4 @@
-/* Copyright (c) 2018, Tom Schoonjans
+/* Copyright (c) 2018-2019, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,8 @@ int main(int argc, char **argv) {
 	double tmp;
 	int rv;
 	double f0, f_prime, f_prime2;
-	Crystal_Struct *cs;
+	Crystal_Struct *cs, *cs_copy;
+	int current_ncrystals;
 
 	/* complex math tests */
 #ifdef HAVE_COMPLEX_H
@@ -105,7 +106,71 @@ int main(int argc, char **argv) {
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	xrl_clear_error(&error);
 
+	/* copy struct */
+	cs = Crystal_GetCrystal("Diamond", NULL, &error);
+	assert(cs != NULL);
+	assert(error == NULL);
+	cs_copy = Crystal_MakeCopy(cs, &error);
+	assert(error == NULL);
+	assert(cs_copy != NULL);
+	free(cs_copy->name);
+	cs_copy->name = strdup("Diamond-copy");
 
+	rv = Crystal_AddCrystal(cs, NULL, &error);
+	assert(rv == 0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, "Crystal already present in array") == 0);
+	xrl_clear_error(&error);
+
+	rv = Crystal_AddCrystal(cs_copy, NULL, &error);
+	assert(rv == 1);
+	assert(error == NULL);
+	Crystal_Free(cs_copy);
+	crystals_list = Crystal_GetCrystalsList(NULL, &nCrystals, &error);
+	assert(crystals_list != NULL);
+	assert(error == NULL);
+	assert(nCrystals == 39);
+	for (i = 0 ; crystals_list[i] != NULL ; i++) {
+		cs = Crystal_GetCrystal(crystals_list[i], NULL, &error);
+		assert(cs != NULL);
+		assert(error == NULL);
+		assert(strcmp(crystals_list[i], cs->name) == 0);
+		free(crystals_list[i]);
+	}
+	free(crystals_list);
+
+	cs = Crystal_GetCrystal("Diamond", NULL, &error);
+	assert(cs != NULL);
+	assert(error == NULL);
+
+	current_ncrystals = nCrystals;
+
+	for (i = 0 ; i < CRYSTALARRAY_MAX ; i++) {
+		char *name = NULL;
+		asprintf(&name, "Diamond copy %d", i);
+		cs_copy = Crystal_MakeCopy(cs, &error);
+		free(cs_copy->name);
+		cs_copy->name = name;
+		rv = Crystal_AddCrystal(cs_copy, NULL, &error);
+		if (current_ncrystals < CRYSTALARRAY_MAX) {
+			assert(rv == 1);
+			assert(error == NULL);
+			Crystal_GetCrystalsList(NULL, &nCrystals, &error);
+			assert(nCrystals == ++current_ncrystals);
+		}
+		else {
+			assert(rv == 0);
+			assert(error != NULL);
+			assert(error->code == XRL_ERROR_RUNTIME);
+			assert(strcmp(error->message, "Extending internal is crystal array is not allowed") == 0);
+			xrl_clear_error(&error);
+			Crystal_GetCrystalsList(NULL, &nCrystals, &error);
+			assert(nCrystals == CRYSTALARRAY_MAX);
+			assert(error == NULL);
+		}
+		Crystal_Free(cs_copy);
+	}
 
 	/* bragg angle */
 	cs = Crystal_GetCrystal("Diamond", NULL, &error);
