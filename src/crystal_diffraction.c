@@ -159,7 +159,7 @@ Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
     free(crystal_out);
     return NULL;
   }
-  memcpy(crystal->atom, crystal_out->atom, n);
+  memcpy(crystal_out->atom, crystal->atom, n);
 
   return crystal_out;
 }
@@ -492,7 +492,11 @@ int Crystal_AddCrystal(Crystal_Struct* crystal, Crystal_Array* c_array, xrl_erro
   if (a_cryst == NULL) {
     Crystal_Struct *tmp = NULL;
     if (c_array->n_crystal == c_array->n_alloc) {
-      if (Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL, error) == 0) {
+      if (c_array == &Crystal_arr) {
+        xrl_set_error_literal(error, XRL_ERROR_RUNTIME, "Extending internal is crystal array is not allowed");
+	return 0;
+      }
+      else if (Crystal_ExtendArray(&c_array, N_NEW_CRYSTAL, error) == 0) {
         return 0;
       }
     }
