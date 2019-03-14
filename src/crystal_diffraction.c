@@ -143,6 +143,11 @@ void Crystal_ArrayFree(Crystal_Array *c_array) {
 Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
   int n;
 
+  if (crystal == NULL) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal cannot be NULL");
+    return NULL;
+  }
+
   Crystal_Struct* crystal_out = malloc(sizeof(Crystal_Struct));
   if (crystal_out == NULL) {
     xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
@@ -167,6 +172,8 @@ Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
 /*-------------------------------------------------------------------------------------------------- */
 
 void Crystal_Free(Crystal_Struct* crystal) {
+  if (crystal == NULL)
+    return;
   free(crystal->name);
   free(crystal->atom);
   free(crystal);
@@ -200,7 +207,7 @@ char** Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error
 /*-------------------------------------------------------------------------------------------------- */
 
 Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array, xrl_error **error) {
-  void *rv;
+  Crystal_Struct *rv, *rv_copy;
   if (material == NULL) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal cannot be NULL");
     return NULL;
@@ -213,8 +220,12 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
   rv = bsearch(material, c_array->crystal, c_array->n_crystal, sizeof(Crystal_Struct), matchCrystalStruct);
   if (rv == NULL) {
     xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal %s is not present in array", material);
+    return NULL;
   }
-  return rv;
+
+  rv_copy = Crystal_MakeCopy(rv, error);
+
+  return rv_copy;
 }
 
 /*-------------------------------------------------------------------------------------------------- */

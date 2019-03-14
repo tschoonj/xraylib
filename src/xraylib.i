@@ -113,6 +113,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %ignore Crystal_AddCrystal;
 %ignore Crystal_ReadFile;
 %ignore Crystal_Array;
+%ignore Crystal_Free;
 %ignore xrlFree;
 %ignore FreeCompoundData;
 %ignore FreeCompoundDataNIST;
@@ -176,6 +177,9 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 }
 %typemap(in, numinputs=0) int* nCrystals {
    $1 = NULL;
+}
+%typemap(freearg) Crystal_Struct * {
+        Crystal_Free($1);
 }
 
 #ifdef SWIGLUA
@@ -466,11 +470,9 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 }
                 lua_settable(L, -3);
 
-                lua_pushstring(L, "cpointer");
-                lua_pushlightuserdata(L, (void*) cs);
-                lua_settable(L, -3);
-
                 lua_pushvalue(L, -1);
+
+                Crystal_Free(cs);
 
                 SWIG_arg++;
         }
@@ -514,177 +516,169 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 SWIG_exception(SWIG_TypeError,"Argument must be a table");
        }
 
-       lua_pushstring(L, "cpointer");
+                /* name */
+       cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+       lua_pushstring(L, "name");
        lua_gettable(L, $input);
-       if (lua_islightuserdata(L,-1)) {
-                cs = (Crystal_Struct*) lua_topointer(L,-1);
-                lua_pop(L,1);
+       if (lua_isstring(L,-1)) {
+               cs->name = strdup(lua_tostring(L,-1));
+               lua_pop(L,1);
        }
        else {
-                /* name */
-                cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
-                lua_pushstring(L, "name");
-                lua_gettable(L, $input);
-                if (lua_isstring(L,-1)) {
-                        cs->name = strdup(lua_tostring(L,-1));
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"name hash key not present or value not a string");
-                }
-                /* a */
-                lua_pushstring(L, "a");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->a = lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"a hash key not present or value not a float");
-                }
-                /* b */
-                lua_pushstring(L, "b");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->b = lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"b hash key not present or value not a float");
-                }
-                /* c */
-                lua_pushstring(L, "c");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->c = lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"c hash key not present or value not a float");
-                }
-                /* alpha */
-                lua_pushstring(L, "alpha");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->alpha = lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or value not a float");
-                }
-                /* beta */
-                lua_pushstring(L, "beta");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->beta= lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"beta hash key not present or value not a float");
-                }
-                /* gamma */
-                lua_pushstring(L, "gamma");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->gamma= lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or value not a float");
-                }
-                /* volume */
-                lua_pushstring(L, "volume");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->volume = lua_tonumber(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"volume hash key not present or value not a float");
-                }
-                /* n_atom */
-                lua_pushstring(L, "n_atom");
-                lua_gettable(L, $input);
-                if (lua_isnumber(L,-1)) {
-                        cs->n_atom = lua_tointeger(L,-1);
-                        lua_pop(L,1);
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or value not a float");
-                }
-                if (cs->n_atom < 1) {
-                        SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
-                }
-                /* atom */
-                lua_getfield(L, $input,"atom");
-                if (lua_istable(L,-1)) {
-                        /* count number of elements */
-                        size_t n_atom = lua_rawlen(L, -1);
-                        if (n_atom != cs->n_atom) {
-                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
-                        }
-                        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-                        for (i = 0 ; i < cs->n_atom ; i++) {
-                                lua_rawgeti(L, -1, i+1);
-                                if (!lua_istable(L, -1)) {
-                                        SWIG_exception(SWIG_RuntimeError,"atom hash value element must be an array (table)");
-                                }
-                                /* Zatom */
-                                lua_getfield(L, -1, "Zatom");
-                                if (lua_isnumber(L,-1)) {
-                                        cs->atom[i].Zatom = lua_tointeger(L,-1);
-                                        lua_pop(L,1);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"Zatom hash value element must be an integer");
-                                }
+               SWIG_exception(SWIG_RuntimeError,"name hash key not present or value not a string");
+       }
+       /* a */
+       lua_pushstring(L, "a");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->a = lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"a hash key not present or value not a float");
+       }
+       /* b */
+       lua_pushstring(L, "b");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->b = lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"b hash key not present or value not a float");
+       }
+       /* c */
+       lua_pushstring(L, "c");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->c = lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"c hash key not present or value not a float");
+       }
+       /* alpha */
+       lua_pushstring(L, "alpha");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->alpha = lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or value not a float");
+       }
+       /* beta */
+       lua_pushstring(L, "beta");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->beta= lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"beta hash key not present or value not a float");
+       }
+       /* gamma */
+       lua_pushstring(L, "gamma");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->gamma= lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or value not a float");
+       }
+       /* volume */
+       lua_pushstring(L, "volume");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->volume = lua_tonumber(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"volume hash key not present or value not a float");
+       }
+       /* n_atom */
+       lua_pushstring(L, "n_atom");
+       lua_gettable(L, $input);
+       if (lua_isnumber(L,-1)) {
+               cs->n_atom = lua_tointeger(L,-1);
+               lua_pop(L,1);
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or value not a float");
+       }
+       if (cs->n_atom < 1) {
+               SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+       }
+       /* atom */
+       lua_getfield(L, $input,"atom");
+       if (lua_istable(L,-1)) {
+               /* count number of elements */
+               size_t n_atom = lua_rawlen(L, -1);
+               if (n_atom != cs->n_atom) {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+               }
+               cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+               for (i = 0 ; i < cs->n_atom ; i++) {
+                       lua_rawgeti(L, -1, i+1);
+                       if (!lua_istable(L, -1)) {
+                               SWIG_exception(SWIG_RuntimeError,"atom hash value element must be an array (table)");
+                       }
+                       /* Zatom */
+                       lua_getfield(L, -1, "Zatom");
+                       if (lua_isnumber(L,-1)) {
+                               cs->atom[i].Zatom = lua_tointeger(L,-1);
+                               lua_pop(L,1);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"Zatom hash value element must be an integer");
+                       }
 
-                                /* fraction */
-                                lua_getfield(L, -1, "fraction");
-                                if (lua_isnumber(L,-1)) {
-                                        cs->atom[i].fraction = lua_tonumber(L,-1);
-                                        lua_pop(L,1);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"fraction hash value element must be a float");
-                                }
+                       /* fraction */
+                       lua_getfield(L, -1, "fraction");
+                       if (lua_isnumber(L,-1)) {
+                               cs->atom[i].fraction = lua_tonumber(L,-1);
+                               lua_pop(L,1);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"fraction hash value element must be a float");
+                       }
 
-                                /* x */
-                                lua_getfield(L, -1, "x");
-                                if (lua_isnumber(L,-1)) {
-                                        cs->atom[i].x = lua_tonumber(L,-1);
-                                        lua_pop(L,1);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"x hash value element must be a float");
-                                }
+                       /* x */
+                       lua_getfield(L, -1, "x");
+                       if (lua_isnumber(L,-1)) {
+                               cs->atom[i].x = lua_tonumber(L,-1);
+                               lua_pop(L,1);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"x hash value element must be a float");
+                       }
 
-                                /* y */
-                                lua_getfield(L, -1, "y");
-                                if (lua_isnumber(L,-1)) {
-                                        cs->atom[i].y = lua_tonumber(L,-1);
-                                        lua_pop(L,1);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"y hash value element must be a float");
-                                }
+                       /* y */
+                       lua_getfield(L, -1, "y");
+                       if (lua_isnumber(L,-1)) {
+                               cs->atom[i].y = lua_tonumber(L,-1);
+                               lua_pop(L,1);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"y hash value element must be a float");
+                       }
 
-                                /* z */
-                                lua_getfield(L, -1, "z");
-                                if (lua_isnumber(L,-1)) {
-                                        cs->atom[i].z = lua_tonumber(L,-1);
-                                        lua_pop(L,1);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"z hash value element must be a float");
-                                }
+                       /* z */
+                       lua_getfield(L, -1, "z");
+                       if (lua_isnumber(L,-1)) {
+                               cs->atom[i].z = lua_tonumber(L,-1);
+                               lua_pop(L,1);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"z hash value element must be a float");
+                       }
 
-                                lua_pop(L, 1);
-                        }
-                }
-                else {
-                        SWIG_exception(SWIG_RuntimeError,"atom hash value must be an array (table)");
-                }
+                       lua_pop(L, 1);
+               }
+       }
+       else {
+               SWIG_exception(SWIG_RuntimeError,"atom hash value must be an array (table)");
        }
        $1 = cs;
 }
@@ -828,21 +822,14 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble(cs->atom[i].z));
                 PyList_SetItem(atom, i, dict_temp);
              }
-             /* store cpointer in dictionary */
-%#ifdef _WIN64
-             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long long) cs));
-%#else
-             PyDict_SetItemString(dict, "cpointer",PyInt_FromLong((long) cs));
-%#endif
+             Crystal_Free(cs);
 
              $result = dict;
         }
 }
 
 %typemap(in) Crystal_Struct * {
-        /* cpointer should be used if present and valid */
         PyObject *dict = $input;
-        PyObject *cpointer = NULL;
         PyObject *temp = NULL;
         Crystal_Struct *cs = NULL;
 
@@ -851,239 +838,229 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                $1 = NULL;
                goto fail;
         }
-        else {
-                /* look for cpointer */
-                cpointer = PyDict_GetItemString(dict,"cpointer");
-                if (cpointer != NULL) {
-                        /* convert to long */
-%#ifdef _WIN64
-                        long long cpointer_l = PyInt_AsLong(cpointer);
-%#else
-                        long cpointer_l = PyInt_AsLong(cpointer);
-%#endif
-                        if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"Invalid cpointer value");
-                                $1 = NULL;
-                                goto fail;
-                        }
-                        else {
-                                $1 = (Crystal_Struct *) cpointer_l;
-                        }
-                }
-                /* no cpointer found -> read from structure */
-                else {
-                        /* name */
-                         cs = malloc(sizeof(Crystal_Struct));
-                         temp = PyDict_GetItemString(dict,"name");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"Name key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->name = PyString_AsString(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"Name key not a string");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* a */
-                         temp = PyDict_GetItemString(dict,"a");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"a key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->a = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"a key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* b */
-                         temp = PyDict_GetItemString(dict,"b");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"b key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->b = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"b key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* c */
-                         temp = PyDict_GetItemString(dict,"c");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"c key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->c = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"c key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* alpha */
-                         temp = PyDict_GetItemString(dict,"alpha");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"alpha key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->alpha = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"alpha key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* beta */
-                         temp = PyDict_GetItemString(dict,"beta");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"beta key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->beta = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"beta key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* gamma */
-                         temp = PyDict_GetItemString(dict,"gamma");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"gamma key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->gamma = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"gamma key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* volume */
-                         temp = PyDict_GetItemString(dict,"volume");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"volume key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->volume = PyFloat_AsDouble(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"volume key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                        /* n_atom */
-                         temp = PyDict_GetItemString(dict,"n_atom");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"n_atom key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         cs->n_atom = PyInt_AsLong(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"n_atom key not a number");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         if (cs->n_atom < 1) {
-                                PyErr_SetString(PyExc_RuntimeError,"n_atom value must be greater than zero");
-                                $1 = NULL;
-                                goto fail;
-
-                         }
-                         /* atom */
-                         cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-                         temp = PyDict_GetItemString(dict,"atom");
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"atom key not present");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         Py_ssize_t n_atom = PyList_Size(temp);
-                         if (PyErr_Occurred() != NULL) {
-                                PyErr_SetString(PyErr_Occurred(),"atom key not a list");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         if (n_atom != cs->n_atom) {
-                                PyErr_SetString(PyExc_RuntimeError,"n_atom value differs from number of elements");
-                                $1 = NULL;
-                                goto fail;
-                         }
-                         int i;
-                         PyObject *atom;
-                         for (i=0 ; i < n_atom ; i++) {
-                                atom = PyList_GetItem(temp,i);
-                                PyObject *temp2;
-                                temp2 = PyDict_GetItemString(atom,"Zatom");
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"Zatom key not present");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                cs->atom[i].Zatom = PyInt_AsLong(temp2);
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"Zatom key not a number");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                temp2 = PyDict_GetItemString(atom,"fraction");
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"fraction key not present");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                cs->atom[i].fraction = PyFloat_AsDouble(temp2);
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"fraction key not a number");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                temp2 = PyDict_GetItemString(atom,"x");
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"x key not present");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                cs->atom[i].x = PyFloat_AsDouble(temp2);
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"x key not a number");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                temp2 = PyDict_GetItemString(atom,"y");
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"y key not present");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                cs->atom[i].y = PyFloat_AsDouble(temp2);
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"y key not a number");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                temp2 = PyDict_GetItemString(atom,"z");
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"z key not present");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                                cs->atom[i].z = PyFloat_AsDouble(temp2);
-                                if (PyErr_Occurred() != NULL) {
-                                        PyErr_SetString(PyErr_Occurred(),"z key not a number");
-                                        $1 = NULL;
-                                        goto fail;
-                                }
-                         }
-                         $1=cs;
-                }
+       /* name */
+        cs = malloc(sizeof(Crystal_Struct));
+        temp = PyDict_GetItemString(dict,"name");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"Name key not present");
+               $1 = NULL;
+               goto fail;
         }
+%#if PY_VERSION_HEX >= 0x03000000
+        {
+                PyObject *utf8str = PyUnicode_AsUTF8String(temp);
+                const char *cstr;
+                if (!utf8str) {
+                        SWIG_fail;
+                }
+                cstr = PyBytes_AsString(utf8str);
+                cs->name = strdup(cstr);
+                Py_DECREF(utf8str);
+        }
+%#else
+        cs->name = strdup(PyString_AsString(temp)); /* this is potentially dangerous on Windows as it will be freed with xraylib's free..*/
+%#endif
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"Name key not a string");
+               $1 = NULL;
+               goto fail;
+        }
+       /* a */
+        temp = PyDict_GetItemString(dict,"a");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"a key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->a = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"a key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* b */
+        temp = PyDict_GetItemString(dict,"b");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"b key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->b = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"b key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* c */
+        temp = PyDict_GetItemString(dict,"c");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"c key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->c = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"c key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* alpha */
+        temp = PyDict_GetItemString(dict,"alpha");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"alpha key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->alpha = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"alpha key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* beta */
+        temp = PyDict_GetItemString(dict,"beta");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"beta key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->beta = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"beta key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* gamma */
+        temp = PyDict_GetItemString(dict,"gamma");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"gamma key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->gamma = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"gamma key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* volume */
+        temp = PyDict_GetItemString(dict,"volume");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"volume key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->volume = PyFloat_AsDouble(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"volume key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+       /* n_atom */
+        temp = PyDict_GetItemString(dict,"n_atom");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"n_atom key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        cs->n_atom = PyInt_AsLong(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"n_atom key not a number");
+               $1 = NULL;
+               goto fail;
+        }
+        if (cs->n_atom < 1) {
+               PyErr_SetString(PyExc_RuntimeError,"n_atom value must be greater than zero");
+               $1 = NULL;
+               goto fail;
+
+        }
+        /* atom */
+        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+        temp = PyDict_GetItemString(dict,"atom");
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"atom key not present");
+               $1 = NULL;
+               goto fail;
+        }
+        Py_ssize_t n_atom = PyList_Size(temp);
+        if (PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyErr_Occurred(),"atom key not a list");
+               $1 = NULL;
+               goto fail;
+        }
+        if (n_atom != cs->n_atom) {
+               PyErr_SetString(PyExc_RuntimeError,"n_atom value differs from number of elements");
+               $1 = NULL;
+               goto fail;
+        }
+        int i;
+        PyObject *atom;
+        for (i=0 ; i < n_atom ; i++) {
+               atom = PyList_GetItem(temp,i);
+               PyObject *temp2;
+               temp2 = PyDict_GetItemString(atom,"Zatom");
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"Zatom key not present");
+                       $1 = NULL;
+                       goto fail;
+               }
+               cs->atom[i].Zatom = PyInt_AsLong(temp2);
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"Zatom key not a number");
+                       $1 = NULL;
+                       goto fail;
+               }
+               temp2 = PyDict_GetItemString(atom,"fraction");
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"fraction key not present");
+                       $1 = NULL;
+                       goto fail;
+               }
+               cs->atom[i].fraction = PyFloat_AsDouble(temp2);
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"fraction key not a number");
+                       $1 = NULL;
+                       goto fail;
+               }
+               temp2 = PyDict_GetItemString(atom,"x");
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"x key not present");
+                       $1 = NULL;
+                       goto fail;
+               }
+               cs->atom[i].x = PyFloat_AsDouble(temp2);
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"x key not a number");
+                       $1 = NULL;
+                       goto fail;
+               }
+               temp2 = PyDict_GetItemString(atom,"y");
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"y key not present");
+                       $1 = NULL;
+                       goto fail;
+               }
+               cs->atom[i].y = PyFloat_AsDouble(temp2);
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"y key not a number");
+                       $1 = NULL;
+                       goto fail;
+               }
+               temp2 = PyDict_GetItemString(atom,"z");
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"z key not present");
+                       $1 = NULL;
+                       goto fail;
+               }
+               cs->atom[i].z = PyFloat_AsDouble(temp2);
+               if (PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyErr_Occurred(),"z key not a number");
+                       $1 = NULL;
+                       goto fail;
+               }
+        }
+        $1=cs;
 }
 #elif defined(SWIGPERL)
 
@@ -1264,13 +1241,11 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         STORE_HASH("z", newSVnv(cs->atom[i].z), atom)
                         av_push(atoms, newRV_noinc((SV*) atom));
                 }
-                STORE_HASH("cpointer", newSViv((IV) cs), rv)
+                Crystal_Free(cs);
                 $result = sv_2mortal(newRV_noinc((SV*) rv));
-
         }
 
         argvi++;
-
 }
 
 %typemap(in) Crystal_Struct * {
@@ -1280,201 +1255,196 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         SV **temp;
         if (SvROK(ref) && SvTYPE(SvRV(ref)) == SVt_PVHV) {
                 HV* hash = (HV*) SvRV(ref);
-                /* get cpointer */
-                SV **cpointerPtr = hv_fetch(hash, "cpointer", 8, FALSE);
-                if (cpointerPtr != NULL) {
-                        cs = (Crystal_Struct *) SvIV(*cpointerPtr);
+                cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
+                temp = hv_fetch(hash, "name", strlen("name"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"name hash key not present");
+                }
+                if (SvPOK(*temp)) {
+                       cs->name = strdup(SvPVX(*temp));
                 }
                 else {
-                        /* no cpointer found -> read from hash */
-                         cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
-                         temp = hv_fetch(hash, "name", strlen("name"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"name hash key not present");
-                         }
-                         if (SvPOK(*temp)) {
-                                cs->name = SvPVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"name hash value not a string");
-                         }
-                         /* a */
-                         temp = hv_fetch(hash, "a", strlen("a"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"a hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->a = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"a hash value not a float");
-                         }
-                         /* b */
-                         temp = hv_fetch(hash, "b", strlen("b"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"b hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->b = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"b hash value not a float");
-                         }
-                         /* c */
-                         temp = hv_fetch(hash, "c", strlen("c"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"c hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->c = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"c hash value not a float");
-                         }
-                         /* alpha */
-                         temp = hv_fetch(hash, "alpha", strlen("alpha"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"alpha hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->alpha = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"alpha hash value not a float");
-                         }
-                         /* beta */
-                         temp = hv_fetch(hash, "beta", strlen("beta"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"beta hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->beta = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"beta hash value not a float");
-                         }
-                         /* gamma */
-                         temp = hv_fetch(hash, "gamma", strlen("gamma"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"gamma hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->gamma = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"gamma hash value not a float");
-                         }
-                         /* volume */
-                         temp = hv_fetch(hash, "volume", strlen("volume"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"volume hash key not present");
-                         }
-                         if (SvNOK(*temp)) {
-                                cs->volume = SvNVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"volume hash value not a float");
-                         }
-                         /* n_atom */
-                         temp = hv_fetch(hash, "n_atom", strlen("n_atom"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present");
-                         }
-                         if (SvIOK(*temp)) {
-                                cs->n_atom = SvIVX(*temp);
-                         }
-                         else {
-                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value not an integer");
-                         }
-                         if (cs->n_atom < 1) {
-                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
-                         }
-                         /* atom */
-                         cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-                         temp = hv_fetch(hash, "atom", strlen("atom"), FALSE);
-                         if (temp == NULL) {
-                                SWIG_exception(SWIG_RuntimeError,"atom hash key not present");
-                         }
-                         else if (!SvROK(*temp)) {
-                                SWIG_exception(SWIG_RuntimeError,"atom hash value not a reference");
-                         }
-                         else if (SvTYPE(SvRV(*temp)) != SVt_PVAV) {
-                                SWIG_exception(SWIG_RuntimeError,"atom hash value not an array");
-                         }
-                         AV *atom = (AV*) SvRV(*temp);
-                         if (av_len(atom)+1 != cs->n_atom) {
-                                SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
-                         }
-                         int i;
-                         for (i = 0 ; i < cs->n_atom ; i++) {
-                                SV ** atomel = av_fetch(atom, 0, FALSE);
-                                /* chech if it is a reference */
-                                if (!SvROK(*atomel)) {
-                                        SWIG_exception(SWIG_TypeError,"elements of atom array must be references");
-                                }
-                                else if (SvTYPE(SvRV(*atomel)) != SVt_PVHV) {
-                                        SWIG_exception(SWIG_TypeError,"elements of atom array must be references to hash");
-                                }
-                                HV *atomHash = (HV*) SvRV(*atomel);
-                                /* Zatom */
-                                temp = hv_fetch(atomHash, "Zatom", 5, FALSE);
-                                if (temp == NULL) {
-                                        SWIG_exception(SWIG_RuntimeError, "Zatom hash key not present");
-                                }
-                                if (SvIOK(*temp)) {
-                                        cs->atom[i].Zatom = SvIVX(*temp);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"Zatom hash key not an integer");
-                                }
-                                /* fraction */
-                                temp = hv_fetch(atomHash, "fraction", 8, FALSE);
-                                if (temp == NULL) {
-                                        SWIG_exception(SWIG_RuntimeError, "fraction hash key not present");
-                                }
-                                if (SvNOK(*temp)) {
-                                        cs->atom[i].fraction = SvNVX(*temp);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"fraction hash key not a real number");
-                                }
-                                /* x */
-                                temp = hv_fetch(atomHash, "x", 1, FALSE);
-                                if (temp == NULL) {
-                                        SWIG_exception(SWIG_RuntimeError, "x hash key not present");
-                                }
-                                if (SvNOK(*temp)) {
-                                        cs->atom[i].x = SvNVX(*temp);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"x hash key not a real number");
-                                }
-                                /* y */
-                                temp = hv_fetch(atomHash, "y", 1, FALSE);
-                                if (temp == NULL) {
-                                        SWIG_exception(SWIG_RuntimeError, "y hash key not present");
-                                }
-                                if (SvNOK(*temp)) {
-                                        cs->atom[i].y = SvNVX(*temp);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"y hash key not a real number");
-                                }
-                                /* z */
-                                temp = hv_fetch(atomHash, "z", 1, FALSE);
-                                if (temp == NULL) {
-                                        SWIG_exception(SWIG_RuntimeError, "z hash key not present");
-                                }
-                                if (SvNOK(*temp)) {
-                                        cs->atom[i].z = SvNVX(*temp);
-                                }
-                                else {
-                                        SWIG_exception(SWIG_RuntimeError,"z hash key not a real number");
-                                }
-                         }
+                       SWIG_exception(SWIG_RuntimeError,"name hash value not a string");
+                }
+                /* a */
+                temp = hv_fetch(hash, "a", strlen("a"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"a hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->a = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"a hash value not a float");
+                }
+                /* b */
+                temp = hv_fetch(hash, "b", strlen("b"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"b hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->b = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"b hash value not a float");
+                }
+                /* c */
+                temp = hv_fetch(hash, "c", strlen("c"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"c hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->c = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"c hash value not a float");
+                }
+                /* alpha */
+                temp = hv_fetch(hash, "alpha", strlen("alpha"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"alpha hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->alpha = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"alpha hash value not a float");
+                }
+                /* beta */
+                temp = hv_fetch(hash, "beta", strlen("beta"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"beta hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->beta = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"beta hash value not a float");
+                }
+                /* gamma */
+                temp = hv_fetch(hash, "gamma", strlen("gamma"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"gamma hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->gamma = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"gamma hash value not a float");
+                }
+                /* volume */
+                temp = hv_fetch(hash, "volume", strlen("volume"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"volume hash key not present");
+                }
+                if (SvNOK(*temp)) {
+                       cs->volume = SvNVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"volume hash value not a float");
+                }
+                /* n_atom */
+                temp = hv_fetch(hash, "n_atom", strlen("n_atom"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present");
+                }
+                if (SvIOK(*temp)) {
+                       cs->n_atom = SvIVX(*temp);
+                }
+                else {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value not an integer");
+                }
+                if (cs->n_atom < 1) {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+                }
+                /* atom */
+                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+                temp = hv_fetch(hash, "atom", strlen("atom"), FALSE);
+                if (temp == NULL) {
+                       SWIG_exception(SWIG_RuntimeError,"atom hash key not present");
+                }
+                else if (!SvROK(*temp)) {
+                       SWIG_exception(SWIG_RuntimeError,"atom hash value not a reference");
+                }
+                else if (SvTYPE(SvRV(*temp)) != SVt_PVAV) {
+                       SWIG_exception(SWIG_RuntimeError,"atom hash value not an array");
+                }
+                AV *atom = (AV*) SvRV(*temp);
+                if (av_len(atom)+1 != cs->n_atom) {
+                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+                }
+                int i;
+                for (i = 0 ; i < cs->n_atom ; i++) {
+                       SV ** atomel = av_fetch(atom, 0, FALSE);
+                       /* chech if it is a reference */
+                       if (!SvROK(*atomel)) {
+                               SWIG_exception(SWIG_TypeError,"elements of atom array must be references");
+                       }
+                       else if (SvTYPE(SvRV(*atomel)) != SVt_PVHV) {
+                               SWIG_exception(SWIG_TypeError,"elements of atom array must be references to hash");
+                       }
+                       HV *atomHash = (HV*) SvRV(*atomel);
+                       /* Zatom */
+                       temp = hv_fetch(atomHash, "Zatom", 5, FALSE);
+                       if (temp == NULL) {
+                               SWIG_exception(SWIG_RuntimeError, "Zatom hash key not present");
+                       }
+                       if (SvIOK(*temp)) {
+                               cs->atom[i].Zatom = SvIVX(*temp);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"Zatom hash key not an integer");
+                       }
+                       /* fraction */
+                       temp = hv_fetch(atomHash, "fraction", 8, FALSE);
+                       if (temp == NULL) {
+                               SWIG_exception(SWIG_RuntimeError, "fraction hash key not present");
+                       }
+                       if (SvNOK(*temp)) {
+                               cs->atom[i].fraction = SvNVX(*temp);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"fraction hash key not a real number");
+                       }
+                       /* x */
+                       temp = hv_fetch(atomHash, "x", 1, FALSE);
+                       if (temp == NULL) {
+                               SWIG_exception(SWIG_RuntimeError, "x hash key not present");
+                       }
+                       if (SvNOK(*temp)) {
+                               cs->atom[i].x = SvNVX(*temp);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"x hash key not a real number");
+                       }
+                       /* y */
+                       temp = hv_fetch(atomHash, "y", 1, FALSE);
+                       if (temp == NULL) {
+                               SWIG_exception(SWIG_RuntimeError, "y hash key not present");
+                       }
+                       if (SvNOK(*temp)) {
+                               cs->atom[i].y = SvNVX(*temp);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"y hash key not a real number");
+                       }
+                       /* z */
+                       temp = hv_fetch(atomHash, "z", 1, FALSE);
+                       if (temp == NULL) {
+                               SWIG_exception(SWIG_RuntimeError, "z hash key not present");
+                       }
+                       if (SvNOK(*temp)) {
+                               cs->atom[i].z = SvNVX(*temp);
+                       }
+                       else {
+                               SWIG_exception(SWIG_RuntimeError,"z hash key not a real number");
+                       }
                 }
                 $1 = cs;
                 argvi++;
+        }
+        else {
+                SWIG_exception(SWIG_TypeError, "input must be ref to hash");
         }
 }
 #endif
@@ -1605,7 +1575,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         rb_hash_aset(atom, rb_str_new2("z"), rb_float_new(cs->atom[i].z));
                         rb_ary_store(atoms, (long) i, atom);
                 }
-                rb_hash_aset(rv, rb_str_new2("cpointer"), INT2FIX((long) cs));
+                Crystal_Free(cs);
                 $result = rv;
         }
 }
@@ -1613,135 +1583,120 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %typemap(in) Crystal_Struct * {
         VALUE input = $input;
         Crystal_Struct *cs;
-        int cpointer_found = 0;
 
         if (TYPE(input) != T_HASH) {
                 SWIG_exception(SWIG_TypeError,"Argument must be a hash");
         }
 
-        /* get cpointer if available */
-        VALUE cpointer;
-        if ((cpointer = rb_hash_aref(input, rb_str_new2("cpointer"))) != Qnil ) {
-                /* cpointer found */
-                cs = (Crystal_Struct *) FIX2LONG(cpointer);
-                cpointer_found = 1;
-        }
-        else {
-                /* not a cpointer -> we'll have to analyze the complete hash then :-( */
-                VALUE temp;
-                cs = (Crystal_Struct *)  malloc(sizeof(Crystal_Struct));
+        VALUE temp;
+        cs = (Crystal_Struct *)  malloc(sizeof(Crystal_Struct));
 
-                /* name */
-                temp = rb_hash_aref(input, rb_str_new2("name"));
-                if (temp == Qnil || TYPE(temp) != T_STRING) {
-                        SWIG_exception(SWIG_RuntimeError,"name hash key not present or not a string");
+        /* name */
+        temp = rb_hash_aref(input, rb_str_new2("name"));
+        if (temp == Qnil || TYPE(temp) != T_STRING) {
+                SWIG_exception(SWIG_RuntimeError,"name hash key not present or not a string");
+        }
+        cs->name = strdup(StringValuePtr(temp));
+        /* a */
+        temp = rb_hash_aref(input, rb_str_new2("a"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"a hash key not present or not a float");
+        }
+        cs->a = NUM2DBL(temp);
+        /* b */
+        temp = rb_hash_aref(input, rb_str_new2("b"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"b hash key not present or not a float");
+        }
+        cs->b = NUM2DBL(temp);
+        /* c */
+        temp = rb_hash_aref(input, rb_str_new2("c"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"c hash key not present or not a float");
+        }
+        cs->c = NUM2DBL(temp);
+        /* alpha */
+        temp = rb_hash_aref(input, rb_str_new2("alpha"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or not a float");
+        }
+        cs->alpha = NUM2DBL(temp);
+        /* beta */
+        temp = rb_hash_aref(input, rb_str_new2("beta"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"beta hash key not present or not a float");
+        }
+        cs->beta = NUM2DBL(temp);
+        /* gamma */
+        temp = rb_hash_aref(input, rb_str_new2("gamma"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or not a float");
+        }
+        cs->gamma = NUM2DBL(temp);
+        /* volume */
+        temp = rb_hash_aref(input, rb_str_new2("volume"));
+        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                SWIG_exception(SWIG_RuntimeError,"volume hash key not present or not a float");
+        }
+        cs->volume = NUM2DBL(temp);
+        /* n_atom */
+        temp = rb_hash_aref(input, rb_str_new2("n_atom"));
+        if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
+                SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or not an integer");
+        }
+        cs->n_atom = FIX2INT(temp);
+        if (cs->n_atom < 1) {
+               SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+        }
+        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+
+        /* atom */
+        VALUE atoms = rb_hash_aref(input, rb_str_new2("atom"));
+        if (atoms == Qnil || TYPE(atoms) != T_ARRAY) {
+                SWIG_exception(SWIG_RuntimeError,"atom hash key not present or not an array");
+        }
+        if (RARRAY_LEN(atoms) != cs->n_atom) {
+                SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+        }
+        long i;
+        for (i = 0 ; i < cs->n_atom ; i++) {
+                VALUE atom = rb_ary_entry(atoms, i);
+                if (atom == Qnil || TYPE(atom) != T_HASH) {
+                        SWIG_exception(SWIG_RuntimeError,"elements of atom array must be hashes");
                 }
-                cs->name = strdup(StringValuePtr(temp));
-                /* a */
-                temp = rb_hash_aref(input, rb_str_new2("a"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"a hash key not present or not a float");
-                }
-                cs->a = NUM2DBL(temp);
-                /* b */
-                temp = rb_hash_aref(input, rb_str_new2("b"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"b hash key not present or not a float");
-                }
-                cs->b = NUM2DBL(temp);
-                /* c */
-                temp = rb_hash_aref(input, rb_str_new2("c"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"c hash key not present or not a float");
-                }
-                cs->c = NUM2DBL(temp);
-                /* alpha */
-                temp = rb_hash_aref(input, rb_str_new2("alpha"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"alpha hash key not present or not a float");
-                }
-                cs->alpha = NUM2DBL(temp);
-                /* beta */
-                temp = rb_hash_aref(input, rb_str_new2("beta"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"beta hash key not present or not a float");
-                }
-                cs->beta = NUM2DBL(temp);
-                /* gamma */
-                temp = rb_hash_aref(input, rb_str_new2("gamma"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"gamma hash key not present or not a float");
-                }
-                cs->gamma = NUM2DBL(temp);
-                /* volume */
-                temp = rb_hash_aref(input, rb_str_new2("volume"));
-                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                        SWIG_exception(SWIG_RuntimeError,"volume hash key not present or not a float");
-                }
-                cs->volume = NUM2DBL(temp);
-                /* n_atom */
-                temp = rb_hash_aref(input, rb_str_new2("n_atom"));
+                /* Zatom */
+                temp = rb_hash_aref(atom, rb_str_new2("Zatom"));
                 if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
-                        SWIG_exception(SWIG_RuntimeError,"n_atom hash key not present or not an integer");
+                        SWIG_exception(SWIG_RuntimeError,"Zatom hash key missing or not an integer");
                 }
-                cs->n_atom = FIX2INT(temp);
-                if (cs->n_atom < 1) {
-                       SWIG_exception(SWIG_RuntimeError,"n_atom hash value must be greater than zero");
+                cs->atom[i].Zatom = FIX2INT(temp);
+                /* fraction */
+                temp = rb_hash_aref(atom, rb_str_new2("fraction"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"fraction hash key missing or not a float");
                 }
-                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-
-                /* atom */
-                VALUE atoms = rb_hash_aref(input, rb_str_new2("atom"));
-                if (atoms == Qnil || TYPE(atoms) != T_ARRAY) {
-                        SWIG_exception(SWIG_RuntimeError,"atom hash key not present or not an array");
+                cs->atom[i].fraction = NUM2DBL(temp);
+                /* x */
+                temp = rb_hash_aref(atom, rb_str_new2("x"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"x hash key missing or not a float");
                 }
-                if (RARRAY_LEN(atoms) != cs->n_atom) {
-                        SWIG_exception(SWIG_RuntimeError,"n_atom hash value differs from number of elements");
+                cs->atom[i].x = NUM2DBL(temp);
+                /* y */
+                temp = rb_hash_aref(atom, rb_str_new2("y"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"y hash key missing or not a float");
                 }
-                long i;
-                for (i = 0 ; i < cs->n_atom ; i++) {
-                        VALUE atom = rb_ary_entry(atoms, i);
-                        if (atom == Qnil || TYPE(atom) != T_HASH) {
-                                SWIG_exception(SWIG_RuntimeError,"elements of atom array must be hashes");
-                        }
-                        /* Zatom */
-                        temp = rb_hash_aref(atom, rb_str_new2("Zatom"));
-                        if (temp == Qnil || TYPE(temp) != T_FIXNUM) {
-                                SWIG_exception(SWIG_RuntimeError,"Zatom hash key missing or not an integer");
-                        }
-                        cs->atom[i].Zatom = FIX2INT(temp);
-                        /* fraction */
-                        temp = rb_hash_aref(atom, rb_str_new2("fraction"));
-                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                                SWIG_exception(SWIG_RuntimeError,"fraction hash key missing or not a float");
-                        }
-                        cs->atom[i].fraction = NUM2DBL(temp);
-                        /* x */
-                        temp = rb_hash_aref(atom, rb_str_new2("x"));
-                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                                SWIG_exception(SWIG_RuntimeError,"x hash key missing or not a float");
-                        }
-                        cs->atom[i].x = NUM2DBL(temp);
-                        /* y */
-                        temp = rb_hash_aref(atom, rb_str_new2("y"));
-                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                                SWIG_exception(SWIG_RuntimeError,"y hash key missing or not a float");
-                        }
-                        cs->atom[i].y = NUM2DBL(temp);
-                        /* z */
-                        temp = rb_hash_aref(atom, rb_str_new2("z"));
-                        if (temp == Qnil || TYPE(temp) != T_FLOAT) {
-                                SWIG_exception(SWIG_RuntimeError,"z hash key missing or not a float");
-                        }
-                        cs->atom[i].z = NUM2DBL(temp);
-
+                cs->atom[i].y = NUM2DBL(temp);
+                /* z */
+                temp = rb_hash_aref(atom, rb_str_new2("z"));
+                if (temp == Qnil || TYPE(temp) != T_FLOAT) {
+                        SWIG_exception(SWIG_RuntimeError,"z hash key missing or not a float");
                 }
-
+                cs->atom[i].z = NUM2DBL(temp);
 
         }
-
         $1 = cs;
-
 }
 
 %typemap(out) xrlComplex {
@@ -1929,129 +1884,119 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         add_assoc_double(dict_temp, "z", cs->atom[i].z);
                         add_index_zval(atom, i, dict_temp);
                 }
-                add_assoc_zval(return_value, "cpointer", (zval*) cs);
+                Crystal_Free(cs);
         }
 }
 
 %typemap(in) Crystal_Struct * {
-        /* cpointer should be used if present and valid */
-
         if (Z_TYPE_PP($input) != IS_ARRAY) {
                 SWIG_exception(SWIG_TypeError,"Argument must be an array");
         }
-        if (zend_hash_exists(Z_ARRVAL_PP($input), "cpointer", sizeof("cpointer"))) {
-                /* cpointer found */
-                zval *cpointer;
-                zend_hash_find(Z_ARRVAL_PP($input), "cpointer", sizeof("cpointer"), (void **) &cpointer);
-                $1 = (Crystal_Struct *) Z_ARRVAL_P(cpointer);
+
+        Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
+        zval *temp1, **temp2;
+        if (zend_hash_find(Z_ARRVAL_PP($input), "name", sizeof("name"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"Name key not present");
         }
-        else {
-                Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
-                zval *temp1, **temp2;
-                if (zend_hash_find(Z_ARRVAL_PP($input), "name", sizeof("name"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"Name key not present");
-                }
-                cs->name = strdup(Z_STRVAL_PP(temp2));
+        cs->name = strdup(Z_STRVAL_PP(temp2));
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "a", sizeof("a"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"a key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->a = Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "a", sizeof("a"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"a key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->a = Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "b", sizeof("b"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"b key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->b = Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "b", sizeof("b"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"b key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->b = Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "c", sizeof("c"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"c key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->c = Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "c", sizeof("c"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"c key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->c = Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "alpha", sizeof("alpha"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"alpha key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->alpha = Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "alpha", sizeof("alpha"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"alpha key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->alpha = Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "beta", sizeof("beta"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"beta key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->beta= Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "beta", sizeof("beta"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"beta key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->beta= Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "gamma", sizeof("gamma"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"gamma key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->gamma = Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "gamma", sizeof("gamma"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"gamma key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->gamma = Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "volume", sizeof("volume"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"volume key not present");
-                }
-                convert_to_double_ex(temp2);
-                cs->volume = Z_DVAL_PP(temp2);
+        if (zend_hash_find(Z_ARRVAL_PP($input), "volume", sizeof("volume"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"volume key not present");
+        }
+        convert_to_double_ex(temp2);
+        cs->volume = Z_DVAL_PP(temp2);
 
-                if (zend_hash_find(Z_ARRVAL_PP($input), "n_atom", sizeof("n_atom"), (void **) &temp2) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"n_atom key not present");
+        if (zend_hash_find(Z_ARRVAL_PP($input), "n_atom", sizeof("n_atom"), (void **) &temp2) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"n_atom key not present");
+        }
+        convert_to_long_ex(temp2);
+        cs->n_atom = (int) Z_LVAL_PP(temp2);
+
+        zval **atom;
+
+        if (zend_hash_find(Z_ARRVAL_PP($input), "atom", sizeof("atom"), (void **) &atom) == FAILURE) {
+                SWIG_exception(SWIG_TypeError,"atom key not present");
+        }
+
+        if (Z_TYPE_PP(atom) != IS_ARRAY) {
+                SWIG_exception(SWIG_TypeError,"atom must be an array");
+        }
+        int i;
+        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+        for (i = 0 ; i < cs->n_atom ; i++) {
+                zval **this_atom;
+                if (zend_hash_index_find(Z_ARRVAL_PP(atom), i, (void **) &this_atom) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"atom member not found\n");
+                }
+
+                if (zend_hash_find(Z_ARRVAL_PP(this_atom), "Zatom", sizeof("Zatom"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
                 }
                 convert_to_long_ex(temp2);
-                cs->n_atom = (int) Z_LVAL_PP(temp2);
+                cs->atom[i].Zatom = (int) Z_LVAL_PP(temp2);
 
-                zval **atom;
-
-                if (zend_hash_find(Z_ARRVAL_PP($input), "atom", sizeof("atom"), (void **) &atom) == FAILURE) {
-                        SWIG_exception(SWIG_TypeError,"atom key not present");
+                if (zend_hash_find(Z_ARRVAL_PP(this_atom), "fraction", sizeof("fraction"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"fraction key not found\n");
                 }
+                convert_to_double_ex(temp2);
+                cs->atom[i].fraction = (double) Z_DVAL_PP(temp2);
 
-                if (Z_TYPE_PP(atom) != IS_ARRAY) {
-                        SWIG_exception(SWIG_TypeError,"atom must be an array");
+                if (zend_hash_find(Z_ARRVAL_PP(this_atom), "x", sizeof("x"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"x key not found\n");
                 }
-                int i;
-                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-                for (i = 0 ; i < cs->n_atom ; i++) {
-                        zval **this_atom;
-                        if (zend_hash_index_find(Z_ARRVAL_PP(atom), i, (void **) &this_atom) == FAILURE) {
-                                SWIG_exception(SWIG_TypeError,"atom member not found\n");
-                        }
+                convert_to_double_ex(temp2);
+                cs->atom[i].x = (double) Z_DVAL_PP(temp2);
 
-                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "Zatom", sizeof("Zatom"), (void **) &temp2) == FAILURE) {
-                                SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
-                        }
-                        convert_to_long_ex(temp2);
-                        cs->atom[i].Zatom = (int) Z_LVAL_PP(temp2);
-
-                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "fraction", sizeof("fraction"), (void **) &temp2) == FAILURE) {
-                                SWIG_exception(SWIG_TypeError,"fraction key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].fraction = (double) Z_DVAL_PP(temp2);
-
-                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "x", sizeof("x"), (void **) &temp2) == FAILURE) {
-                                SWIG_exception(SWIG_TypeError,"x key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].x = (double) Z_DVAL_PP(temp2);
-
-                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "y", sizeof("y"), (void **) &temp2) == FAILURE) {
-                                SWIG_exception(SWIG_TypeError,"y key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].y = (double) Z_DVAL_PP(temp2);
-
-                        if (zend_hash_find(Z_ARRVAL_PP(this_atom), "z", sizeof("z"), (void **) &temp2) == FAILURE) {
-                                SWIG_exception(SWIG_TypeError,"z key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].z = (double) Z_DVAL_PP(temp2);
-
+                if (zend_hash_find(Z_ARRVAL_PP(this_atom), "y", sizeof("y"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"y key not found\n");
                 }
-                $1 = cs;
+                convert_to_double_ex(temp2);
+                cs->atom[i].y = (double) Z_DVAL_PP(temp2);
+
+                if (zend_hash_find(Z_ARRVAL_PP(this_atom), "z", sizeof("z"), (void **) &temp2) == FAILURE) {
+                        SWIG_exception(SWIG_TypeError,"z key not found\n");
+                }
+                convert_to_double_ex(temp2);
+                cs->atom[i].z = (double) Z_DVAL_PP(temp2);
+
         }
-
+        $1 = cs;
 }
 #endif
 
@@ -2206,130 +2151,119 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         add_assoc_double(&dict_temp, "z", cs->atom[i].z);
                         add_index_zval(&atom, i, &dict_temp);
                 }
-                add_assoc_long(return_value, "cpointer", (zend_long) cs);
+                Crystal_Free(cs);
         }
 }
 
 %typemap(in) Crystal_Struct * {
-        /* cpointer should be used if present and valid */
-
         if (Z_TYPE($input) != IS_ARRAY) {
                 SWIG_exception(SWIG_TypeError,"Argument must be an array");
         }
-        if (zend_hash_str_exists(Z_ARRVAL($input), "cpointer", sizeof("cpointer")-1)) {
-                /* cpointer found */
-                zval *cpointer;
-                cpointer = zend_hash_str_find(Z_ARRVAL($input), "cpointer", sizeof("cpointer")-1);
-                convert_to_long_ex(cpointer);
-                Crystal_Struct *cs = (Crystal_Struct *) Z_LVAL_P(cpointer);
-                $1 = cs;
+
+        Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
+        zval *temp;
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "name", sizeof("name")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"Name key not present");
         }
-        else {
-                Crystal_Struct *cs = malloc(sizeof(Crystal_Struct));
-                zval *temp;
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "name", sizeof("name")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"Name key not present");
-                }
-                cs->name = strdup(Z_STRVAL_P(temp));
+        cs->name = strdup(Z_STRVAL_P(temp));
 
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "a", sizeof("a")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"a key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->a = Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "b", sizeof("b")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"b key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->b = Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "c", sizeof("c")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"c key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->c = Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "alpha", sizeof("alpha")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"alpha key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->alpha = Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "beta", sizeof("beta")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"beta key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->beta= Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "gamma", sizeof("gamma")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"gamma key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->gamma = Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "volume", sizeof("volume")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"volume key not present");
-                }
-                convert_to_double_ex(temp);
-                cs->volume = Z_DVAL_P(temp);
-
-                if ((temp = zend_hash_str_find(Z_ARRVAL($input), "n_atom", sizeof("n_atom")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"n_atom key not present");
-                }
-                convert_to_long_ex(temp);
-                cs->n_atom = (int) Z_LVAL_P(temp);
-
-                zval *atom;
-
-                if ((atom = zend_hash_str_find(Z_ARRVAL($input), "atom", sizeof("atom")-1)) == NULL) {
-                        SWIG_exception(SWIG_TypeError,"atom key not present");
-                }
-
-                if (Z_TYPE_P(atom) != IS_ARRAY) {
-                        SWIG_exception(SWIG_TypeError,"atom must be an array");
-                }
-                int i;
-                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-                for (i = 0 ; i < cs->n_atom ; i++) {
-                        zval *this_atom;
-                        if ((this_atom = zend_hash_index_find(Z_ARRVAL_P(atom), i)) == NULL) {
-                                SWIG_exception(SWIG_TypeError,"atom member not found\n");
-                        }
-                        zval *temp2;
-                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "Zatom", sizeof("Zatom")-1)) == NULL) {
-                                SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
-                        }
-                        convert_to_long_ex(temp2);
-                        cs->atom[i].Zatom = (int) Z_LVAL_P(temp2);
-
-                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "fraction", sizeof("fraction")-1)) == NULL) {
-                                SWIG_exception(SWIG_TypeError,"fraction key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].fraction = (double) Z_DVAL_P(temp2);
-
-                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "x", sizeof("x")-1)) == NULL) {
-                                SWIG_exception(SWIG_TypeError,"x key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].x = (double) Z_DVAL_P(temp2);
-
-                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "y", sizeof("y")-1)) == NULL) {
-                                SWIG_exception(SWIG_TypeError,"y key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].y = (double) Z_DVAL_P(temp2);
-
-                        if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "z", sizeof("z")-1)) == NULL) {
-                                SWIG_exception(SWIG_TypeError,"z key not found\n");
-                        }
-                        convert_to_double_ex(temp2);
-                        cs->atom[i].z = (double) Z_DVAL_P(temp2);
-
-                }
-                $1 = cs;
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "a", sizeof("a")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"a key not present");
         }
+        convert_to_double_ex(temp);
+        cs->a = Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "b", sizeof("b")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"b key not present");
+        }
+        convert_to_double_ex(temp);
+        cs->b = Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "c", sizeof("c")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"c key not present");
+        }
+        convert_to_double_ex(temp);
+        cs->c = Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "alpha", sizeof("alpha")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"alpha key not present");
+        }
+        convert_to_double_ex(temp);
+        cs->alpha = Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "beta", sizeof("beta")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"beta key not present");
+        }
+        convert_to_double_ex(temp);
+        cs->beta= Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "gamma", sizeof("gamma")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"gamma key not present");
+        }
+        convert_to_double_ex(temp);
+        cs->gamma = Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "volume", sizeof("volume")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"volume key not present");
+        }
+        convert_to_double_ex(temp);
+        cs->volume = Z_DVAL_P(temp);
+
+        if ((temp = zend_hash_str_find(Z_ARRVAL($input), "n_atom", sizeof("n_atom")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"n_atom key not present");
+        }
+        convert_to_long_ex(temp);
+        cs->n_atom = (int) Z_LVAL_P(temp);
+
+        zval *atom;
+
+        if ((atom = zend_hash_str_find(Z_ARRVAL($input), "atom", sizeof("atom")-1)) == NULL) {
+                SWIG_exception(SWIG_TypeError,"atom key not present");
+        }
+
+        if (Z_TYPE_P(atom) != IS_ARRAY) {
+                SWIG_exception(SWIG_TypeError,"atom must be an array");
+        }
+        int i;
+        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
+        for (i = 0 ; i < cs->n_atom ; i++) {
+                zval *this_atom;
+                if ((this_atom = zend_hash_index_find(Z_ARRVAL_P(atom), i)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"atom member not found\n");
+                }
+                zval *temp2;
+                if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "Zatom", sizeof("Zatom")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"Zatom key not found\n");
+                }
+                convert_to_long_ex(temp2);
+                cs->atom[i].Zatom = (int) Z_LVAL_P(temp2);
+
+                if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "fraction", sizeof("fraction")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"fraction key not found\n");
+                }
+                convert_to_double_ex(temp2);
+                cs->atom[i].fraction = (double) Z_DVAL_P(temp2);
+
+                if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "x", sizeof("x")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"x key not found\n");
+                }
+                convert_to_double_ex(temp2);
+                cs->atom[i].x = (double) Z_DVAL_P(temp2);
+
+                if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "y", sizeof("y")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"y key not found\n");
+                }
+                convert_to_double_ex(temp2);
+                cs->atom[i].y = (double) Z_DVAL_P(temp2);
+
+                if ((temp2 = zend_hash_str_find(Z_ARRVAL_P(this_atom), "z", sizeof("z")-1)) == NULL) {
+                        SWIG_exception(SWIG_TypeError,"z key not found\n");
+                }
+                convert_to_double_ex(temp2);
+                cs->atom[i].z = (double) Z_DVAL_P(temp2);
+
+        }
+        $1 = cs;
 }
 #endif
 

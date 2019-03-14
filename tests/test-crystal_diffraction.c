@@ -99,12 +99,14 @@ int main(int argc, char **argv) {
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	xrl_clear_error(&error);
+	Crystal_Free(cs);
 
 	cs = Crystal_GetCrystal("non-existent-crystal", NULL, &error);
 	assert(cs == NULL);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	xrl_clear_error(&error);
+	Crystal_Free(cs);
 
 	/* copy struct */
 	cs = Crystal_GetCrystal("Diamond", NULL, &error);
@@ -122,6 +124,7 @@ int main(int argc, char **argv) {
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, "Crystal already present in array") == 0);
 	xrl_clear_error(&error);
+	Crystal_Free(cs);
 
 	rv = Crystal_AddCrystal(cs_copy, NULL, &error);
 	assert(rv == 1);
@@ -137,6 +140,7 @@ int main(int argc, char **argv) {
 		assert(error == NULL);
 		assert(strcmp(crystals_list[i], cs->name) == 0);
 		free(crystals_list[i]);
+		Crystal_Free(cs);
 	}
 	free(crystals_list);
 
@@ -171,6 +175,7 @@ int main(int argc, char **argv) {
 		}
 		Crystal_Free(cs_copy);
 	}
+	Crystal_Free(cs);
 
 	/* bragg angle */
 	cs = Crystal_GetCrystal("Diamond", NULL, &error);
@@ -322,6 +327,7 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, INVALID_MILLER) == 0);
 	xrl_clear_error(&error);
 
+	Crystal_Free(cs);
 
 	return 0;
 }
