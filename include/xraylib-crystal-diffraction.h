@@ -22,9 +22,6 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
  * The routines Crystal_ReadCrystals and CrystalAddCrystalStruct are not thread safe if crystals are
  * added to the official array. In this case, locking will have to be used.
  *
- * Note on memory usage:
- * Crystal_FreeMemory needs to be used to free memory.
- *
  * Parameters:
  * energy    -- KeV
  * rel_angle -- photon angle / bragg angle
@@ -64,8 +61,7 @@ void Crystal_Free (Crystal_Struct* crystal);
  *
  * If c_array is NULL then the official array of crystals is searched.
  * If not found, NULL is returned.
- * Do not free the returned struct!
- * If you would like to modify the struct, make a copy of it first!
+ * Free the returned struct with Crystal_Free.
  */
 
 XRL_EXTERN
