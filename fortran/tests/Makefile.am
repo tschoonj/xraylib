@@ -7,6 +7,7 @@ check_PROGRAMS = \
 	test-auger \
 	test-compoundparser \
 	test-comptonprofiles \
+	test-crystal-diffraction \
 	test-refractive_indices \
 	test-nist-compounds \
 	test-radionuclides \
@@ -40,6 +41,11 @@ test_comptonprofiles_SOURCES = libtest.f90 test-comptonprofiles.f90
 test_comptonprofiles_LDADD = $(LDADD)
 test_comptonprofiles_CPPFLAGS = -I.. -I.
 test_comptonprofiles_FCFLAGS = ${test_comptonprofiles_CPPFLAGS}
+
+test_crystal_diffraction_SOURCES = libtest.f90 test-crystal_diffraction.f90
+test_crystal_diffraction_LDADD = $(LDADD)
+test_crystal_diffraction_CPPFLAGS = -I.. -I.
+test_crystal_diffraction_FCFLAGS = ${test_crystal_diffraction_CPPFLAGS}
 
 test_refractive_indices_SOURCES = libtest.f90 test-refractive_indices.f90
 test_refractive_indices_LDADD = $(LDADD)
