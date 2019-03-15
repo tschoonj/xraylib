@@ -72,7 +72,7 @@ TYPE :: Crystal_Struct
         REAL (C_DOUBLE) :: gamma
         REAL (C_DOUBLE) :: volume
         INTEGER (C_INT) :: n_atom
-        TYPE (Crystal_Atom), DIMENSION(:), POINTER :: atom
+        TYPE (Crystal_Atom), DIMENSION(:), ALLOCATABLE :: atom
 ENDTYPE
 
 TYPE :: compoundDataNIST
@@ -132,6 +132,8 @@ INTEGER (KIND=C_INT),PARAMETER ::  RADIO_NUCLIDE_STRING_LENGTH =&
 _RADIO_NUCLIDE_STRING_LENGTH
 INTEGER (KIND=C_INT),PARAMETER ::  CRYSTAL_STRING_LENGTH =&
 _CRYSTAL_STRING_LENGTH
+
+INTEGER (KIND=C_INT),PARAMETER :: CRYSTALARRAY_MAX = 512
 
 INTEGER (KIND=C_INT),PARAMETER ::  F1_TRANS   = 0
 INTEGER (KIND=C_INT),PARAMETER ::  F12_TRANS  = 1
@@ -1847,171 +1849,6 @@ INTERFACE
                 IMPLICIT NONE
                 INTEGER (KIND=C_INT) :: GetErrorMessages
         ENDFUNCTION
-
-        FUNCTION Refractive_IndexC(compound,E,density,error) BIND(C,NAME='Refractive_Index')
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: xrlComplex_C
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: compound
-                REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, density
-                TYPE (xrlComplex_C) :: Refractive_IndexC
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Refractive_IndexC
-
-        FUNCTION AtomicNumberToSymbolC(Z, error)&
-                BIND(C,NAME='AtomicNumberToSymbol')&
-                RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR) :: rv
-                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION AtomicNumberToSymbolC
-
-        FUNCTION SymbolToAtomicNumberC(symbol, error)&
-                BIND(C,NAME='SymbolToAtomicNumber')&
-                RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: symbol
-                INTEGER (KIND=C_INT) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION SymbolToAtomicNumberC
-
-        SUBROUTINE xrlFree(xrlPtr)&
-        BIND(C,NAME='xrlFree')
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
-        ENDSUBROUTINE xrlFree
-
-        FUNCTION Crystal_GetCrystalC(material, c_array, error)&
-                BIND(C,NAME='Crystal_GetCrystal')&
-                RESULT (rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: material
-                TYPE (C_PTR), INTENT(IN), VALUE :: c_array
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_GetCrystalC
-
-        FUNCTION Crystal_AddCrystalC(crystal, c_array, error)&
-                BIND(C,NAME='Crystal_AddCrystal')&
-                RESULT (rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                TYPE (C_PTR), INTENT(IN), VALUE :: c_array
-                INTEGER (C_INT) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_AddCrystalC
-
-        FUNCTION Bragg_angleC(crystal, energy, i_miller, j_miller, k_miller,&
-                error) BIND(C,NAME='Bragg_angle') RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy
-                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
-                REAL (C_DOUBLE) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Bragg_angleC
-
-        FUNCTION Q_scattering_amplitudeC(crystal, energy, i_miller, j_miller, &
-                k_miller, rel_angle, error) BIND(C,NAME='Q_scattering_amplitude')&
-                RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, rel_angle
-                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
-                REAL (C_DOUBLE) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Q_scattering_amplitudeC
-
-        FUNCTION Atomic_FactorsC(Z, energy, q, debye_factor, f0, &
-                f_primep, f_prime2, error) BIND(C,NAME='Atomic_Factors')&
-                RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                INTEGER (C_INT), INTENT(IN), VALUE :: Z
-                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, q,debye_factor
-                REAL (C_DOUBLE), INTENT(OUT) :: f0, f_primep, f_prime2
-                INTEGER (C_INT) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Atomic_FactorsC
-
-        FUNCTION Crystal_F_H_StructureFactorC(crystal, energy, i_miller,&
-        j_miller, k_miller, debye_factor, rel_angle, error) BIND(C,NAME=&
-        'Crystal_F_H_StructureFactor') RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: xrlComplex_C
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, rel_angle,&
-                debye_factor
-                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
-                TYPE(xrlComplex_C) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_F_H_StructureFactorC
-
-        FUNCTION Crystal_F_H_StructureFactor_PartialC(crystal, &
-        energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, &
-        f0_flag, f_prime_flag, f_prime2_flag, error) BIND(C,NAME=&
-        'Crystal_F_H_StructureFactor_Partial') RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPORT :: xrlComplex_C
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, rel_angle,&
-                debye_factor
-                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller,&
-                f0_flag, f_prime_flag, f_prime2_flag
-                TYPE(xrlComplex_C) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_F_H_StructureFactor_PartialC
-
-        FUNCTION Crystal_UnitCellVolumeC(crystal, error)&
-        BIND (C,NAME='Crystal_UnitCellVolume')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                REAL (C_DOUBLE) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_UnitCellVolumeC
-
-        FUNCTION Crystal_dSpacingC(crystal, i_miller, j_miller, k_miller, error)&
-        BIND (C,NAME='Crystal_dSpacing')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
-                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
-                REAL (C_DOUBLE) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_dSpacingC
-
-
-        FUNCTION Crystal_GetCrystalsListC(c_array, nCrystals, error)&
-        BIND (C,NAME='Crystal_GetCrystalsList')&
-        RESULT(rv)
-                USE, INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                INTEGER (C_INT) :: nCrystals
-                TYPE (C_PTR), VALUE :: c_array
-                TYPE (C_PTR) :: rv
-                TYPE (C_PTR),INTENT(IN),VALUE :: error
-        ENDFUNCTION Crystal_GetCrystalsListC
-
-        FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
-                USE,INTRINSIC :: ISO_C_BINDING
-                IMPLICIT NONE
-                TYPE (C_PTR), INTENT(IN), VALUE :: s
-                INTEGER (C_SIZE_T) :: xrlstrlen
-        ENDFUNCTION xrlstrlen
-
 ENDINTERFACE
 
 
@@ -2040,6 +1877,12 @@ SUBROUTINE process_error(errorPtr, error)
                         IMPLICIT NONE
                         TYPE (C_PTR), INTENT(IN), VALUE :: error
                 ENDSUBROUTINE xrl_error_free
+                FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: s
+                        INTEGER (C_SIZE_T) :: xrlstrlen
+                ENDFUNCTION xrlstrlen
         ENDINTERFACE
 
         IF (C_ASSOCIATED(errorPtr)) THEN
@@ -2162,6 +2005,30 @@ FUNCTION AtomicNumberToSymbol(Z, error) RESULT(rv)
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION AtomicNumberToSymbolC(Z, error)&
+                BIND(C,NAME='AtomicNumberToSymbol')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR) :: rv
+                INTEGER (KIND=C_INT), INTENT(IN), VALUE :: Z
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION AtomicNumberToSymbolC
+        SUBROUTINE xrlFree(xrlPtr)&
+        BIND(C,NAME='xrlFree')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
+        ENDSUBROUTINE xrlFree
+        FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                USE,INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: s
+                INTEGER (C_SIZE_T) :: xrlstrlen
+        ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2216,6 +2083,18 @@ FUNCTION SymbolToAtomicNumber(symbol, error) RESULT(rv)
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION SymbolToAtomicNumberC(symbol, error)&
+                BIND(C,NAME='SymbolToAtomicNumber')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: symbol
+                INTEGER (KIND=C_INT) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION SymbolToAtomicNumberC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2240,10 +2119,11 @@ FUNCTION SymbolToAtomicNumber(symbol, error) RESULT(rv)
         ENDIF
 ENDFUNCTION SymbolToAtomicNumber
 
-FUNCTION Crystal_GetCrystal (material, c_array, error) RESULT(rv)
+FUNCTION Crystal_GetCrystal(material, c_array, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
+        
         TYPE (Crystal_Array), INTENT(INOUT), OPTIONAL, TARGET :: c_array
         CHARACTER (KIND=C_CHAR,LEN=*), INTENT(IN) :: material
         CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: material_F
@@ -2251,10 +2131,31 @@ FUNCTION Crystal_GetCrystal (material, c_array, error) RESULT(rv)
         INTEGER :: i
         TYPE (Crystal_Struct_C), POINTER :: c_struct_c
         TYPE (Crystal_Struct), POINTER :: rv
+        TYPE (Crystal_Atom), DIMENSION(:), POINTER :: atom
         CHARACTER (KIND=C_CHAR), DIMENSION(:), POINTER :: name_F
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION Crystal_GetCrystalC(material, c_array, error)&
+                        BIND(C,NAME='Crystal_GetCrystal')&
+                        RESULT (rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: material
+                        TYPE (C_PTR), INTENT(IN), VALUE :: c_array
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION Crystal_GetCrystalC
+
+                SUBROUTINE Crystal_FreeC(crystal)&
+                BIND(C,NAME='Crystal_Free')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                ENDSUBROUTINE Crystal_FreeC
+        ENDINTERFACE
 
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
@@ -2294,7 +2195,10 @@ FUNCTION Crystal_GetCrystal (material, c_array, error) RESULT(rv)
                 rv%gamma=c_struct_c%gamma
                 rv%volume=c_struct_c%volume
                 rv%n_atom =c_struct_c%n_atom
-                CALL C_F_POINTER(c_struct_c%atom, rv%atom, [rv%n_atom])
+                CALL C_F_POINTER(c_struct_c%atom, atom, [rv%n_atom])
+                ALLOCATE(rv%atom(rv%n_atom))
+                rv%atom = atom
+                CALL Crystal_FreeC(crystal_C)
         ELSEIF (C_ASSOCIATED(errorPtr)) THEN
                 CALL process_error(errorPtr, error)
         ENDIF
@@ -2302,13 +2206,20 @@ FUNCTION Crystal_GetCrystal (material, c_array, error) RESULT(rv)
         RETURN
 ENDFUNCTION Crystal_GetCrystal
 
-FUNCTION convert_to_crystal_c(crystal) RESULT(crystal_c)
+! atom here as second argument is a cheap hack
+! around fortran's lack of support for TARGET'ing
+! derived type allocatable components...
+FUNCTION convert_to_crystal_c(crystal, atom) RESULT(crystal_c)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
 
         TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        TYPE (Crystal_Atom), INTENT(IN), DIMENSION(:), TARGET :: atom
+        TYPE (Crystal_Atom), DIMENSION(:), POINTER :: atom_ptr
         TYPE (Crystal_Struct_C) :: crystal_c
+
+        atom_ptr => atom
 
         crystal_c%a = crystal%a
         crystal_c%b = crystal%b
@@ -2318,7 +2229,7 @@ FUNCTION convert_to_crystal_c(crystal) RESULT(crystal_c)
         crystal_c%gamma = crystal%gamma
         crystal_c%volume = crystal%volume
         crystal_c%n_atom = crystal%n_atom
-        crystal_c%atom = C_LOC(crystal%atom(1))
+        crystal_c%atom = C_LOC(atom_ptr(1))
 
 ENDFUNCTION convert_to_crystal_c
 
@@ -2340,6 +2251,19 @@ FUNCTION Bragg_angle(crystal, energy, i_miller, j_miller, k_miller, error)&
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION Bragg_angleC(crystal, energy, i_miller, j_miller, k_miller,&
+                error) BIND(C,NAME='Bragg_angle') RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                REAL (C_DOUBLE) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Bragg_angleC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2353,7 +2277,7 @@ FUNCTION Bragg_angle(crystal, energy, i_miller, j_miller, k_miller, error)&
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
 
         rv = Bragg_angleC(crystal_ptr, energy, i_miller, j_miller, k_miller, errorPtrLoc)
@@ -2384,6 +2308,20 @@ FUNCTION Q_scattering_amplitude(crystal, energy, i_miller, j_miller,&
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION Q_scattering_amplitudeC(crystal, energy, i_miller, j_miller, &
+                k_miller, rel_angle, error) BIND(C,NAME='Q_scattering_amplitude')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, rel_angle
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                REAL (C_DOUBLE) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Q_scattering_amplitudeC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2397,7 +2335,7 @@ FUNCTION Q_scattering_amplitude(crystal, energy, i_miller, j_miller,&
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
 
         rv = Q_scattering_amplitudeC(crystal_ptr, energy, i_miller,&
@@ -2429,6 +2367,22 @@ FUNCTION Crystal_F_H_StructureFactor(crystal, energy, i_miller,&
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION Crystal_F_H_StructureFactorC(crystal, energy, i_miller,&
+        j_miller, k_miller, debye_factor, rel_angle, error) BIND(C,NAME=&
+        'Crystal_F_H_StructureFactor') RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPORT :: xrlComplex_C
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, rel_angle,&
+                debye_factor
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                TYPE(xrlComplex_C) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Crystal_F_H_StructureFactorC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2442,7 +2396,7 @@ FUNCTION Crystal_F_H_StructureFactor(crystal, energy, i_miller,&
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
         temp = Crystal_F_H_StructureFactorC(crystal_ptr, energy, i_miller,&
         j_miller, k_miller, debye_factor, rel_angle, errorPtrLoc)
@@ -2478,6 +2432,24 @@ FUNCTION Crystal_F_H_StructureFactor_Partial(crystal, &
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION Crystal_F_H_StructureFactor_PartialC(crystal, &
+        energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, &
+        f0_flag, f_prime_flag, f_prime2_flag, error) BIND(C,NAME=&
+        'Crystal_F_H_StructureFactor_Partial') RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPORT :: xrlComplex_C
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, rel_angle,&
+                debye_factor
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller,&
+                f0_flag, f_prime_flag, f_prime2_flag
+                TYPE(xrlComplex_C) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Crystal_F_H_StructureFactor_PartialC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2491,7 +2463,7 @@ FUNCTION Crystal_F_H_StructureFactor_Partial(crystal, &
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
         temp = Crystal_F_H_StructureFactor_PartialC(crystal_ptr,&
         energy, i_miller, j_miller, k_miller, debye_factor, &
@@ -2521,6 +2493,18 @@ FUNCTION Crystal_UnitCellVolume(crystal, error) RESULT(rv)
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION Crystal_UnitCellVolumeC(crystal, error)&
+        BIND (C,NAME='Crystal_UnitCellVolume')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                REAL (C_DOUBLE) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Crystal_UnitCellVolumeC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2534,7 +2518,7 @@ FUNCTION Crystal_UnitCellVolume(crystal, error) RESULT(rv)
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
 
         rv = Crystal_UnitCellVolumeC(crystal_ptr, errorPtrLoc)
@@ -2562,6 +2546,19 @@ FUNCTION Crystal_dSpacing(crystal, i_miller, j_miller, k_miller, error)&
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+        FUNCTION Crystal_dSpacingC(crystal, i_miller, j_miller, k_miller, error)&
+        BIND (C,NAME='Crystal_dSpacing')&
+        RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                INTEGER (C_INT), INTENT(IN), VALUE :: i_miller, j_miller, k_miller
+                REAL (C_DOUBLE) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Crystal_dSpacingC
+        ENDINTERFACE
+
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
 
@@ -2575,7 +2572,7 @@ FUNCTION Crystal_dSpacing(crystal, i_miller, j_miller, k_miller, error)&
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
 
         rv = Crystal_dSpacingC(crystal_ptr, i_miller, j_miller, k_miller, errorPtrLoc)
@@ -2587,16 +2584,13 @@ FUNCTION Crystal_dSpacing(crystal, i_miller, j_miller, k_miller, error)&
         RETURN
 ENDFUNCTION Crystal_dSpacing
 
-FUNCTION Crystal_AddCrystal(crystal, c_array, error) RESULT(rv)
+FUNCTION Crystal_MakeCopy(crystal, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
         IMPLICIT NONE
-        TYPE (Crystal_Array), INTENT(INOUT), OPTIONAL, TARGET :: c_array
-        TYPE (Crystal_Struct), INTENT(IN) :: crystal
-        INTEGER (C_INT) :: rv
 
-        TYPE (C_PTR) :: crystal_ptr
-        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        TYPE (Crystal_Struct), POINTER :: rv
 
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
@@ -2615,8 +2609,60 @@ FUNCTION Crystal_AddCrystal(crystal, c_array, error) RESULT(rv)
                 ENDIF
         ENDIF
 
-        crystal_c = convert_to_crystal_c(crystal)
+        ALLOCATE(rv)
+        rv = crystal
+
+        RETURN
+ENDFUNCTION Crystal_MakeCopy
+
+FUNCTION Crystal_AddCrystal(crystal, c_array, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+        TYPE (Crystal_Array), INTENT(INOUT), OPTIONAL, TARGET :: c_array
+        TYPE (Crystal_Struct), INTENT(IN) :: crystal
+        INTEGER (C_INT) :: rv
+
+        TYPE (C_PTR) :: crystal_ptr
+        TYPE (Crystal_Struct_C), TARGET :: crystal_c
+        CHARACTER (KIND=C_CHAR), DIMENSION(:), ALLOCATABLE, TARGET :: nameF
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE(C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION Crystal_AddCrystalC(crystal, c_array, error)&
+                        BIND(C,NAME='Crystal_AddCrystal')&
+                        RESULT (rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: crystal
+                        TYPE (C_PTR), INTENT(IN), VALUE :: c_array
+                        INTEGER (C_INT) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION Crystal_AddCrystalC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+
+        crystal_c = convert_to_crystal_c(crystal, crystal%atom)
         crystal_ptr = C_LOC(crystal_c)
+
+        CALL stringF2C(crystal%name, nameF)
+
+        crystal_c%name = C_LOC(nameF)
 
         IF (PRESENT(c_array)) THEN
                 rv = Crystal_AddCrystalC(crystal_ptr, C_LOC(c_array), errorPtrLoc)
@@ -2647,6 +2693,18 @@ FUNCTION Refractive_Index(compoundString, E, density, error) RESULT(rv)
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+                FUNCTION Refractive_IndexC(compound,E,density,error) BIND(C,NAME='Refractive_Index')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPORT :: xrlComplex_C
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: compound
+                        REAL (KIND=C_DOUBLE), INTENT(IN), VALUE :: E, density
+                        TYPE (xrlComplex_C) :: Refractive_IndexC
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION Refractive_IndexC
+        ENDINTERFACE
 
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR
@@ -2802,6 +2860,13 @@ FUNCTION GetCompoundDataNISTByIndex(index, error) RESULT(rv)
                         IMPLICIT NONE
                         TYPE (C_PTR), INTENT(IN), VALUE :: compoundData
                 ENDSUBROUTINE FreeCompoundDataNISTC
+
+                FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: s
+                        INTEGER (C_SIZE_T) :: xrlstrlen
+                ENDFUNCTION xrlstrlen
         ENDINTERFACE
 
         errorPtr = C_NULL_PTR
@@ -2873,6 +2938,20 @@ FUNCTION GetCompoundDataNISTList(error) RESULT(rv)
                         TYPE (C_PTR) :: rv
                         TYPE (C_PTR),INTENT(IN),VALUE :: error
                 ENDFUNCTION GetCompoundDataNISTListC
+
+                SUBROUTINE xrlFree(xrlPtr)&
+                BIND(C,NAME='xrlFree')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
+                ENDSUBROUTINE xrlFree
+
+                FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: s
+                        INTEGER (C_SIZE_T) :: xrlstrlen
+                ENDFUNCTION xrlstrlen
         ENDINTERFACE
 
         errorPtr = C_NULL_PTR
@@ -3110,6 +3189,13 @@ FUNCTION GetRadioNuclideDataByIndex(index,error) RESULT(rv)
                         IMPLICIT NONE
                         TYPE (C_PTR), INTENT(IN), VALUE :: rnd
                 ENDSUBROUTINE FreeRadioNuclideDataC
+
+                FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: s
+                        INTEGER (C_SIZE_T) :: xrlstrlen
+                ENDFUNCTION xrlstrlen
         ENDINTERFACE
 
         NULLIFY(rv)
@@ -3190,6 +3276,20 @@ FUNCTION GetRadioNuclideDataList(error) RESULT(rv)
                         TYPE (C_PTR) :: rv
                         TYPE (C_PTR),INTENT(IN),VALUE :: error
                 ENDFUNCTION GetRadioNuclideDataListC
+
+                SUBROUTINE xrlFree(xrlPtr)&
+                BIND(C,NAME='xrlFree')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
+                ENDSUBROUTINE xrlFree
+
+                FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: s
+                        INTEGER (C_SIZE_T) :: xrlstrlen
+                ENDFUNCTION xrlstrlen
         ENDINTERFACE
 
         NULLIFY(rv)
@@ -3249,6 +3349,33 @@ FUNCTION Crystal_GetCrystalsList(c_array, error) RESULT(rv)
         TYPE (C_PTR) :: c_arrayPtr, errorPtr, errorPtrLoc
         TARGET :: errorPtr
 
+        INTERFACE
+                FUNCTION Crystal_GetCrystalsListC(c_array, nCrystals, error)&
+                BIND (C,NAME='Crystal_GetCrystalsList')&
+                RESULT(rv)
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        INTEGER (C_INT) :: nCrystals
+                        TYPE (C_PTR), VALUE :: c_array
+                        TYPE (C_PTR) :: rv
+                        TYPE (C_PTR),INTENT(IN),VALUE :: error
+                ENDFUNCTION Crystal_GetCrystalsListC
+
+                SUBROUTINE xrlFree(xrlPtr)&
+                BIND(C,NAME='xrlFree')
+                        USE, INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: xrlPtr
+                ENDSUBROUTINE xrlFree
+
+                FUNCTION xrlstrlen(s) BIND(C,NAME='strlen')
+                        USE,INTRINSIC :: ISO_C_BINDING
+                        IMPLICIT NONE
+                        TYPE (C_PTR), INTENT(IN), VALUE :: s
+                        INTEGER (C_SIZE_T) :: xrlstrlen
+                ENDFUNCTION xrlstrlen
+        ENDINTERFACE
+
         NULLIFY(rv)
         c_arrayPtr = C_NULL_PTR
         errorPtr = C_NULL_PTR
@@ -3307,6 +3434,20 @@ FUNCTION Atomic_Factors(Z, energy, q, debye_factor, f0, &
         TYPE(xrl_error), POINTER, OPTIONAL :: error
         TYPE(C_PTR) :: errorPtr, errorPtrLoc
         TARGET :: errorPtr
+
+        INTERFACE
+        FUNCTION Atomic_FactorsC(Z, energy, q, debye_factor, f0, &
+                f_primep, f_prime2, error) BIND(C,NAME='Atomic_Factors')&
+                RESULT(rv)
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: energy, q,debye_factor
+                REAL (C_DOUBLE), INTENT(OUT) :: f0, f_primep, f_prime2
+                INTEGER (C_INT) :: rv
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+        ENDFUNCTION Atomic_FactorsC
+        ENDINTERFACE
 
         errorPtr = C_NULL_PTR
         errorPtrLoc = C_NULL_PTR

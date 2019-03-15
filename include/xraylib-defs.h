@@ -18,7 +18,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan, Bruno Golosio, Antonio Brunetti, Manue
 
 #define ZMAX 120
 #define MENDEL_MAX 107
-#define CRYSTALARRAY_MAX 100
+#define CRYSTALARRAY_MAX 512
 #define MAXFILENAMESIZE 1000
 #define SHELLNUM 28
 #define SHELLNUM_K 31
