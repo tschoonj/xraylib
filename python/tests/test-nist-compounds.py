@@ -14,15 +14,15 @@ class TestNISTCompounds(unittest.TestCase):
         cdn = xraylib.GetCompoundDataNISTByIndex(5)
         self.assertEqual(cdn['nElements'], 4)
         self.assertEqual(cdn['density'], 0.001205)
-        self.assertEqual(cdn['Elements'], [6, 7, 8, 18])
-        self.assertAlmostEqual(cdn['massFractions'], [0.000124, 0.755267, 0.231781, 0.012827])
+        self.assertEqual(cdn['Elements'], (6, 7, 8, 18))
+        self.assertAlmostEqual(cdn['massFractions'], (0.000124, 0.755267, 0.231781, 0.012827))
         self.assertEqual(cdn['name'], 'Air, Dry (near sea level)')
 
         cdn = xraylib.GetCompoundDataNISTByName('Air, Dry (near sea level)')
         self.assertEqual(cdn['nElements'], 4)
         self.assertEqual(cdn['density'], 0.001205)
-        self.assertEqual(cdn['Elements'], [6, 7, 8, 18])
-        self.assertAlmostEqual(cdn['massFractions'], [0.000124, 0.755267, 0.231781, 0.012827])
+        self.assertEqual(cdn['Elements'], (6, 7, 8, 18))
+        self.assertAlmostEqual(cdn['massFractions'], (0.000124, 0.755267, 0.231781, 0.012827))
         self.assertEqual(cdn['name'], 'Air, Dry (near sea level)')
 
     def test_bad(self):

@@ -110,8 +110,6 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 %ignore c_mul;
 #endif
 
-%ignore Crystal_AddCrystal;
-%ignore Crystal_ReadFile;
 %ignore Crystal_Array;
 %ignore Crystal_Free;
 %ignore xrlFree;
@@ -688,13 +686,16 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 #ifdef SWIGPYTHON
 %typemap(out) char ** {
-        int i;
+        int i, len = 0;
         char **list = $1;
 
         if (list) {
-                PyObject *res = PyList_New(0);
                 for (i = 0 ; list[i] != NULL ; i++) {
-                        PyList_Append(res,PyString_FromString(list[i]));
+                        len++;
+                } 
+                PyObject *res = PyTuple_New(len);
+                for (i = 0 ; i < len ; i++) {
+                        PyTuple_SET_ITEM(res, i, PyString_FromString(list[i]));
                         xrlFree(list[i]);
                 }
                 xrlFree(list);
@@ -716,17 +717,17 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 PyDict_SetItemString(dict, "Z_xray",PyInt_FromLong(rnd->Z_xray));
                 PyDict_SetItemString(dict, "nXrays",PyInt_FromLong(rnd->nXrays));
                 PyDict_SetItemString(dict, "nGammas",PyInt_FromLong(rnd->nGammas));
-                PyObject *XrayLines = PyList_New(rnd->nXrays);
-                PyObject *XrayIntensities= PyList_New(rnd->nXrays);
-                PyObject *GammaEnergies= PyList_New(rnd->nGammas);
-                PyObject *GammaIntensities= PyList_New(rnd->nGammas);
+                PyObject *XrayLines = PyTuple_New(rnd->nXrays);
+                PyObject *XrayIntensities= PyTuple_New(rnd->nXrays);
+                PyObject *GammaEnergies= PyTuple_New(rnd->nGammas);
+                PyObject *GammaIntensities= PyTuple_New(rnd->nGammas);
                 for (i = 0 ; i < rnd->nXrays ; i++) {
-                       PyList_SetItem(XrayLines, i, PyInt_FromLong(rnd->XrayLines[i]));
-                       PyList_SetItem(XrayIntensities, i, PyFloat_FromDouble(rnd->XrayIntensities[i]));
+                       PyTuple_SET_ITEM(XrayLines, i, PyInt_FromLong(rnd->XrayLines[i]));
+                       PyTuple_SET_ITEM(XrayIntensities, i, PyFloat_FromDouble(rnd->XrayIntensities[i]));
                 }
                 for (i = 0 ; i < rnd->nGammas ; i++) {
-                       PyList_SetItem(GammaEnergies, i, PyFloat_FromDouble(rnd->GammaEnergies[i]));
-                       PyList_SetItem(GammaIntensities, i, PyFloat_FromDouble(rnd->GammaIntensities[i]));
+                       PyTuple_SET_ITEM(GammaEnergies, i, PyFloat_FromDouble(rnd->GammaEnergies[i]));
+                       PyTuple_SET_ITEM(GammaIntensities, i, PyFloat_FromDouble(rnd->GammaIntensities[i]));
                 }
                 PyDict_SetItemString(dict, "XrayLines", XrayLines);
                 PyDict_SetItemString(dict, "XrayIntensities", XrayIntensities);
@@ -747,11 +748,11 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name));
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements));
                 PyDict_SetItemString(dict, "density",PyFloat_FromDouble(cdn->density));
-                PyObject *Elements = PyList_New(cdn->nElements);
-                PyObject *massFractions = PyList_New(cdn->nElements);
+                PyObject *Elements = PyTuple_New(cdn->nElements);
+                PyObject *massFractions = PyTuple_New(cdn->nElements);
                 for (i = 0 ; i < cdn->nElements ; i++) {
-                       PyList_SetItem(Elements, i, PyInt_FromLong(cdn->Elements[i]));
-                       PyList_SetItem(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i]));
+                       PyTuple_SET_ITEM(Elements, i, PyInt_FromLong(cdn->Elements[i]));
+                       PyTuple_SET_ITEM(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i]));
                 }
                 PyDict_SetItemString(dict, "Elements", Elements);
                 PyDict_SetItemString(dict, "massFractions", massFractions);
@@ -767,16 +768,16 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 PyObject *dict = PyDict_New();
                 PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements));
                 PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll));
-                PyObject *elements=PyList_New(cd->nElements);
-                PyObject *massfractions=PyList_New(cd->nElements);
-                PyObject *nAtoms=PyList_New(cd->nElements);
+                PyObject *elements = PyTuple_New(cd->nElements);
+                PyObject *massfractions = PyTuple_New(cd->nElements);
+                PyObject *nAtoms = PyTuple_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
                         PyObject *o = PyInt_FromLong((long) cd->Elements[i]);
-                        PyList_SetItem(elements, i, o);
+                        PyTuple_SET_ITEM(elements, i, o);
                         o = PyFloat_FromDouble(cd->massFractions[i]);
-                        PyList_SetItem(massfractions, i, o);
+                        PyTuple_SET_ITEM(massfractions, i, o);
                         o = PyFloat_FromDouble(cd->nAtoms[i]);
-                        PyList_SetItem(nAtoms, i, o);
+                        PyTuple_SET_ITEM(nAtoms, i, o);
                 }
                 PyDict_SetItemString(dict, "Elements", elements);
                 PyDict_SetItemString(dict, "massFractions", massfractions);
@@ -811,7 +812,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
              PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble(cs->gamma));
              PyDict_SetItemString(dict, "volume",PyFloat_FromDouble(cs->volume));
              PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom));
-             PyObject *atom = PyList_New(cs->n_atom);
+             PyObject *atom = PyTuple_New(cs->n_atom);
              PyDict_SetItemString(dict, "atom", atom);
              for (i = 0 ; i < cs->n_atom ; i++) {
                 PyObject *dict_temp = PyDict_New();
@@ -820,7 +821,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble(cs->atom[i].x));
                 PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble(cs->atom[i].y));
                 PyDict_SetItemString(dict_temp, "z",PyFloat_FromDouble(cs->atom[i].z));
-                PyList_SetItem(atom, i, dict_temp);
+                PyTuple_SET_ITEM(atom, i, dict_temp);
              }
              Crystal_Free(cs);
 
@@ -835,14 +836,13 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
         if (PyDict_Check(dict) == 0) {
                PyErr_SetString(PyExc_TypeError,"Expected dictionary argument");
-               $1 = NULL;
-               goto fail;
+               SWIG_fail;
         }
        /* name */
         cs = malloc(sizeof(Crystal_Struct));
         temp = PyDict_GetItemString(dict,"name");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"Name key not present");
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "Name key not present");
                $1 = NULL;
                goto fail;
         }
@@ -851,6 +851,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 PyObject *utf8str = PyUnicode_AsUTF8String(temp);
                 const char *cstr;
                 if (!utf8str) {
+                        PyErr_SetString(PyExc_TypeError, "Name value not a UTF8 string");
                         SWIG_fail;
                 }
                 cstr = PyBytes_AsString(utf8str);
@@ -858,206 +859,159 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 Py_DECREF(utf8str);
         }
 %#else
-        cs->name = strdup(PyString_AsString(temp)); /* this is potentially dangerous on Windows as it will be freed with xraylib's free..*/
-%#endif
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"Name key not a string");
-               $1 = NULL;
-               goto fail;
+        {
+                const char *name = PyString_AsString(temp); 
+                if (PyErr_Occurred() != NULL) {
+                        PyErr_SetString(PyExc_TypeError, "Name value not a string");
+                        SWIG_fail;
+                }
+                cs->name = strdup(name); /* this is potentially dangerous on Windows as it will be freed with xraylib's free..*/
         }
+%#endif
        /* a */
         temp = PyDict_GetItemString(dict,"a");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"a key not present");
-               $1 = NULL;
-               goto fail;
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError,"a key not present");
+               SWIG_fail;
         }
         cs->a = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"a key not a number");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError,"a key not a number");
+               SWIG_fail;
         }
        /* b */
         temp = PyDict_GetItemString(dict,"b");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"b key not present");
-               $1 = NULL;
-               goto fail;
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError,"b key not present");
+               SWIG_fail;
         }
         cs->b = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"b key not a number");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError, "b key not a number");
+               SWIG_fail;
         }
        /* c */
         temp = PyDict_GetItemString(dict,"c");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"c key not present");
-               $1 = NULL;
-               goto fail;
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "c key not present");
+               SWIG_fail;
         }
         cs->c = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"c key not a number");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError, "c key not a number");
+               SWIG_fail;
         }
        /* alpha */
         temp = PyDict_GetItemString(dict,"alpha");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"alpha key not present");
-               $1 = NULL;
-               goto fail;
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "alpha key not present");
+               SWIG_fail;
         }
         cs->alpha = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"alpha key not a number");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError, "alpha key not a number");
+               SWIG_fail;
         }
        /* beta */
         temp = PyDict_GetItemString(dict,"beta");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"beta key not present");
-               $1 = NULL;
-               goto fail;
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "beta key not present");
+               SWIG_fail;
         }
         cs->beta = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"beta key not a number");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError, "beta key not a number");
+               SWIG_fail;
         }
        /* gamma */
-        temp = PyDict_GetItemString(dict,"gamma");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"gamma key not present");
-               $1 = NULL;
-               goto fail;
+        temp = PyDict_GetItemString(dict, "gamma");
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "gamma key not present");
+               SWIG_fail;
         }
         cs->gamma = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"gamma key not a number");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError, "gamma key not a number");
+               SWIG_fail;
         }
        /* volume */
-        temp = PyDict_GetItemString(dict,"volume");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"volume key not present");
-               $1 = NULL;
-               goto fail;
+        temp = PyDict_GetItemString(dict, "volume");
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "volume key not present");
+               SWIG_fail;
         }
         cs->volume = PyFloat_AsDouble(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"volume key not a number");
-               $1 = NULL;
-               goto fail;
-        }
-       /* n_atom */
-        temp = PyDict_GetItemString(dict,"n_atom");
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"n_atom key not present");
-               $1 = NULL;
-               goto fail;
-        }
-        cs->n_atom = PyInt_AsLong(temp);
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"n_atom key not a number");
-               $1 = NULL;
-               goto fail;
-        }
-        if (cs->n_atom < 1) {
-               PyErr_SetString(PyExc_RuntimeError,"n_atom value must be greater than zero");
-               $1 = NULL;
-               goto fail;
-
+               PyErr_SetString(PyExc_TypeError, "volume key not a number");
+               SWIG_fail;
         }
         /* atom */
-        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom)*cs->n_atom);
-        temp = PyDict_GetItemString(dict,"atom");
+        temp = PyDict_GetItemString(dict, "atom");
+        if (temp == NULL || PyErr_Occurred() != NULL) {
+               PyErr_SetString(PyExc_KeyError, "atom key not present");
+               SWIG_fail;
+        }
+        Py_ssize_t n_atom = PyTuple_Size(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"atom key not present");
-               $1 = NULL;
-               goto fail;
+               PyErr_SetString(PyExc_TypeError, "atom key not a tuple");
+               SWIG_fail;
         }
-        Py_ssize_t n_atom = PyList_Size(temp);
-        if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyErr_Occurred(),"atom key not a list");
-               $1 = NULL;
-               goto fail;
-        }
-        if (n_atom != cs->n_atom) {
-               PyErr_SetString(PyExc_RuntimeError,"n_atom value differs from number of elements");
-               $1 = NULL;
-               goto fail;
-        }
+        cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom) * n_atom);
+        cs->n_atom = n_atom;
         int i;
         PyObject *atom;
-        for (i=0 ; i < n_atom ; i++) {
-               atom = PyList_GetItem(temp,i);
+        for (i = 0 ; i < n_atom ; i++) {
+               atom = PyTuple_GetItem(temp, i);
                PyObject *temp2;
-               temp2 = PyDict_GetItemString(atom,"Zatom");
-               if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"Zatom key not present");
-                       $1 = NULL;
-                       goto fail;
+               temp2 = PyDict_GetItemString(atom, "Zatom");
+               if (temp2 == NULL || PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyExc_KeyError, "Zatom key not present");
+                       SWIG_fail;
                }
                cs->atom[i].Zatom = PyInt_AsLong(temp2);
                if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"Zatom key not a number");
-                       $1 = NULL;
-                       goto fail;
+                       PyErr_SetString(PyExc_TypeError, "Zatom key not a number");
+                       SWIG_fail;
                }
-               temp2 = PyDict_GetItemString(atom,"fraction");
-               if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"fraction key not present");
-                       $1 = NULL;
-                       goto fail;
+               temp2 = PyDict_GetItemString(atom, "fraction");
+               if (temp2 == NULL || PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyExc_KeyError, "fraction key not present");
+                       SWIG_fail;
                }
                cs->atom[i].fraction = PyFloat_AsDouble(temp2);
                if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"fraction key not a number");
-                       $1 = NULL;
-                       goto fail;
+                       PyErr_SetString(PyExc_TypeError, "fraction key not a number");
+                       SWIG_fail;
                }
                temp2 = PyDict_GetItemString(atom,"x");
-               if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"x key not present");
-                       $1 = NULL;
-                       goto fail;
+               if (temp2 == NULL || PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyExc_KeyError, "x key not present");
+                       SWIG_fail;
                }
                cs->atom[i].x = PyFloat_AsDouble(temp2);
                if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"x key not a number");
-                       $1 = NULL;
-                       goto fail;
+                       PyErr_SetString(PyExc_TypeError, "x key not a number");
+                       SWIG_fail;
                }
                temp2 = PyDict_GetItemString(atom,"y");
-               if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"y key not present");
-                       $1 = NULL;
-                       goto fail;
+               if (temp2 == NULL || PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyExc_KeyError, "y key not present");
+                       SWIG_fail;
                }
                cs->atom[i].y = PyFloat_AsDouble(temp2);
                if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"y key not a number");
-                       $1 = NULL;
-                       goto fail;
+                       PyErr_SetString(PyExc_TypeError,"y key not a number");
+                       SWIG_fail;
                }
                temp2 = PyDict_GetItemString(atom,"z");
-               if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"z key not present");
-                       $1 = NULL;
-                       goto fail;
+               if (temp2 == NULL || PyErr_Occurred() != NULL) {
+                       PyErr_SetString(PyExc_KeyError,"z key not present");
+                       SWIG_fail;
                }
                cs->atom[i].z = PyFloat_AsDouble(temp2);
                if (PyErr_Occurred() != NULL) {
-                       PyErr_SetString(PyErr_Occurred(),"z key not a number");
-                       $1 = NULL;
-                       goto fail;
+                       PyErr_SetString(PyExc_TypeError,"z key not a number");
+                       SWIG_fail;
                }
         }
         $1=cs;
