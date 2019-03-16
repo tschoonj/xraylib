@@ -10,8 +10,9 @@ dist_check_SCRIPTS = \
 	test-atomiclevelwidth.py \
 	test-atomicweight.py \
 	test-auger.py \
-	test-compoundparser.py \
 	test-comptonprofiles.py \
+	test-compoundparser.py \
+	test-crystal_diffraction.py \
 	test-nist-compounds.py \
 	test-radionuclides.py \
 	$(NULL)
