@@ -35,11 +35,16 @@ class TestCrystalDiffraction(unittest.TestCase):
 
         cs_copy['name'] = "Diamond-copy"
 
-        cs_copy['atom'] = list(cs_copy['atom'])
+        cs_copy['atom'] = list()
+        with self.assertRaises(TypeError):
+            xraylib.Crystal_AddCrystal(cs_copy)
+
+        cs_copy['atom'] = (25, "jkewjfpwejffj", None, )
         with self.assertRaises(TypeError):
             xraylib.Crystal_AddCrystal(cs_copy)
 
         del cs_copy['atom']
+
         with self.assertRaises(KeyError):
             xraylib.Crystal_AddCrystal(cs_copy)
 

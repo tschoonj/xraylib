@@ -951,9 +951,13 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                PyErr_SetString(PyExc_KeyError, "atom key not present");
                SWIG_fail;
         }
-        Py_ssize_t n_atom = PyTuple_Size(temp);
+        Py_ssize_t n_atom = PySequence_Size(temp);
         if (PyErr_Occurred() != NULL) {
-               PyErr_SetString(PyExc_TypeError, "atom key not a tuple");
+               PyErr_SetString(PyExc_TypeError, "atom value not a sequence");
+               SWIG_fail;
+        }
+        else if (n_atom == 0) {
+               PyErr_SetString(PyExc_TypeError, "atom value cannot be empty sequence");
                SWIG_fail;
         }
         cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom) * n_atom);
@@ -961,9 +965,13 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         PyObject *atom;
         for (i = 0 ; i < n_atom ; i++) {
-               atom = PyTuple_GetItem(temp, i);
+               atom = PySequence_GetItem(temp, i);
+               if (!PyMapping_Check(atom)) {
+                       PyErr_SetString(PyExc_TypeError, "atom sequence items must implement the mapping protocol");
+                       SWIG_fail;
+               }
                PyObject *temp2;
-               temp2 = PyDict_GetItemString(atom, "Zatom");
+               temp2 = PyMapping_GetItemString(atom, "Zatom");
                if (temp2 == NULL || PyErr_Occurred() != NULL) {
                        PyErr_SetString(PyExc_KeyError, "Zatom key not present");
                        SWIG_fail;
@@ -973,7 +981,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                        PyErr_SetString(PyExc_TypeError, "Zatom key not a number");
                        SWIG_fail;
                }
-               temp2 = PyDict_GetItemString(atom, "fraction");
+               temp2 = PyMapping_GetItemString(atom, "fraction");
                if (temp2 == NULL || PyErr_Occurred() != NULL) {
                        PyErr_SetString(PyExc_KeyError, "fraction key not present");
                        SWIG_fail;
@@ -983,7 +991,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                        PyErr_SetString(PyExc_TypeError, "fraction key not a number");
                        SWIG_fail;
                }
-               temp2 = PyDict_GetItemString(atom,"x");
+               temp2 = PyMapping_GetItemString(atom,"x");
                if (temp2 == NULL || PyErr_Occurred() != NULL) {
                        PyErr_SetString(PyExc_KeyError, "x key not present");
                        SWIG_fail;
@@ -993,7 +1001,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                        PyErr_SetString(PyExc_TypeError, "x key not a number");
                        SWIG_fail;
                }
-               temp2 = PyDict_GetItemString(atom,"y");
+               temp2 = PyMapping_GetItemString(atom,"y");
                if (temp2 == NULL || PyErr_Occurred() != NULL) {
                        PyErr_SetString(PyExc_KeyError, "y key not present");
                        SWIG_fail;
@@ -1003,7 +1011,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
                        PyErr_SetString(PyExc_TypeError,"y key not a number");
                        SWIG_fail;
                }
-               temp2 = PyDict_GetItemString(atom,"z");
+               temp2 = PyMapping_GetItemString(atom,"z");
                if (temp2 == NULL || PyErr_Occurred() != NULL) {
                        PyErr_SetString(PyExc_KeyError,"z key not present");
                        SWIG_fail;
