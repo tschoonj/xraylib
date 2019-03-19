@@ -25,19 +25,23 @@ int main(int argc, char **argv) {
 	/* some simpler ones */
 	cs = CS_FluorLine_Kissel(29, L3M5_LINE, 10.0, &error);
 	assert(error == NULL);
-	assert(fabs(1.473443067199 - cs) < 1E-6);
+	assert(fabs(1.677692151560 - cs) < 1E-6);
 
 	cs = CS_FluorLine_Kissel(29, L1M5_LINE, 10.0, &error);
 	assert(error == NULL);
-	assert(fabs(0.00010984533028940838 - cs) < 1E-8);
+	assert(fabs(0.000126120244 - cs) < 1E-8);
 
 	cs = CS_FluorLine_Kissel(29, L1M2_LINE, 10.0, &error);
 	assert(error == NULL);
-	assert(fabs(0.026086560741629128 - cs) < 1E-6);
+	assert(fabs(0.029951600106 - cs) < 1E-6);
 
 	cs = CS_FluorLine_Kissel(29, KL3_LINE, 10.0, &error);
 	assert(error == NULL);
 	assert(fabs(49.51768761506201 - cs) < 1E-6);
+
+	cs = CS_FluorLine_Kissel(82, M5N7_LINE, 30.0, &error);
+	assert(error == NULL);
+	assert(fabs(0.538227139546 - cs) < 1E-6);
 
 	/* lets try some bad input */
 	cs = CS_FluorLine_Kissel(0, KL3_LINE, 10.0, &error);
