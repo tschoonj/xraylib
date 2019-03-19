@@ -148,6 +148,11 @@ fprintf(f, "};\n\n");
   print_intvec(ZMAX+1, NVAR); \
   fprintf(f, ";\n\n");
 
+/* 
+ * This is the AugerYield that the user will end up querying,
+ * and is calculated as 1 - FluorYield - sum(CosKronTransProb)
+ * So this value is not based on what is in the NonradiativeRates data files!
+ */
 static double AugerYield_prdata(int Z, int shell) {
 
 	double rv;
@@ -171,6 +176,7 @@ static double AugerYield_prdata(int Z, int shell) {
 	if (shell == L1_SHELL) {
 		rv -= CosKronTransProb(Z, FL12_TRANS, NULL);
 		rv -= CosKronTransProb(Z, FL13_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FLP13_TRANS, NULL);
 	}
 	else if (shell == L2_SHELL) {
 		rv -= CosKronTransProb(Z, FL23_TRANS, NULL);
@@ -197,6 +203,11 @@ static double AugerYield_prdata(int Z, int shell) {
 	return rv;
 }
 
+/* 
+ * This is the AugerYield as calculated based on what is in the NonradiativeRates data files!
+ * What is done here is to take the TOTAL Nonradiative rate value (which includes the CK contributions),
+ * and subtract all auger rates that are also CK contributions!
+ */
 static double AugerYield2_prdata(int Z, int shell) {
 	double rv;
 
@@ -578,6 +589,12 @@ static double AugerYield2_prdata(int Z, int shell) {
 
 }
 
+/* 
+ * This is the AugerYield as queried by the user
+ * If a CK Auger rate is requested, you get 0.0
+ * Otherwise you get the ratio of the auger rate from the
+ * NonradiativeRates files to the AugerYield2_prdata value.
+ */
 static double AugerRate_prdata(int Z, int auger_trans) {
 	double rv;
 	double yield2;

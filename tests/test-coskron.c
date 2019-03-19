@@ -91,6 +91,8 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 	
 	/* now some internal consistency checks */
+	sum = FluorYield(92, L1_SHELL, NULL) + AugerYield(92, L1_SHELL, NULL) + CosKronTransProb(92, FL12_TRANS, NULL) + CosKronTransProb(92, FL13_TRANS, NULL) + CosKronTransProb(92, FLP13_TRANS, NULL);
+	assert(fabs(sum - 1.0) < 1E-6);
 	sum = FluorYield(92, L2_SHELL, NULL) + AugerYield(92, L2_SHELL, NULL) + CosKronTransProb(92, FL23_TRANS, NULL);
 	assert(fabs(sum - 1.0) < 1E-6);
 	sum = FluorYield(92, M4_SHELL, NULL) + AugerYield(92, M4_SHELL, NULL) + CosKronTransProb(92, FM45_TRANS, NULL);

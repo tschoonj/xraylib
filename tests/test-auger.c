@@ -58,6 +58,10 @@ int main(int argc, char **argv) {
 	assert(error == NULL);
 	assert(fabs(yield - 0.1719525) < 1E-6);
 	
+	yield = AugerYield(82, L1_SHELL, &error);
+	assert(error == NULL);
+	assert(fabs(yield - 0.1825) < 1E-9);
+	
 	yield = AugerYield(-35, K_SHELL, &error);
 	assert(yield == 0.0);
 	assert(error != NULL);
