@@ -22,10 +22,6 @@ int main(int argc, char **argv) {
 	double coskron, sum;
 
 	/* good values */
-	coskron = CosKronTransProb(12, F1_TRANS, &error);
-	assert(error == NULL);
-	assert(fabs(coskron - 9.260000e-01) < 1E-6);
-
 	coskron = CosKronTransProb(92, FL13_TRANS, &error);
 	assert(error == NULL);
 	assert(fabs(coskron - 0.620) < 1E-6);
@@ -41,7 +37,7 @@ int main(int argc, char **argv) {
 
 	/* bad values */
 	/* no data for Z < 12 */
-	coskron = CosKronTransProb(11, F1_TRANS, &error);
+	coskron = CosKronTransProb(11, FL12_TRANS, &error);
 	assert(error != NULL);
 	assert(coskron == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT );
@@ -54,7 +50,7 @@ int main(int argc, char **argv) {
 	assert(fabs(coskron - 1.02E-1) < 1E-6);
 
 	/* ... but not for Z = 110+ */
-	coskron = CosKronTransProb(110, F1_TRANS, &error);
+	coskron = CosKronTransProb(110, FL12_TRANS, &error);
 	assert(error != NULL);
 	assert(coskron == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT );
@@ -62,14 +58,14 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 
 	/* let's try going out of range with Z */
-	coskron = CosKronTransProb(0, F1_TRANS, &error);
+	coskron = CosKronTransProb(0, FL12_TRANS, &error);
 	assert(error != NULL);
 	assert(coskron == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT );
 	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
 	xrl_clear_error(&error);
 
-	coskron = CosKronTransProb(ZMAX + 1, F1_TRANS, &error);
+	coskron = CosKronTransProb(ZMAX + 1, FL12_TRANS, &error);
 	assert(error != NULL);
 	assert(coskron == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT );
@@ -77,7 +73,7 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 
 	/* now some non-existent Coster-Kronig transitions */
-	coskron = CosKronTransProb(26, -1, &error);
+	coskron = CosKronTransProb(26, 0, &error);
 	assert(error != NULL);
 	assert(coskron == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT );

@@ -118,12 +118,6 @@ extern "C" {
 #define MB_LINE M4N6_LINE
 #define MG_LINE M3N5_LINE
 
-#define F1_TRANS   0
-#define F12_TRANS  1
-#define F13_TRANS  2
-#define FP13_TRANS 3
-#define F23_TRANS  4
-
 #define FL12_TRANS 1
 #define FL13_TRANS 2
 #define FLP13_TRANS 3

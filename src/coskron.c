@@ -21,11 +21,10 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 //                    Coster-Kronig transition probability          //
 //          Z : atomic number                                       //
 //          transition type :                                       //
-//            F1_TRANS  0                                           //
-//            F12_TRANS 1                                           //
-//            F13_TRANS 2                                           //
-//            FP13_TRANS 3                                          //
-//            F23_TRANS 4                                           //
+//            FL12_TRANS 1                                           //
+//            FL13_TRANS 2                                           //
+//            FLP13_TRANS 3                                          //
+//            FL23_TRANS 4                                           //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
       
@@ -38,7 +37,7 @@ double CosKronTransProb(int Z, int trans, xrl_error **error)
     return 0;
   }
 
-  if (trans < 0 || trans >= TRANSNUM) {
+  if (trans < 1 || trans >= TRANSNUM) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_CK);
     return 0;
   }

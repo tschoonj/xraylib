@@ -114,7 +114,7 @@ static double Jump_from_L2(int Z, double E, xrl_error **error)
     return 0.0;
   }
 
-  ck_L12 = CosKronTransProb(Z, F12_TRANS, NULL);
+  ck_L12 = CosKronTransProb(Z, FL12_TRANS, NULL);
   if (TaoL1 > 0 && ck_L12 == 0.0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_CK);
     return 0.0;
@@ -185,10 +185,10 @@ static double Jump_from_L3(int Z, double E, xrl_error **error)
     return 0.0;
   }
 
-  ck_L23 = CosKronTransProb(Z, F23_TRANS, NULL);
-  ck_L13 = CosKronTransProb(Z, F13_TRANS, NULL);
-  ck_LP13 = CosKronTransProb(Z, FP13_TRANS, NULL);
-  ck_L12 = CosKronTransProb(Z, F12_TRANS, NULL);
+  ck_L23 = CosKronTransProb(Z, FL23_TRANS, NULL);
+  ck_L13 = CosKronTransProb(Z, FL13_TRANS, NULL);
+  ck_LP13 = CosKronTransProb(Z, FLP13_TRANS, NULL);
+  ck_L12 = CosKronTransProb(Z, FL12_TRANS, NULL);
 
   if (TaoL2 > 0.0 && ck_L23 == 0.0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNAVAILABLE_CK);
