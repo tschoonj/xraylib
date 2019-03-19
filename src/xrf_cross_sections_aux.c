@@ -284,7 +284,7 @@ double PL3_pure_kissel(int Z, double E, double PL1, double PL2, xrl_error **erro
 		return 0.0;
 
 	if (PL1 > 0.0)
-		rv += CosKronTransProb(Z, FL13_TRANS, NULL) * PL1;
+		rv += (CosKronTransProb(Z, FL13_TRANS, NULL) + CosKronTransProb(Z, FLP13_TRANS, NULL)) * PL1;
 
 	if (PL2 > 0.0)
 		rv += CosKronTransProb(Z, FL23_TRANS, NULL) * PL2;
@@ -303,7 +303,7 @@ double PL3_rad_cascade_kissel(int Z, double E, double PK, double PL1, double PL2
 		rv += FluorYield(Z, K_SHELL, NULL) * PK * RadRate(Z, KL3_LINE, NULL);
 
 	if (PL1 > 0.0)
-		rv += CosKronTransProb(Z, FL13_TRANS, NULL) * PL1;
+		rv += (CosKronTransProb(Z, FL13_TRANS, NULL) + CosKronTransProb(Z, FLP13_TRANS, NULL)) * PL1;
 
 	if (PL2 > 0.0)
 		rv += CosKronTransProb(Z, FL23_TRANS, NULL) * PL2;
@@ -360,7 +360,7 @@ double PL3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double P
 		);
 
 	if (PL1 > 0.0)
-		rv += CosKronTransProb(Z, FL13_TRANS, NULL) * PL1;
+		rv += (CosKronTransProb(Z, FL13_TRANS, NULL) + CosKronTransProb(Z, FLP13_TRANS, NULL)) * PL1;
 
 	if (PL2 > 0.0)
 		rv += CosKronTransProb(Z, FL23_TRANS, NULL) * PL2;
@@ -418,7 +418,7 @@ double PL3_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL
 		));
 
 	if (PL1 > 0.0)
-		rv += CosKronTransProb(Z, FL13_TRANS, NULL) * PL1;
+		rv += (CosKronTransProb(Z, FL13_TRANS, NULL) + CosKronTransProb(Z, FLP13_TRANS, NULL)) * PL1;
 
 	if (PL2 > 0.0)
 		rv += CosKronTransProb(Z, FL23_TRANS, NULL) * PL2;

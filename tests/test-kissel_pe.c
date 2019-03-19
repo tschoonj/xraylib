@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	/* some simpler ones */
 	cs = CS_FluorLine_Kissel(29, L3M5_LINE, 10.0, &error);
 	assert(error == NULL);
-	assert(fabs(1.473431625094413 - cs) < 1E-6);
+	assert(fabs(1.473443067199 - cs) < 1E-6);
 
 	cs = CS_FluorLine_Kissel(29, L1M5_LINE, 10.0, &error);
 	assert(error == NULL);
