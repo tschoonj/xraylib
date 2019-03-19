@@ -40,14 +40,14 @@ int main(int argc, char **argv) {
 	assert(rate == 0.0);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, UNKNOWN_CK) == 0);
+	assert(strcmp(error->message, UNKNOWN_AUGER) == 0);
 	xrl_clear_error(&error);
 	
 	rate = AugerRate(62, L3_M4N7_AUGER, &error);
 	assert(rate == 0.0);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, INVALID_CK) == 0);
+	assert(strcmp(error->message, INVALID_AUGER) == 0);
 	xrl_clear_error(&error);
 	
 	yield = AugerYield(82, K_SHELL, &error);

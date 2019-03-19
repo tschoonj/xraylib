@@ -38,14 +38,14 @@ double AugerRate(int Z, int auger_trans, xrl_error **error) {
 	}
 
 	if (auger_trans < K_L1L1_AUGER || auger_trans > M4_M5Q3_AUGER) {
-		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_CK);
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, UNKNOWN_AUGER);
 		return 0.0;
 	}
 
 	rv = Auger_Rates[Z][auger_trans];
 
 	if (rv <= 0.0) {
-		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_CK);
+		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_AUGER);
 		return 0.0;
 	}
 
