@@ -142,13 +142,14 @@ void Crystal_ArrayFree(Crystal_Array *c_array) {
 
 Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
   int n;
+  Crystal_Struct *crystal_out = NULL;
 
   if (crystal == NULL) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal cannot be NULL");
     return NULL;
   }
 
-  Crystal_Struct* crystal_out = malloc(sizeof(Crystal_Struct));
+  crystal_out = malloc(sizeof(Crystal_Struct));
   if (crystal_out == NULL) {
     xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
     return NULL;
