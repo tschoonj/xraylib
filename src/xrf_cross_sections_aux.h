@@ -84,3 +84,4 @@ XRL_EXTERN
 double PM5_auger_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4, xrl_error **error);
 XRL_EXTERN
 double PM5_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4, xrl_error **error);
+

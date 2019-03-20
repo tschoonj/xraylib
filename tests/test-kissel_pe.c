@@ -43,6 +43,10 @@ int main(int argc, char **argv) {
 	assert(error == NULL);
 	assert(fabs(0.538227139546 - cs) < 1E-6);
 
+	cs = CS_FluorLine_Kissel(82, M5N7_LINE, 100.0, &error);
+	assert(error == NULL);
+	assert(fabs(0.102639909656483 - cs) < 1E-6);
+
 	/* lets try some bad input */
 	cs = CS_FluorLine_Kissel(0, KL3_LINE, 10.0, &error);
 	assert(error != NULL);

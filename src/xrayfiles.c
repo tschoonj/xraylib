@@ -749,6 +749,8 @@ void ArrayInit()
     for (auger = 0 ; auger < AUGERNUM ; auger++)
     	Auger_Transition_Individual[Z][auger] = 0.0;
   }
+  memset(xrf_cross_sections_constants_full, 0, sizeof(xrf_cross_sections_constants_full));
+  memset(xrf_cross_sections_constants_auger_only, 0, sizeof(xrf_cross_sections_constants_auger_only));
 }
 
 

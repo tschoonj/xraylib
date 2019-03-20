@@ -41,7 +41,13 @@ libprdata_la_SOURCES = \
 		 splint.h \
 		 atomicweight.c \
 		 xraylib-error.c \
-		 xraylib-error-private.h
+		 xraylib-error-private.h \
+		 xrf_cross_sections_aux-private.h \
+		 xrf_cross_sections_aux-private.c \
+		 radrate.c \
+		 auger_trans.c \
+		 kissel_pe.c \
+	         cross_sections.c
 
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
 

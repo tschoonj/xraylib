@@ -16,6 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 #include <stdio.h>
 #include "xraylib.h"
 #include "xrayglob.h"
+#include "xrf_cross_sections_aux.h"
+#include "xrf_cross_sections_aux-private.h"
 
 extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
 extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
@@ -27,6 +29,17 @@ extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 
 void XRayInit(void);
 FILE *f;
+
+#define PR_CUBED(DIM1MAX, DIM2MAX, DIM3MAX, ARRNAME) \
+for(k = 0; k < (DIM1MAX); k++) { \
+  fprintf(f, "{\n"); \
+  for(j = 0; j < (DIM2MAX); j++) { \
+    print_doublevec((DIM3MAX), ARRNAME[k][j]); \
+    fprintf(f, ",\n"); \
+  } \
+  fprintf(f, "},\n");\
+} \
+fprintf(f, "};\n\n");
 
 #define PR_MATD(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
@@ -1080,7 +1093,7 @@ void print_intvec(int arrmax, int *arr)
 int main(void)
 {
 
-  int i,j;
+  int i,j,k, Z;
   Crystal_Struct* crystal;
   Crystal_Atom* atom;
 
@@ -1235,6 +1248,36 @@ int main(void)
   PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Yields);
   fprintf(f, "double Auger_Rates[ZMAX+1][AUGERNUM] = {\n");
   PR_MATD(ZMAX+1, AUGERNUM, Auger_Rates);
+
+#define IF_XRF_CS(shell) \
+      if (shell1 == shell ## _SHELL) { \
+	int shell2; \
+        for (shell2 = K_SHELL ; shell2 <= L3_SHELL ; shell2++) { \
+          xrf_cross_sections_constants_full[Z][shell1][shell2] = P ## shell ## _get_cross_sections_constant_full(Z, shell2); \
+          xrf_cross_sections_constants_auger_only[Z][shell1][shell2] = P ## shell ## _get_cross_sections_constant_auger_only(Z, shell2); \
+	} \
+      }
+
+  /* precalculated xrf_cross_sections constants */
+  for (Z = 1 ; Z <= ZMAX ; Z++) {
+    int shell1;
+    for (shell1 = L1_SHELL ; shell1 <= M5_SHELL ; shell1++) {
+      IF_XRF_CS(L1)
+      else IF_XRF_CS(L2)
+      else IF_XRF_CS(L3)
+      else IF_XRF_CS(M1)
+      else IF_XRF_CS(M2)
+      else IF_XRF_CS(M3)
+      else IF_XRF_CS(M4)
+      else IF_XRF_CS(M5)
+    }
+  }
+
+  fprintf(f, "double xrf_cross_sections_constants_full[ZMAX+1][M5_SHELL+1][L3_SHELL+1] = {\n");
+  PR_CUBED(ZMAX+1, M5_SHELL+1, L3_SHELL+1, xrf_cross_sections_constants_full);
+  
+  fprintf(f, "double xrf_cross_sections_constants_auger_only[ZMAX+1][M5_SHELL+1][L3_SHELL+1] = {\n");
+  PR_CUBED(ZMAX+1, M5_SHELL+1, L3_SHELL+1, xrf_cross_sections_constants_auger_only);
 
   fclose(f);
 
