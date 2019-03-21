@@ -551,6 +551,11 @@ elif test "x$SWIG" != xnoswig && test "x$enable_python" != xno && test "x$DISABL
 			else
 				VALID_PYTHON=no
 				AC_MSG_RESULT([no])
+				if test "x$enable_python" = xyes ; then
+					AC_MSG_ERROR([Incomplete python development package: numpy not installed])
+				else
+					AC_MSG_WARN([Incomplete python development package: numpy not installed])
+				fi
 			fi
 		fi
 
@@ -603,6 +608,11 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 				else
 					VALID_PYTHON_EXE=no
 					AC_MSG_RESULT([no])
+					if test "x$enable_python_np" = xyes ; then
+						AC_MSG_ERROR([Incomplete python development package: numpy not installed])
+					else
+						AC_MSG_WARN([Incomplete python development package: numpy not installed])
+					fi
 				fi
 			fi
 		fi
