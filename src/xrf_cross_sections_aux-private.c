@@ -182,6 +182,7 @@ double PL2_get_cross_sections_constant_full(int Z, int shell) {
 		AugerRate(Z, K_M5L2_AUGER, NULL)
 		));
 	}
+	return 0.0;
 }
 
 double PL3_get_cross_sections_constant_auger_only(int Z, int shell) {
