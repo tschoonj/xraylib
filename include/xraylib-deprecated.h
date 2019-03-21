@@ -26,15 +26,15 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #endif
 
 /* Error Handling */
-XRL_EXTERN
+XRL_DEPRECATED
 void SetHardExit(int hard_exit);
-XRL_EXTERN
+XRL_DEPRECATED
 void SetExitStatus(int exit_status);
-XRL_EXTERN
+XRL_DEPRECATED
 int GetExitStatus(void);
-XRL_EXTERN
+XRL_DEPRECATED
 void SetErrorMessages(int status);
-XRL_EXTERN
+XRL_DEPRECATED
 int GetErrorMessages(void);
 
 #endif
