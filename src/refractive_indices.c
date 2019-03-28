@@ -113,8 +113,8 @@ double Refractive_Index_Im(const char compound[], double E, double density, xrl_
 }
 
 xrlComplex Refractive_Index(const char compound[], double E, double density, xrl_error **error) {
-	struct compoundData *cd;
-	struct compoundDataNIST *cdn;
+	struct compoundData *cd = NULL;
+	struct compoundDataNIST *cdn = NULL;
 	int i;
 	xrlComplex rv = {0.0, 0.0};
 	double delta = 0.0;

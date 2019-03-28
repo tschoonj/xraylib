@@ -3,7 +3,6 @@
 #include <stddef.h>
 
 double PL1_get_cross_sections_constant_full(int Z, int shell) {
-	double rv = 0.0;
 	if (shell == K_SHELL) {
 		return (FluorYield(Z, K_SHELL, NULL) * RadRate(Z, KL1_LINE, NULL) +
 		AugerYield(Z, K_SHELL, NULL) * (
