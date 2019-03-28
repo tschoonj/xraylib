@@ -40,7 +40,6 @@ void XRayInit(void)
   int i, ex, stat;
   int shell, line, trans, auger;
   double E, prob;
-  char buffer[1024];
   char **error_lines=NULL;
   int nerror_lines=0;
   int found_error_line;

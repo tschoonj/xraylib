@@ -70,3 +70,4 @@ xraylib.spec
 .tags*
 *ppu
 *.pyc
+.DS_Store
