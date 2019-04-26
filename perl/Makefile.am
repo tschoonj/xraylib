@@ -17,7 +17,8 @@ plugin_LTLIBRARIES = xraylib.la
 xraylib_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(PERL_EXT_DLEXT)
-xraylib_la_CFLAGS = $(PERL_EXT_CPPFLAGS) -I$(PERL_EXT_INC) -I${top_builddir} -I${top_srcdir}/include -I$(top_srcdir)/src
+xraylib_la_CPPFLAGS = $(PERL_EXT_CPPFLAGS) -I$(PERL_EXT_INC) -I${top_builddir} -I${top_srcdir}/include -I$(top_srcdir)/src
+xraylib_la_CFLAGS = $(WSTRICT_CFLAGS)
 
 perldir = $(PERL_EXT_LIB)
 

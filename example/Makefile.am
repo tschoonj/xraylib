@@ -55,7 +55,7 @@ endif
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
 xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
-xrlexample1_CFLAGS = $(ARCHFLAGS)
+xrlexample1_CFLAGS = $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
 if ENABLE_FORTRAN
   xrlexample3_SOURCES = xrlexample3.f90

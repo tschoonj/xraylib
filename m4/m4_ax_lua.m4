@@ -122,6 +122,9 @@ AC_DEFUN([AX_LUA_VERSION],
   if test "x$LUA" != x; then
     lua_text_version=$(LUA_INIT= $LUA -e 'print(_VERSION)' 2>&1 | cut -d' ' -f2)
     case $lua_text_version in
+    5.3*)
+      lua_version=503
+      ;;
     5.2*)
       lua_version=502
       ;;

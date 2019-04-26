@@ -14,6 +14,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <config.h>
 #include "xraylib.h"
 #include "xraylib-error-private.h"
+#ifdef NDEBUG
+  #undef NDEBUG
+#endif
 #include <assert.h>
 #include <string.h>
 #include <stdio.h>
@@ -152,7 +155,7 @@ int main(int argc, char **argv) {
 
 	for (i = 0 ; i < CRYSTALARRAY_MAX ; i++) {
 		char *name = NULL;
-		asprintf(&name, "Diamond copy %d", i);
+		assert(asprintf(&name, "Diamond copy %d", i) > 0);
 		cs_copy = Crystal_MakeCopy(cs, &error);
 		free(cs_copy->name);
 		cs_copy->name = name;

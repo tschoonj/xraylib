@@ -13,6 +13,7 @@ xraylibincludedir=${includedir}/xraylib
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I..
 
+NULL=
 
 if LIBXRL_CONVENIENCE_BUILD
 noinst_LTLIBRARIES = libxrl.la libprdata.la
@@ -24,7 +25,7 @@ endif
 noinst_PROGRAMS=prdata
 prdata_SOURCES = pr_data.c
 prdata_LDADD = libprdata.la
-libprdata_la_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
+libprdata_la_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 libprdata_la_SOURCES = \
 		 xrayvars.c \
 		 xrayglob.h \
@@ -49,7 +50,7 @@ libprdata_la_SOURCES = \
 		 kissel_pe.c \
 	         cross_sections.c
 
-prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS)
+prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
 
 
@@ -91,9 +92,11 @@ libxrl_la_SOURCES = xrayvars.c \
 		    xraylib-radionuclides-internal.h \
 		    xraylib-radionuclides.c \
 		    xraylib-error.c \
-		    xraylib-error-private.h
+		    xraylib-error-private.h \
+		    xraylib-deprecated-private.h \
+		    $(NULL)
 
-libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS)
+libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS) $(WSTRICT_CFLAGS)
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
