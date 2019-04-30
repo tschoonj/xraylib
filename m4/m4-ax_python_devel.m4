@@ -305,9 +305,12 @@ EOD`
 	if test -z "$PYTHON_CFLAGS"; then
 		PYTHON_CFLAGS=`cat<<EOD | $PYTHON -
 from distutils.sysconfig import *
-e = get_config_var('OPT')
-if e is not None:
-  print(e)
+import re
+flags = get_config_var('CFLAGS')
+if flags is not None:
+    # isysroot causes trouble on macOS...
+    flags = re.sub('-isysroot [[^ \t]]*', ' ', flags)
+    print(flags)
 EOD`
 	fi
 	AC_MSG_RESULT([$PYTHON_CFLAGS])
