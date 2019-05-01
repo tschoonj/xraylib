@@ -127,3 +127,7 @@ test_nist_compounds_LDADD = ../src/libxrl.la
 
 test_radionuclides_SOURCES = test-radionuclides.c
 test_radionuclides_LDADD = ../src/libxrl.la
+
+clean-local:
+	rm -rf test-error.dSYM
+
