@@ -1,0 +1,95 @@
+variables:
+  SHELL: /usr/local/bin/bash
+  XRL_PYTHON2: /usr/local/opt/python@2/bin/python2
+  XRL_PYTHON3: /usr/local/bin/python3
+  PHP: /usr/local/bin/php
+  PHP_CONFIG: /usr/local/bin/php-config
+
+trigger:
+  - master
+
+jobs:
+  - job: osx_64
+    timeoutInMinutes: 60
+    cancelTimeoutInMinutes: 20
+    pool:
+      vmImage: macOS-10.13
+    strategy:
+      matrix:
+        clang:
+          EXTRA: --disable-fortran2003 --disable-openmp
+          CC: clang
+        gcc:
+          EXTRA: --enable-fortran2003
+          CC: gcc-8
+          FC: gfortran-8
+      
+      
+    steps:
+    - script: |
+        set -e -x
+        brew uninstall --force --ignore-dependencies $(brew list) || exit 1
+        brew update
+        brew cleanup -s
+      displayName: Remove all Homebrew packages
+
+    - script: |
+        set -e -x
+        brew install autoconf automake libtool swig ruby python@2 python fpc lua perl php bash numpy
+      displayName: Install shared Homebrew dependencies
+
+    - script: |
+        set -e -x
+        /usr/local/opt/python/bin/pip3 install Cython
+      displayName: Install Cython
+
+    - script: |
+        set -e -x
+        autoreconf -fi
+      displayName: Run autoreconf
+
+    - script: |
+        set -e -x
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
+        make
+        make check
+        make distclean
+      displayName: Build all bindings except Python
+
+    - script: |
+        set -e -x
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" SHELL=${SHELL}
+        make
+        make check
+        make distclean
+      displayName: Build without bindings in ANSI-C
+
+    - script: |
+        set -e -x
+        ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} SHELL=${SHELL}
+        make
+        make check
+        make distclean
+      displayName: Build with Python2 bindings
+
+    - script: |
+        set -e -x
+        ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} SHELL=${SHELL}
+        make
+        make check
+        make distclean
+      displayName: Build with Python3 bindings
+
+    - script: |
+        set -e -x
+        ./configure --disable-all-bindings --disable-shared --enable-static SHELL=${SHELL}
+        make
+        make check
+        make distclean
+      displayName: Build static library
+
+    - script: |
+        set -e -x
+        ./configure
+        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3}
+      displayName: Run make distcheck
