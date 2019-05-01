@@ -16,7 +16,8 @@ plugin_LTLIBRARIES = xraylib.la
 xraylib_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic
-xraylib_la_CFLAGS = $(LUA_INCLUDE) -I${top_builddir} -I${top_srcdir}/include -I$(top_srcdir)/src
+xraylib_la_CPPFLAGS = $(LUA_INCLUDE) -I${top_builddir} -I${top_srcdir}/include -I$(top_srcdir)/src 
+xraylib_la_CFLAGS = $(WSTRICT_CFLAGS)
 
 
 xraylib_wrap.c: ${top_srcdir}/src/xraylib.i ${top_srcdir}/include/xraylib*h

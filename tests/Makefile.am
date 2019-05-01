@@ -12,6 +12,7 @@
 
 
 AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/src
+AM_CFLAGS = $(WSTRICT_CFLAGS)
 
 NULL=
 
@@ -126,3 +127,7 @@ test_nist_compounds_LDADD = ../src/libxrl.la
 
 test_radionuclides_SOURCES = test-radionuclides.c
 test_radionuclides_LDADD = ../src/libxrl.la
+
+clean-local:
+	rm -rf test-error.dSYM
+

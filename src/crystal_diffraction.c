@@ -570,7 +570,8 @@ int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **
 
     /* Start of compound def looks like: "#S <num> <Compound>" */
 
-    fgets (buffer, 100, fp);
+    char *rv = fgets (buffer, 100, fp);
+
     if (buffer[0] != '#' || buffer[1] != 'S')
       continue;
 
@@ -597,7 +598,7 @@ int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **
 
     while (!feof(fp)) {
 
-      fgets (buffer, 100, fp);
+      rv = fgets (buffer, 100, fp);
 
       if (buffer[0] == '#' && buffer[1] == 'L') break;
 
@@ -633,7 +634,8 @@ int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **
 
     n = 0;
     while (!feof(fp)) {
-      fgets (buffer, 100, fp);
+      rv = fgets (buffer, 100, fp);
+
       if (buffer[0] == '#') break;
       n++;
     }

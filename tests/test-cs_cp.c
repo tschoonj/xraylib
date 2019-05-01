@@ -14,6 +14,9 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include "xraylib.h"
 #include "xraylib-error-private.h"
+#ifdef NDEBUG
+  #undef NDEBUG
+#endif
 #include <assert.h>
 #include <string.h>
 #include <math.h>

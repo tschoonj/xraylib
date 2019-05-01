@@ -57,37 +57,9 @@ __version__ = VERSION
   #endif
 #endif
 
-/* taken from glib */
-#ifdef __ICC
-#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
-  _Pragma ("warning (push)")                            \
-  _Pragma ("warning (disable:1478)")
-#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
-  _Pragma ("warning (pop)")
-#elif    __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
-  _Pragma ("GCC diagnostic push")                       \
-  _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
-#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
-  _Pragma ("GCC diagnostic pop")
-#elif defined (_MSC_VER) && (_MSC_VER >= 1500)
-#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS                \
-  __pragma (warning (push))  \
-  __pragma (warning (disable : 4996))
-#define G_GNUC_END_IGNORE_DEPRECATIONS                  \
-  __pragma (warning (pop))
-#elif defined (__clang__)
-#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS \
-  _Pragma("clang diagnostic push") \
-  _Pragma("clang diagnostic ignored \"-Wdeprecated-declarations\"")
-#define G_GNUC_END_IGNORE_DEPRECATIONS \
-  _Pragma("clang diagnostic pop")
-#else
-#define G_GNUC_BEGIN_IGNORE_DEPRECATIONS
-#define G_GNUC_END_IGNORE_DEPRECATIONS
-#endif
+#include "xraylib-deprecated-private.h"
 
-G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include "xraylib.h"
 #include "xrf_cross_sections_aux.h"
 

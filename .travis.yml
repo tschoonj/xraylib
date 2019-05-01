@@ -1,13 +1,16 @@
-language: generic
+language: java
 
 env:
   global:
     - FCLAGS="-g -O0"
+    - CPPFLAGS="-D_FORTIFY_SOURCE=2"
 
 matrix:
   allow_failures:
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -18,7 +21,9 @@ matrix:
             - gfortran-4.7
       env: CC='gcc-4.7' FC='gfortran-4.7' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -30,7 +35,9 @@ matrix:
       env: CC='gcc-4.9' FC='gfortran-4.9' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
   include:
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -40,7 +47,9 @@ matrix:
             - clang
       env: CC='/usr/bin/clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -51,7 +60,9 @@ matrix:
             - gfortran-4.6
       env: CC='gcc-4.6' FC='gfortran-4.6' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -62,7 +73,9 @@ matrix:
             - gfortran-4.8
       env: CC='gcc-4.8' FC='gfortran-4.8' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -73,7 +86,9 @@ matrix:
             - gfortran-5
       env: CC='gcc-5' FC='gfortran-5' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -84,7 +99,9 @@ matrix:
             - gfortran-6
       env: CC='gcc-6' FC='gfortran-6' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -95,7 +112,9 @@ matrix:
             - gfortran-7
       env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
-      dist: trusty
+      jdk:
+        - openjdk8
+      dist: xenial
       sudo: required
       addons:
         apt:
@@ -105,31 +124,13 @@ matrix:
             - gcc-8
             - gfortran-8
       env: CC='gcc-8' FC='gfortran-8' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
-    # using Homebrew's bash allows me to circumvent the use of /bin/sh and its SIP problems when running interpreter tests
-    - os: osx
-      osx_image: xcode8.3
-      env: CC='clang' EXTRA='--disable-fortran2003 --disable-openmp' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' CFLAGS='-O0' PHP='/usr/local/bin/php' PHP_CONFIG='/usr/local/bin/php-config' PHP_BREW='php' MYSHELL='SHELL=/usr/local/bin/bash'
-    - os: osx
-      osx_image: xcode8.3
-      env: CC='gcc-8' FC='gfortran-8' EXTRA='--enable-fortran2003' XRL_PYTHON2='/usr/local/opt/python@2/bin/python2' XRL_PYTHON3='/usr/local/bin/python3' PHP='/usr/local/bin/php' PHP_CONFIG='/usr/local/bin/php-config' PHP_BREW='php' MYSHELL='SHELL=/usr/local/bin/bash'
 
 before_install:
   - |
     if [ $TRAVIS_OS_NAME == linux ] ; then
-      sudo apt-get --yes --force-yes update
-      sudo apt-get --yes --force-yes install python-all-dev python-numpy cython python3-all-dev python3-numpy fpc gfortran php5-dev lua5.2 liblua5.2-dev
-    fi
-  - |
-    if [ $TRAVIS_OS_NAME == osx ] ; then
-      rm -rf $(brew --prefix)/lib/python*
-      rm -rf $(brew --prefix)/bin/f2py*
-      brew cask uninstall --force oclint
-      brew uninstall --force --ignore-dependencies $(brew list) || exit 1
-      brew update || exit 1
-      brew cleanup -s || exit 1
-      rm -rf $(brew --cache) || exit 1
-      brew install autoconf automake libtool gcc@8 swig ruby python@2 python fpc lua perl ${PHP_BREW} bash numpy || exit 1
-      /usr/local/opt/python@2/bin/pip2.7 install Cython || exit 1
+      sudo apt-get --yes --force-yes update || exit 1
+      sudo apt-get --yes --force-yes install python-all-dev python-numpy python3-all-dev python3-numpy fpc gfortran php-dev lua5.2 liblua5.2-dev || exit 1
+      sudo pip install Cython || exit 1
     fi
   - rm -rf $HOME/.phpenv
 

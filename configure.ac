@@ -54,6 +54,21 @@ fi
 
 AC_CANONICAL_HOST
 
+WSTRICT_CFLAGS=
+AX_CHECK_COMPILE_FLAG([-Werror=deprecated],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=deprecated"],,)
+AX_CHECK_COMPILE_FLAG([-Werror=deprecated-declarations],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=deprecated-declarations"],,)
+AX_CHECK_COMPILE_FLAG([-Werror=implicit],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=implicit"],,)
+AX_CHECK_COMPILE_FLAG([-Werror=unused-function],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=unused-function"],,)
+AX_CHECK_COMPILE_FLAG([-Werror=parentheses],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=parentheses"],,)
+AX_CHECK_COMPILE_FLAG([-Werror=unused-result],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=unused-result"],,)
+# I can't compile the SWIG generated bindings with these on...
+# see also https://github.com/swig/swig/issues/1278
+#AX_CHECK_COMPILE_FLAG([-Werror=missing-declarations],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=missing-declarations"],,)
+#AX_CHECK_COMPILE_FLAG([-Werror=shadow],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=shadow"],,)
+#AX_CHECK_COMPILE_FLAG([-Werror=missing-prototypes],[WSTRICT_CFLAGS="${WSTRICT_CFLAGS} -Werror=missing-prototypes"],,)
+
+AC_SUBST(WSTRICT_CFLAGS)
+
 #check if libxrl should be built as a convenience library
 AC_ARG_ENABLE([libxrl],[AS_HELP_STRING([--disable-libxrl],[do not build libxrl separately, link it statically into bindings])],[enable_libxrl=$enableval],[enable_libxrl=check])
 
