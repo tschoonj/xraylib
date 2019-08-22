@@ -21,8 +21,8 @@ jobs:
           CC: clang
         gcc:
           EXTRA: --enable-fortran2003
-          CC: gcc-8
-          FC: gfortran-8
+          CC: gcc-9
+          FC: gfortran-9
       
       
     steps:
@@ -35,7 +35,7 @@ jobs:
 
     - script: |
         set -e -x
-        brew install autoconf automake libtool swig ruby python@2 python fpc lua perl php bash numpy
+        brew install autoconf automake libtool swig ruby python@2 python fpc lua perl php bash numpy gcc@9
       displayName: Install shared Homebrew dependencies
 
     - script: |
