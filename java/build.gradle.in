@@ -10,6 +10,9 @@ buildscript {
 
 plugins {
     id 'com.adarshr.test-logger' version '1.7.0'
+    id 'maven-publish'
+
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 apply plugin: 'java'
@@ -17,6 +20,7 @@ apply plugin: 'biz.aQute.bnd.builder'
 
 
 version = '@VERSION@'
+group = 'com.github.tschoonj'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -54,6 +58,8 @@ sourceSets {
 jar {
 	manifest {
 		attributes('Bundle-Vendor': 'Tom Schoonjans',
+			'Bundle-SymbolicName': 'com.github.tschoonj.xraylib',
+			'Bundle-Name': project.name,
 			'Export-Package': 'com.github.tschoonj.xraylib',
 			'-noee': true
 		)
@@ -89,3 +95,54 @@ task javadocJar(type: Jar) {
 	archiveClassifier = 'javadoc'
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java 
+            artifact sourcesJar
+            artifact javadocJar
+                        
+            pom {
+                name = 'xraylib'
+                description = 'A library for X-ray matter interaction cross sections for X-ray fluorescence applications'
+                url = 'https://github.com/tschoonj/xraylib'
+                licenses {
+                    license {
+                        name = '3-Clause BSD License'
+                        url = 'https://opensource.org/licenses/BSD-3-Clause'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'tschoonj'
+                        name = 'Tom Schoonjans'
+                        email = 'Tom.Schoonjans@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/tschoonj/xraylib.git'
+                    developerConnection = 'scm:git:git://github.com/tschoonj/xraylib.git'
+                    url = 'https://github.com/tschoonj/xraylib.git'
+                }
+            }
+        }
+    }
+}
+
+bintray {
+    user = 'tschoonj'
+    key = System.getenv('BINTRAY_KEY')
+    pkg {
+        repo = 'maven'
+        name = 'xraylib'
+        userOrg = 'tschoonj'
+        licenses = ['BSD 3-Clause']
+        vcsUrl = 'https://github.com/tschoonj/xraylib.git'
+        version {
+            name = project.version
+            released  = new Date()
+        }
+    }
+    // Upload the 'maven' publication i.e jar, sourcesJar, javadocJar, POM
+    publications = ['maven']
+}

@@ -26,31 +26,37 @@ AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/
 
 #java bindings for xraylib
 xrljavadir = $(prefix)/share/xraylib/java
-xrljava_DATA = com.github.tschoonj.xraylib-$(VERSION).jar
+xrljava_DATA = xraylib-$(VERSION).jar xraylib-$(VERSION)-javadoc.jar xraylib-$(VERSION)-sources.jar
 
 noinst_PROGRAMS = prdata_java
 prdata_java_SOURCES = pr_data_java.c
 prdata_java_LDADD = ../src/libprdata.la
 prdata_java_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
-all-local: com.github.tschoonj.xraylib-$(VERSION).jar com.github.tschoonj.xraylib-$(VERSION)-javadoc.jar com.github.tschoonj.xraylib-$(VERSION)-sources.jar
+all-local: xraylib-$(VERSION).jar xraylib-$(VERSION)-javadoc.jar xraylib-$(VERSION)-sources.jar
 
-com.github.tschoonj.xraylib-$(VERSION)-javadoc.jar: com.github.tschoonj.xraylib-$(VERSION).jar
+xraylib-$(VERSION)-javadoc.jar: xraylib-$(VERSION).jar
 	
-com.github.tschoonj.xraylib-$(VERSION)-sources.jar: com.github.tschoonj.xraylib-$(VERSION).jar
+xraylib-$(VERSION)-sources.jar: xraylib-$(VERSION).jar
 
-com.github.tschoonj.xraylib-$(VERSION).jar: xraylib.dat $(java_source)
+xraylib-$(VERSION).jar: xraylib.dat $(java_source)
 	$(srcdir)/gradlew build sourcesJar javadocJar -x test
 
 xraylib.dat: prdata_java$(EXEEXT)
 	$(AM_V_GEN) XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
 
 clean-local:
-	rm -rf com.github.tschoonj.xraylib-$(VERSION).jar com.github.tschoonj.xraylib-$(VERSION)-javadoc.jar com.github.tschoonj.xraylib-$(VERSION)-sources.jar  xraylib.dat com build .gradle META-INF xrlexample7.class prdata_java.dSYM
+	rm -rf xraylib-$(VERSION).jar xraylib-$(VERSION)-javadoc.jar xraylib-$(VERSION)-sources.jar  xraylib.dat com build .gradle META-INF xrlexample7.class prdata_java.dSYM
 
 check-local:
 	$(srcdir)/gradlew test
 	rm -rf build/test-results
+
+publishToMavenLocal:
+	$(srcdir)/gradlew publishToMavenLocal
+
+bintrayUpload:
+	$(srcdir)/gradlew bintrayUpload
 
 endif
 
