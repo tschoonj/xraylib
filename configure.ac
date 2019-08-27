@@ -1029,6 +1029,7 @@ AC_CONFIG_FILES([Makefile
 				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
+				 java/tests/Makefile
 				 java/build.gradle
 				 java/settings.gradle
 				 windows/Makefile

@@ -86,7 +86,7 @@ double ComptonProfile_Partial(int Z, int shell, double pz, xrl_error **error) {
 	
 	ln_pz = log(pz + 1.0);
 
-	splint(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z],ln_pz,&ln_q);
+	splint(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z], ln_pz, &ln_q);
 
 	q = exp(ln_q); 
 

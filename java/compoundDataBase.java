@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2015, Tom Schoonjans
+Copyright (c) 2019, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,8 +13,8 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 
 package com.github.tschoonj.xraylib;
 
-public class XraylibException extends RuntimeException {
-  public XraylibException(String message) {
-    super(message);
-  }
+public interface compoundDataBase {
+  public int getNElements();
+  public int[] getElements();
+  public double[] getMassFractions();
 }

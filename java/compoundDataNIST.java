@@ -16,7 +16,7 @@ package com.github.tschoonj.xraylib;
 import java.nio.ByteBuffer;
 
 
-public class compoundDataNIST {
+public class compoundDataNIST implements compoundDataBase {
   public final String name;
   public final int nElements;
   public final int[] Elements;
@@ -55,4 +55,18 @@ public class compoundDataNIST {
     return formattedNISTCompoundString;
   }
 
+  @Override
+  public int getNElements() {
+    return nElements;
+  }
+
+  @Override
+  public int[] getElements() {
+    return Elements;
+  }
+
+  @Override
+  public double[] getMassFractions() {
+    return massFractions;
+  }
 }

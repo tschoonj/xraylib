@@ -116,7 +116,7 @@ public class Crystal_Struct {
           f_re[Z] = f0;
           break;
         default:
-          throw new XraylibException("Bad f0_flag argument in Crystal_F_H_StructureFactor_Partial: " + f0_flag);
+          throw new IllegalArgumentException(String.format("Invalid f0_flag argument: %d", f0_flag));
       }
 
       switch (f_prime_flag) {
@@ -126,7 +126,7 @@ public class Crystal_Struct {
           f_re[Z] = f_re[Z] + f_prime;
           break;
         default:
-          throw new XraylibException("Bad f_prime_flag argument in Crystal_F_H_StructureFactor_Partial: " + f_prime_flag);
+          throw new IllegalArgumentException(String.format("Invalid f_prime_flag argument: %d", f_prime_flag));
       }
 
       switch (f_prime2_flag) {
@@ -137,7 +137,7 @@ public class Crystal_Struct {
           f_im[Z] = f_prime2;
           break;
         default:
-          throw new XraylibException("Bad f_prime2_flag argument in Crystal_F_H_StructureFactor_Partial: " +f_prime2_flag);
+          throw new IllegalArgumentException(String.format("Invalid f_prime2_flag argument: %d", f_prime_flag));
       }
 
       f_is_computed[Z] = true;
