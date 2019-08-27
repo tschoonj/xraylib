@@ -78,7 +78,14 @@ test {
 	useJUnitPlatform()
 }
 
-javadoc {
-	source = sourceSets.main.allJava
-	classpath = configurations.compile
+
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allJava
+	archiveClassifier = 'sources'
 }
+
+task javadocJar(type: Jar) {
+	from javadoc
+	archiveClassifier = 'javadoc'
+}
+
