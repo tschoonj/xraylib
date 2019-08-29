@@ -2690,6 +2690,7 @@ public class Xraylib {
   private static final CS_Body_Energy CS_COMPT_CP = Xraylib::CS_Compt; 
   private static final CS_Body_Energy CS_PHOTO_CP = Xraylib::CS_Photo; 
   private static final CS_Body_Energy CS_PHOTO_TOTAL_CP = Xraylib::CS_Photo_Total; 
+  private static final CS_Body_Energy CS_ENERGY_CP = Xraylib::CS_Energy; 
 
   private static final CS_Body_Energy CSB_TOTAL_CP = Xraylib::CSb_Total; 
   private static final CS_Body_Energy CSB_TOTAL_KISSEL_CP = Xraylib::CSb_Total_Kissel; 
@@ -2754,6 +2755,10 @@ public class Xraylib {
 
   public static double CSb_Photo_Total_CP(String compound, double energy) {
     return CSB_PHOTO_TOTAL_CP.execute(compound, energy);
+  }
+
+  public static double CS_Energy_CP(String compound, double energy) {
+    return CS_ENERGY_CP.execute(compound, energy);
   }
 
   public static double DCS_Rayl_CP(String compound, double energy, double theta) {
