@@ -8,4 +8,5 @@ EXTRA_DIST = \
 	     TestNISTCompounds.java \
 	     TestRadioNuclides.java \
 	     TestCosKron.java \
-	     TestCrossSections.java
+	     TestCrossSections.java \
+	     TestCrossSectionsBarns.java
