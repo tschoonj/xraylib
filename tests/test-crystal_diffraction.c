@@ -332,5 +332,7 @@ int main(int argc, char **argv) {
 
 	Crystal_Free(cs);
 
+	/* TODO: Test Crystal_F_H_StructureFactor and Crystal_F_H_StructureFactor_Partial */
+
 	return 0;
 }

@@ -2604,7 +2604,7 @@ public class Xraylib {
   }
 
   public static String AtomicNumberToSymbol(int Z) {
-    if (Z < 1 || Z > MendelArray.length) {
+    if (Z < 1 || Z >= MendelArray.length) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
     }
 
@@ -2613,6 +2613,9 @@ public class Xraylib {
 
   public static int SymbolToAtomicNumber(String symbol) {
     int i;
+
+    if (symbol == null)
+      throw new IllegalArgumentException("Invalid chemical symbol");
 
     for (i=1 ; i < MendelArray.length ; i++) {
       if (symbol.equals(MendelArray[i])) {
@@ -3033,6 +3036,8 @@ public class Xraylib {
   }
 
   public static double[] Atomic_Factors(int Z, double energy, double q, double debye_factor) {
+    if (debye_factor <= 0.0)
+      throw new IllegalArgumentException(NEGATIVE_DEBYE_FACTOR);
 
     double f0 = FF_Rayl(Z, q) * debye_factor;
     double f_prime = Fi(Z, energy) * debye_factor;

@@ -61,11 +61,11 @@ public class Crystal_Struct {
   }
 
   public double Bragg_angle(double energy, int i_miller, int j_miller, int k_miller) {
-    if (i_miller == 0.0 && j_miller == 0.0 && k_miller == 0.0) {
-      return 0.0;
-    }
+    if (energy <= 0.0)
+      throw new IllegalArgumentException(Xraylib.NEGATIVE_ENERGY);
 
     double d_spacing = Crystal_dSpacing(i_miller, j_miller, k_miller);
+
     double wavelength = Xraylib.KEV2ANGST / energy;
     return Math.asin(wavelength / (2.0 * d_spacing));
   }
@@ -178,7 +178,7 @@ public class Crystal_Struct {
   public double Crystal_dSpacing(int i_miller, int j_miller, int k_miller) {
 
     if (i_miller == 0 && j_miller == 0 && k_miller == 0)
-      return 0.0;
+      throw new IllegalArgumentException(Xraylib.INVALID_MILLER);
 
     return (volume / (a * b * c)) * Math.sqrt(1.0 / (
      pow2(i_miller * sind(alpha) / a) + pow2(j_miller * sind(beta) / b) +
