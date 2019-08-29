@@ -7,4 +7,5 @@ EXTRA_DIST = \
 	     TestCrystalDiffraction.java \
 	     TestNISTCompounds.java \
 	     TestRadioNuclides.java \
-	     TestCosKron.java
+	     TestCosKron.java \
+	     TestCrossSections.java
