@@ -2642,8 +2642,9 @@ public class Xraylib {
     }
   }
 
-  private static abstract class CS_Body_Energy {
-    public final double execute(String compound, double energy) {
+  @FunctionalInterface
+  private static interface CS_Body_Energy {
+    public default double execute(String compound, double energy) {
       compoundDataBase cd = parseCompoundFull(compound);
       double rv = 0.0;
       for (int i = 0 ; i < cd.getNElements() ; i++)
@@ -2655,8 +2656,9 @@ public class Xraylib {
     public abstract double CS_base(int Z, double energy);
   }
 
-  private static abstract class CS_Body_Energy_Theta {
-    public final double execute(String compound, double energy, double theta) {
+  @FunctionalInterface
+  private static interface CS_Body_Energy_Theta {
+    public default double execute(String compound, double energy, double theta) {
       compoundDataBase cd = parseCompoundFull(compound);
       double rv = 0.0;
       for (int i = 0 ; i < cd.getNElements() ; i++)
@@ -2668,8 +2670,9 @@ public class Xraylib {
     public abstract double CS_base(int Z, double energy, double theta);
   }
 
-  private static abstract class CS_Body_Energy_Theta_Phi {
-    public final double execute(String compound, double energy, double theta, double phi) {
+  @FunctionalInterface
+  private static interface CS_Body_Energy_Theta_Phi {
+    public default double execute(String compound, double energy, double theta, double phi) {
       compoundDataBase cd = parseCompoundFull(compound);
       double rv = 0.0;
       for (int i = 0 ; i < cd.getNElements() ; i++)
@@ -2681,150 +2684,29 @@ public class Xraylib {
     public abstract double CS_base(int Z, double energy, double theta, double phi);
   }
 
-  private static class CS_Total_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CS_Total(Z, energy);
-    }
-  }
+  private static final CS_Body_Energy CS_TOTAL_CP = Xraylib::CS_Total;
+  private static final CS_Body_Energy CS_TOTAL_KISSEL_CP = Xraylib::CS_Total_Kissel;
+  private static final CS_Body_Energy CS_RAYL_CP = Xraylib::CS_Rayl; 
+  private static final CS_Body_Energy CS_COMPT_CP = Xraylib::CS_Compt; 
+  private static final CS_Body_Energy CS_PHOTO_CP = Xraylib::CS_Photo; 
+  private static final CS_Body_Energy CS_PHOTO_TOTAL_CP = Xraylib::CS_Photo_Total; 
 
-  private static class CS_Total_Kissel_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CS_Total_Kissel(Z, energy);
-    }
-  }
+  private static final CS_Body_Energy CSB_TOTAL_CP = Xraylib::CSb_Total; 
+  private static final CS_Body_Energy CSB_TOTAL_KISSEL_CP = Xraylib::CSb_Total_Kissel; 
+  private static final CS_Body_Energy CSB_RAYL_CP = Xraylib::CSb_Rayl; 
+  private static final CS_Body_Energy CSB_COMPT_CP = Xraylib::CSb_Compt; 
+  private static final CS_Body_Energy CSB_PHOTO_CP = Xraylib::CSb_Photo; 
+  private static final CS_Body_Energy CSB_PHOTO_TOTAL_CP = Xraylib::CSb_Photo_Total; 
 
-  private static class CS_Rayl_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CS_Rayl(Z, energy);
-    }
-  }
+  private static final CS_Body_Energy_Theta DCS_RAYL_CP = Xraylib::DCS_Rayl; 
+  private static final CS_Body_Energy_Theta DCS_COMPT_CP = Xraylib::DCS_Compt; 
+  private static final CS_Body_Energy_Theta DCSB_RAYL_CP = Xraylib::DCSb_Rayl; 
+  private static final CS_Body_Energy_Theta DCSB_COMPT_CP = Xraylib::DCSb_Compt; 
 
-  private static class CS_Compt_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CS_Compt(Z, energy);
-    }
-  }
-
-  private static class CS_Photo_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CS_Photo(Z, energy);
-    }
-  }
-
-  private static class CS_Photo_Total_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CS_Photo_Total(Z, energy);
-    }
-  }
-
-  private static class CSb_Total_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CSb_Total(Z, energy);
-    }
-  }
-
-  private static class CSb_Total_Kissel_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CSb_Total_Kissel(Z, energy);
-    }
-  }
-
-  private static class CSb_Rayl_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CSb_Rayl(Z, energy);
-    }
-  }
-
-  private static class CSb_Compt_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CSb_Compt(Z, energy);
-    }
-  }
-
-  private static class CSb_Photo_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CSb_Photo(Z, energy);
-    }
-  }
-
-  private static class CSb_Photo_Total_CP_Impl extends CS_Body_Energy {
-    public final double CS_base(int Z, double energy) {
-      return CSb_Photo_Total(Z, energy);
-    }
-  }
-
-  private static class DCS_Rayl_CP_Impl extends CS_Body_Energy_Theta {
-    public final double CS_base(int Z, double energy, double theta) {
-      return DCS_Rayl(Z, energy, theta);
-    }
-  }
-
-  private static class DCS_Compt_CP_Impl extends CS_Body_Energy_Theta {
-    public final double CS_base(int Z, double energy, double theta) {
-      return DCS_Compt(Z, energy, theta);
-    }
-  }
-
-  private static class DCSb_Rayl_CP_Impl extends CS_Body_Energy_Theta {
-    public final double CS_base(int Z, double energy, double theta) {
-      return DCSb_Rayl(Z, energy, theta);
-    }
-  }
-
-  private static class DCSb_Compt_CP_Impl extends CS_Body_Energy_Theta {
-    public final double CS_base(int Z, double energy, double theta) {
-      return DCSb_Compt(Z, energy, theta);
-    }
-  }
-
-  private static class DCSP_Rayl_CP_Impl extends CS_Body_Energy_Theta_Phi {
-    public final double CS_base(int Z, double energy, double theta, double phi) {
-      return DCSP_Rayl(Z, energy, theta, phi);
-    }
-  }
-
-  private static class DCSP_Compt_CP_Impl extends CS_Body_Energy_Theta_Phi {
-    public final double CS_base(int Z, double energy, double theta, double phi) {
-      return DCSP_Compt(Z, energy, theta, phi);
-    }
-  }
-
-  private static class DCSPb_Rayl_CP_Impl extends CS_Body_Energy_Theta_Phi {
-    public final double CS_base(int Z, double energy, double theta, double phi) {
-      return DCSPb_Rayl(Z, energy, theta, phi);
-    }
-  }
-
-  private static class DCSPb_Compt_CP_Impl extends CS_Body_Energy_Theta_Phi {
-    public final double CS_base(int Z, double energy, double theta, double phi) {
-      return DCSPb_Compt(Z, energy, theta, phi);
-    }
-  }
-
-
-  private static final CS_Body_Energy CS_TOTAL_CP = new CS_Total_CP_Impl(); 
-  private static final CS_Body_Energy CS_TOTAL_KISSEL_CP = new CS_Total_Kissel_CP_Impl(); 
-  private static final CS_Body_Energy CS_RAYL_CP = new CS_Rayl_CP_Impl(); 
-  private static final CS_Body_Energy CS_COMPT_CP = new CS_Compt_CP_Impl(); 
-  private static final CS_Body_Energy CS_PHOTO_CP = new CS_Photo_CP_Impl(); 
-  private static final CS_Body_Energy CS_PHOTO_TOTAL_CP = new CS_Photo_Total_CP_Impl(); 
-
-  private static final CS_Body_Energy CSB_TOTAL_CP = new CSb_Total_CP_Impl(); 
-  private static final CS_Body_Energy CSB_TOTAL_KISSEL_CP = new CSb_Total_Kissel_CP_Impl(); 
-  private static final CS_Body_Energy CSB_RAYL_CP = new CSb_Rayl_CP_Impl(); 
-  private static final CS_Body_Energy CSB_COMPT_CP = new CSb_Compt_CP_Impl(); 
-  private static final CS_Body_Energy CSB_PHOTO_CP = new CSb_Photo_CP_Impl(); 
-  private static final CS_Body_Energy CSB_PHOTO_TOTAL_CP = new CSb_Photo_Total_CP_Impl(); 
-
-  private static final CS_Body_Energy_Theta DCS_RAYL_CP = new DCS_Rayl_CP_Impl(); 
-  private static final CS_Body_Energy_Theta DCS_COMPT_CP = new DCS_Compt_CP_Impl(); 
-  private static final CS_Body_Energy_Theta DCSB_RAYL_CP = new DCSb_Rayl_CP_Impl(); 
-  private static final CS_Body_Energy_Theta DCSB_COMPT_CP = new DCSb_Compt_CP_Impl(); 
-
-  private static final CS_Body_Energy_Theta_Phi DCSP_RAYL_CP = new DCSP_Rayl_CP_Impl(); 
-  private static final CS_Body_Energy_Theta_Phi DCSP_COMPT_CP = new DCSP_Compt_CP_Impl(); 
-  private static final CS_Body_Energy_Theta_Phi DCSPB_RAYL_CP = new DCSPb_Rayl_CP_Impl(); 
-  private static final CS_Body_Energy_Theta_Phi DCSPB_COMPT_CP = new DCSPb_Compt_CP_Impl(); 
+  private static final CS_Body_Energy_Theta_Phi DCSP_RAYL_CP = Xraylib::DCSP_Rayl; 
+  private static final CS_Body_Energy_Theta_Phi DCSP_COMPT_CP = Xraylib::DCSP_Compt; 
+  private static final CS_Body_Energy_Theta_Phi DCSPB_RAYL_CP = Xraylib::DCSPb_Rayl; 
+  private static final CS_Body_Energy_Theta_Phi DCSPB_COMPT_CP = Xraylib::DCSPb_Compt; 
 
   public static double CS_Total_CP(String compound, double energy) {
     return CS_TOTAL_CP.execute(compound, energy);
