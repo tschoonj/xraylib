@@ -434,7 +434,7 @@ public class Xraylib {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
     }
 
-    if (trans < 0 || trans >= TRANSNUM) {
+    if (trans < 1 || trans >= TRANSNUM) {
       throw new IllegalArgumentException(UNKNOWN_CK);
     }
 

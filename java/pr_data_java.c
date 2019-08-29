@@ -92,6 +92,7 @@ static double AugerYield_prdata(int Z, int shell) {
 	if (shell == L1_SHELL) {
 		rv -= CosKronTransProb(Z, FL12_TRANS, NULL);
 		rv -= CosKronTransProb(Z, FL13_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FLP13_TRANS, NULL);
 	}
 	else if (shell == L2_SHELL) {
 		rv -= CosKronTransProb(Z, FL23_TRANS, NULL);

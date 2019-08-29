@@ -50,6 +50,12 @@ public class TestAuger {
 	}
 
 	@Test
+	public void test_yield_Pb_L1() {
+		double ayield = Xraylib.AugerYield(82, Xraylib.L1_SHELL);
+		assertEquals(ayield, 0.1825, 1E-6);
+	}
+
+	@Test
 	public void test_yield_bad_Z() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			double ayield = Xraylib.AugerYield(-35, Xraylib.K_SHELL);

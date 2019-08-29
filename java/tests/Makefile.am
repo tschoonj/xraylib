@@ -6,4 +6,5 @@ EXTRA_DIST = \
 	     TestComptonProfiles.java \
 	     TestCrystalDiffraction.java \
 	     TestNISTCompounds.java \
-	     TestRadioNuclides.java
+	     TestRadioNuclides.java \
+	     TestCosKron.java
