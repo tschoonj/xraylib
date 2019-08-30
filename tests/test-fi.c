@@ -53,8 +53,8 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 
 	fi = Fi(100, 10.0, &error);
-	assert(fi != 0.0);
 	assert(error == NULL);
+	assert(fabs(fi + 4.657346364215495) < 1E-6);
 
 	fi = Fi(59, 0.0, &error);
 	assert(fi == 0.0);

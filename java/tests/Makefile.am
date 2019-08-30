@@ -13,4 +13,5 @@ EXTRA_DIST = \
 	     TestCrossSectionsCompound.java \
 	     TestCrossSectionsFluorLine.java \
 	     TestDensities.java \
-	     TestEdges.java
+	     TestEdges.java \
+	     TestFi.java
