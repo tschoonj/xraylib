@@ -15,4 +15,5 @@ EXTRA_DIST = \
 	     TestDensities.java \
 	     TestEdges.java \
 	     TestFi.java \
-	     TestFii.java
+	     TestFii.java \
+	     TestFluorLines.java
