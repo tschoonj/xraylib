@@ -10,4 +10,5 @@ EXTRA_DIST = \
 	     TestCosKron.java \
 	     TestCrossSections.java \
 	     TestCrossSectionsBarns.java \
-	     TestCrossSectionsCompound.java
+	     TestCrossSectionsCompound.java \
+	     TestCrossSectionsFluorLine.java
