@@ -11,4 +11,5 @@ EXTRA_DIST = \
 	     TestCrossSections.java \
 	     TestCrossSectionsBarns.java \
 	     TestCrossSectionsCompound.java \
-	     TestCrossSectionsFluorLine.java
+	     TestCrossSectionsFluorLine.java \
+	     TestDensities.java
