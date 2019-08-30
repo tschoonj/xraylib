@@ -18,4 +18,5 @@ EXTRA_DIST = \
 	     TestFii.java \
 	     TestFluorLines.java \
 	     TestFluorYield.java \
-	     TestJumpFactor.java
+	     TestJumpFactor.java \
+	     TestKisselPE.java
