@@ -22,4 +22,5 @@ EXTRA_DIST = \
 	     TestKisselPE.java \
 	     TestPolarized.java \
 	     TestRadRate.java \
-	     TestRefractiveIndices.java
+	     TestRefractiveIndices.java \
+	     TestScattering.java
