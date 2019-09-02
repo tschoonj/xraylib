@@ -50,9 +50,10 @@ public class TestPolarized {
 	@ParameterizedTest(name="test_cross_sections_z_energy_theta_phi_bad_values {index} -> {0} {1}")
 	@MethodSource("badCrossSectionZEnergyThetaPhiValuesProvider")
 	public void test_cross_sections_z_energy_theta_phi_bad_values(CrossSectionZEnergyThetaPhiWrapper wrapper, int Z, double energy, double theta, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = wrapper.execute(Z, energy, theta, Math.PI / 4.0);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 
 	@Test
@@ -63,9 +64,10 @@ public class TestPolarized {
 
 	@Test
 	public void test_dcsp_kn_bad() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = Xraylib.DCSP_KN(0.0, Math.PI / 4, Math.PI / 4);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 
 	@Test

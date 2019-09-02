@@ -50,7 +50,8 @@ clean-local:
 
 check-local:
 	$(srcdir)/gradlew test
-	rm -rf build/test-results
+
+#rm -rf build/test-results
 
 publishToMavenLocal:
 	$(srcdir)/gradlew publishToMavenLocal

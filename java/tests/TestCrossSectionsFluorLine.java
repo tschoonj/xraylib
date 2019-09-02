@@ -51,9 +51,10 @@ public class TestCrossSectionsFluorLine {
 	@ParameterizedTest(name="test_bad_values {index} -> {0} {1} {2}")
 	@MethodSource("badValuesProvider")
 	public void test_bad_values(int Z, int line, double energy, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = Xraylib.CS_FluorLine(Z, line, energy);
 		}, message);
+		assertEquals(exc.getMessage(), message);
 	}
 
 	@Test

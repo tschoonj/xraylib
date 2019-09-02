@@ -80,21 +80,25 @@ public class TestCrossSectionsCompound {
 	@ParameterizedTest(name="test_bad_compounds_energy_values {index} -> {1}")
 	@MethodSource("wrapperEnergyValuesProvider")
 	public void test_bad_compounds_energy_values(CrossSectionWrapperEnergy cs_base, CrossSectionCPWrapperEnergy cs_cp) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute("jpewffpfjpwf", 10.0);
-		}, Xraylib.UNKNOWN_COMPOUND);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute(COMPOUND, -10.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute(null, -10.0);
 		}, Xraylib.UNKNOWN_COMPOUND);
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute("", -10.0);
 		}, Xraylib.UNKNOWN_COMPOUND);
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 	}
 	
 	@FunctionalInterface
@@ -137,21 +141,25 @@ public class TestCrossSectionsCompound {
 	@ParameterizedTest(name="test_bad_compounds_energy_theta_values {index} -> {1}")
 	@MethodSource("wrapperEnergyThetaValuesProvider")
 	public void test_bad_compounds_energy_theta_values(CrossSectionWrapperEnergyTheta cs_base, CrossSectionCPWrapperEnergyTheta cs_cp) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute("jpewffpfjpwf", 10.0, Math.PI / 4.0);
-		}, Xraylib.UNKNOWN_COMPOUND);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute(COMPOUND, -10.0, Math.PI / 4.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute(null, -10.0, Math.PI / 4.0);
 		}, Xraylib.UNKNOWN_COMPOUND);
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute("", -10.0, Math.PI / 4.0);
 		}, Xraylib.UNKNOWN_COMPOUND);
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 	}
 	
 	@FunctionalInterface
@@ -194,20 +202,24 @@ public class TestCrossSectionsCompound {
 	@ParameterizedTest(name="test_bad_compounds_energy_theta_phi_values {index} -> {1}")
 	@MethodSource("wrapperEnergyThetaPhiValuesProvider")
 	public void test_bad_compounds_energy_theta_phi_values(CrossSectionWrapperEnergyThetaPhi cs_base, CrossSectionCPWrapperEnergyThetaPhi cs_cp) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute("jpewffpfjpwf", 10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.UNKNOWN_COMPOUND);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute(COMPOUND, -10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute(null, -10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.UNKNOWN_COMPOUND);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = cs_cp.execute("", -10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.UNKNOWN_COMPOUND);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_COMPOUND);
 	}
 }

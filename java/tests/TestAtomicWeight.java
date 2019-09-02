@@ -18,8 +18,9 @@ public class TestAtomicWeight {
 
 	@Test
 	public void test_bad_Z() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double width = Xraylib.AtomicWeight(185);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 	}
 }

@@ -51,21 +51,24 @@ public class TestCrossSections {
 	@ParameterizedTest(name="bad_good_values {index} -> {0} {1}")
 	@MethodSource("badValuesProvider")
 	public void test_bad_values(CrossSectionWrapper wrapper) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = wrapper.execute(-1, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = wrapper.execute(Xraylib.ZMAX, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = wrapper.execute(26, 0.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = wrapper.execute(26, -1.0);
-		}, Xraylib.NEGATIVE_ENERGY);
-
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 }

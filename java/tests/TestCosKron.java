@@ -48,9 +48,10 @@ public class TestCosKron {
 	@ParameterizedTest(name="test_bad_values {index} -> {0} {1}")
 	@MethodSource("badValuesProvider")
 	public void test_good_values(int Z, int trans, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double coskron = Xraylib.CosKronTransProb(Z, trans);
 		}, message);
+		assertEquals(exc.getMessage(), message);
 	}
 	
 

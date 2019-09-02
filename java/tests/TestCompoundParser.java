@@ -86,13 +86,15 @@ public class TestCompoundParser {
 
 	@Test
 	public void test_SymbolToAtomicNumber_bad_symbol() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			int Z = Xraylib.SymbolToAtomicNumber("Uu");
-		}, "Invalid chemical symbol");
+		});
+		assertEquals(exc.getMessage(), "Invalid chemical symbol");
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		 assertThrows(IllegalArgumentException.class, () -> {
 			int Z = Xraylib.SymbolToAtomicNumber(null);
-		}, "Invalid chemical symbol");
+		});
+		assertEquals(exc.getMessage(), "Invalid chemical symbol");
 	}
 
 	@Test
@@ -102,13 +104,15 @@ public class TestCompoundParser {
 
 	@Test
 	public void test_AtomicNumberToSymbol_bad_symbol() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			String symbol = Xraylib.AtomicNumberToSymbol(-2);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			String symbol = Xraylib.AtomicNumberToSymbol(108);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 	}
 
 	static IntStream generateStreamOfZ() {

@@ -48,13 +48,15 @@ public class TestCrystalDiffraction {
 		double angle = cs.Bragg_angle(10.0, 1, 1, 1);
 		assertEquals(angle, 0.3057795845795849, 1E-6);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
             		double angle2 = cs.Bragg_angle(-10.0, 1, 1, 1);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
             		double angle2 = cs.Bragg_angle(10.0, 0, 0, 0);
-		}, Xraylib.INVALID_MILLER);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_MILLER);
 	}
 
 	@Test
@@ -65,9 +67,10 @@ public class TestCrystalDiffraction {
 		tmp = cs.Q_scattering_amplitude(10.0, 0, 0, 0, Math.PI/4.0);
 		assertEquals(tmp, 0.0);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
             		double tmp2 = cs.Q_scattering_amplitude(-10.0, 1, 1, 1, Math.PI/4.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 
 	@Test
@@ -75,21 +78,25 @@ public class TestCrystalDiffraction {
         	double[] factors = Xraylib.Atomic_Factors(26, 10.0, 1.0, 10.0);
 		assertArrayEquals(factors, new double[]{65.15, -0.22193271025027966, 22.420270655080493}, 1E-6);
 			
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
             		double[] factors2 = Xraylib.Atomic_Factors(-1, 10.0, 1.0, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
             		double[] factors2 = Xraylib.Atomic_Factors(26, -10.0, 1.0, 10.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
             		double[] factors2 = Xraylib.Atomic_Factors(26, 10.0, -1.0, 10.0);
-		}, Xraylib.NEGATIVE_Q);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_Q);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
             		double[] factors2 = Xraylib.Atomic_Factors(26, 10.0, 1.0, -10.0);
-		}, Xraylib.NEGATIVE_DEBYE_FACTOR);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_DEBYE_FACTOR);
 	}
 
 	@Test
@@ -103,9 +110,10 @@ public class TestCrystalDiffraction {
 		double tmp = cs.Crystal_dSpacing(1, 1, 1);
 		assertEquals(tmp, 2.0592870875248344, 1E-6);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
             		double tmp2 = cs.Crystal_dSpacing(0, 0, 0);
-		}, Xraylib.INVALID_MILLER);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_MILLER);
 	}
 
 	/* TODO: Test Crystal_F_H_StructureFactor and Crystal_F_H_StructureFactor_Partial */

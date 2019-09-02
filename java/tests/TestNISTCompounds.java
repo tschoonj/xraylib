@@ -52,16 +52,18 @@ public class TestNISTCompounds {
 	@NullAndEmptySource
 	@ValueSource(strings = {"howehfofhwf"})
 	public void test_bad_NIST_compounds(String compound) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			compoundDataNIST cdn = Xraylib.GetCompoundDataNISTByName(compound);
-		}, String.format("%s was not found in the NIST compound database", compound));
+		});
+		assertEquals(exc.getMessage(), String.format("%s was not found in the NIST compound database", compound));
 	}
 
 	@ParameterizedTest(name="test_bad_NIST_indices {index} -> {arguments}")
 	@ValueSource(ints = {-1, 180})
 	public void test_bad_NIST_indices(int index) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			compoundDataNIST cdn = Xraylib.GetCompoundDataNISTByIndex(index);
-		}, String.format("%d is out of the range of indices covered by the NIST compound database", index));
+		});
+		assertEquals(exc.getMessage(), String.format("%d is out of the range of indices covered by the NIST compound database", index));
 	}
 }

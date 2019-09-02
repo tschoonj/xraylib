@@ -49,40 +49,48 @@ public class TestComptonProfiles {
 
 	@Test
 	public void test_bad_input() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile(0, 0.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
 		Xraylib.ComptonProfile(102, 0.0);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile(103, 0.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile(26, -1.0);
-		}, Xraylib.NEGATIVE_PZ);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_PZ);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile_Partial(0, Xraylib.K_SHELL, 0.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
 		Xraylib.ComptonProfile_Partial(102, Xraylib.K_SHELL, 0.0);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile_Partial(103, Xraylib.K_SHELL, 0.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile_Partial(26, Xraylib.K_SHELL, -1.0);
-		}, Xraylib.NEGATIVE_PZ);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_PZ);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile_Partial(26, -1, 0.0);
-		}, Xraylib.INVALID_SHELL);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile_Partial(26, Xraylib.N2_SHELL, 0.0);
-		}, Xraylib.INVALID_SHELL);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
 	}
 }

@@ -42,8 +42,9 @@ public class TestJumpFactor {
 	@ParameterizedTest(name="test_bad_values {index} -> {0} {1}")
 	@MethodSource("badValuesProvider")
 	public void test_bad_values(int Z, int shell, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double jf = Xraylib.JumpFactor(Z, shell);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 }

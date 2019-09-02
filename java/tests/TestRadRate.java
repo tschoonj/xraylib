@@ -64,9 +64,10 @@ public class TestRadRate {
 	@ParameterizedTest(name="test_bad_values {index} -> {0} {1}")
 	@MethodSource("badValuesProvider")
 	public void test_bad_values(int Z, int line, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double rr = Xraylib.RadRate(Z, line);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 
 }

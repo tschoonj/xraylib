@@ -15,12 +15,14 @@ public class TestDensities {
 
 	@Test
 	public void test_bad_values() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double density = Xraylib.ElementDensity(0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
 		assertThrows(IllegalArgumentException.class, () -> {
 			double density = Xraylib.ElementDensity(99);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 	}
 }

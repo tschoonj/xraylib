@@ -41,17 +41,20 @@ public class TestCrossSectionsBarns {
 	@ParameterizedTest(name="test_bad_energy_values {index} -> {0} {1}")
 	@MethodSource("energyValuesProvider")
 	public void test_bad_energy_values(CrossSectionWrapperEnergy base, CrossSectionWrapperEnergy barns) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(-1, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(Xraylib.ZMAX, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(26, 0.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 
 	@FunctionalInterface
@@ -76,21 +79,26 @@ public class TestCrossSectionsBarns {
 	@ParameterizedTest(name="test_bad_line_energy_values {index} -> {0} {1}")
 	@MethodSource("lineEnergyValuesProvider")
 	public void test_bad_line_energy_values(CrossSectionWrapperLineEnergy base, CrossSectionWrapperLineEnergy barns) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(-1, Xraylib.KL3_LINE, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(Xraylib.ZMAX, Xraylib.KL3_LINE, 10.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		exc.printStackTrace();
+		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(26, -500, 10.0);
-		}, Xraylib.INVALID_LINE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_LINE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(26, Xraylib.KL3_LINE, 0.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 
 	@FunctionalInterface
@@ -116,17 +124,20 @@ public class TestCrossSectionsBarns {
 	@ParameterizedTest(name="test_bad_energy_theta_values {index} -> {0} {1}")
 	@MethodSource("energyThetaValuesProvider")
 	public void test_bad_energy_theta_values(CrossSectionWrapperEnergyTheta base, CrossSectionWrapperEnergyTheta barns) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(-1, 10.0, Math.PI / 4.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(Xraylib.ZMAX, 10.0, Math.PI / 4.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(26, -10.0, Math.PI / 4.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 
 	@FunctionalInterface
@@ -152,16 +163,19 @@ public class TestCrossSectionsBarns {
 	@ParameterizedTest(name="test_bad_energy_theta_phi_values {index} -> {0} {1}")
 	@MethodSource("energyThetaPhiValuesProvider")
 	public void test_bad_energy_theta_phi_values(CrossSectionWrapperEnergyThetaPhi base, CrossSectionWrapperEnergyThetaPhi barns) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(-1, 10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(Xraylib.ZMAX, 10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 
-		assertThrows(IllegalArgumentException.class, () -> {
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(26, -10.0, Math.PI / 4.0, Math.PI / 4.0);
-		}, Xraylib.NEGATIVE_ENERGY);
+		});
+		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
 	}
 }

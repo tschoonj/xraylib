@@ -51,9 +51,10 @@ public class TestKisselPE {
 	@ParameterizedTest(name="test_cs_fluorline_kissel_bad_values {index} -> {0} {1} {2}")
 	@MethodSource("badCSFluorLineKisselValuesProvider")
 	public void test_cs_fluorline_kissel_bad_values(int Z, int line, double energy, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = Xraylib.CS_FluorLine_Kissel(Z, line, energy);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 
 	@Test
@@ -103,9 +104,10 @@ public class TestKisselPE {
 	@ParameterizedTest(name="test_cs_photo_partial_bad_values {index} -> {0} {1} {2}")
 	@MethodSource("badCSPhotoPartialsValuesProvider")
 	public void test_cs_photo_partial_bad_values(int Z, int shell, double energy, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = Xraylib.CS_Photo_Partial(Z, shell, energy);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 
 	@Test
@@ -125,8 +127,9 @@ public class TestKisselPE {
 	@ParameterizedTest(name="test_electron_config_bad_values {index} -> {0} {1}")
 	@MethodSource("badElectronConfigValuesProvider")
 	public void test_electron_config_bad_values(int Z, int shell, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double ec = Xraylib.ElectronConfig(Z, shell);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 }

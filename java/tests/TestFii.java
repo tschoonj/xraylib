@@ -45,8 +45,9 @@ public class TestFii {
 	@ParameterizedTest(name="test_bad_values {index} -> {0} {1}")
 	@MethodSource("badValuesProvider")
 	public void test_bad_values(int Z, double energy, String message) {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double fii = Xraylib.Fii(Z, energy);
-		}, message);
+		});
+		assertEquals(exc.getMessage(), message);
 	}
 }

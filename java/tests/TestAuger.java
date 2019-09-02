@@ -18,23 +18,26 @@ public class TestAuger {
 
 	@Test
 	public void test_rate_bad_Z() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double rate = Xraylib.AugerRate(-35, Xraylib.L3_M4N7_AUGER);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 	}
 
 	@Test
 	public void test_rate_bad_trans() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double rate = Xraylib.AugerRate(82, Xraylib.M4_M5Q3_AUGER + 1);
-		}, Xraylib.UNKNOWN_AUGER);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_AUGER);
 	}
 
 	@Test
 	public void test_rate_invalid_trans() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double rate = Xraylib.AugerRate(62, Xraylib.L3_M4N7_AUGER);
-		}, Xraylib.INVALID_AUGER);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_AUGER);
 	}
 
 	@Test
@@ -57,22 +60,25 @@ public class TestAuger {
 
 	@Test
 	public void test_yield_bad_Z() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double ayield = Xraylib.AugerYield(-35, Xraylib.K_SHELL);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 	}
 
 	@Test
 	public void test_yield_invalid_shell() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			double ayield = Xraylib.AugerYield(82, Xraylib.N2_SHELL);
-		}, Xraylib.INVALID_SHELL);
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
+			double ayield = Xraylib.AugerYield(26, Xraylib.M5_SHELL);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
 	}
 
 	@Test
 	public void test_yield_bad_shell() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double ayield = Xraylib.AugerYield(82, -5);
-		}, Xraylib.UNKNOWN_SHELL);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_SHELL);
 	}
 }

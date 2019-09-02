@@ -18,22 +18,25 @@ public class TestAtomicLevelWidth {
 
 	@Test
 	public void test_bad_Z() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double width = Xraylib.AtomicLevelWidth(185, Xraylib.K_SHELL);
-		}, Xraylib.Z_OUT_OF_RANGE);
+		});
+		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
 	}
 
 	@Test
 	public void test_bad_shell() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double width = Xraylib.AtomicLevelWidth(26, -5);
-		}, Xraylib.UNKNOWN_SHELL);
+		});
+		assertEquals(exc.getMessage(), Xraylib.UNKNOWN_SHELL);
 	}
 
 	@Test
 	public void test_invalid_shell() {
-		assertThrows(IllegalArgumentException.class, () -> {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double width = Xraylib.AtomicLevelWidth(26, Xraylib.N3_SHELL);
-		}, Xraylib.INVALID_SHELL);
+		});
+		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
 	}
 }
