@@ -79,21 +79,21 @@ int main(int argc, char **argv) {
 	assert(error != NULL);
 	assert(re == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, "NULL is not a valid value for compound") == 0);
+	assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
 	xrl_clear_error(&error);
 	
 	im = Refractive_Index_Im(NULL, 1.0, 1.0, &error);
 	assert(error != NULL);
 	assert(im == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, "NULL is not a valid value for compound") == 0);
+	assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
 	xrl_clear_error(&error);
 
 	cplx = Refractive_Index(NULL, 1.0, 1.0, &error);
 	assert(error != NULL);
 	assert(cplx.re == 0.0 && cplx.im == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, "NULL is not a valid value for compound") == 0);
+	assert(strcmp(error->message, UNKNOWN_COMPOUND) == 0);
 	xrl_clear_error(&error);
 
 	re = Refractive_Index_Re("", 1.0, 1.0, &error);

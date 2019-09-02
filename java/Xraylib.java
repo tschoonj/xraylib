@@ -2839,8 +2839,13 @@ public class Xraylib {
 
     if (E <= 0.0)
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
-    else if (density <= 0.0)
-      throw new IllegalArgumentException(NEGATIVE_DENSITY);
+    else if (density <= 0.0) {
+      if (compoundDataNIST.class.isInstance(cd)) {
+        density = compoundDataNIST.class.cast(cd).density;
+      } else {
+        throw new IllegalArgumentException(NEGATIVE_DENSITY);
+      }
+    }
 
     for (int i = 0 ; i < cd.getNElements() ; i++)
       delta += cd.getMassFractions()[i] * KD * (cd.getElements()[i] + Fi(cd.getElements()[i], E)) / AtomicWeight(cd.getElements()[i]) / E / E;
@@ -2854,8 +2859,13 @@ public class Xraylib {
 
     if (E <= 0.0)
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
-    else if (density <= 0.0)
-      throw new IllegalArgumentException(NEGATIVE_DENSITY);
+    else if (density <= 0.0) {
+      if (compoundDataNIST.class.isInstance(cd)) {
+        density = compoundDataNIST.class.cast(cd).density;
+      } else {
+        throw new IllegalArgumentException(NEGATIVE_DENSITY);
+      }
+    }
 
     for (int i = 0 ; i < cd.getNElements() ; i++)
       rv += CS_Total(cd.getElements()[i], E) * cd.getMassFractions()[i];
@@ -2870,8 +2880,13 @@ public class Xraylib {
 
     if (E <= 0.0)
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
-    else if (density <= 0.0)
-      throw new IllegalArgumentException(NEGATIVE_DENSITY);
+    else if (density <= 0.0) {
+      if (compoundDataNIST.class.isInstance(cd)) {
+        density = compoundDataNIST.class.cast(cd).density;
+      } else {
+        throw new IllegalArgumentException(NEGATIVE_DENSITY);
+      }
+    }
 
     for (int i = 0 ; i < cd.getNElements() ; i++) {
       re += cd.getMassFractions()[i] * KD * (cd.getElements()[i] + Fi(cd.getElements()[i], E)) / AtomicWeight(cd.getElements()[i]) / E / E;

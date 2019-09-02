@@ -24,10 +24,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans and Bruno Golosio''AS IS'' AND ANY E
 	int *Elements = NULL;\
 	double *massFractions = NULL;\
 	\
-	if (compound == NULL) { \
-		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "NULL is not a valid value for compound"); \
-		return rv; \
-	} \
 	if ((cd = CompoundParser(compound, NULL)) != NULL) { \
 		nElements = cd->nElements; \
 		Elements = cd->Elements; \

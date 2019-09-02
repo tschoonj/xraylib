@@ -20,4 +20,6 @@ EXTRA_DIST = \
 	     TestFluorYield.java \
 	     TestJumpFactor.java \
 	     TestKisselPE.java \
-	     TestPolarized.java
+	     TestPolarized.java \
+	     TestRadRate.java \
+	     TestRefractiveIndices.java
