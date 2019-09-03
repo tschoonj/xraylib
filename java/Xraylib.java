@@ -27,6 +27,15 @@ import java.text.Format;
 import org.apache.commons.math3.complex.Complex;
 
 
+/** 
+ * This is the main class of the xraylib package, containing all static methods. 
+ * 
+ * If an invalid argument has been passed to any of these methods,
+ * an @see IllegalArgumentException will be thrown.
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
 public class Xraylib {
 
   static {
@@ -155,8 +164,10 @@ public class Xraylib {
   }
 
   private static void XRayInit() throws Exception {
-    try {
+    try (
       DataInputStream inputStream = new DataInputStream(Xraylib.class.getClassLoader().getResourceAsStream("xraylib.dat"));
+      ) {
+      
       int bytes_total = inputStream.available();
       byte[] bytes = new byte[bytes_total];
       inputStream.readFully(bytes);
@@ -306,15 +317,15 @@ public class Xraylib {
       if (byte_buffer.hasRemaining()) {
         throw new RuntimeException("byte_buffer not empty when closing!");
       }
-
-      inputStream.close();
-    }
-    catch (IOException | RuntimeException e ) {
-      e.printStackTrace();
-      throw new Exception(e.getMessage());
     }
   }
 
+  /** 
+   * Returns the @see <a href="https://en.wikipedia.org/wiki/Standard_atomic_weight">standard atomic weight</a>
+   * 
+   * @param Z The atomic number
+   * @return The standard atomic weight (dimensionless)
+   */
   public static double AtomicWeight(int Z) {
     double atomic_weight;
 
@@ -331,6 +342,12 @@ public class Xraylib {
     return atomic_weight;
   }
 
+  /** 
+   * For a given atomic number, returns the @see <a href="https://en.wikipedia.org/wiki/Density">element density</a>.
+   * 
+   * @param Z The atomic number
+   * @return The element density, expressed in g/cm<sup>3</sup>
+   */
   public static double ElementDensity(int Z) {
     double element_density;
 
@@ -347,6 +364,15 @@ public class Xraylib {
     return element_density;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding @see <a href="https://en.wikipedia.org/wiki/Absorption_edge">absorption edge energy</a>.
+   * 
+   * This is also known as the electron binding energy.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The absorption edge energy, expressed in keV
+   */
   public static double EdgeEnergy(int Z, int shell) {
     double edge_energy;
 
@@ -367,6 +393,13 @@ public class Xraylib {
     return edge_energy;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding atomic level width.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The atomic level width, expressed in keV
+   */
   public static double AtomicLevelWidth(int Z, int shell) {
     double atomic_level_width;
 
@@ -387,6 +420,15 @@ public class Xraylib {
     return atomic_level_width;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding fluorescence yield.
+   * 
+   * The returned value will be between 0 and 1.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The fluorescence yield (dimensionless)
+   */
   public static double FluorYield(int Z, int shell) {
     double fluor_yield;
 
@@ -407,6 +449,13 @@ public class Xraylib {
     return fluor_yield;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding jump factor.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The jump factor (dimensionless)
+   */
   public static double JumpFactor(int Z, int shell) {
     double jump_factor;
 
@@ -427,6 +476,15 @@ public class Xraylib {
     return jump_factor;
   }
 
+  /** 
+   * For a given atomic number and transition, returns the corresponding @see <a href="https://en.wikipedia.org/wiki/Coster%E2%80%93Kronig_transition">Coster-Kronig transition probability</a>.
+   * 
+   * The returned value will be between 0 and 1.
+   * 
+   * @param Z The atomic number
+   * @param trans A macro identifying the Coster-Kronig transition, such as #FL12_TRANS.
+   * @return The Coster-Kronig transition probability (dimensionless)
+   */
   public static double CosKronTransProb(int Z, int trans) {
     double trans_prob;
 
@@ -447,6 +505,15 @@ public class Xraylib {
     return trans_prob;
   }
 
+  /** 
+   * For a given atomic number and line, returns the corresponding radiative rate.
+   *
+   * The returned value will be between 0 and 1.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @return The radiative rate (dimensionless)
+   */
   public static double RadRate(int Z, int line) {
     double rad_rate, rr;
     int i;
@@ -529,26 +596,61 @@ public class Xraylib {
     return sigma;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Photo(int Z, double E) {
     double rv = CS_Factory(Z, E, NE_Photo_arr, E_Photo_arr, CS_Photo_arr, CS_Photo_arr2);
     return rv;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding Rayleigh scattering cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Rayl(int Z, double E) {
     double rv = CS_Factory(Z, E, NE_Rayl_arr, E_Rayl_arr, CS_Rayl_arr, CS_Rayl_arr2);
     return rv;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding Compton scattering cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Compt(int Z, double E) {
     double rv = CS_Factory(Z, E, NE_Compt_arr, E_Compt_arr, CS_Compt_arr, CS_Compt_arr2);
     return rv;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding mass-energy absorption cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Energy(int Z, double E) {
     double rv = CS_Factory(Z, E / 1000.0, NE_Energy_arr, E_Energy_arr, CS_Energy_arr, CS_Energy_arr2);
     return rv;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding total attenuation cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Total(int Z, double E) {
     if (Z<1 || Z>ZMAX || NE_Photo_arr[Z] < 0 || NE_Rayl_arr[Z] < 0 || NE_Compt_arr[Z] < 0) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -561,6 +663,13 @@ public class Xraylib {
     return CS_Photo(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
   }
 
+  /** 
+   * For a given atomic number and momentum transfer, returns the corresponding atomic form factor for Rayleigh scattering.
+   *
+   * @param Z The atomic number
+   * @param q The momentum transfer, expressed in Å<sup>-1</sup>
+   * @return The atomic form factor
+   */
   public static double FF_Rayl(int Z, double q) {
     double FF;
 
@@ -581,6 +690,13 @@ public class Xraylib {
   }
 
 
+  /** 
+   * For a given atomic number and momentum transfer, returns the corresponding incoherent scattering function for Compton scattering.
+   *
+   * @param Z The atomic number
+   * @param q The momentum transfer, expressed in Å<sup>-1</sup>
+   * @return The incoherent scattering function
+   */
   public static double SF_Compt(int Z, double q) {
     double SF;
 
@@ -597,6 +713,12 @@ public class Xraylib {
     return SF;
   }
 
+  /** 
+   * For a given scattering angle, returns the @see <a href="https://en.wikipedia.org/wiki/Thomson_scattering">Thomson differential cross section</a>
+   * 
+   * @param theta The scattering angle, between indicent and observed photon or wave.
+   * @return The Thomson differential cross section, expressed in barn
+   */
   public static double DCS_Thoms(double theta) {
     double cos_theta;
 
@@ -605,6 +727,13 @@ public class Xraylib {
     return (RE2/2.0) * (1.0 + cos_theta * cos_theta);
   }
 
+  /** 
+   * For a given energy and scattering angle, returns the @see <a href="https://en.wikipedia.org/wiki/Klein%E2%80%93Nishina_formula">Klein-Nishina differential cross section</a>
+   * 
+   * @param E The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Klein-Nishina differential cross section, expressed in barn
+   */
   public static double DCS_KN(double E, double theta) {
     double cos_theta, t1, t2;
 
@@ -619,6 +748,14 @@ public class Xraylib {
     return (RE2/2.) * (1.0 + cos_theta * cos_theta + t1 *t1 / t2) /t2 /t2;
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angle, returns the Rayleigh differential cross section.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in cm<sup>2</sup>/g/sterad
+   */
   public static double DCS_Rayl(int Z, double E, double theta) {
     double F, q ;
 
@@ -632,6 +769,14 @@ public class Xraylib {
     return  AVOGNUM / AtomicWeight_arr[Z] * F * F * DCS_Thoms(theta);
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angle, returns the Compton differential cross section.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in cm<sup>2</sup>/g/sterad
+   */
   public static double DCS_Compt(int Z, double E, double theta) {
     double S, q ;
 
@@ -645,6 +790,13 @@ public class Xraylib {
     return  AVOGNUM / AtomicWeight_arr[Z] * S * DCS_KN(E, theta);
   }
 
+  /** 
+   * For a given energy and scattering angle, returns the @see <a href="https://en.wikipedia.org/wiki/Momentum_transfer">momentum transfer</a>
+   * 
+   * @param E The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The momentum transfer for X-ray photon scattering, expressed in Å<sup>-1</sup>
+   */
   public static double MomentTransf(double E, double theta) {
     if (E <= 0.0) {
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
@@ -653,6 +805,12 @@ public class Xraylib {
     return E / KEV2ANGST * Math.sin(theta / 2.0) ;
   }
 
+  /** 
+   * For a given energy, returns the @see <a href="https://en.wikipedia.org/wiki/Klein%E2%80%93Nishina_formula">Klein-Nishina cross section</a>
+   * 
+   * @param E The photon energy, expressed in keV
+   * @return The Klein-Nishina cross section, expressed in barn
+   */
   public static double CS_KN(double E) {
     double a, a3, b, b2, lb;
     double sigma;
@@ -671,6 +829,13 @@ public class Xraylib {
     return sigma;
   }
 
+  /** 
+   * For a given energy and scattering angle, returns the photon energy after @see <a href="https://en.wikipedia.org/wiki/Compton_scattering#Derivation_of_the_scattering_formula">Compton scattering</a>.
+   * 
+   * @param E0 The initial photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The photon energy after scattering, expressed in keV.
+   */
   public static double ComptonEnergy(double E0, double theta) {
     double cos_theta, alpha;
 
@@ -684,6 +849,15 @@ public class Xraylib {
     return E0 / (1 + alpha * (1 - cos_theta));
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding photoionization cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Photo_Total(int Z, double E) {
     int shell;
     double rv = 0.0;
@@ -712,10 +886,29 @@ public class Xraylib {
     return rv;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding photoionization cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Photo_Total(int Z, double E) {
     return CSb_Photo_Total(Z, E) * AVOGNUM / AtomicWeight_arr[Z];
   }
 
+  /** 
+   * For a given atomic number, shell and energy, returns the corresponding partial photoionization cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/electron.
+   */
   public static double CSb_Photo_Partial(int Z, int shell, double E) {
     double ln_E, ln_sigma, sigma;
     double x0, x1, y0, y1;
@@ -767,10 +960,29 @@ public class Xraylib {
     return sigma;
   }
 
+  /** 
+   * For a given atomic number, shell and energy, returns the corresponding partial photoionization cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Photo_Partial(int Z, int shell, double E) {
     return CSb_Photo_Partial(Z, shell, E) * Electron_Config_Kissel_arr[Z * SHELLNUM_K + shell] * AVOGNUM/AtomicWeight_arr[Z];
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding total attenuation cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Total_Kissel(int Z, double E) {
 
     if (Z < 1 || Z > ZMAX || NE_Photo_Total_Kissel_arr[Z] < 0 || NE_Rayl_arr[Z] < 0 || NE_Compt_arr[Z] < 0) {
@@ -784,10 +996,28 @@ public class Xraylib {
     return CS_Photo_Total(Z, E) + CS_Rayl(Z, E) + CS_Compt(Z, E);
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding total attenuation cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Total_Kissel(int Z, double E) {
     return CS_Total_Kissel(Z, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding @see <a href="https://en.wikipedia.org/wiki/Electron_configuration">electron configuration</a>.
+   *
+   * This method used the Kissel database to determine the electron configuration.
+   *
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The number of electrons that occupy the shell
+   */
   public static double ElectronConfig(int Z, int shell) {
     if (Z < 1 || Z > ZMAX) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -806,6 +1036,13 @@ public class Xraylib {
     return rv;
   }
 
+  /** 
+   * For a given atomic number and momentum, returns the corresponding Compton scattering profile, summed over all shells.
+   *
+   * @param Z The atomic number
+   * @param pz The momentum
+   * @return The Compton scattering profile
+   */
   public static double ComptonProfile(int Z, double pz) {
     double q, ln_q;
     double ln_pz;
@@ -827,6 +1064,14 @@ public class Xraylib {
     return q;
   }
 
+  /** 
+   * For a given atomic number, shell and momentum, returns the corresponding Compton scattering profile.
+   *
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @param pz The momentum
+   * @return The Compton scattering profile
+   */
   public static double ComptonProfile_Partial(int Z, int shell, double pz) {
     double q, ln_q;
     double ln_pz;
@@ -852,6 +1097,15 @@ public class Xraylib {
     return q;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding @see <a href="https://en.wikipedia.org/wiki/Electron_configuration">electron configuration</a>.
+   *
+   * This method used the Biggs database to determine the electron configuration.
+   *
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The number of electrons that occupy the shell
+   */
   public static double ElectronConfig_Biggs(int Z, int shell) {
     if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles_arr[Z] < 0) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -864,6 +1118,17 @@ public class Xraylib {
     return UOCCUP_ComptonProfiles_arr[Z][shell];
   }
 
+  /** 
+   * For a given atomic number and Auger transition, returns the corresponding non-radiative Auger rate.
+   *
+   * Transitions that correspond to Coster-Kronig transitions (such as #L2_L3N6_AUGER) will throw an exception.
+   *
+   * The returned value will be between 0 and 1.
+   * 
+   * @param Z The atomic number
+   * @param auger_trans A macro identifying the transition, such as #K_L2O7_AUGER
+   * @return The Auger radiative rate (dimensionless)
+   */
   public static double AugerRate(int Z, int auger_trans) {
     double rv;
     double yield, yield2;
@@ -886,6 +1151,17 @@ public class Xraylib {
     return rv;
   }
 
+  /** 
+   * For a given atomic number and shell, returns the corresponding non-radiative Auger yield.
+   * 
+   * The returned values does not cover Coster-Kronig transitions! Use #CosKronTransProb to obtain those values.
+   *
+   * The returned value will be between 0 and 1.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL
+   * @return The non-radiative Auger yield (dimensionless)
+   */
   public static double AugerYield(int Z, int shell) {
     double rv;
 
@@ -1594,10 +1870,34 @@ public class Xraylib {
     return rv;
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method is an alias for #CS_FluorLine_Kissel_Cascade, meaning that the cascade effect will be taken into account.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_FluorLine_Kissel(int Z, int line, double E) {
     return CS_FluorLine_Kissel_Cascade(Z, line, E);
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method excludes the cascade effect from the calculation!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
     if (Z < 1 || Z > ZMAX) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -2073,30 +2373,114 @@ public class Xraylib {
   private static final CS_FluorLine_Cascade_Body CS_FLUORLINE_KISSEL_NONRADIATIVE = new CS_FluorLine_Kissel_Nonradiative_CascadeImpl();
   private static final CS_FluorLine_Cascade_Body CS_FLUORLINE_KISSEL_FULL = new CS_FluorLine_Kissel_CascadeImpl();
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the radiative cascade contributions but excludes the non-radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
     return CS_FLUORLINE_KISSEL_RADIATIVE.execute(Z, line, E);
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the non-radiative cascade contributions but excludes the radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
     return CS_FLUORLINE_KISSEL_NONRADIATIVE.execute(Z, line, E);
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes both non-radiative and radiative cascade effect contributions!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_FluorLine_Kissel_Cascade(int Z, int line, double E) {
     return CS_FLUORLINE_KISSEL_FULL.execute(Z, line, E);
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes both non-radiative and radiative cascade effect contributions!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
   public static double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E) {
     return CS_FluorLine_Kissel_Cascade(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the non-radiative cascade contributions but excludes the radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
   public static double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
     return CS_FluorLine_Kissel_Nonradiative_Cascade(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the radiative cascade contributions but excludes the non-radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
   public static double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
     return CS_FluorLine_Kissel_Radiative_Cascade(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method excludes the cascade effect from the calculation!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
   public static double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
     return CS_FluorLine_Kissel_no_Cascade(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
@@ -2282,6 +2666,17 @@ public class Xraylib {
      }
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method used the jump factor approximation to calculate the photoionization cross section,
+   * which is only support for K- and L-lines.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_FluorLine(int Z, int line, double E) {
     double JumpK;
     double cs_line, Factor = 1.0;
@@ -2370,6 +2765,16 @@ public class Xraylib {
     throw new IllegalArgumentException(INVALID_LINE);
   }
 
+  /** 
+   * For a given atomic number, line, returns the corresponding XRF line energy
+   * 
+   * The line energies are equal to the difference of the absorption edge energies of the two shells
+   * that are involved in the transition.
+   *
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @return The XRF line energy, expressed in keV.
+   */
   public static double LineEnergy(int Z, int line) {
     double line_energy;
     double lE, rr;
@@ -2476,42 +2881,122 @@ public class Xraylib {
     return line_energy;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding total attenuation cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Total(int Z, double E) {
     return CS_Total(Z, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding photoionization cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Photo(int Z, double E) {
     return CS_Photo(Z, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding Rayleigh scattering cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Rayl(int Z, double E) {
     return CS_Rayl(Z, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the corresponding Compton scattering cross section.
+   *
+   * @param Z The atomic number
+   * @param E The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Compt(int Z, double E) {
     return CS_Compt(Z, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method used the jump factor approximation to calculate the photoionization cross section,
+   * which is only support for K- and L-lines.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
   public static double CSb_FluorLine(int Z, int line, double E) {
     return CS_FluorLine(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angle, returns the Rayleigh differential cross section.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in barn/atom/sterad
+   */
   public static double DCSb_Rayl(int Z, double E, double theta) {
     return DCS_Rayl(Z, E, theta) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angle, returns the Compton differential cross section.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in barn/atom/sterad
+   */
   public static double DCSb_Compt(int Z, double E, double theta) {
     return DCS_Compt(Z, E, theta) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angles, returns the Rayleigh differential cross section for a polarized beam.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in barn/atom/sterad
+   */
   public static double DCSPb_Rayl(int Z, double E, double theta, double phi) {
     return DCSP_Rayl(Z, E, theta, phi) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angles, returns the Compton differential cross section for a polarized beam.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in barn/atom/sterad
+   */
   public static double DCSPb_Compt(int Z, double E, double theta, double phi) {
     return DCSP_Compt(Z, E, theta, phi) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the anomalous scattering factor Δf′.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @return The anomalous scattering factor Δf′
+   */
   public static double Fi(int Z, double E) {
     double fi;
 
@@ -2528,6 +3013,13 @@ public class Xraylib {
     return fi;
   }
 
+  /** 
+   * For a given atomic number and energy, returns the anomalous scattering factor Δf″.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @return The anomalous scattering factor Δf″
+   */
   public static double Fii(int Z, double E) {
     double fii;
 
@@ -2544,6 +3036,15 @@ public class Xraylib {
     return fii;
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angles, returns the Rayleigh differential cross section for a polarized beam.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in cm<sup>2</sup>/g/sterad.
+   */
   public static double DCSP_Rayl(int Z, double E, double theta, double phi) {
     double F, q;
 
@@ -2560,6 +3061,15 @@ public class Xraylib {
     return  AVOGNUM / AtomicWeight(Z) * F*F * DCSP_Thoms(theta, phi);
   }
 
+  /** 
+   * For a given atomic number, energy and scattering angles, returns the Compton differential cross section for a polarized beam.
+   * 
+   * @param Z The atomic number
+   * @param E The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in cm<sup>2</sup>/g/sterad.
+   */
   public static double DCSP_Compt(int Z, double E, double theta, double phi) {
     double S, q;
 
@@ -2576,6 +3086,14 @@ public class Xraylib {
     return  AVOGNUM / AtomicWeight(Z) * S * DCSP_KN(E, theta, phi);
   }
 
+  /** 
+   * For a given energy and scattering angles, returns the Klein-Nishina differential cross section for a polarized beam.
+   * 
+   * @param E The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Klein-Nishina differential cross section, expressed in cm<sup>2</sup>/g/sterad.
+   */
   public static double DCSP_KN(double E, double theta, double phi) {
     double k0_k, k_k0, k_k0_2, cos_th, sin_th, cos_phi;
 
@@ -2595,6 +3113,13 @@ public class Xraylib {
 			      * cos_phi * cos_phi);
   }
 
+  /** 
+   * For the given scattering angles, returns the @see <a href="https://en.wikipedia.org/wiki/Thomson_scattering">Thomson differential cross section for a polarized beam</a>
+   * 
+   * @param theta The scattering angle, between indicent and observed photon or wave.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon or wave.
+   * @return The Thomson differential cross section, expressed in barn
+   */
   public static double DCSP_Thoms(double theta, double phi) {
     double sin_th, cos_phi ;
 
@@ -2603,6 +3128,12 @@ public class Xraylib {
     return RE2 * (1.0 - sin_th * sin_th * cos_phi * cos_phi);
   }
 
+  /** 
+   * For the given atomic number, return the corresponding chemical symbol 
+   * 
+   * @param Z The atomic number
+   * @return The chemical symbol
+   */
   public static String AtomicNumberToSymbol(int Z) {
     if (Z < 1 || Z >= MendelArray.length) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -2611,6 +3142,12 @@ public class Xraylib {
     return MendelArray[Z];
   }
 
+  /** 
+   * For the given chemical symbol, return the corresponding atomic number
+   * 
+   * @param symbol The chemical symbol
+   * @return The atomic number
+   */
   public static int SymbolToAtomicNumber(String symbol) {
     int i;
 
@@ -2626,6 +3163,12 @@ public class Xraylib {
     throw new IllegalArgumentException("Invalid chemical symbol");
   }
 
+  /** 
+   * Parse the given chemical compound, and return its information as a @see compoundData instance.
+   * 
+   * @param compoundString the chemical compound
+   * @return A @see compoundData instance
+   */
   public static compoundData CompoundParser(String compoundString) {
     return new compoundData(compoundString);
   }
@@ -2709,90 +3252,263 @@ public class Xraylib {
   private static final CS_Body_Energy_Theta_Phi DCSPB_RAYL_CP = Xraylib::DCSPb_Rayl; 
   private static final CS_Body_Energy_Theta_Phi DCSPB_COMPT_CP = Xraylib::DCSPb_Compt; 
 
+  /** 
+   * For a given compound and energy, returns the corresponding total attenuation cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Total_CP(String compound, double energy) {
     return CS_TOTAL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding total attenuation cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Total_Kissel_CP(String compound, double energy) {
     return CS_TOTAL_KISSEL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding Rayleigh scattering cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Rayl_CP(String compound, double energy) {
     return CS_RAYL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding Compton scattering cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Compt_CP(String compound, double energy) {
     return CS_COMPT_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding photoionization cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Photo_CP(String compound, double energy) {
     return CS_PHOTO_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding photoionization cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Photo_Total_CP(String compound, double energy) {
     return CS_PHOTO_TOTAL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding total attenuation cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Total_CP(String compound, double energy) {
     return CSB_TOTAL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding total attenuation cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Total_Kissel_CP(String compound, double energy) {
     return CSB_TOTAL_KISSEL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding Rayleigh scattering cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Rayl_CP(String compound, double energy) {
     return CSB_RAYL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding Compton scattering cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Compt_CP(String compound, double energy) {
     return CSB_COMPT_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding photoionization cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Photo_CP(String compound, double energy) {
     return CSB_PHOTO_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding photoionization cross section.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in barn/atom.
+   */
   public static double CSb_Photo_Total_CP(String compound, double energy) {
     return CSB_PHOTO_TOTAL_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound and energy, returns the corresponding mass-energy absorption cross section.
+   *
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The energy of the photon, expressed in keV.
+   * @return The cross section, expressed in cm<sup>2</sup>/g.
+   */
   public static double CS_Energy_CP(String compound, double energy) {
     return CS_ENERGY_CP.execute(compound, energy);
   }
 
+  /** 
+   * For a given compound, energy and scattering angle, returns the Rayleigh differential cross section.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in cm<sup>2</sup>/g/sterad
+   */
   public static double DCS_Rayl_CP(String compound, double energy, double theta) {
     return DCS_RAYL_CP.execute(compound, energy, theta);
   }
 
+  /** 
+   * For a given compound, energy and scattering angle, returns the Compton differential cross section.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in cm<sup>2</sup>/g/sterad
+   */
   public static double DCS_Compt_CP(String compound, double energy, double theta) {
     return DCS_COMPT_CP.execute(compound, energy, theta);
   }
 
+  /** 
+   * For a given compound, energy and scattering angle, returns the Rayleigh differential cross section.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in barn/atom/sterad
+   */
   public static double DCSb_Rayl_CP(String compound, double energy, double theta) {
     return DCSB_RAYL_CP.execute(compound, energy, theta);
   }
 
+  /** 
+   * For a given compound, energy and scattering angle, returns the Compton differential cross section.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in barn/atom/sterad
+   */
   public static double DCSb_Compt_CP(String compound, double energy, double theta) {
     return DCSB_COMPT_CP.execute(compound, energy, theta);
   }
 
+  /** 
+   * For a given compound, energy and scattering angles, returns the Rayleigh differential cross section for a polarized beam.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in cm<sup>2</sup>/g/sterad.
+   */
   public static double DCSP_Rayl_CP(String compound, double energy, double theta, double phi) {
     return DCSP_RAYL_CP.execute(compound, energy, theta, phi);
   }
 
+  /** 
+   * For a given compound, energy and scattering angles, returns the Compton differential cross section for a polarized beam.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in cm<sup>2</sup>/g/sterad.
+   */
   public static double DCSP_Compt_CP(String compound, double energy, double theta, double phi) {
     return DCSP_COMPT_CP.execute(compound, energy, theta, phi);
   }
 
+  /** 
+   * For a given compound, energy and scattering angles, returns the Rayleigh differential cross section for a polarized beam.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Rayleigh differential cross section, expressed in barn/atom/sterad.
+   */
   public static double DCSPb_Rayl_CP(String compound, double energy, double theta, double phi) {
     return DCSPB_RAYL_CP.execute(compound, energy, theta, phi);
   }
 
+  /** 
+   * For a given compound, energy and scattering angles, returns the Compton differential cross section for a polarized beam.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param energy The photon energy, expressed in keV
+   * @param theta The polar scattering angle, between indicent and observed photon.
+   * @param phi The azimuthal scattering angle, between indicent and observed photon.
+   * @return The Compton differential cross section, expressed in barn/atom/sterad.
+   */
   public static double DCSPb_Compt_CP(String compound, double energy, double theta, double phi) {
     return DCSPB_COMPT_CP.execute(compound, energy, theta, phi);
   }
 
+  /** 
+   * For a given compound name, return the corresponding @see compoundDataNIST instance, if found in the NIST database
+   * 
+   * @param compoundString a valid NIST database compound name 
+   * @return an instance of @see compoundDataNIST
+   */
   public static compoundDataNIST GetCompoundDataNISTByName(String compoundString) {
     for (compoundDataNIST cdn : compoundDataNISTList) {
       if (cdn.name.equals(compoundString))
@@ -2801,6 +3517,12 @@ public class Xraylib {
     throw new IllegalArgumentException(String.format("%s was not found in the NIST compound database", compoundString));
   }
 
+  /** 
+   * For a given index, return the corresponding @see compoundDataNIST instance, if found in the NIST database
+   * 
+   * @param compoundIndex the index at which the requested compound is stored the database
+   * @return an instance of @see compoundDataNIST
+   */
   public static compoundDataNIST GetCompoundDataNISTByIndex(int compoundIndex) {
     if (compoundIndex < 0 || compoundIndex >= compoundDataNISTList.length) {
       throw new IllegalArgumentException(String.format("%d is out of the range of indices covered by the NIST compound database", compoundIndex));
@@ -2808,10 +3530,19 @@ public class Xraylib {
     return new compoundDataNIST(compoundDataNISTList[compoundIndex]);
   }
 
+  /** 
+   * @return a list of all compound names present in the NIST database
+   */
   public static String[] GetCompoundDataNISTList() {
     return Arrays.stream(compoundDataNISTList).map(compound -> compound.name).toArray(String[]::new);
   }
 
+  /** 
+   * For a given radionuclide name, return the corresponding @see radioNuclideData instance, if found in the database
+   * 
+   * @param radioNuclideString a valid radionuclide name
+   * @return an instance of @see radioNuclideData
+   */
   public static radioNuclideData GetRadioNuclideDataByName(String radioNuclideString) {
     for (radioNuclideData rnd : nuclideDataList) {
       if (rnd.name.equals(radioNuclideString))
@@ -2820,6 +3551,12 @@ public class Xraylib {
     throw new IllegalArgumentException(String.format("%s was not found in the radionuclide database", radioNuclideString));
   }
 
+  /** 
+   * For a given index, return the corresponding @see radioNuclideData instance, if found in the database
+   * 
+   * @param radioNuclideIndex the index at which the requested radionuclide is stored the database
+   * @return an instance of @see radioNuclideData
+   */
   public static radioNuclideData GetRadioNuclideDataByIndex(int radioNuclideIndex) {
     if (radioNuclideIndex < 0 || radioNuclideIndex >= nuclideDataList.length) {
       throw new IllegalArgumentException(String.format("%d is out of the range of indices covered by the radionuclide database", radioNuclideIndex));
@@ -2827,12 +3564,23 @@ public class Xraylib {
     return new radioNuclideData(nuclideDataList[radioNuclideIndex]);
   }
 
+  /** 
+   * @return a list of all radionuclide names present in the database
+   */
   public static String[] GetRadioNuclideDataList() {
     return Arrays.stream(nuclideDataList).map(nuclide -> nuclide.name).toArray(String[]::new);
   }
 
   private static final double KD = 4.15179082788e-4;
 
+  /** 
+   * For a given compound, energy and density, returns the real part of the refractive index.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param E The photon energy, expressed in keV
+   * @param density The density, expressed in g/cm<sup>3</sup>. If the compound is found in the NIST database, this argument will only be used if it is greater than zero, otherwise the density from the database will used instead.
+   * @return The real part of the refractive index
+   */
   public static double Refractive_Index_Re(String compound, double E, double density) {
     compoundDataBase cd = parseCompoundFull(compound);
     double delta = 0.0;
@@ -2853,6 +3601,14 @@ public class Xraylib {
     return 1.0 - delta * density;
   }
 
+  /** 
+   * For a given compound, energy and density, returns the imaginary part of the refractive index.
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param E The photon energy, expressed in keV
+   * @param density The density, expressed in g/cm<sup>3</sup>. If the compound is found in the NIST database, this argument will only be used if it is greater than zero, otherwise the density from the database will used instead.
+   * @return The imaginary part of the refractive index
+   */
   public static double Refractive_Index_Im(String compound, double E, double density) {
     compoundDataBase cd = parseCompoundFull(compound);
     double rv = 0.0;
@@ -2873,6 +3629,14 @@ public class Xraylib {
     return rv * density * 9.8663479e-9 / E;
   }
 
+  /** 
+   * For a given compound, energy and density, returns the refractive index as a complex number .
+   * 
+   * @param compound Either a valid chemical formula, or a compound from the NIST database (see #GetCompoundDataNISTList for a list)
+   * @param E The photon energy, expressed in keV
+   * @param density The density, expressed in g/cm<sup>3</sup>. If the compound is found in the NIST database, this argument will only be used if it is greater than zero, otherwise the density from the database will used instead.
+   * @return The refractive index as a complex number
+   */
   public static Complex Refractive_Index(String compound, double E, double density) {
     double re = 0.0;
     double im = 0.0;
@@ -2899,10 +3663,19 @@ public class Xraylib {
     return new Complex(re, im);
   }
 
+  /** 
+   * @return a list of all currently available crystals
+   */
   public static String[] Crystal_GetCrystalsList() {
     return Arrays.stream(crystalDataList).map(crystal -> crystal.name).toArray(String[]::new);
   }
 
+  /** 
+   * For a given crystal name, returns the corresponding @see Crystal_Struct instance
+   * 
+   * @param material The name of the crystal
+   * @return an instance of @see Crystal_Struct
+   */
   public static Crystal_Struct Crystal_GetCrystal(String material) {
     for (Crystal_Struct cs : crystalDataList) {
       if (cs.name.equals(material))
@@ -2911,32 +3684,99 @@ public class Xraylib {
     throw new IllegalArgumentException(String.format("Crystal %s is not present in the array", material));
   }
 
+  /** Calculates the Bragg angle, given an energy and set of Miller indices
+   *  
+   * @param cs an instance of @see Crystal_Struct
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @return the Bragg angle
+   */
   public static double Bragg_angle(Crystal_Struct cs, double energy, int i_miller, int j_miller, int k_miller) {
     return cs.Bragg_angle(energy, i_miller, j_miller, k_miller);
   }
 
+  /** Calculates the crystal structure factor
+   *  
+   * @param cs an instance of @see Crystal_Struct
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @param debye_factor The Debye factor
+   * @param rel_angle expressed in radians
+   * @return the crystal structure factor, as a complex number
+   */
   public static Complex Crystal_F_H_StructureFactor (Crystal_Struct cs, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
     return cs.Crystal_F_H_StructureFactor(energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
   }
 
+  /** Calculates the partial crystal structure factor
+   *  
+   * @param cs an instance of @see Crystal_Struct
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @param debye_factor The Debye factor
+   * @param rel_angle expressed in radians
+   * @param f0_flag 
+   * @param f_prime_flag
+   * @param f_prime2_flag
+   * @return the crystal structure factor, as a complex number
+   */
   public static Complex Crystal_F_H_StructureFactor_Partial(Crystal_Struct cs, double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag) {
     return cs.Crystal_F_H_StructureFactor_Partial(energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
   }
 
+  /** Calculate the unit cell volume 
+   *  
+   * @param cs an instance of @see Crystal_Struct
+   * @return The unit cell volume
+   */
   public static double Crystal_UnitCellVolume(Crystal_Struct cs) {
     return cs.Crystal_UnitCellVolume();
   }
 
+  /** Calculates the d-spacing for the crystal and Miller indices.
+   *  
+   * @param cs an instance of @see Crystal_Struct
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @return The crystal D-spacing
+   */
   public static double Crystal_dSpacing(Crystal_Struct cs, int i_miller, int j_miller, int k_miller) {
     return cs.Crystal_dSpacing(i_miller, j_miller, k_miller);
   }
 
+  /** Calculates the Q scattering amplitude, given an energy, Miller indices and relative angle
+   *  
+   * @param cs an instance of @see Crystal_Struct
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @param rel_angle expressed in radians
+   * @return The Q scattering amplitude
+   */
   public static double Q_scattering_amplitude(Crystal_Struct cs, double energy, int i_miller, int j_miller, int k_miller, double rel_angle) {
     return cs.Q_scattering_amplitude(energy, i_miller, j_miller, k_miller, rel_angle);
   }
 
+  /** 
+   * For a given atomic number, energy, momentum transfer and Debye factor, returns
+   * an array with the atomic factors f<sub>0</sub>, Δf′ and Δf″. 
+   * 
+   * @param Z The atomic number
+   * @param energy The energy of the photon, expressed in keV.
+   * @param q The momentum transfer
+   * @param debye_factor The Debye factor
+   * @return an array with the three atomic factors
+   */
   public static double[] Atomic_Factors(int Z, double energy, double q, double debye_factor) {
     if (debye_factor <= 0.0)
       throw new IllegalArgumentException(NEGATIVE_DEBYE_FACTOR);
@@ -4815,5 +5655,9 @@ public class Xraylib {
   private static final int KM3 = -KM3_LINE - 1;
   private static final int KP5 = -KP5_LINE - 1;
 
+
+  private Xraylib() {
+    // intentionally empty constructor
+  }
 
 }

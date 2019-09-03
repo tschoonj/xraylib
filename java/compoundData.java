@@ -20,6 +20,12 @@ import java.util.Locale;
 import java.util.Locale.Category;
 import java.lang.Double;
 
+/** 
+ *  
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
 public class compoundData implements compoundDataBase {
   public final int nElements;
   public final int[] Elements;
@@ -35,6 +41,13 @@ public class compoundData implements compoundDataBase {
     return formattedCompoundString;
   }
  
+  /** 
+   * Constructor for compoundData instances
+   *
+   * Use @see Xraylib#CompoundParser instead, if you prefer to stay closer to the C implementation.
+   * 
+   * @param  compoundString the chemical formula that will be parsed
+   */
   public compoundData(String compoundString) {
     this.compoundString = compoundString;
     ArrayList<compoundAtom> ca = new ArrayList<>();

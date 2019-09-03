@@ -15,6 +15,12 @@ package com.github.tschoonj.xraylib;
 
 import java.nio.ByteBuffer;
 
+/** 
+ *  
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
 public class Crystal_Atom {
   public final int Zatom;
   public final double fraction;
@@ -30,6 +36,11 @@ public class Crystal_Atom {
     z = byte_buffer.getDouble();
   }
 
+  /** 
+   *  
+   * 
+   * @param ca an instance of this class that will be copied
+   */
   public Crystal_Atom(Crystal_Atom ca) {
     Zatom = ca.Zatom;
     fraction = ca.fraction;

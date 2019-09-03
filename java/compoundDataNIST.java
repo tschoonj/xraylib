@@ -16,6 +16,12 @@ package com.github.tschoonj.xraylib;
 import java.nio.ByteBuffer;
 
 
+/** 
+ *  
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
 public class compoundDataNIST implements compoundDataBase {
   public final String name;
   public final int nElements;
@@ -39,6 +45,11 @@ public class compoundDataNIST implements compoundDataBase {
     this.formattedNISTCompoundString = formattedNISTCompoundString;
   }
 
+  /** 
+   *  Copy constructor
+   * 
+   * @param cd instance that will be copied
+   */
   public compoundDataNIST(compoundDataNIST cd) {
     this.name = new String(cd.name);
     this.nElements = cd.nElements;
