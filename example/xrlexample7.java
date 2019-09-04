@@ -73,7 +73,7 @@ public class xrlexample7 {
 			Xraylib.CompoundParser("CuI2ww");
 			System.exit(1);
 		}
-		catch (XraylibException e) {
+		catch (IllegalArgumentException e) {
 		}
 		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CS_Total_CP("SiO2", 10.0)+" cm2/g");
 		System.out.println("Total cs of SiO2 at 10.0 keV: "+Xraylib.CSb_Total_CP("SiO2", 10.0)+" barns/atom");
@@ -98,7 +98,8 @@ public class xrlexample7 {
 			double testvalue = Xraylib.DCSb_Compt_CP("SiO2)", 10.0, Math.PI/4.0);
 			System.exit(1);
 		}
-		catch (XraylibException e) {}
+		catch (IllegalArgumentException e) {
+		}
 
   		double energy = 8;
   		double debye_temp_factor = 1.0;

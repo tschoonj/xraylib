@@ -110,21 +110,3 @@ extern double ElementDensity_arr[ZMAX+1];
 extern double xrf_cross_sections_constants_full[ZMAX+1][M5_SHELL+1][L3_SHELL+1];
 extern double xrf_cross_sections_constants_auger_only[ZMAX+1][M5_SHELL+1][L3_SHELL+1];
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

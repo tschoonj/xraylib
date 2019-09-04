@@ -16,6 +16,18 @@ package com.github.tschoonj.xraylib;
 import java.nio.ByteBuffer;
 import org.apache.commons.math3.complex.Complex;
 
+/** 
+ * This class allows for dealing with crystal structures.
+ *
+ * All methods in this class can also be accessed using their static method counterparts
+ * in the @see Xraylib class, if you prefer to stay closer to the C-API.
+ * 
+ * If an invalid argument has been passed to any of these methods,
+ * an @see IllegalArgumentException will be thrown.
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
 public class Crystal_Struct {
   public final String name;
   public final double a;
@@ -44,6 +56,10 @@ public class Crystal_Struct {
     }
   }
 
+  /** Copy constructor
+   * 
+   * @param cs The instance that will be copied
+   */
   public Crystal_Struct(Crystal_Struct cs) {
     name = new String(cs.name);
     a = cs.a;
@@ -60,16 +76,35 @@ public class Crystal_Struct {
     }
   }
 
+  /** Calculates the Bragg angle, given an energy and set of Miller indices
+   *  
+   * 
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @return the Bragg angle
+   */
   public double Bragg_angle(double energy, int i_miller, int j_miller, int k_miller) {
-    if (i_miller == 0.0 && j_miller == 0.0 && k_miller == 0.0) {
-      return 0.0;
-    }
+    if (energy <= 0.0)
+      throw new IllegalArgumentException(Xraylib.NEGATIVE_ENERGY);
 
     double d_spacing = Crystal_dSpacing(i_miller, j_miller, k_miller);
+
     double wavelength = Xraylib.KEV2ANGST / energy;
     return Math.asin(wavelength / (2.0 * d_spacing));
   }
 
+  /** Calculates the Q scattering amplitude, given an energy, Miller indices and relative angle
+   *  
+   * 
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @param rel_angle expressed in radians
+   * @return The Q scattering amplitude
+   */
   public double Q_scattering_amplitude(double energy, int i_miller, int j_miller, int k_miller, double rel_angle) {
     if (i_miller == 0 && j_miller == 0 && k_miller == 0)
       return 0.0;
@@ -77,10 +112,35 @@ public class Crystal_Struct {
     return Math.sin(rel_angle * Bragg_angle(energy, i_miller, j_miller, k_miller)) / wavelength;
   }
 
+  /** Calculates the crystal structure factor
+   *  
+   * 
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @param debye_factor The Debye factor
+   * @param rel_angle expressed in radians
+   * @return the crystal structure factor, as a complex number
+   */
   public Complex Crystal_F_H_StructureFactor (double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
     return Crystal_F_H_StructureFactor_Partial (energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, 2, 2, 2);
   }
 
+  /** Calculates the partial crystal structure factor
+   *  
+   * 
+   * @param energy expressed in keV
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @param debye_factor The Debye factor
+   * @param rel_angle expressed in radians
+   * @param f0_flag 
+   * @param f_prime_flag
+   * @param f_prime2_flag
+   * @return the crystal structure factor, as a complex number
+   */
   public Complex Crystal_F_H_StructureFactor_Partial(double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag) {
@@ -116,7 +176,7 @@ public class Crystal_Struct {
           f_re[Z] = f0;
           break;
         default:
-          throw new XraylibException("Bad f0_flag argument in Crystal_F_H_StructureFactor_Partial: " + f0_flag);
+          throw new IllegalArgumentException(String.format("Invalid f0_flag argument: %d", f0_flag));
       }
 
       switch (f_prime_flag) {
@@ -126,7 +186,7 @@ public class Crystal_Struct {
           f_re[Z] = f_re[Z] + f_prime;
           break;
         default:
-          throw new XraylibException("Bad f_prime_flag argument in Crystal_F_H_StructureFactor_Partial: " + f_prime_flag);
+          throw new IllegalArgumentException(String.format("Invalid f_prime_flag argument: %d", f_prime_flag));
       }
 
       switch (f_prime2_flag) {
@@ -137,7 +197,7 @@ public class Crystal_Struct {
           f_im[Z] = f_prime2;
           break;
         default:
-          throw new XraylibException("Bad f_prime2_flag argument in Crystal_F_H_StructureFactor_Partial: " +f_prime2_flag);
+          throw new IllegalArgumentException(String.format("Invalid f_prime2_flag argument: %d", f_prime_flag));
       }
 
       f_is_computed[Z] = true;
@@ -171,14 +231,27 @@ public class Crystal_Struct {
   }
 
 
+  /** Calculate the unit cell volume 
+   *  
+   * 
+   * @return The unit cell volume
+   */
   public double Crystal_UnitCellVolume() {
     return a * b * c * Math.sqrt((1.0 - pow2(cosd(alpha)) - pow2(cosd(beta)) - pow2(cosd(gamma))) + 2.0 * cosd(alpha) * cosd(beta) * cosd(gamma));
   }
 
+  /** Calculates the d-spacing for the crystal and Miller indices.
+   *  
+   * 
+   * @param i_miller Miller index i
+   * @param j_miller Miller index j
+   * @param k_miller Miller index k
+   * @return The crystal D-spacing
+   */
   public double Crystal_dSpacing(int i_miller, int j_miller, int k_miller) {
 
     if (i_miller == 0 && j_miller == 0 && k_miller == 0)
-      return 0.0;
+      throw new IllegalArgumentException(Xraylib.INVALID_MILLER);
 
     return (volume / (a * b * c)) * Math.sqrt(1.0 / (
      pow2(i_miller * sind(alpha) / a) + pow2(j_miller * sind(beta) / b) +

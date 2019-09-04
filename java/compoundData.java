@@ -20,11 +20,17 @@ import java.util.Locale;
 import java.util.Locale.Category;
 import java.lang.Double;
 
-public class compoundData {
+/** 
+ *  
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
+public class compoundData implements compoundDataBase {
   public final int nElements;
-  public final double nAtomsAll;
   public final int[] Elements;
-  public final double[] massFractions;  
+  public final double[] massFractions;
+  public final double nAtomsAll;
   public final double[] nAtoms;
   public final double molarMass;
   private final String compoundString;
@@ -35,6 +41,13 @@ public class compoundData {
     return formattedCompoundString;
   }
  
+  /** 
+   * Constructor for compoundData instances
+   *
+   * Use @see Xraylib#CompoundParser instead, if you prefer to stay closer to the C implementation.
+   * 
+   * @param  compoundString the chemical formula that will be parsed
+   */
   public compoundData(String compoundString) {
     this.compoundString = compoundString;
     ArrayList<compoundAtom> ca = new ArrayList<>();
@@ -70,7 +83,7 @@ public class compoundData {
       this.molarMass = sum;
       this.formattedCompoundString = formattedCompoundString;
     }
-    catch (XraylibException e) {
+    catch (Exception e) {
       throw e;
     }
     finally {
@@ -101,7 +114,7 @@ public class compoundData {
     //char *endPtr;
   
     if (Character.isLowerCase(csa[0]) || Character.isDigit(csa[0])) {
-      throw new XraylibException("invalid chemical formula. Found a lowercase character or digit where not allowed");
+      throw new IllegalArgumentException("Invalid chemical formula: Found a lowercase character or digit where not allowed");
     }
 
     // the -2 is necessary to avoid evaluating the %% in the compoundString
@@ -127,29 +140,29 @@ public class compoundData {
         upper_locs.add(i);
       }
       else if (csa[i] == ' '){
-        throw new XraylibException("spaces are not allowed in compound formula");
+        throw new IllegalArgumentException("Invalid chemical formula: Spaces are not allowed in compound formula");
       }
       else if (i > 0 && Character.isLowerCase(csa[i]) && Character.isDigit(csa[i-1])) {
-	throw new XraylibException("invalid chemical formula. Found a lowercase character where not allowed");
+	throw new IllegalArgumentException("Invalid chemical formula: Found a lowercase character where not allowed");
       }
       else if (Character.isLowerCase(csa[i]) || Character.isDigit(csa[i]) || csa[i] == '.') {
 
       }
       else {
-        throw new XraylibException("invalid character detected " + csa[i]);
+        throw new IllegalArgumentException(String.format("Invalid chemical formula: Invalid character %c detected", csa[i]));
       }
 
       if (nbrackets < 0) {
-        throw new XraylibException("brackets not matching");
+        throw new IllegalArgumentException("Invalid chemical formula: Brackets not matching");
       }
     }
 
     if (nuppers == 0 && nbracket_pairs == 0) {
-      throw new XraylibException("chemical formula contains no elements");
+      throw new IllegalArgumentException("Invalid chemical formula: No elements found");
     }
 
     if (nbrackets > 0) {
-      throw new XraylibException("brackets not matching");
+      throw new IllegalArgumentException("Invalid chemical formula: Backets not matching");
     }
 
     /*parse locally*/
@@ -162,8 +175,8 @@ public class compoundData {
         try {
           res = Xraylib.SymbolToAtomicNumber(tempElement);
         }
-        catch (XraylibException e) {
-          throw new XraylibException("invalid element " + tempElement + " in chemical formula");
+        catch (IllegalArgumentException e) {
+          throw new IllegalArgumentException(String.format("Invalid chemical formula: unknown symbol %s detected", tempElement));
         }
         /*determine element subscript */
         j=2;
@@ -178,9 +191,9 @@ public class compoundData {
         }
         
         if (ndots > 1) {
-          throw new XraylibException("only one dot allowed in subscripts of the chemical formula");
+          throw new IllegalArgumentException("Invalid chemical formula: only one dot allowed in subscripts of the chemical formula");
         }
-        if (j==2) {
+        if (j == 2) {
           tempnAtoms = 1.0;				
         }
         else {
@@ -189,12 +202,12 @@ public class compoundData {
             tempnAtoms = Double.parseDouble(tempSubstring);
           }
           catch (NumberFormatException e) {
-            throw new XraylibException("error converting subscript "+ tempSubstring +" of the chemical formula to a real number");
+            throw new IllegalArgumentException(String.format("Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring));
           }
 
           /*zero subscript is not allowed */
           if (tempnAtoms == 0.0) {
-            throw new XraylibException("zero subscript detected in chemical formula");
+            throw new IllegalArgumentException("Invalid chemical formula: zero subscript detected");
           }
         }
       }	
@@ -205,8 +218,8 @@ public class compoundData {
         try {
           res = Xraylib.SymbolToAtomicNumber(tempElement);
         }
-        catch (XraylibException e) {
-          throw new XraylibException("invalid element " + tempElement + " in chemical formula");
+        catch (IllegalArgumentException e) {
+          throw new IllegalArgumentException(String.format("Invalid chemical formula: unknown symbol %s detected", tempElement));
         }
         /*determine element subscript */
         j=1;
@@ -220,7 +233,7 @@ public class compoundData {
         }
  
         if (ndots > 1) {
-	  throw new XraylibException("only one dot allowed in subscripts of the chemical formula");
+          throw new IllegalArgumentException("Invalid chemical formula: only one dot allowed in subscripts of the chemical formula");
         }
         if (j==1) {
           tempnAtoms = 1.0;	
@@ -231,17 +244,17 @@ public class compoundData {
             tempnAtoms = Double.parseDouble(tempSubstring);
           }
           catch (NumberFormatException e) {
-            throw new XraylibException("error converting subscript "+ tempSubstring +" of the chemical formula to a real number");
+            throw new IllegalArgumentException(String.format("Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring));
           }
 
           /*zero subscript is not allowed */
           if (tempnAtoms == 0.0) {
-            throw new XraylibException("zero subscript detected in chemical formula");
+            throw new IllegalArgumentException("Invalid chemical formula: zero subscript detected");
           }
         }
       }
       else {
-        throw new XraylibException("invalid chemical formula");
+        throw new IllegalArgumentException("Invalid chemical formula");
       }
 
       /*atomic number identification ok -> add it to the array if necessary */
@@ -275,7 +288,7 @@ public class compoundData {
         }
       }
       if (ndots > 1) {
-        throw new XraylibException("only one dot allowed in subscripts of the chemical formula");
+        throw new IllegalArgumentException("Invalid chemical formula: only one dot allowed in subscripts of the chemical formula");
       }
       if (j==1) {
         tempnAtoms = 1.0;				
@@ -286,12 +299,12 @@ public class compoundData {
           tempnAtoms = Double.parseDouble(tempSubstring);
         }
         catch (NumberFormatException e) {
-          throw new XraylibException("error converting subscript "+ tempSubstring +" of the chemical formula to a real number");
+          throw new IllegalArgumentException(String.format("Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring));
         }
 
         /*zero subscript is not allowed */
         if (tempnAtoms == 0.0) {
-          throw new XraylibException("zero subscript detected in chemical formula");
+          throw new IllegalArgumentException("Invalid chemical formula: zero subscript detected");
         }
       }
 
@@ -340,5 +353,20 @@ public class compoundData {
 
       return false; 
     }
-  } 
+  }
+
+  @Override
+  public int getNElements() {
+    return nElements;
+  }
+
+  @Override
+  public int[] getElements() {
+    return Elements;
+  }
+
+  @Override
+  public double[] getMassFractions() {
+    return massFractions;
+  }
 }

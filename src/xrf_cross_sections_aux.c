@@ -263,7 +263,6 @@ double PM1_full_cascade_kissel(int Z, double E, double PK, double PL1, double PL
 	return rv;
 }
 
-
 double PM2_pure_kissel(int Z, double E, double PM1, xrl_error **error) {
 	double rv;
 

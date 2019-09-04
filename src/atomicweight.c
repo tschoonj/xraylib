@@ -33,7 +33,7 @@ double AtomicWeight(int Z, xrl_error **error)
   }
 
   atomic_weight = AtomicWeight_arr[Z];
-  if (atomic_weight < 0.) {
+  if (atomic_weight <= 0.) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }

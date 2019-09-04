@@ -101,7 +101,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			/* this is ok... */
 		}
 		else {
-			xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: invalid character detected %c",compoundString[i]);
+			xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: Invalid character %c detected", compoundString[i]);
 			return 0;
 		}
 

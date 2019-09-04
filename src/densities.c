@@ -34,7 +34,7 @@ double ElementDensity(int Z, xrl_error **error)
 
   element_density = ElementDensity_arr[Z];
 
-  if (element_density < 0.) {
+  if (element_density <= 0.) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
     return 0;
   }

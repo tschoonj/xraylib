@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 	assert(cs == 0.0);\
 	assert(error != NULL);\
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);\
-	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);\
+	assert(strcmp(error->message, INVALID_SHELL) == 0);\
 	xrl_clear_error(&error);\
 	cs = CSb_ ## name(26, -500, 10.0, &error);\
 	assert(cs == 0.0);\

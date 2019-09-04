@@ -11,7 +11,7 @@
 
 
 
-AC_INIT([xraylib],[3.99.0],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[3.99.2],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -1029,6 +1029,7 @@ AC_CONFIG_FILES([Makefile
 				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
+				 java/tests/Makefile
 				 java/build.gradle
 				 java/settings.gradle
 				 windows/Makefile

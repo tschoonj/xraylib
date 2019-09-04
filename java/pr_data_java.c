@@ -18,6 +18,8 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 #include "xrayglob.h"
 #include "xraylib-nist-compounds-internal.h"
 #include "xraylib-radionuclides-internal.h"
+#include "xrf_cross_sections_aux.h"
+#include "xrf_cross_sections_aux-private.h"
 
 
 extern double Auger_Transition_Total[ZMAX+1][SHELLNUM_A];
@@ -31,15 +33,11 @@ extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 void XRayInit(void);
 FILE *f;
 
-#define PR_MATD(ROWMAX, COLMAX, ARRNAME) \
-for(j = 0; j < (ROWMAX); j++) { \
-  print_doublevec((COLMAX), ARRNAME[j]); \
-}
+#define PR_MATD(ARRNAME) \
+	fwrite(ARRNAME, sizeof(double), sizeof(ARRNAME) / sizeof(double), f);
 
-#define PR_MATI(ROWMAX, COLMAX, ARRNAME) \
-for(j = 0; j < (ROWMAX); j++) { \
-  print_intvec((COLMAX), ARRNAME[j]); \
-}
+#define PR_MATI(ARRNAME) \
+	fwrite(ARRNAME, sizeof(int), sizeof(ARRNAME) / sizeof(int), f);
 
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
@@ -47,27 +45,6 @@ for(j = 0; j < (ROWMAX); j++) { \
       print_doublevec(NVAR[j], EVAR[j]); \
     }\
   }
-
-#define PR_DYNMATI(NVAR, EVAR, ENAME) \
-  for(j = 0; j < ZMAX+1; j++) { \
-    if(NVAR[j] > 0) {\
-      fprintf(f, "static int __%s_%d[] =\n", ENAME, j);\
-      print_intvec(NVAR[j], EVAR[j]); \
-    }\
-    else {\
-      fprintf(f, "static int __%s_%d[1]", ENAME, j);\
-    }\
-    fprintf(f, ";\n\n");\
-  } \
-\
-  fprintf(f, "int *%s[] =\n", ENAME);\
-  fprintf(f, "{\n"); \
-  for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "__%s_%d, ", ENAME, j);\
-    if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-      fprintf(f, "\n");\
-  }\
-  fprintf(f, "};\n\n");
 
 #define PR_DYNMAT_3DD_K(NVAR2D, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1; i++) { \
@@ -115,6 +92,7 @@ static double AugerYield_prdata(int Z, int shell) {
 	if (shell == L1_SHELL) {
 		rv -= CosKronTransProb(Z, FL12_TRANS, NULL);
 		rv -= CosKronTransProb(Z, FL13_TRANS, NULL);
+		rv -= CosKronTransProb(Z, FLP13_TRANS, NULL);
 	}
 	else if (shell == L2_SHELL) {
 		rv -= CosKronTransProb(Z, FL23_TRANS, NULL);
@@ -1040,19 +1018,19 @@ int main(void)
 
   print_doublevec(ZMAX+1, ElementDensity_arr);
 
-  PR_MATD(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
+  PR_MATD(EdgeEnergy_arr);
 
-  PR_MATD(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
+  PR_MATD(AtomicLevelWidth_arr);
 
-  PR_MATD(ZMAX+1, LINENUM, LineEnergy_arr);
+  PR_MATD(LineEnergy_arr);
 
-  PR_MATD(ZMAX+1, SHELLNUM, FluorYield_arr);
+  PR_MATD(FluorYield_arr);
 
-  PR_MATD(ZMAX+1, SHELLNUM, JumpFactor_arr);
+  PR_MATD(JumpFactor_arr);
 
-  PR_MATD(ZMAX+1, TRANSNUM, CosKron_arr);
+  PR_MATD(CosKron_arr);
 
-  PR_MATD(ZMAX+1, LINENUM, RadRate_arr);
+  PR_MATD(RadRate_arr);
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
   PR_DYNMATD(NE_Photo, E_Photo_arr, "E_Photo_arr");
@@ -1096,16 +1074,16 @@ int main(void)
   PR_DYNMATD(NE_Fii, Fii_arr, "Fii_arr");
   PR_DYNMATD(NE_Fii, Fii_arr2, "Fii_arr2");
 
-  PR_MATD(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
+  PR_MATD(Electron_Config_Kissel);
 
-  PR_MATD(ZMAX+1, SHELLNUM_K, EdgeEnergy_Kissel);
+  PR_MATD(EdgeEnergy_Kissel);
 
   PR_NUMVEC1D(NE_Photo_Total_Kissel, "NE_Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,E_Photo_Total_Kissel,"E_Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel,"Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel2,"Photo_Total_Kissel2");
 
-  PR_MATI(ZMAX+1, SHELLNUM_K, NE_Photo_Partial_Kissel);
+  PR_MATI(NE_Photo_Partial_Kissel);
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel");
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel, "Photo_Partial_Kissel");
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, Photo_Partial_Kissel2, "Photo_Partial_Kissel2");
@@ -1126,8 +1104,8 @@ int main(void)
 	for (j = K_SHELL ; j <= M5_SHELL ; j++)
 		Auger_Yields[i][j] = AugerYield_prdata(i, j);
   }
-  PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Yields);
-  PR_MATD(ZMAX+1, AUGERNUM, Auger_Rates);
+  PR_MATD(Auger_Yields);
+  PR_MATD(Auger_Rates);
 
   // NIST compounds
   fwrite(&nCompoundDataNISTList, sizeof(int), 1, f);
@@ -1175,6 +1153,34 @@ int main(void)
       fwrite(&atom->z, sizeof(double), 1, f);
     }
   }
+
+#define IF_XRF_CS(shell) \
+      if (shell1 == shell ## _SHELL) { \
+	int shell2; \
+        for (shell2 = K_SHELL ; shell2 <= L3_SHELL ; shell2++) { \
+          xrf_cross_sections_constants_full[Z][shell1][shell2] = P ## shell ## _get_cross_sections_constant_full(Z, shell2); \
+          xrf_cross_sections_constants_auger_only[Z][shell1][shell2] = P ## shell ## _get_cross_sections_constant_auger_only(Z, shell2); \
+	} \
+      }
+
+  /* precalculated xrf_cross_sections constants */
+  int Z;
+  for (Z = 1 ; Z <= ZMAX ; Z++) {
+    int shell1;
+    for (shell1 = L1_SHELL ; shell1 <= M5_SHELL ; shell1++) {
+      IF_XRF_CS(L1)
+      else IF_XRF_CS(L2)
+      else IF_XRF_CS(L3)
+      else IF_XRF_CS(M1)
+      else IF_XRF_CS(M2)
+      else IF_XRF_CS(M3)
+      else IF_XRF_CS(M4)
+      else IF_XRF_CS(M5)
+    }
+  }
+
+  PR_MATD(xrf_cross_sections_constants_full)
+  PR_MATD(xrf_cross_sections_constants_auger_only)
 
   fclose(f);
 

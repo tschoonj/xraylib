@@ -15,6 +15,12 @@ package com.github.tschoonj.xraylib;
 
 import java.nio.ByteBuffer;
 
+/** 
+ *  
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.2.0
+ */
 public class radioNuclideData {
   public final String name;
   public final int Z;
@@ -53,6 +59,11 @@ public class radioNuclideData {
     this.formattedRadioNuclideString = formattedRadioNuclideString;
   }
 
+  /** 
+   * Copy constructor 
+   * 
+   * @param rnd The instance that will be copied
+   */
   public radioNuclideData(radioNuclideData rnd) {
     name = new String(rnd.name);
     Z = rnd.Z;

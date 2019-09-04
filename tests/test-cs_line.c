@@ -48,10 +48,10 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, UNAVAILABLE_CK) == 0);
 	xrl_clear_error(&error);
 	cs = CS_FluorLine(26, L2M4_LINE, 10.0, &error);
-	assert(cs != 0.0);
+	assert(fabs(0.0200667 - cs) < 1E-6);
 	assert(error == NULL);
 	cs = CS_FluorLine(26, L1M2_LINE, 10.0, &error);
-	assert(cs != 0.0);
+	assert(fabs(0.000830915 - cs) < 1E-6);
 	assert(error == NULL);
 
 	/* lets try some bad input */

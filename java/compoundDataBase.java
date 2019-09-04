@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2015, Tom Schoonjans
+Copyright (c) 2019, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -13,8 +13,34 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 
 package com.github.tschoonj.xraylib;
 
-public class XraylibException extends RuntimeException {
-  public XraylibException(String message) {
-    super(message);
-  }
+/** 
+ * Interface implemented by @see compoundData and @see compountDataNIST providing getters to the data they have in common. 
+ * 
+ * @author Tom Schoonjans (Tom.Schoonjans@diamond.ac.uk)
+ * @since 3.99.1
+ */
+public interface compoundDataBase {
+  
+  /** 
+   *  
+   * @since 3.99.1
+   * @return the number of elements
+   */
+  public int getNElements();
+  
+  /** 
+   *  
+   * 
+   * @since 3.99.1
+   * @return an array containing the atomic numbers
+   */
+  public int[] getElements();
+  
+  /** 
+   *  
+   * 
+   * @since 3.99.1
+   * @return an array containing the mass fractions
+   */
+  public double[] getMassFractions();
 }

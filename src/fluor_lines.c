@@ -68,7 +68,7 @@ static double LineEnergyComposed(int Z, int line1, int line2, xrl_error **error)
 double LineEnergy(int Z, int line, xrl_error **error)
 {
   double line_energy;
-  double lE[50], rr[50];
+  double lE, rr;
   double tmp=0.0, tmp1=0.0, tmp2=0.0;
   int i;
   int temp_line;
@@ -81,18 +81,18 @@ double LineEnergy(int Z, int line, xrl_error **error)
   if (line == KA_LINE || line == KB_LINE) {
     if (line == KA_LINE) {
       for (i = KL1; i <= KL3 ; i++) {
-        lE[i] = LineEnergy_arr[Z][i];
-        rr[i] = RadRate_arr[Z][i];
-        tmp1 += rr[i];
-        tmp += lE[i] * rr[i];
+        lE = LineEnergy_arr[Z][i];
+        rr = RadRate_arr[Z][i];
+        tmp1 += rr;
+        tmp += lE * rr;
       }
     }
     else if (line == KB_LINE) {
       for (i = KM1; i < KP5; i++) {
-        lE[i] = LineEnergy_arr[Z][i];
-        rr[i] = RadRate_arr[Z][i];
-        tmp1 += rr[i];
-        tmp += lE[i] * rr[i];
+        lE = LineEnergy_arr[Z][i];
+        rr = RadRate_arr[Z][i];
+        tmp1 += rr;
+        tmp += lE * rr;
       }
     }
     if (tmp1 > 0) {

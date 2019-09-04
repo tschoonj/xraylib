@@ -113,7 +113,7 @@ matrix:
       env: CC='gcc-7' FC='gfortran-7' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
     - os: linux
       jdk:
-        - openjdk8
+        - openjdk10
       dist: xenial
       sudo: required
       addons:
@@ -124,6 +124,19 @@ matrix:
             - gcc-8
             - gfortran-8
       env: CC='gcc-8' FC='gfortran-8' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
+    - os: linux
+      jdk:
+        - openjdk11
+      dist: xenial
+      sudo: required
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-9
+            - gfortran-9
+      env: CC='gcc-9' FC='gfortran-9' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
 
 before_install:
   - |
@@ -137,14 +150,15 @@ before_install:
 install:
   - |
     if [ $TRAVIS_OS_NAME == linux ]; then
-      wget http://prdownloads.sourceforge.net/swig/swig-3.0.12.tar.gz || exit 1
-      tar xfz swig-3.0.12.tar.gz || exit 1
-      cd swig-3.0.12 || exit 1
+      wget http://prdownloads.sourceforge.net/swig/swig-4.0.1.tar.gz || exit 1
+      tar xfz swig-4.0.1.tar.gz || exit 1
+      cd swig-4.0.1 || exit 1
       ./configure || exit 1
       make || exit 1
       sudo make install || exit 1
       cd ..
     fi
+
 
 script:
   - autoreconf -fi || exit 1
