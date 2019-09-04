@@ -44,6 +44,7 @@ sourceSets {
 		java {
 			srcDir '@srcdir@'
 			exclude 'tests/**'
+			exclude 'gradle/**'
 		}
 		resources {
 			srcDir '@builddir@'
@@ -86,9 +87,14 @@ test {
 	useJUnitPlatform()
 }
 
-
-task sourcesJar(type: Jar) {
+// based on https://blog.benoitblanchon.fr/gradle-how-to-make-a-flat-source-jar/
+task flatSources(type: Copy) {
 	from sourceSets.main.allJava
+	into "$buildDir/flatSrc/com/github/tschoonj/xraylib"
+}
+
+task sourcesJar(type: Jar, dependsOn: flatSources) {
+	from "$buildDir/flatSrc"
 	archiveClassifier = 'sources'
 }
 
