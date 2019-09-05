@@ -22,12 +22,6 @@
 %define phpdir @PHP_DIR@
 %define phpscriptdir @PHP_SCRIPT_DIR@
 
-%if 0%{?rhel} && 0%{?rhel} <= 6
-%{!?__python2: %global __python2 /usr/bin/python2}
-%{!?python2_sitelib: %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
-%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
-%endif
-
 Name: xraylib
 Version: @VERSION@	
 Release:	1%{?dist}
@@ -38,11 +32,29 @@ Packager: Tom.Schoonjans <Tom.Schoonjans@me.com>
 URL: http://github.com/tschoonj/xraylib
 Source: xraylib-%{version}.tar.gz	
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
-BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 python-devel swig lua-devel ruby-devel perl-devel
-BuildRequires: Cython numpy php-devel
+BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 swig lua-devel ruby-devel perl-devel php-devel
+
+%if 0%{?rhel}
+
+# python 2
+BuildRequires: python2-numpy python2-devel
+# python2-Cython is too old!
+%define cython2 /usr/bin/cython3.6
+# python 3
+BuildRequires: python36-Cython python36-numpy python36-devel python36-setuptools
+%define cython3 /usr/bin/cython3.6
+
+%else
+
 %if 0%{?fedora}
-#only fedora has default support for python3 nowadays...
 BuildRequires: python3-Cython python3-numpy python3-devel
+%define cython3 /usr/bin/cython
+%if 0%{?fedora} < 31
+BuildRequires: python2-numpy python2-devel
+%define cython2 /usr/bin/cython
+%endif
+%endif
+
 %endif
 
 %description
@@ -68,20 +80,41 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the fortran 2003 bindings of xraylib.
 
-%if 0%{?fedora} || 0%{?rhel} > 6
 %package python
-Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python bindings
-Requires: python numpy %{name}%{?_isa} = %{version}-%{release}
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python3 bindings
+Requires:  %{name}%{?_isa} = %{version}-%{release}
+
+%if 0%{?rhel}
+# python 3
+Requires: python36-numpy
+
+%else
+
 %if 0%{?fedora}
-Requires: python3 python3-numpy
+Requires: python3-numpy
+%endif
+
 %endif
 
 %description python
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
 
-This rpm package provides the python bindings of xraylib and a command utility.
+This rpm package provides the python3 bindings of xraylib.
 
+# this should also cover rhel!
+%if 0%{?fedora} < 31
+%package python2
+Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python2 bindings
+Requires:  %{name}%{?_isa} = %{version}-%{release}
+Requires: python2-numpy
+
+%description python2
+Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
+
+This rpm package provides the python2 bindings of xraylib.
 %endif
+
+
 
 %package lua
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: lua bindings
@@ -124,9 +157,9 @@ This rpm package provides the PHP bindings of xraylib.
 
 %setup -q
 pushd ..
-cp -r xraylib-%{version} xraylib-%{version}-python2
-%if 0%{?fedora}
-cp -r xraylib-%{version} xraylib-%{version}-python3
+cp -a xraylib-%{version} xraylib-%{version}-python3
+%if 0%{?fedora} < 31
+cp -a xraylib-%{version} xraylib-%{version}-python2
 %endif
 popd
 
@@ -137,51 +170,43 @@ popd
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-%if 0%{?rhel} && 0%{?rhel} > 6
-#python2
-pushd ../xraylib-%{version}-python2
-%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python2} CYTHON=/usr/bin/cython
+#python3
+pushd ../xraylib-%{version}-python3
+%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python3} CYTHON=%{cython3}
 popd
 
-#python3
-%if 0%{?fedora}
-pushd ../xraylib-%{version}-python3
-%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python3} CYTHON=/usr/bin/cython3
+%if 0%{?fedora} < 31
+#python2
+pushd ../xraylib-%{version}-python2
+%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python2} CYTHON=%{cython2}
 popd
-%endif
 %endif
 
 make 
 
-%if 0%{?rhel} && 0%{?rhel} > 6
-mv ../xraylib-%{version}-python2/python python2
-%if 0%{?fedora}
 mv ../xraylib-%{version}-python3/python python3
-%endif
-
-cd python2
-make
-cd ..
-%if 0%{?fedora}
 cd python3
 make
 cd ..
+%if 0%{?fedora} < 31
+mv ../xraylib-%{version}-python2/python python2
+cd python2
+make
+cd ..
 %endif
-%endif
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-%if 0%{?rhel} && 0%{?rhel} > 6
-cd python2
-make install DESTDIR=$RPM_BUILD_ROOT
-cd ..
-%if 0%{?fedora}
 cd python3
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
-%endif
+%if 0%{?fedora} < 31
+cd python2
+make install DESTDIR=$RPM_BUILD_ROOT
+cd ..
 %endif
 
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
@@ -190,11 +215,9 @@ rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
 rm -f $RPM_BUILD_ROOT%{perllibdir}/*.la
 rm -f $RPM_BUILD_ROOT%{phpdir}/*.la
-%if 0%{?rhel} && 0%{?rhel} > 6
-rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
-%if 0%{?fedora}
 rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
-%endif
+%if 0%{?fedora} < 31
+rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
 %endif
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/php.d
@@ -234,18 +257,19 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/xraylib/*.mod
 %{_libdir}/pkgconfig/libxrlf03.pc
 
-%if 0%{?rhel} && 0%{?rhel} > 6
 %files python
 %defattr(-,root,root)
-%{python2_sitelib}/xraylib.py*
-%{python2_sitearch}/_xraylib.*
-%{python2_sitearch}/xraylib_np.*
-%if 0%{?fedora}
 %{python3_sitelib}/xraylib.py*
 %{python3_sitelib}/__pycache__/*
 %{python3_sitearch}/_xraylib.*
 %{python3_sitearch}/xraylib_np.*
-%endif
+
+%if 0%{?fedora} < 31
+%files python2
+%defattr(-,root,root)
+%{python2_sitelib}/xraylib.py*
+%{python2_sitearch}/_xraylib.*
+%{python2_sitearch}/xraylib_np.*
 %endif
 
 %files lua
@@ -268,6 +292,11 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %{_sysconfdir}/php.d/xraylib.ini
 
 %changelog
+* Wed Sep 4 2019 Tom Schoonjans
+- Remove RHEL6 support
+- Fix python packaging bugs
+- Extract python2 bindings into a separate package
+
 * Mon Jul 23 2018 Tom Schoonjans
 - Fix dependencies on core package
 
