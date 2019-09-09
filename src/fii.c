@@ -29,6 +29,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 double Fii(int Z, double E, xrl_error **error)
 {
   double fii;
+  int splint_rv;
 
   if (Z < 1 || Z > ZMAX || NE_Fii[Z] < 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
@@ -40,8 +41,11 @@ double Fii(int Z, double E, xrl_error **error)
     return 0.0;
   }
 
-  splint(E_Fii_arr[Z]-1, Fii_arr[Z]-1, Fii_arr2[Z]-1,
-         NE_Fii[Z], E, &fii);
+  splint_rv = splint(E_Fii_arr[Z]-1, Fii_arr[Z]-1, Fii_arr2[Z]-1,
+         NE_Fii[Z], E, &fii, error);
+
+  if (!splint_rv)
+    return 0.0;
 
   return fii;
 }

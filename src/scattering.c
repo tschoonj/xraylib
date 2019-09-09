@@ -30,6 +30,7 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 double FF_Rayl(int Z, double q, xrl_error **error)
 {
   double FF;
+  int splint_rv;
 
   if (Z < 1 || Z > ZMAX || Nq_Rayl[Z] <= 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
@@ -44,8 +45,11 @@ double FF_Rayl(int Z, double q, xrl_error **error)
     return 0;
   }
 
-  splint(q_Rayl_arr[Z]-1, FF_Rayl_arr[Z]-1, FF_Rayl_arr2[Z]-1,
-	 Nq_Rayl[Z], q, &FF);
+  splint_rv = splint(q_Rayl_arr[Z]-1, FF_Rayl_arr[Z]-1, FF_Rayl_arr2[Z]-1,
+	 Nq_Rayl[Z], q, &FF, error);
+
+  if (!splint_rv)
+    return 0.0;
 
   return FF;
 }
@@ -62,6 +66,7 @@ double FF_Rayl(int Z, double q, xrl_error **error)
 double SF_Compt(int Z, double q, xrl_error **error)
 {
   double SF;
+  int splint_rv;
 
   if (Z < 1 || Z > ZMAX || Nq_Compt[Z] <= 0) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
@@ -73,8 +78,11 @@ double SF_Compt(int Z, double q, xrl_error **error)
     return 0;
   }
 
-  splint(q_Compt_arr[Z]-1, SF_Compt_arr[Z]-1, SF_Compt_arr2[Z]-1,
-	 Nq_Compt[Z], q, &SF);
+  splint_rv = splint(q_Compt_arr[Z]-1, SF_Compt_arr[Z]-1, SF_Compt_arr2[Z]-1,
+	 Nq_Compt[Z], q, &SF, error);
+
+  if (!splint_rv)
+    return 0.0;
 
   return SF;
 }
