@@ -62,6 +62,7 @@ jar {
 	manifest {
 		attributes('Bundle-Vendor': 'Tom Schoonjans',
 			'Bundle-SymbolicName': 'com.github.tschoonj.xraylib',
+			'Automatic-Module-Name': 'com.github.tschoonj.xraylib',
 			'Bundle-Name': project.name,
 			'Export-Package': 'com.github.tschoonj.xraylib',
 			'-noee': true
