@@ -94,6 +94,13 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, NEGATIVE_PZ) == 0);
 	xrl_clear_error(&error);
 
+	profile = ComptonProfile(26, 101, &error);
+	assert(profile == 0.0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+	xrl_clear_error(&error);
+
 	profile = ComptonProfile_Partial(0, K_SHELL, 0.0, &error);
 	assert(profile == 0.0);
 	assert(error != NULL);
@@ -130,6 +137,13 @@ int main(int argc, char **argv) {
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	xrl_clear_error(&error);
+
+	profile = ComptonProfile_Partial(26, K_SHELL, 101, &error);
+	assert(profile == 0.0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
 	xrl_clear_error(&error);
 
 

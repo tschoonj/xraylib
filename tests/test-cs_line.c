@@ -92,6 +92,12 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
 	xrl_clear_error(&error);
 
+	cs = CS_FluorLine(26, KL3_LINE, 1001, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+	xrl_clear_error(&error);
+
 	cs = CS_FluorLine(26, KL3_LINE, 10.0, &error);
 	assert(error == NULL);
 	cs += CS_FluorLine(26, KL2_LINE, 10.0, &error);

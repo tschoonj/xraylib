@@ -19,7 +19,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <assert.h>
 #include <string.h>
 #include <math.h>
-#include <stdio.h>
 
 
 
@@ -27,6 +26,9 @@ int main(int argc, char **argv) {
 	xrl_error *error = NULL;
 	double cs_photo, cs_compt, cs_rayl, cs_total, cs_energy;
 	double (* const cs[])(int, double, xrl_error **) = {CS_Photo, CS_Compt, CS_Rayl, CS_Total, CS_Energy};
+	double data_max[] = {1001, 801, 801, 801, 20001};
+	double data_min[] = {0.09, 0.09, 0.09, 0.09, 0.9};
+
 	int i;
 
 	/* CS_Photo */
@@ -86,6 +88,20 @@ int main(int argc, char **argv) {
 		assert(error != NULL);
 		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 		assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+		assert(v == 0.0);
+		xrl_clear_error(&error);
+
+		v = cs[i](26, data_max[i], &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+		assert(v == 0.0);
+		xrl_clear_error(&error);
+
+		v = cs[i](26, data_min[i], &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, SPLINT_X_TOO_LOW) == 0);
 		assert(v == 0.0);
 		xrl_clear_error(&error);
 	}

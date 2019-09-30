@@ -21,13 +21,13 @@ int lininterp(double xa[], double ya[], int n, double x, double *y, xrl_error **
 
 	if (x - xa[n] > 1E-7) {
 	  *y = 0.0;
-	  xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, LININTERP_X_TOO_HIGH, xa[n]);
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, LININTERP_X_TOO_HIGH);
 	  return 0;
 	}
 
 	if (x < xa[1]) {
 	  *y = 0.0;
-	  xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, LININTERP_X_TOO_LOW, xa[1]);
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, LININTERP_X_TOO_LOW);
 	  return 0;
 	}
 
@@ -51,13 +51,13 @@ int splint(double xa[], double ya[], double y2a[], int n, double x, double *y, x
 
 	if (x - xa[n] > 1E-7) {
 	  *y = 0.0;
-	  xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, SPLINT_X_TOO_HIGH, xa[n]);
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, SPLINT_X_TOO_HIGH);
 	  return 0;
 	}
 
 	if (x < xa[1]) {
 	  *y = 0.0;
-	  xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, SPLINT_X_TOO_LOW, xa[1]);
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, SPLINT_X_TOO_LOW);
 	  return 0;
 	}
 
