@@ -73,6 +73,10 @@ public class Xraylib {
   public static final String INVALID_MILLER = "Miller indices cannot all be zero";
   public static final String NEGATIVE_DEBYE_FACTOR = "Debye-Waller factor must be strictly positive";
   public static final String CRYSTAL_NULL = "Crystal cannot be NULL";
+  public static final String SPLINT_X_TOO_LOW = "Spline extrapolation is not allowed";
+  public static final String SPLINT_X_TOO_HIGH = "Spline extrapolation is not allowed";
+  public static final String LININTERP_X_TOO_LOW = "Linear extrapolation is not allowed";
+  public static final String LININTERP_X_TOO_HIGH = "Linear extrapolation is not allowed";
 
   protected static String readString(ByteBuffer byte_buffer) {
     ArrayList<Byte> al = new ArrayList<>();
@@ -3791,12 +3795,12 @@ public class Xraylib {
     int klo, khi, k;
     double h, b, a;
 
-    if (x >= xa[n-1]) {
-	    return ya[n-1];
+    if (x - xa[n-1] > 1E-7) {
+      throw new IllegalArgumentException(SPLINT_X_TOO_HIGH);
     }
 
-    if (x <= xa[0]) {
-      return ya[0];
+    if (x < xa[0]) {
+      throw new IllegalArgumentException(SPLINT_X_TOO_LOW);
     }
 
     klo = 0;
