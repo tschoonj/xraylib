@@ -24,7 +24,8 @@ public class TestCrossSectionsFluorLine {
 			arguments(29, Xraylib.L1M2_LINE, 10.0, 0.0018343168459245755),
 			arguments(29, Xraylib.KL3_LINE, 10.0, 49.21901698835919),
 			arguments(26, Xraylib.L2M4_LINE, 10.0, 0.0200667),
-			arguments(26, Xraylib.L1M2_LINE, 10.0, 0.000830915)
+			arguments(26, Xraylib.L1M2_LINE, 10.0, 0.000830915),
+			arguments(29, Xraylib.KL3_LINE, 999.0, 1.1827911388054846E-4)
 		);
 	}
 
@@ -44,7 +45,8 @@ public class TestCrossSectionsFluorLine {
 			arguments(1, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
 			arguments(92, Xraylib.M5N7_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(26, Xraylib.KL3_LINE, 0.0, Xraylib.NEGATIVE_ENERGY),
-			arguments(92, Xraylib.L3M5_LINE, 10.0, Xraylib.TOO_LOW_EXCITATION_ENERGY)
+			arguments(92, Xraylib.L3M5_LINE, 10.0, Xraylib.TOO_LOW_EXCITATION_ENERGY),
+			arguments(26, Xraylib.KL3_LINE, 1001.0, Xraylib.SPLINT_X_TOO_HIGH)
 		);
 	}
 

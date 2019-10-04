@@ -67,6 +67,11 @@ public class TestComptonProfiles {
 		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_PZ);
 
 		exc = assertThrows(IllegalArgumentException.class, () -> {
+			double profile = Xraylib.ComptonProfile(26, 101);
+		});
+		assertEquals(exc.getMessage(), Xraylib.SPLINT_X_TOO_HIGH);
+
+		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double profile = Xraylib.ComptonProfile_Partial(0, Xraylib.K_SHELL, 0.0);
 		});
 		assertEquals(exc.getMessage(), Xraylib.Z_OUT_OF_RANGE);
@@ -92,5 +97,10 @@ public class TestComptonProfiles {
 			double profile = Xraylib.ComptonProfile_Partial(26, Xraylib.N2_SHELL, 0.0);
 		});
 		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
+		exc = assertThrows(IllegalArgumentException.class, () -> {
+			double profile = Xraylib.ComptonProfile_Partial(26, Xraylib.K_SHELL, 101);
+		});
+		assertEquals(exc.getMessage(), Xraylib.SPLINT_X_TOO_HIGH);
+
 	}
 }
