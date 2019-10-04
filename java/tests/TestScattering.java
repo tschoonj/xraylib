@@ -26,9 +26,11 @@ public class TestScattering {
 			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 26, 0.0, 26.0),
 			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 92, 10.0, 2.1746),
 			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 98, 10.0, 2.4621),
+			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 9, 1E9 - 1, 4.630430625170564E-21),
 			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 26, 0.1, 2.891),
 			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 92, 10.0, 89.097),
-			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 98, 10.0, 94.631)
+			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 98, 10.0, 94.631),
+			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 9, 1E9 - 1, 9.0)
 		);
 	}
 
@@ -37,9 +39,11 @@ public class TestScattering {
 			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 0, 10.0, Xraylib.Z_OUT_OF_RANGE),
 			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 99, 10.0, Xraylib.Z_OUT_OF_RANGE),
 			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 9, -10.0, Xraylib.NEGATIVE_Q),
+			arguments((IntDoubleWrapper) Xraylib::FF_Rayl, 9, 1E9 + 1, Xraylib.SPLINT_X_TOO_HIGH),
 			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 0, 10.0, Xraylib.Z_OUT_OF_RANGE),
 			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 99, 10.0, Xraylib.Z_OUT_OF_RANGE),
-			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 9, 0.0, Xraylib.NEGATIVE_Q)
+			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 9, 0.0, Xraylib.NEGATIVE_Q),
+			arguments((IntDoubleWrapper) Xraylib::SF_Compt, 9, 1E9 + 1, Xraylib.SPLINT_X_TOO_HIGH)
 		);
 	}
 

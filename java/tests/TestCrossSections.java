@@ -38,19 +38,19 @@ public class TestCrossSections {
 		assertEquals(cs, expected, 1E-4);
 	}
 
-	static Stream<CrossSectionWrapper> badValuesProvider() {
+	static Stream<Arguments> badValuesProvider() {
 		return Stream.of(
-			Xraylib::CS_Photo,
-			Xraylib::CS_Compt,
-			Xraylib::CS_Rayl,
-			Xraylib::CS_Total,
-			Xraylib::CS_Energy
+			arguments((CrossSectionWrapper) Xraylib::CS_Photo, 0.09, 1001.0, 0.1, 999.0),
+			arguments((CrossSectionWrapper) Xraylib::CS_Compt, 0.09, 801.0, 0.1, 800.0),
+			arguments((CrossSectionWrapper) Xraylib::CS_Rayl, 0.09, 801.0, 0.1, 800.0),
+			arguments((CrossSectionWrapper) Xraylib::CS_Total, 0.09, 801.0, 0.1, 800.0),
+			arguments((CrossSectionWrapper) Xraylib::CS_Energy, 0.9, 20001.0, 1.0, 20000.0)
 		);
 	}
 
-	@ParameterizedTest(name="bad_good_values {index} -> {0} {1}")
+	@ParameterizedTest(name="test_bad_values {index} -> {0} {1} {2}")
 	@MethodSource("badValuesProvider")
-	public void test_bad_values(CrossSectionWrapper wrapper) {
+	public void test_bad_values(CrossSectionWrapper wrapper, double bad_min, double bad_max, double good_min, double good_max) {
 		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = wrapper.execute(-1, 10.0);
 		});
@@ -70,5 +70,18 @@ public class TestCrossSections {
 			double cs = wrapper.execute(26, -1.0);
 		});
 		assertEquals(exc.getMessage(), Xraylib.NEGATIVE_ENERGY);
+
+		exc = assertThrows(IllegalArgumentException.class, () -> {
+			double cs = wrapper.execute(26, bad_min);
+		});
+		assertEquals(exc.getMessage(), Xraylib.SPLINT_X_TOO_LOW);
+
+		exc = assertThrows(IllegalArgumentException.class, () -> {
+			double cs = wrapper.execute(26, bad_max);
+		});
+		assertEquals(exc.getMessage(), Xraylib.SPLINT_X_TOO_HIGH);
+
+		wrapper.execute(26, good_min);
+		wrapper.execute(26, good_max);
 	}
 }

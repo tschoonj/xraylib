@@ -24,7 +24,8 @@ public class TestKisselPE {
 			arguments(29, Xraylib.L1M2_LINE, 10.0, 0.029951600106),
 			arguments(29, Xraylib.KL3_LINE, 10.0, 49.51768761506201),
 			arguments(82, Xraylib.M5N7_LINE, 30.0, 0.538227139546),
-			arguments(82, Xraylib.M5N7_LINE, 100.0, 0.102639909656483)
+			arguments(82, Xraylib.M5N7_LINE, 100.0, 0.102639909656483),
+			arguments(26, Xraylib.KL3_LINE, 300.0, 5.151152717634017E-4)
 		);
 	}
 
@@ -44,7 +45,8 @@ public class TestKisselPE {
 			arguments(1, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
 			arguments(92, Xraylib.N1O3_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(26, Xraylib.KL3_LINE, 0.0, Xraylib.NEGATIVE_ENERGY),
-			arguments(92, Xraylib.L3M5_LINE, 10.0, Xraylib.TOO_LOW_EXCITATION_ENERGY)
+			arguments(92, Xraylib.L3M5_LINE, 10.0, Xraylib.TOO_LOW_EXCITATION_ENERGY),
+			arguments(26, Xraylib.KL3_LINE, 301.0, Xraylib.SPLINT_X_TOO_HIGH)
 		);
 	}
 
@@ -89,6 +91,8 @@ public class TestKisselPE {
 	public void test_cs_photo_partial_good() {
 		double cs = Xraylib.CS_Photo_Partial(26, Xraylib.K_SHELL, 20.0);
 		assertEquals(cs, 22.40452459077649, 1E-6);
+		cs = Xraylib.CS_Photo_Partial(26, Xraylib.K_SHELL, 300.0);
+		assertEquals(cs, 0.0024892741933504824, 1E-6);
 	}
 
 	static Stream<Arguments> badCSPhotoPartialsValuesProvider() {
@@ -97,7 +101,8 @@ public class TestKisselPE {
 			arguments(26, Xraylib.N5_SHELL, 16.0, Xraylib.INVALID_SHELL),
 			arguments(26, Xraylib.SHELLNUM_K, 16.0, Xraylib.UNKNOWN_SHELL),
 			arguments(26, Xraylib.K_SHELL, 0.0, Xraylib.NEGATIVE_ENERGY),
-			arguments(0, Xraylib.K_SHELL, 0.0, Xraylib.Z_OUT_OF_RANGE)
+			arguments(0, Xraylib.K_SHELL, 0.0, Xraylib.Z_OUT_OF_RANGE),
+			arguments(26, Xraylib.K_SHELL, 301.0, Xraylib.SPLINT_X_TOO_HIGH)
 		);
 	}
 

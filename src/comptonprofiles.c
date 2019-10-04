@@ -32,6 +32,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 double ComptonProfile(int Z, double pz, xrl_error **error) {
 	double q, ln_q;
 	double ln_pz;
+	int splint_rv;
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 0) {
 		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
@@ -45,7 +46,10 @@ double ComptonProfile(int Z, double pz, xrl_error **error) {
 	
 	ln_pz = log(pz + 1.0);
 
-	splint(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,  Npz_ComptonProfiles[Z],ln_pz,&ln_q);
+	splint_rv = splint(pz_ComptonProfiles[Z]-1, Total_ComptonProfiles[Z]-1, Total_ComptonProfiles2[Z]-1,  Npz_ComptonProfiles[Z], ln_pz, &ln_q, error);
+
+	if (!splint_rv)
+		return 0.0;
 
 	q = exp(ln_q); 
 
@@ -61,12 +65,10 @@ double ComptonProfile(int Z, double pz, xrl_error **error) {
 //          pz : momentum                                           //
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
-
-
-
 double ComptonProfile_Partial(int Z, int shell, double pz, xrl_error **error) {
 	double q, ln_q;
 	double ln_pz;
+	int splint_rv;
 
 
 	if (Z < 1 || Z > ZMAX || NShells_ComptonProfiles[Z] < 1) {
@@ -86,7 +88,10 @@ double ComptonProfile_Partial(int Z, int shell, double pz, xrl_error **error) {
 	
 	ln_pz = log(pz + 1.0);
 
-	splint(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z], ln_pz, &ln_q);
+	splint_rv = splint(pz_ComptonProfiles[Z]-1, Partial_ComptonProfiles[Z][shell]-1,Partial_ComptonProfiles2[Z][shell]-1, Npz_ComptonProfiles[Z], ln_pz, &ln_q, error);
+
+	if (!splint_rv)
+		return 0.0;
 
 	q = exp(ln_q); 
 

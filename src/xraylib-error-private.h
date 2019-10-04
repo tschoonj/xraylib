@@ -62,6 +62,10 @@ void xrl_set_error_literal(xrl_error **err, xrl_error_code code, const char *mes
 #define INVALID_MILLER "Miller indices cannot all be zero"
 #define NEGATIVE_DEBYE_FACTOR "Debye-Waller factor must be strictly positive"
 #define CRYSTAL_NULL "Crystal cannot be NULL"
+#define SPLINT_X_TOO_LOW "Spline extrapolation is not allowed"
+#define SPLINT_X_TOO_HIGH "Spline extrapolation is not allowed"
+#define LININTERP_X_TOO_LOW "Linear extrapolation is not allowed"
+#define LININTERP_X_TOO_HIGH "Linear extrapolation is not allowed"
 
 #endif
 

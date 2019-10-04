@@ -63,6 +63,16 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, NEGATIVE_Q) == 0);
 	xrl_clear_error(&error);
 
+	rv = FF_Rayl(9, 1E9 - 1, &error);
+	assert(error == NULL);
+
+	rv = FF_Rayl(9, 1E9 + 1, &error);
+	assert(error != NULL);
+	assert(rv == 0.0);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+	xrl_clear_error(&error);
+
 	/* SF_Compt */
 	rv = SF_Compt(26, 0.1, &error);
 	assert(error == NULL);
@@ -95,6 +105,16 @@ int main(int argc, char **argv) {
 	assert(rv == 0.0);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, NEGATIVE_Q) == 0);
+	xrl_clear_error(&error);
+
+	rv = SF_Compt(9, 1E9 - 1, &error);
+	assert(error == NULL);
+
+	rv = SF_Compt(9, 1E9 + 1, &error);
+	assert(error != NULL);
+	assert(rv == 0.0);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
 	xrl_clear_error(&error);
 
 	/* DCS_Thoms */

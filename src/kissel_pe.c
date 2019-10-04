@@ -153,11 +153,13 @@ double CSb_Photo_Partial(int Z, int shell, double E, xrl_error **error) {
     ln_sigma = y0 + m * (ln_E - x0);
   }
   else {
-    splint(E_Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel2[Z][shell] - 1, NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma);
- }
- sigma = exp(ln_sigma);
+    int splint_rv = splint(E_Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel2[Z][shell] - 1, NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma, error);
+    if (!splint_rv)
+      return 0;
+  }
+  sigma = exp(ln_sigma);
 
- return sigma; 
+  return sigma; 
 }
 
 /*/////////////////////////////////////////////////////////

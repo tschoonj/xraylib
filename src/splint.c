@@ -13,19 +13,22 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 
 #include "config.h"
 #include "splint.h"
+#include "xraylib-error-private.h"
 
-void lininterp(double xa[], double ya[], int n, double x, double *y) {
+int lininterp(double xa[], double ya[], int n, double x, double *y, xrl_error **error) {
 	int findpos = -1;
 	int i;
 
-	if (x > xa[n]) {
-		*y = ya[n];
-		return;
+	if (x - xa[n] > 1E-7) {
+	  *y = 0.0;
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, LININTERP_X_TOO_HIGH);
+	  return 0;
 	}
 
 	if (x < xa[1]) {
-	  *y = ya[1];
-	  return;
+	  *y = 0.0;
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, LININTERP_X_TOO_LOW);
+	  return 0;
 	}
 
 	for (i = 1 ; i <= n ; i++) {
@@ -37,24 +40,25 @@ void lininterp(double xa[], double ya[], int n, double x, double *y) {
 
 	*y = ya[findpos] + (ya[findpos+1]-ya[findpos])*(x-xa[findpos])/(xa[findpos+1]-xa[findpos]);
 
-	return;
+	return 1;
 }
 
 
 
-void splint(double xa[], double ya[], double y2a[], int n, double x, double *y)
-{
+int splint(double xa[], double ya[], double y2a[], int n, double x, double *y, xrl_error **error) {
 	int klo, khi, k;
 	double h, b, a;
 
-	if (x >= xa[n]) {
-	  *y = ya[n];
-	  return;
+	if (x - xa[n] > 1E-7) {
+	  *y = 0.0;
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, SPLINT_X_TOO_HIGH);
+	  return 0;
 	}
 
-	if (x <= xa[1]) {
-	  *y = ya[1];
-	  return;
+	if (x < xa[1]) {
+	  *y = 0.0;
+	  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, SPLINT_X_TOO_LOW);
+	  return 0;
 	}
 
 	klo = 1;
@@ -68,12 +72,13 @@ void splint(double xa[], double ya[], double y2a[], int n, double x, double *y)
 	h = xa[khi] - xa[klo];
 	if (h == 0.0) {
 	  *y = (ya[klo] + ya[khi])/2.0;
-	  return;
+	  return 1;
 	}
 	a = (xa[khi] - x) / h;
 	b = (x - xa[klo]) / h;
 	*y = a*ya[klo] + b*ya[khi] + ((a*a*a-a)*y2a[klo]
 	     + (b*b*b-b)*y2a[khi])*(h*h)/6.0;
+	return 1;
 }
 
 

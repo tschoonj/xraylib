@@ -61,12 +61,34 @@ int main(int argc, char **argv) {
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+	xrl_clear_error(&error);
 
 	fii = Fii(59, -10.0, &error);
 	assert(fii == 0.0);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+	xrl_clear_error(&error);
+
+	fii = Fii(59, 0.0011, &error);
+	assert(error == NULL);
+
+	fii = Fii(59, 0.0009, &error);
+	assert(fii == 0.0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_LOW) == 0);
+	xrl_clear_error(&error);
+
+	fii = Fii(59, 9999, &error);
+	assert(error == NULL);
+
+	fii = Fii(59, 10001, &error);
+	assert(fii == 0.0);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+	xrl_clear_error(&error);
 
 	return 0;
 }

@@ -22,7 +22,9 @@ public class TestFii {
 			arguments(26, 1.0, -12.11016272606279),
 			arguments(92, 10.0, -9.812520269504303),
 			arguments(56, 100.0, -0.6440539604345072),
-			arguments(100, 10.0, -13.413095197631547)
+			arguments(100, 10.0, -13.413095197631547),
+			arguments(59, 0.0011, 0.0),
+			arguments(59, 9999, -0.0016150230148230047)
 		);
 	}
 
@@ -38,7 +40,9 @@ public class TestFii {
 			arguments(0, 10.0, Xraylib.Z_OUT_OF_RANGE),
 			arguments(101, 10.0, Xraylib.Z_OUT_OF_RANGE),
 			arguments(59, 0.0, Xraylib.NEGATIVE_ENERGY),
-			arguments(59, -10.0, Xraylib.NEGATIVE_ENERGY)
+			arguments(59, -10.0, Xraylib.NEGATIVE_ENERGY),
+			arguments(59, 0.0009, Xraylib.SPLINT_X_TOO_LOW),
+			arguments(59, 10001, Xraylib.SPLINT_X_TOO_HIGH)
 		);
 	}
 
