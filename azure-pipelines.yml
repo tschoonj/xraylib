@@ -35,7 +35,7 @@ jobs:
 
     - script: |
         set -e -x
-        brew install autoconf automake libtool swig ruby python@2 python fpc lua perl php bash numpy gcc@9
+        brew install autoconf automake libtool swig ruby python@2 python fpc lua perl php bash gcc@9
       displayName: Install shared Homebrew dependencies
 
     - script: |
@@ -65,14 +65,17 @@ jobs:
       displayName: Build without bindings in ANSI-C
 
     - script: |
+        brew install numpy@1.16
         set -e -x
         ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON2} ${EXTRA} SHELL=${SHELL}
         make
         make check
         make distclean
+        brew uninstall numpy@1.16
       displayName: Build with Python2 bindings
 
     - script: |
+        brew install numpy
         set -e -x
         ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} ${EXTRA} SHELL=${SHELL}
         make
