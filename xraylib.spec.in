@@ -38,11 +38,22 @@ BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 swig lu
 
 # python 2
 BuildRequires: python2-numpy python2-devel
+
+%if 0%{?rhel} == 7
 # python2-Cython is too old!
 %define cython2 /usr/bin/cython3.6
 # python 3
 BuildRequires: python36-Cython python36-numpy python36-devel python36-setuptools
 %define cython3 /usr/bin/cython3.6
+
+%else
+# Centos 8
+%define cython2 /usr/bin/cython
+# python 3
+BuildRequires: python3-Cython python3-numpy python3-devel python3-setuptools
+%define cython3 /usr/bin/cython
+
+%endif
 
 %else
 
@@ -84,16 +95,10 @@ This rpm package provides the fortran 2003 bindings of xraylib.
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python3 bindings
 Requires:  %{name}%{?_isa} = %{version}-%{release}
 
-%if 0%{?rhel}
-# python 3
+%if 0%{?rhel} == 7
 Requires: python36-numpy
-
 %else
-
-%if 0%{?fedora}
 Requires: python3-numpy
-%endif
-
 %endif
 
 %description python
