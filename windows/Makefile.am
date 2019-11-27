@@ -13,7 +13,6 @@ if OS_WINDOWS_32
 windows:
 	$(MAKE) common
 	lib /machine:i386 /def:libxrl-$(LIB_CURRENT_MINUS_AGE).def
-	implib.exe -a -c libxrl-$(LIB_CURRENT_MINUS_AGE)-bcc.lib libxrl-$(LIB_CURRENT_MINUS_AGE).dll
 	iscc.exe "-dLIB_CURRENT_MINUS_AGE=$(LIB_CURRENT_MINUS_AGE)" "-dMyAppVersion=$(VERSION)" "-dabs_top_srcdir_win=$(abs_top_srcdir_win)" "-dabs_top_builddir_win=$(abs_top_builddir_win)" "${srcdir}/xraylib.iss"
 	rm libxrl-$(LIB_CURRENT_MINUS_AGE).def
 endif
@@ -34,10 +33,7 @@ common:
 	unix2dos -n ${top_srcdir}/BUGS BUGS.txt
 	unix2dos -n ${top_srcdir}/TODO TODO.txt
 	unix2dos -n ${top_srcdir}/Changelog Changelog.txt
-	unix2dos -n ${top_srcdir}/doc/xraybanner.txt xraybanner.txt
 	unix2dos -n ${top_srcdir}/doc/xraydoc.txt xraydoc.txt
-	unix2dos -n ${top_srcdir}/doc/xrayfunc.txt xrayfunc.txt
-	unix2dos -n ${top_srcdir}/doc/xrayhelp.txt xrayhelp.txt
 	unix2dos -n ${srcdir}/README README2.txt
 	unix2dos -n ${top_srcdir}/example/xrlexample8.cs xrlexample8.cs
 	unix2dos -n ${top_srcdir}/example/xrlexample1.c xrlexample1.c
@@ -49,9 +45,14 @@ common:
 	unix2dos -n ${top_srcdir}/include/xraylib-auger.h xraylib-auger.h
 	unix2dos -n ${top_srcdir}/include/xraylib-crystal-diffraction.h xraylib-crystal-diffraction.h
 	unix2dos -n ${top_srcdir}/include/xraylib-defs.h xraylib-defs.h
+	unix2dos -n ${top_srcdir}/include/xraylib-deprecated.h xraylib-deprecated.h
+	unix2dos -n ${top_srcdir}/include/xraylib-error.h xraylib-error.h
 	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
 	unix2dos -n ${top_srcdir}/include/xraylib-radionuclides.h xraylib-radionuclides.h
 	unix2dos -n ${top_srcdir}/pascal/xraylib.pas xraylib.pas
+	unix2dos -n ${top_srcdir}/pascal/xraylib_const.pas xraylib_const.pas
+	unix2dos -n ${top_srcdir}/pascal/xraylib_iface.pas xraylib_iface.pas
+	unix2dos -n ${top_srcdir}/pascal/xraylib_impl.pas xraylib_impl.pas
 	unix2dos -n ${top_srcdir}/example/xrlexample14.pas xrlexample14.pas
 
 

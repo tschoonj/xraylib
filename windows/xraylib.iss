@@ -65,17 +65,10 @@ Source: "{#builddir}\windows\AUTHORS.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\BUGS.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\Changelog.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\TODO.txt" ; DestDir: "{app}" ; Components: core
-Source: "{#builddir}\windows\xraybanner.txt" ; DestDir: "{app}\Doc" ; Components: core
 Source: "{#builddir}\windows\xraydoc.txt" ; DestDir: "{app}\Doc" ; Components: core
-Source: "{#builddir}\windows\xrayfunc.txt" ; DestDir: "{app}\Doc" ; Components: core
-Source: "{#builddir}\windows\xrayhelp.txt" ; DestDir: "{app}\Doc" ; Components: core
 
 Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}.lib" ; DestDir: "{app}\Lib" ; Components: sdk
-#ifndef XRL64
-Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}-bcc.lib" ; DestDir: "{app}\Lib" ; Components: sdk
-#endif
 Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}.exp" ; DestDir: "{app}\Lib" ; Components: sdk
-Source: "{#builddir}\src\.libs\libxrl.a" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\src\.libs\libxrl.dll.a" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\src\libxrl-{#LIB_CURRENT_MINUS_AGE}.def" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\windows\README2.txt" ; DestDir: "{app}\Doc" ; DestName: "README.txt";Components: sdk
@@ -88,6 +81,8 @@ Source: "{#builddir}\windows\xraylib-shells.h" ; DestDir: "{app}\Include" ; Comp
 Source: "{#builddir}\windows\xraylib-auger.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-crystal-diffraction.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-defs.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-deprecated.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-error.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-radionuclides.h" ; DestDir: "{app}\Include" ; Components: sdk
 
@@ -100,6 +95,9 @@ Source: "{#builddir}\windows\xrlexample8.cs" ; DestDir: "{app}\Example" ; Compon
 Source: "{#srcdir}\windows\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
+Source: "{#builddir}\windows\xraylib_const.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
+Source: "{#builddir}\windows\xraylib_iface.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
+Source: "{#builddir}\windows\xraylib_impl.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xrlexample14.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 
 [Icons]
