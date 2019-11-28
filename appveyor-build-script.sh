@@ -12,6 +12,7 @@ autoreconf -fi
 ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic"
 make
 make check
+make windows
 make distclean
 
 ./configure --disable-all-bindings --disable-shared --enable-static

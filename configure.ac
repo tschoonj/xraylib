@@ -1061,10 +1061,19 @@ cd $abs_top_builddir
 AC_SUBST(abs_top_srcdir)
 
 #windows slashes versions
-abs_top_builddir_win=`echo $abs_top_builddir | $SED -e 's/\//\\\/g'`
-abs_top_srcdir_win=`echo $abs_top_srcdir | $SED -e 's/\//\\\/g'`
-AC_SUBST(abs_top_builddir_win)
-AC_SUBST(abs_top_srcdir_win)
+if test x$OS_WINDOWS = "x1" ; then
+	abs_top_builddir_win=`pwd -W`
+	AC_SUBST(abs_top_builddir_win)
+	abs_top_srcdir_win=`AS_DIRNAME([$0])`
+	cd $abs_top_srcdir_win
+	abs_top_srcdir_win=`pwd -W`
+	cd $abs_top_builddir_win
+	AC_SUBST(abs_top_srcdir_win)
+	cd
+	abs_homedir_win=`pwd -W`
+	AC_SUBST(abs_homedir_win)
+	cd $abs_top_builddir_win
+fi
 
 AM_CONDITIONAL([ABS_SRC_BUILD_EQUAL],[test x$abs_top_builddir = x$abs_top_srcdir])
 
