@@ -18,7 +18,7 @@ before_build:
     - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
     - bash -lc "for i in {1..3}; do pacman -Syyuu --ask 20 --noconfirm && break || sleep 15; done"
     - bash -lc "for i in {1..3}; do pacman -Suu --ask 20 --noconfirm && break || sleep 15; done"
-    - bash -lc "for i in {1..3}; do pacman --ask 20 --noconfirm -Su mingw-w64-%MSYS2_ARCH%-{gcc,libtool,cython2,python2-numpy,python3-numpy} automake autoconf make wget tar && break || sleep 15; done"
+    - bash -lc "for i in {1..3}; do pacman --ask 20 --noconfirm -Su mingw-w64-%MSYS2_ARCH%-{gcc,libtool,cython,python3-numpy} automake autoconf make wget tar && break || sleep 15; done"
 
 build_script:
     - bash -lc "cd \"$APPVEYOR_BUILD_FOLDER\" && exec ./appveyor-build-script.sh"

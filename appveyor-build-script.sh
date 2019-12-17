@@ -3,7 +3,7 @@
 set -e
 set -x
 
-export CYTHON=cython2
+export CYTHON=cython
 
 cd $APPVEYOR_BUILD_FOLDER
 
@@ -25,14 +25,7 @@ make
 make check
 make distclean
 
-export PYTHON=python2
-./configure --enable-python --enable-python-numpy
-make
-make check
-make distclean
-
-export PYTHON=python3
-./configure --enable-python --enable-python-numpy
+./configure --enable-python --enable-python-numpy PYTHON=python3
 make
 make check
 make distclean

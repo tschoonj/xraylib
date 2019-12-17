@@ -56,19 +56,6 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-4.6
-            - gfortran-4.6
-      env: CC='gcc-4.6' FC='gfortran-4.6' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
-    - os: linux
-      jdk:
-        - openjdk8
-      dist: xenial
-      sudo: required
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
             - gcc-4.8
             - gfortran-4.8
       env: CC='gcc-4.8' FC='gfortran-4.8' XRL_PYTHON2='/usr/bin/python' XRL_PYTHON3='/usr/bin/python3'
