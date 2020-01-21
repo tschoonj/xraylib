@@ -37,7 +37,7 @@ We recently started a mailinglist. Subscription is possible at https://lists.uge
 Reporting bugs
 ==============
 
-A list of known bugs can be found in the BUGS file. Details of compilation problems can be found in the INSTALL file.
+Details of compilation problems can be found in the INSTALL file.
 
 If you would encounter a bug which is not covered in these files please report it in the Issues section http://github.com/tschoonj/xraylib
 
