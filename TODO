@@ -1,4 +1,2 @@
-Write bindings for Matlab and Octave
 Resonant Raman effect
-Rewrite error handling completely: needs to be thread-safe
 ...
