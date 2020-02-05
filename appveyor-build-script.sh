@@ -4,6 +4,7 @@ set -e
 set -x
 
 export CYTHON=cython
+export PATH="/C/Program Files (x86)/Inno Setup 6:$HOME/install/bin:$PATH"
 
 cd $APPVEYOR_BUILD_FOLDER
 
