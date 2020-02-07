@@ -1,4 +1,4 @@
-#Copyright (c) 2009, 2010, 2011, 2012, 2013 Tom Schoonjans
+#Copyright (c) 2009-2020 Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@
 
 
 
-AC_INIT([xraylib],[3.99.2],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[4.0.0],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])

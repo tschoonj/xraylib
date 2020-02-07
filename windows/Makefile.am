@@ -30,7 +30,6 @@ common:
 	cp ../src/.libs/libxrl-$(LIB_CURRENT_MINUS_AGE).dll .
 	unix2dos -n ${top_srcdir}/README README.txt
 	unix2dos -n ${top_srcdir}/AUTHORS AUTHORS.txt
-	unix2dos -n ${top_srcdir}/BUGS BUGS.txt
 	unix2dos -n ${top_srcdir}/TODO TODO.txt
 	unix2dos -n ${top_srcdir}/Changelog Changelog.txt
 	unix2dos -n ${top_srcdir}/doc/xraydoc.txt xraydoc.txt

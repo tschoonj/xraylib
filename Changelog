@@ -1,3 +1,29 @@
+Version 4.0.0 Tom Schoonjans
+
+Major changes:
+- Drop xraylib command-line executable
+- Add proper, thread-safe error handling support through an extra argument in
+the C API, which is transformed into an exception in the other bindings.
+The old error handling functions have been deprecated. New API added to xraylib-error.h
+- Add unittests, lots of them, for all supported languages.
+- Deprecate IDL bindings: they work for now, but do not support the new error
+handling mechanism, and will no longer be actively developed.
+- Rewrite Java bindings, produce sources and javadoc jars, and publish to
+Maven and JFrog.
+
+
+Minor changes:
+- CompoundParser: do not allow lower case characters after digits (bugfix)
+- SymbolToAtomicNumber: deal gracefully with NULL (bugfix)
+- PHP bindings: create RPM package
+- SWIG: parse xrf_cross_sections_aux.h
+- Symbol visibility has been reduced.
+- CosKronTransProb: remove old _TRANS macros
+- AugerYield and CS_FluorLine_Kissel: introduce FLP13_TRANS correction
+- PM5_full_cascade_kissel: fix bug
+- xrf_cross_sections_aux: improve performance
+- Do not allow extrapolation with splint
+
 Version 3.3.0 Tom Schoonjans
 
 - Anomalous scattering factors: switch to EPDL97 (thanks to Chris Jacobsen and Ming Du for reporting spikes in RTAB data)

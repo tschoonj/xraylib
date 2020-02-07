@@ -28,7 +28,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={commonpf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile={#srcdir}\windows\License.rtf
@@ -62,7 +62,6 @@ Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
 Source: "{#builddir}\src\.libs\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
 Source: "{#builddir}\windows\README.txt" ; DestDir: "{app}" ; Flags: isreadme ; Components: core
 Source: "{#builddir}\windows\AUTHORS.txt" ; DestDir: "{app}" ; Components: core
-Source: "{#builddir}\windows\BUGS.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\Changelog.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\TODO.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\xraydoc.txt" ; DestDir: "{app}\Doc" ; Components: core
