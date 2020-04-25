@@ -40,7 +40,7 @@ xraylib-$(VERSION)-javadoc.jar: xraylib-$(VERSION).jar
 xraylib-$(VERSION)-sources.jar: xraylib-$(VERSION).jar
 
 xraylib-$(VERSION).jar: xraylib.dat $(java_source)
-	$(srcdir)/gradlew build sourcesJar javadocJar -x test
+	$(srcdir)/gradlew build sourcesJar javadocJar -x test --warning-mode all
 
 xraylib.dat: prdata_java$(EXEEXT)
 	$(AM_V_GEN) XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)

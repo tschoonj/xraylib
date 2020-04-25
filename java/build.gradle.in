@@ -1,24 +1,12 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'biz.aQute.bnd:biz.aQute.bnd.gradle:4.2.0'
-    }
-}
-
 plugins {
-    id 'com.adarshr.test-logger' version '1.7.0'
+    id 'com.adarshr.test-logger' version '2.0.0'
     id 'maven-publish'
-
-    id 'com.jfrog.bintray' version '1.8.4'
+    id "biz.aQute.bnd.builder" version "5.0.1"
+    id 'com.jfrog.bintray' version '1.8.5'
 }
 
 apply plugin: 'java'
 apply plugin: 'java-library'
-apply plugin: 'biz.aQute.bnd.builder'
-
 
 version = '@VERSION@'
 group = 'com.github.tschoonj'
@@ -34,9 +22,9 @@ repositories {
 
 dependencies {
 	api 'org.apache.commons:commons-math3:3.6.1'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
-	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.6.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 }
 
 sourceSets {
