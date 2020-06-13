@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 */
 
 #include "config.h"
+#include "xraylib-aux.h"
 #include "xraylib-error-private.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -77,7 +78,7 @@ xrl_error* xrl_error_new_literal(xrl_error_code code, const char *message) {
 
 	error = malloc(sizeof(xrl_error));
 	error->code = code;
-	error->message = strdup(message);
+	error->message = xrl_strdup(message);
 
 	return error;
 }
@@ -104,7 +105,7 @@ xrl_error* xrl_error_copy(const xrl_error *error) {
 
 	copy->message = NULL;
 	if (error->message)
-		copy->message = strdup(error->message);
+		copy->message = xrl_strdup(error->message);
 
 	return copy;
 }

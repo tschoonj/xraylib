@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 #ifndef XRAYLIB_ERROR_PRIVATE_H
 #define XRAYLIB_ERROR_PRIVATE_H
 
+#include "xraylib.h"
 #include "xraylib-error.h"
 #include <stdarg.h>
 
@@ -27,14 +28,19 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 #define GNUC_PRINTF( format_idx, arg_idx )
 #endif /* !__GNUC__ */
 
+XRL_EXTERN
 xrl_error* xrl_error_new(xrl_error_code code, const char *format, ...) GNUC_PRINTF (2, 3);
 
+XRL_EXTERN
 xrl_error* xrl_error_new_literal(xrl_error_code code, const char *message);
 
+XRL_EXTERN
 xrl_error* xrl_error_new_valist(xrl_error_code code, const char *format, va_list args) GNUC_PRINTF(2, 0);
 
+XRL_EXTERN
 void xrl_set_error(xrl_error **err, xrl_error_code code , const char *format, ...) GNUC_PRINTF (3, 4);
 
+XRL_EXTERN
 void xrl_set_error_literal(xrl_error **err, xrl_error_code code, const char *message);
 
 /* predefined error messages  */

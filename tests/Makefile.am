@@ -52,6 +52,7 @@ test_compoundparser_SOURCES = test-compoundparser.c
 test_compoundparser_LDADD = ../src/libxrl.la
 
 test_error_SOURCES = test-error.c
+test_error_LDADD = ../src/libxrl.la
 
 test_atomiclevelwidth_SOURCES = test-atomiclevelwidth.c
 test_atomiclevelwidth_LDADD = ../src/libxrl.la

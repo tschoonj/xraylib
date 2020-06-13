@@ -48,7 +48,7 @@ struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[], 
 		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "compoundString cannot be NULL");
 		return NULL;
 	}
-	key->name = strdup(compoundString);
+	key->name = xrl_strdup(compoundString);
 	
 
 #ifndef _WIN32
@@ -64,7 +64,7 @@ struct compoundDataNIST *GetCompoundDataNISTByName(const char compoundString[], 
 	free(key->name);
 
 	if (rv != NULL) {
-		key->name = strdup(rv->name);
+		key->name = xrl_strdup(rv->name);
 		key->nElements = rv->nElements; 
 		key->Elements = malloc(sizeof(int)*rv->nElements);
 		memcpy(key->Elements, rv->Elements, sizeof(int)*rv->nElements);
@@ -93,7 +93,7 @@ struct compoundDataNIST *GetCompoundDataNISTByIndex(int compoundIndex, xrl_error
 		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
 		return NULL;
 	}
-	key->name = strdup(compoundDataNISTList[compoundIndex].name);
+	key->name = xrl_strdup(compoundDataNISTList[compoundIndex].name);
 	key->nElements = compoundDataNISTList[compoundIndex].nElements; 
 	key->Elements = malloc(sizeof(int)*compoundDataNISTList[compoundIndex].nElements);
 	memcpy(key->Elements, compoundDataNISTList[compoundIndex].Elements, sizeof(int)*compoundDataNISTList[compoundIndex].nElements);
@@ -118,7 +118,7 @@ char **GetCompoundDataNISTList(int *nCompounds, xrl_error **error) {
 	}
 
 	for (i = 0 ; i < nCompoundDataNISTList; i++)
-		rv[i] = strdup(compoundDataNISTList[i].name);
+		rv[i] = xrl_strdup(compoundDataNISTList[i].name);
 
 	rv[nCompoundDataNISTList] = NULL;
 

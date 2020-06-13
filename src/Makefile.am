@@ -48,7 +48,9 @@ libprdata_la_SOURCES = \
 		 radrate.c \
 		 auger_trans.c \
 		 kissel_pe.c \
-	         cross_sections.c
+	         cross_sections.c \
+		 xraylib-aux.c \
+		 xraylib-aux.h 
 
 if !OS_WINDOWS
 libprdata_la_LIBADD = -lm

@@ -52,7 +52,7 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
 		xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "radioNuclideString cannot be NULL");
 		return NULL;
 	}
-	key->name = strdup(radioNuclideString);
+	key->name = xrl_strdup(radioNuclideString);
 	
 #ifndef _WIN32
 	nelp = nNuclideDataList;
@@ -66,7 +66,7 @@ struct radioNuclideData *GetRadioNuclideDataByName(const char radioNuclideString
 	free(key->name);
 
 	if (rv != NULL) {
-		key->name = strdup(rv->name);
+		key->name = xrl_strdup(rv->name);
 		key->Z = rv->Z; 
 		key->A = rv->A; 
 		key->N = rv->N; 
@@ -104,7 +104,7 @@ struct radioNuclideData *GetRadioNuclideDataByIndex(int radioNuclideIndex, xrl_e
 		xrl_set_error(error, XRL_ERROR_MEMORY, MALLOC_ERROR, strerror(errno));
 		return NULL;
 	}
-	key->name = strdup(nuclideDataList[radioNuclideIndex].name);
+	key->name = xrl_strdup(nuclideDataList[radioNuclideIndex].name);
 	key->Z = nuclideDataList[radioNuclideIndex].Z; 
 	key->A = nuclideDataList[radioNuclideIndex].A; 
 	key->N = nuclideDataList[radioNuclideIndex].N; 
@@ -137,7 +137,7 @@ char **GetRadioNuclideDataList(int *nRadioNuclides, xrl_error **error) {
 	}
 
 	for (i = 0 ; i < nNuclideDataList; i++)
-		rv[i] = strdup(nuclideDataList[i].name);
+		rv[i] = xrl_strdup(nuclideDataList[i].name);
 
 	rv[nNuclideDataList] = NULL;
 
