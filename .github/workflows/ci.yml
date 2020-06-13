@@ -19,17 +19,58 @@ jobs:
           - ubuntu:bionic
           - ubuntu:focal
           - debian:buster
+          - centos:7
+          - centos:8
+          - fedora:latest
         cc:
           - clang
           - gcc
         include:
           # at least some versions of clang cannot compile php bindings
+          - cython: cython
+            perl: enable
+            fpc: enable
+            fortran: enable
+            python: enable
           - cc: clang
             cxx: clang++
             php: disable
           - cc: gcc
             cxx: g++
             php: enable
+          - cc: clang
+            image: centos:8
+            perl: disable
+            libs: -stdlib=libstdc++
+            fortran: disable
+            clang_cflags: -Qunused-arguments
+            python: disable
+          - image: centos:7
+            fpc: disable
+            cython: cython3.6
+          - image: centos:7
+            cc: clang
+            libs: -stdlib=libstdc++
+            fortran: disable
+            clang_cflags: -Qunused-arguments
+            python: disable
+          - cc: clang
+            image: fedora:latest
+            perl: disable
+            python: disable
+            clang_cflags: -Qunused-arguments
+          - image: ubuntu:bionic
+            lua: /usr/bin/lua5.3
+          - image: ubuntu:focal
+            lua: /usr/bin/lua5.3
+          - image: debian:buster
+            lua: /usr/bin/lua5.3
+          - image: centos:7
+            lua: /usr/bin/lua
+          - image: centos:8
+            lua: /usr/bin/lua
+          - image: fedora:latest
+            lua: /usr/bin/lua
 
     runs-on: ubuntu-latest
     container:
@@ -42,25 +83,51 @@ jobs:
       run: |
         set -ex
         apt-get --yes --force-yes update
-        apt-get --yes --force-yes install python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk clang
+        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk clang
         pip3 install Cython
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
+    - name: Activate CentOS 8 PowerTools and EPEL repo
+      if: matrix.image == 'centos:8'
+      run: |
+        set -ex
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+        dnf install -y 'dnf-command(config-manager)'
+        dnf config-manager --set-enabled PowerTools
+        set +ex
+    - name: Activate CentOS 7 EPEL repo
+      if: matrix.image == 'centos:7'
+      run: |
+        set -ex
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        yum install -y python36-Cython # this one needs to be brought in separately for CentOS 7
+        set +ex
+    - name: Install RHEL dependencies
+      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora')
+      run: |
+        set -ex
+        yum update -y
+        yum install -y make autoconf automake libtool python3-Cython python3-setuptools python3-devel python3-numpy fpc gcc-gfortran gcc php-devel swig perl-devel perl perl-Test-Simple lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel  gcc-c++ which
+        java -version
+        which java
+        javac -version
+        which javac
+        set +ex
     - name: Build and test
       run: |
         set -ex
         autoreconf -fi
         # disable java for now
-        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby
+        ./configure --disable-python --disable-python-numpy --${PERL_ENABLE}-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
         make
-        make check
+        make check || (cat ruby/tests/test-suite.log && exit 1)
         make distclean
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
         make
         make check
         make distclean
-        ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3}
+        ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
         make
         make check
         make distclean
@@ -72,10 +139,17 @@ jobs:
         make distcheck PYTHON=${XRL_PYTHON3}
         set +ex
       env:
+        CYTHON: ${{matrix.cython}}
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
+        LIBS: ${{matrix.libs}}
         XRL_PYTHON3: /usr/bin/python3
-        LUA: /usr/bin/lua5.3
+        LUA: ${{matrix.lua}}
         JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
         PHP_ENABLE: ${{matrix.php}}
-        DISTCHECK_CONFIGURE_FLAGS: --enable-pascal --enable-java --enable-perl --enable-lua --enable-python --enable-python-numpy --${{matrix.php}}-php --enable-ruby
+        PYTHON_ENABLE: ${{matrix.python}}
+        FORTRAN_ENABLE: ${{matrix.fortran}}
+        PERL_ENABLE: ${{matrix.perl}}
+        FPC_ENABLE: ${{matrix.fpc}}
+        DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --${{matrix.perl}}-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --${{matrix.php}}-php --enable-ruby --${{matrix.fortran}}-fortran2003
+        CFLAGS: ${{matrix.clang_cflags}}

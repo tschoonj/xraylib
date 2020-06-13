@@ -863,8 +863,6 @@ elif test "x$SWIG" != xnoswig && test "x$enable_ruby" != xno && test "x$DISABLE_
 			LIBS="$RUBY_EXT_LDFLAGS"
 			ac_save_CPPFLAGS="$CPPFLAGS"
 			CPPFLAGS="$RUBY_EXT_CPPFLAGS $RUBY_EXT_INC"
-			ac_save_CC="$CC"
-			CC="$RUBY_EXT_CC"
 	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
 	        	AC_LANG_PUSH([C])
 			AC_TRY_COMPILE([
@@ -875,7 +873,6 @@ elif test "x$SWIG" != xnoswig && test "x$enable_ruby" != xno && test "x$DISABLE_
 			AC_MSG_RESULT([$rubyexists])
 			AC_LANG_POP
 			# turn back to default flags
-			CC="$ac_save_CC"
 			CPPFLAGS="$ac_save_CPPFLAGS"
 			LIBS="$ac_save_LIBS"
 			if test "x$rubyexists" = xno ; then
