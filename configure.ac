@@ -74,14 +74,6 @@ AM_CONDITIONAL([LIBXRL_CONVENIENCE_BUILD], [test x$enable_libxrl = xno])
 #headers check
 AC_CHECK_HEADERS_ONCE([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h complex.h])
 
-
-
-#libraries check
-AC_CHECK_LIB([m],[log],[  ],[AC_MSG_ERROR([the log function must be present in libm])])
-AC_CHECK_LIB([m],[exp],[  ],[AC_MSG_ERROR([the exp function must be present in libm])])
-AC_CHECK_LIB([m],[cos],[  ],[AC_MSG_ERROR([the cos function must be present in libm])])
-AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in libm])])
-
 #
 #Some code is necessary in case we are cross compiling with mingw on a platform different from cygwin -> Wine is necessary!
 #
