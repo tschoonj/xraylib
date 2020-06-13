@@ -49,7 +49,7 @@ jobs:
 
     - script: |
         set -e -x
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
         make
         make check
         make distclean
