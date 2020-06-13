@@ -31,9 +31,6 @@ AC_CONFIG_MACRO_DIR([m4])
 
 
 AC_USE_SYSTEM_EXTENSIONS
-AC_CHECK_FUNCS([strndup strdup])
-AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
-AC_CHECK_FUNC([asprintf], [], [AC_MSG_ERROR([asprintf must be present on the system])])
 
 m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 #at least version 2.0 of libtool is required for creating the fortran bindings
@@ -160,6 +157,18 @@ if test $OS_WINDOWS = 1 ; then
 	if test x$enable_static = xyes -a x$enable_shared = xyes; then
 		AC_MSG_ERROR([Can not build both shared and static at the same time on Windows.])
 	fi
+fi
+
+AC_CHECK_FUNCS([strndup strdup]) # if not found, we use our own implementation
+
+if test $OS_WINDOWS = 1 ; then
+AC_CHECK_FUNC([_vscprintf], [], [AC_MSG_ERROR([_vscprintf must be present on the system])])
+AC_CHECK_FUNC([_scprintf], [], [AC_MSG_ERROR([_scprintf must be present on the system])])
+AC_CHECK_FUNC([_vsnprintf], [], [AC_MSG_ERROR([_vsnprintf must be present on the system])])
+AC_CHECK_FUNC([_snprintf], [], [AC_MSG_ERROR([_snprintf must be present on the system])])
+else
+AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
+AC_CHECK_FUNC([asprintf], [], [AC_MSG_ERROR([asprintf must be present on the system])])
 fi
 
 AC_SUBST(LDFLAGS_LIBXRL)
