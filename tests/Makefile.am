@@ -73,6 +73,9 @@ test_cross_sections_LDADD = ../src/libxrl.la
 
 test_crystal_diffraction_SOURCES = test-crystal_diffraction.c
 test_crystal_diffraction_LDADD = ../src/libxrl.la
+if !OS_WINDOWS
+test_crystal_diffraction_LDADD += -lm
+endif
 
 test_cs_barns_SOURCES = test-cs_barns.c
 test_cs_barns_LDADD = ../src/libxrl.la

@@ -54,6 +54,9 @@ endif
 
 xrlexample1_SOURCES = xrlexample1.c
 xrlexample1_LDADD = ../src/libxrl.la
+if !OS_WINDOWS
+xrlexample1_LDADD += -lm
+endif
 xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 xrlexample1_CFLAGS = $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
@@ -68,6 +71,9 @@ endif
 if ENABLE_CXX
   xrlexample6_SOURCES = xrlexample6.cpp
   xrlexample6_LDADD = ../src/libxrl.la
+if !OS_WINDOWS
+  xrlexample6_LDADD += -lm
+endif
 endif
 
 

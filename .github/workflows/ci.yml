@@ -33,16 +33,18 @@ jobs:
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
         set -ex
-        export DEBIAN_FRONTEND=noninteractive
         apt-get --yes --force-yes update
         apt-get --yes --force-yes install python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk
         pip3 install Cython
         set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
     - name: Build and test
       run: |
         set -ex
         autoreconf -fi
-        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --enable-java --enable-php --enable-ruby
+        # disable java for now
+        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby
         make
         make check
         make distclean
@@ -65,3 +67,4 @@ jobs:
         CC: ${{matrix.cc}}
         XRL_PYTHON3: /usr/bin/python3
         LUA: /usr/bin/lua5.3
+        JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
