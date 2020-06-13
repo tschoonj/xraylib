@@ -1,6 +1,6 @@
 variables:
   SHELL: /usr/local/bin/bash
-  XRL_PYTHON3: /usr/local/bin/python3
+  XRL_PYTHON3: /usr/local/opt/python@3.8/bin/python3
   PHP: /usr/local/bin/php
   PHP_CONFIG: /usr/local/bin/php-config
 
@@ -39,7 +39,7 @@ jobs:
 
     - script: |
         set -e -x
-        /usr/local/opt/python/bin/pip3 install Cython
+        /usr/local/opt/python@3.8/bin/pip3 install Cython
       displayName: Install Cython
 
     - script: |
