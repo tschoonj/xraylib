@@ -20,8 +20,16 @@ jobs:
           - ubuntu:focal
           - debian:buster
         cc:
-          #- clang
+          - clang
           - gcc
+        include:
+          # at least some versions of clang cannot compile php bindings
+          - cc: clang
+            cxx: clang++
+            php: disable
+          - cc: gcc
+            cxx: g++
+            php: enable
 
     runs-on: ubuntu-latest
     container:
@@ -34,7 +42,7 @@ jobs:
       run: |
         set -ex
         apt-get --yes --force-yes update
-        apt-get --yes --force-yes install python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk
+        apt-get --yes --force-yes install python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk clang
         pip3 install Cython
         set +ex
       env:
@@ -44,7 +52,7 @@ jobs:
         set -ex
         autoreconf -fi
         # disable java for now
-        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby
+        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby
         make
         make check
         make distclean
@@ -65,6 +73,9 @@ jobs:
         set +ex
       env:
         CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
         XRL_PYTHON3: /usr/bin/python3
         LUA: /usr/bin/lua5.3
         JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+        PHP_ENABLE: ${{matrix.php}}
+        DISTCHECK_CONFIGURE_FLAGS: --enable-pascal --enable-java --enable-perl --enable-lua --enable-python --enable-python-numpy --${{matrix.php}}-php --enable-ruby
