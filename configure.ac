@@ -668,6 +668,14 @@ AC_SUBST(PKGPYTHONDIR,$pkgpythondir)
 AC_SUBST(PYEXECDIR,$pyexecdir)
 AC_SUBST(PKGPYEXECDIR,$pkgpyexecdir)
 AC_SUBST(XRLDATADIR,[`echo ${prefix}`/share/xraylib])
+# Turn off certain errors for python bindings when -Wall -Werror is in effect -> Cython generates a lot of warnings!
+CYTHON_ERROR_CFLAGS=
+AX_CHECK_COMPILE_FLAG([-Wno-error=cpp],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=cpp"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=attributes],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=attributes"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=deprecated-declarations],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=deprecated-declarations"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=unreachable-code],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=unreachable-code"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=ignored-optimization-argument],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=ignored-optimization-argument"],,)
+AC_SUBST(CYTHON_ERROR_CFLAGS)
 fi
 AC_ARG_ENABLE([python-integration],[AS_HELP_STRING([--enable-python-integration],[install the python bindings in the interpreters site-packages folder])],[enable_python_integration=$enableval],[enable_python_integration=check])
 if test "x$enable_python_integration" = xyes ; then
