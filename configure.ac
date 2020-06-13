@@ -82,6 +82,10 @@ DISABLE_BINDINGS=no
 CROSS_COMPILING=
 LDFLAGS_LIBXRL=
 
+
+AC_ARG_ENABLE([output-def], [AS_HELP_STRING([--disable-output-def],[build without the library definitions file (Windows only)])],[enable_output_def=$enableval],[enable_output_def=check] )
+
+
 #cross_compiling variable is not reliable on modern bash shells due to wine integration... look at the compiler instead
 #check instead of $build and $host differ
 
@@ -113,14 +117,20 @@ if test "x$host" != "x$build" ; then
 		AC_MSG_ERROR([wine is necessary when cross-compiling for windows.])
 	fi
 	CROSS_COMPILING=yes
-	LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+	LDFLAGS_LIBXRL="-no-undefined"
+	if test "x$enable_output_def" != xno ; then
+		LDFLAGS_LIBXRL+=" -Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def "
+	fi
 	LDFLAGS_FORTRAN="-no-undefined"
 	LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 else
 	case "$host" in
 		i686-*mingw*)
 			#build dll
-			LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+			LDFLAGS_LIBXRL="-no-undefined"
+			if test "x$enable_output_def" != xno ; then
+				LDFLAGS_LIBXRL+=" -Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def "
+			fi
 			OS_WINDOWS_32=1
 			OS_WINDOWS=1
 			LDFLAGS_FORTRAN="-no-undefined"
@@ -129,7 +139,10 @@ else
 			;;
 		x86_64-*mingw*)
 			#build dll
-			LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+			LDFLAGS_LIBXRL="-no-undefined"
+			if test "x$enable_output_def" != xno ; then
+				LDFLAGS_LIBXRL+=" -Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def "
+			fi
 			OS_WINDOWS_64=1
 			OS_WINDOWS=1
 			LDFLAGS_FORTRAN="-no-undefined"
