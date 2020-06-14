@@ -122,6 +122,6 @@ end
 
 class TestCrossValidation < Test::Unit::TestCase
 	def test
-		1..107.each {|z| assert_equal(Xraylib.SymbolToAtomicNumber(Xraylib.AtomicNumberToSymbol(z)), z)}
+		(1..107).each {|z| assert_equal(Xraylib.SymbolToAtomicNumber(Xraylib.AtomicNumberToSymbol(z)), z)}
 	end
 end
