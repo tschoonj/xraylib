@@ -61,6 +61,7 @@ __version__ = VERSION
 
 XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include "xraylib.h"
+#include "xraylib-aux.h"
 #include "xrf_cross_sections_aux.h"
 
 
@@ -491,7 +492,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
        lua_pushstring(L, "name");
        lua_gettable(L, $input);
        if (lua_isstring(L,-1)) {
-               cs->name = strdup(lua_tostring(L,-1));
+               cs->name = xrl_strdup(lua_tostring(L,-1));
                lua_pop(L,1);
        }
        else {
@@ -827,7 +828,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         SWIG_fail;
                 }
                 cstr = PyBytes_AsString(utf8str);
-                cs->name = strdup(cstr);
+                cs->name = xrl_strdup(cstr);
                 Py_DECREF(utf8str);
         }
 %#else
@@ -837,7 +838,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
                         PyErr_SetString(PyExc_TypeError, "Name value not a string");
                         SWIG_fail;
                 }
-                cs->name = strdup(name); /* this is potentially dangerous on Windows as it will be freed with xraylib's free..*/
+                cs->name = xrl_strdup(name); /* this is potentially dangerous on Windows as it will be freed with xraylib's free..*/
         }
 %#endif
        /* a */
@@ -1195,7 +1196,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
                        SWIG_exception(SWIG_RuntimeError,"name hash key not present");
                 }
                 if (SvPOK(*temp)) {
-                       cs->name = strdup(SvPVX(*temp));
+                       cs->name = xrl_strdup(SvPVX(*temp));
                 }
                 else {
                        SWIG_exception(SWIG_RuntimeError,"name hash value not a string");
@@ -1530,7 +1531,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
         if (temp == Qnil || TYPE(temp) != T_STRING) {
                 SWIG_exception(SWIG_RuntimeError,"name hash key not present or not a string");
         }
-        cs->name = strdup(StringValuePtr(temp));
+        cs->name = xrl_strdup(StringValuePtr(temp));
         /* a */
         temp = rb_hash_aref(input, rb_str_new2("a"));
         if (temp == Qnil || TYPE(temp) != T_FLOAT) {
@@ -1832,7 +1833,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
         if (zend_hash_find(Z_ARRVAL_PP($input), "name", sizeof("name"), (void **) &temp2) == FAILURE) {
                 SWIG_exception(SWIG_TypeError,"Name key not present");
         }
-        cs->name = strdup(Z_STRVAL_PP(temp2));
+        cs->name = xrl_strdup(Z_STRVAL_PP(temp2));
 
         if (zend_hash_find(Z_ARRVAL_PP($input), "a", sizeof("a"), (void **) &temp2) == FAILURE) {
                 SWIG_exception(SWIG_TypeError,"a key not present");
@@ -2099,7 +2100,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
         if ((temp = zend_hash_str_find(Z_ARRVAL($input), "name", sizeof("name")-1)) == NULL) {
                 SWIG_exception(SWIG_TypeError,"Name key not present");
         }
-        cs->name = strdup(Z_STRVAL_P(temp));
+        cs->name = xrl_strdup(Z_STRVAL_P(temp));
 
         if ((temp = zend_hash_str_find(Z_ARRVAL($input), "a", sizeof("a")-1)) == NULL) {
                 SWIG_exception(SWIG_TypeError,"a key not present");
