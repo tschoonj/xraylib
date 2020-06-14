@@ -164,7 +164,7 @@ if test $OS_WINDOWS = 1 ; then
 	fi
 fi
 
-AC_CHECK_FUNCS([strndup strdup]) # if not found, we use our own implementation
+AC_CHECK_FUNCS([strndup strdup _strdup]) # if not found, we use our own implementation
 
 if test $OS_WINDOWS = 1 ; then
 AC_CHECK_FUNC([_vscprintf], [], [AC_MSG_ERROR([_vscprintf must be present on the system])])

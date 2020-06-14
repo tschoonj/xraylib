@@ -16,29 +16,27 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef HAVE_STRDUP
 char *xrl_strdup(const char *str) {
+#ifdef HAVE__STRDUP
+	return _strdup(str);
+#elif defined(HAVE_STRDUP)
+	return strdup(str);
+#else
 	char *dup= (char *)malloc( strlen(str)+1 );
 	if (dup) strcpy(dup,str);
 	return dup;
-}
-#else
-char *xrl_strdup(const char *str) {
-	return strdup(str);
-}
 #endif
+}
 
-#ifndef HAVE_STRNDUP
 char *xrl_strndup(const char *str, size_t len) {
+#ifndef HAVE_STRNDUP
 	char *dup= (char *)malloc( len+1 );
 	if (dup) {
 		strncpy(dup,str,len);
 		dup[len]= '\0';
 	}
 	return dup;
-}
 #else
-char *xrl_strndup(const char *str, size_t len) {
 	return strndup(str, len);
-}
 #endif
+}
