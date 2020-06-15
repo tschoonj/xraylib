@@ -52,9 +52,7 @@ libprdata_la_SOURCES = \
 		 xraylib-aux.c \
 		 xraylib-aux.h 
 
-if !OS_WINDOWS
-libprdata_la_LIBADD = -lm
-endif
+libprdata_la_LIBADD = $(LIBM)
 
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
@@ -107,9 +105,7 @@ libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS) $(WSTRICT_CFLAGS)
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
 libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ $(LDFLAGS_LIBXRL)
-if !OS_WINDOWS
-libxrl_la_LIBADD = -lm
-endif
+libxrl_la_LIBADD = $(LIBM)
 
 EXTRA_DIST = xraylib.i
 

@@ -181,6 +181,9 @@ AC_SUBST(LDFLAGS_FORTRAN)
 AC_SUBST(LDFLAGS_IDL)
 AC_SUBST(LDFLAGS_PYTHON)
 
+# Detect if we need -lm
+LT_LIB_M
+
 # Symbol visibility handling.
 #
 # Taken from gtksourceview and modified where necessary
