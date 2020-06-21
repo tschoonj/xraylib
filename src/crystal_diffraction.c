@@ -156,7 +156,7 @@ Crystal_Struct* Crystal_MakeCopy (Crystal_Struct *crystal, xrl_error **error) {
   }
 
   *crystal_out = *crystal;
-  crystal_out->name = strdup(crystal->name);
+  crystal_out->name = xrl_strdup(crystal->name);
   n = crystal->n_atom * sizeof(Crystal_Atom);
   crystal_out->atom = malloc(n);
   if (crystal_out->atom == NULL) {
@@ -195,7 +195,7 @@ char** Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error
     return NULL;
   }
   for (i = 0 ; i < c_array->n_crystal ; i++)
-    rv[i] = strdup(c_array->crystal[i].name);
+    rv[i] = xrl_strdup(c_array->crystal[i].name);
 
   rv[c_array->n_crystal] = NULL;
 
@@ -587,7 +587,7 @@ int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **
     }
     crystal = &(c_array->crystal[c_array->n_crystal++]);
 
-    crystal->name = strdup(compound);
+    crystal->name = xrl_strdup(compound);
 
     /*
      * Parse lines of the crystal definition before list of atom positions.

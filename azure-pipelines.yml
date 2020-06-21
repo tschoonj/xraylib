@@ -1,6 +1,6 @@
 variables:
   SHELL: /usr/local/bin/bash
-  XRL_PYTHON3: /usr/local/bin/python3
+  XRL_PYTHON3: /usr/local/opt/python@3.8/bin/python3
   PHP: /usr/local/bin/php
   PHP_CONFIG: /usr/local/bin/php-config
 
@@ -12,7 +12,7 @@ jobs:
     timeoutInMinutes: 60
     cancelTimeoutInMinutes: 20
     pool:
-      vmImage: macOS-10.13
+      vmImage: macOS-10.14
     strategy:
       matrix:
         clang:
@@ -39,7 +39,7 @@ jobs:
 
     - script: |
         set -e -x
-        /usr/local/opt/python/bin/pip3 install Cython
+        /usr/local/opt/python@3.8/bin/pip3 install Cython
       displayName: Install Cython
 
     - script: |
@@ -49,7 +49,7 @@ jobs:
 
     - script: |
         set -e -x
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --enable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
         make
         make check
         make distclean

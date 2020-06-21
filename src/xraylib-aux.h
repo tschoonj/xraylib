@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010, Tom Schoonjans
+Copyright (c) 2010-2020, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -14,25 +14,13 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #ifndef _XRAYLIB_AUX_H
 #define _XRAYLIB_AUX_H
 
-#include "config.h"
+#include "xraylib.h"
 #include <stddef.h>
 
-/*
- *
- *  The following two functions are ISO C extensions and are not available on all platforms.
- *  We will use our own functions if they are absent from libc.
- *
- */
+XRL_EXTERN
+char *xrl_strdup(const char *str);
 
-
-#ifndef HAVE_STRDUP
-extern char *strdup(const char *str);
-#endif
-
-#ifndef HAVE_STRNDUP
-extern char *strndup(const char *str, size_t len);
-#endif
-
-
+XRL_EXTERN
+char *xrl_strndup(const char *str, size_t len);
 
 #endif

@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include <config.h>
 #include "xraylib.h"
+#include "xraylib-aux.h"
 #include "xraylib-error-private.h"
 #ifdef NDEBUG
   #undef NDEBUG
@@ -119,7 +120,7 @@ int main(int argc, char **argv) {
 	assert(error == NULL);
 	assert(cs_copy != NULL);
 	free(cs_copy->name);
-	cs_copy->name = strdup("Diamond-copy");
+	cs_copy->name = xrl_strdup("Diamond-copy");
 
 	rv = Crystal_AddCrystal(cs, NULL, &error);
 	assert(rv == 0);

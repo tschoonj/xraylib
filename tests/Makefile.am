@@ -52,6 +52,7 @@ test_compoundparser_SOURCES = test-compoundparser.c
 test_compoundparser_LDADD = ../src/libxrl.la
 
 test_error_SOURCES = test-error.c
+test_error_LDADD = ../src/libxrl.la
 
 test_atomiclevelwidth_SOURCES = test-atomiclevelwidth.c
 test_atomiclevelwidth_LDADD = ../src/libxrl.la
@@ -72,7 +73,7 @@ test_cross_sections_SOURCES = test-cross_sections.c
 test_cross_sections_LDADD = ../src/libxrl.la
 
 test_crystal_diffraction_SOURCES = test-crystal_diffraction.c
-test_crystal_diffraction_LDADD = ../src/libxrl.la
+test_crystal_diffraction_LDADD = ../src/libxrl.la $(LIBM)
 
 test_cs_barns_SOURCES = test-cs_barns.c
 test_cs_barns_LDADD = ../src/libxrl.la

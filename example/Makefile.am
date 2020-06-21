@@ -53,7 +53,7 @@ if ENABLE_PASCAL
 endif
 
 xrlexample1_SOURCES = xrlexample1.c
-xrlexample1_LDADD = ../src/libxrl.la
+xrlexample1_LDADD = ../src/libxrl.la $(LIBM)
 xrlexample1_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
 xrlexample1_CFLAGS = $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
@@ -67,7 +67,7 @@ endif
 
 if ENABLE_CXX
   xrlexample6_SOURCES = xrlexample6.cpp
-  xrlexample6_LDADD = ../src/libxrl.la
+  xrlexample6_LDADD = ../src/libxrl.la $(LIBM)
 endif
 
 

@@ -54,7 +54,7 @@ void XRayInit(void)
 
 
   for (i = 0 ; i < MENDEL_MAX ; i++) {
-		MendelArraySorted[i].name = strdup(MendelArray[i].name); 
+		MendelArraySorted[i].name = xrl_strdup(MendelArray[i].name); 
 		MendelArraySorted[i].Zatom = MendelArray[i].Zatom; 
 	}
 
@@ -296,7 +296,7 @@ void XRayInit(void)
         if (nerror_lines == 0) {
 	    	fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 		error_lines = malloc(sizeof(char *) * ++nerror_lines);
-		error_lines[0] = strdup(line_name);
+		error_lines[0] = xrl_strdup(line_name);
 	}
 	else {
 		found_error_line = 0;
@@ -309,7 +309,7 @@ void XRayInit(void)
 		if (!found_error_line) {
 	    		fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
-			error_lines[nerror_lines-1] = strdup(line_name);
+			error_lines[nerror_lines-1] = xrl_strdup(line_name);
 		}
 	}
     }
@@ -345,7 +345,7 @@ void XRayInit(void)
         if (nerror_lines == 0) {
 	    	fprintf(stderr,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
 		error_lines = malloc(sizeof(char *) * ++nerror_lines);
-		error_lines[0] = strdup(shell_name);
+		error_lines[0] = xrl_strdup(shell_name);
 	}
 	else {
 		found_error_line = 0;
@@ -358,7 +358,7 @@ void XRayInit(void)
 		if (!found_error_line) {
 	    		fprintf(stderr,"%s is not present in the shellnames database: adjust xraylib-shells.h and xrayvars.c/h\n",shell_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
-			error_lines[nerror_lines-1] = strdup(shell_name);
+			error_lines[nerror_lines-1] = xrl_strdup(shell_name);
 		}
 	}
     }
@@ -456,7 +456,7 @@ void XRayInit(void)
         if (nerror_lines == 0) {
 	    	fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 		error_lines = malloc(sizeof(char *) * ++nerror_lines);
-		error_lines[0] = strdup(line_name);
+		error_lines[0] = xrl_strdup(line_name);
 	}
 	else {
 		found_error_line = 0;
@@ -469,7 +469,7 @@ void XRayInit(void)
 		if (!found_error_line) {
 	    		fprintf(stderr, "%s is not present in the linenames database: adjust xraylib-lines.h and xrayvars.c/h\n",line_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
-			error_lines[nerror_lines-1] = strdup(line_name);
+			error_lines[nerror_lines-1] = xrl_strdup(line_name);
 		}
 	}
     }
@@ -512,7 +512,7 @@ void XRayInit(void)
         if (nerror_lines == 0) {
 	    	fprintf(stderr, "%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
 		error_lines = malloc(sizeof(char *) * ++nerror_lines);
-		error_lines[0] = strdup(auger_name);
+		error_lines[0] = xrl_strdup(auger_name);
 	}
 	else {
 		found_error_line = 0;
@@ -525,7 +525,7 @@ void XRayInit(void)
 		if (!found_error_line) {
 	    		fprintf(stderr, "%s is not present in the Auger transition names database: adjust xraylib-auger.h and xrayvars.c/h\n",auger_name);
 			error_lines= (char **) realloc((char **) error_lines,sizeof(char *)*++nerror_lines);
-			error_lines[nerror_lines-1] = strdup(auger_name);
+			error_lines[nerror_lines-1] = xrl_strdup(auger_name);
 		}
 	}
     }

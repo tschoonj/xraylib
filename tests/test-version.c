@@ -15,15 +15,27 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xraylib.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
 int main(int argc, char **argv) {
 	char *header_version = NULL;
 
+
+#ifdef _WIN32
+	int bytes_needed = _scprintf("%d.%d.%d", XRAYLIB_MAJOR, XRAYLIB_MINOR, XRAYLIB_MICRO);
+	if (bytes_needed < 0)
+		return 1;
+	header_version = malloc((bytes_needed + 1) * sizeof(char));
+	if (_snprintf(header_version, bytes_needed + 1, "%d.%d.%d", XRAYLIB_MAJOR, XRAYLIB_MINOR, XRAYLIB_MICRO) < 0) {
+		return 1;
+	}
+#else
 	if (asprintf(&header_version, "%d.%d.%d", XRAYLIB_MAJOR, XRAYLIB_MINOR, XRAYLIB_MICRO) < 0) {
 		fprintf(stderr, "vasprintf error\n");
 		return 1;
 	}
+#endif
 
 	if (strcmp(header_version, PACKAGE_VERSION) != 0)
 		return 1;

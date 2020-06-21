@@ -48,7 +48,11 @@ libprdata_la_SOURCES = \
 		 radrate.c \
 		 auger_trans.c \
 		 kissel_pe.c \
-	         cross_sections.c
+	         cross_sections.c \
+		 xraylib-aux.c \
+		 xraylib-aux.h 
+
+libprdata_la_LIBADD = $(LIBM)
 
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
@@ -101,6 +105,7 @@ libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS) $(WSTRICT_CFLAGS)
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
 libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ $(LDFLAGS_LIBXRL)
+libxrl_la_LIBADD = $(LIBM)
 
 EXTRA_DIST = xraylib.i
 

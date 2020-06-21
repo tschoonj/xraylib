@@ -124,7 +124,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 	for (i = 0 ; i < nuppers ; i++) {
 		if (islower(upper_locs[i][1]) && !islower(upper_locs[i][2])) {
 			/*second letter is lowercase and third one isn't -> valid */
-			tempElement = strndup(upper_locs[i],2);
+			tempElement = xrl_strndup(upper_locs[i],2);
 			/*get corresponding atomic number */
 			res = bsearch(tempElement, MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), matchMendelElement);
 			if (res == NULL) {
@@ -147,7 +147,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 				tempnAtoms = 1.0;
 			}
 			else {
-				tempSubstring = strndup(upper_locs[i] + 2, j - 2);
+				tempSubstring = xrl_strndup(upper_locs[i] + 2, j - 2);
 				tempnAtoms =  strtod(tempSubstring, &endPtr);
 				if (endPtr != tempSubstring+strlen(tempSubstring)) {
 					xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
@@ -165,7 +165,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 		}
 		else if (!islower(upper_locs[i][1])) {
 			/*second letter is not lowercase -> valid */
-			tempElement = strndup(upper_locs[i], 1);
+			tempElement = xrl_strndup(upper_locs[i], 1);
 			/*get corresponding atomic number */
 			res = bsearch(tempElement, MendelArraySorted, MENDEL_MAX, sizeof(struct MendelElement), matchMendelElement);
 			if (res == NULL) {
@@ -188,7 +188,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 				tempnAtoms = 1.0;
 			}
 			else {
-				tempSubstring = strndup(upper_locs[i] + 1, j - 1);
+				tempSubstring = xrl_strndup(upper_locs[i] + 1, j - 1);
 				tempnAtoms =  strtod(tempSubstring, &endPtr);
 				if (endPtr != tempSubstring + strlen(tempSubstring)) {
 					xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
@@ -241,7 +241,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 	/*handle the brackets... */
 	for (i = 0 ; i < nbracket_pairs ; i++) {
 		tempBracketAtoms = malloc(sizeof(struct compoundAtoms));
-		tempBracketString = strndup(brackets_begin_locs[i]+1,(size_t) (brackets_end_locs[i]-brackets_begin_locs[i]-1));
+		tempBracketString = xrl_strndup(brackets_begin_locs[i]+1,(size_t) (brackets_end_locs[i]-brackets_begin_locs[i]-1));
 		tempBracketAtoms->nElements = 0;
 		tempBracketAtoms->singleElements = NULL;
 		/*recursive call */
@@ -265,7 +265,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			tempnAtoms = 1.0;
 		}
 		else {
-			tempSubstring = strndup(brackets_end_locs[i]+1,j-1);
+			tempSubstring = xrl_strndup(brackets_end_locs[i]+1,j-1);
 			tempnAtoms =  strtod(tempSubstring,&endPtr);
 			if (endPtr != tempSubstring+strlen(tempSubstring)) {
 				xrl_set_error(error, XRL_ERROR_INVALID_ARGUMENT, "Invalid chemical formula: could not convert subscript %s to a real number", tempSubstring);
@@ -337,7 +337,7 @@ struct compoundData* CompoundParser(const char compoundString[], xrl_error **err
 	/* the locale is changed to default locale because we'll be using strtod later on */
 	backup_locale = setlocale(LC_NUMERIC, "C");
 
-	compoundStringCopy = strdup(compoundString);
+	compoundStringCopy = xrl_strdup(compoundString);
 
 	rvCPS = CompoundParserSimple(compoundStringCopy, &ca, error);
 
@@ -458,7 +458,7 @@ char *AtomicNumberToSymbol(int Z, xrl_error **error) {
 		return NULL;
 	}
 
-	return strdup(MendelArray[Z-1].name);
+	return xrl_strdup(MendelArray[Z-1].name);
 }
 
 int SymbolToAtomicNumber(const char *symbol, xrl_error **error) {

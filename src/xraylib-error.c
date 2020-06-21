@@ -1,4 +1,4 @@
-/* Copyright (C) 2018 Tom Schoonjans
+/* Copyright (C) 2018-2020 Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -11,6 +11,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 */
 
 #include "config.h"
+#include "xraylib-aux.h"
 #include "xraylib-error-private.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,9 +20,20 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans 'AS IS' AND ANY EXPRESS OR IMPLIED W
 static char* xrl_strdup_vprintf(const char *format, va_list args) {
 	char *rv = NULL;
 
+#ifdef _WIN32
+	int bytes_needed = _vscprintf(format, args);
+	if (bytes_needed < 0)
+		return NULL;
+	rv = malloc((bytes_needed + 1) * sizeof(char));
+	if (_vsnprintf(rv, bytes_needed + 1, format, args) < 0) {
+		free(rv);
+		return NULL;
+	}
+#else
 	if (vasprintf(&rv, format, args) < 0) {
 		return NULL;
 	}
+#endif
 	return rv;
 }
 
@@ -66,7 +78,7 @@ xrl_error* xrl_error_new_literal(xrl_error_code code, const char *message) {
 
 	error = malloc(sizeof(xrl_error));
 	error->code = code;
-	error->message = strdup(message);
+	error->message = xrl_strdup(message);
 
 	return error;
 }
@@ -93,7 +105,7 @@ xrl_error* xrl_error_copy(const xrl_error *error) {
 
 	copy->message = NULL;
 	if (error->message)
-		copy->message = strdup(error->message);
+		copy->message = xrl_strdup(error->message);
 
 	return copy;
 }

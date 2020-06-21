@@ -19,9 +19,9 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AC_CANONICAL_HOST
 
 
-LIB_CURRENT=11
+LIB_CURRENT=12
 LIB_REVISION=0
-LIB_AGE=0
+LIB_AGE=1
 AC_SUBST(LIB_CURRENT)
 AC_SUBST(LIB_REVISION)
 AC_SUBST(LIB_AGE)
@@ -31,9 +31,6 @@ AC_CONFIG_MACRO_DIR([m4])
 
 
 AC_USE_SYSTEM_EXTENSIONS
-AC_CHECK_FUNCS([strndup strdup])
-AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
-AC_CHECK_FUNC([asprintf], [], [AC_MSG_ERROR([asprintf must be present on the system])])
 
 m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 #at least version 2.0 of libtool is required for creating the fortran bindings
@@ -77,14 +74,6 @@ AM_CONDITIONAL([LIBXRL_CONVENIENCE_BUILD], [test x$enable_libxrl = xno])
 #headers check
 AC_CHECK_HEADERS_ONCE([math.h stdio.h stdlib.h string.h ctype.h stddef.h locale.h complex.h])
 
-
-
-#libraries check
-AC_CHECK_LIB([m],[log],[  ],[AC_MSG_ERROR([the log function must be present in libm])])
-AC_CHECK_LIB([m],[exp],[  ],[AC_MSG_ERROR([the exp function must be present in libm])])
-AC_CHECK_LIB([m],[cos],[  ],[AC_MSG_ERROR([the cos function must be present in libm])])
-AC_CHECK_LIB([m],[sin],[],[AC_MSG_ERROR([the sin function must be present in libm])])
-
 #
 #Some code is necessary in case we are cross compiling with mingw on a platform different from cygwin -> Wine is necessary!
 #
@@ -92,6 +81,10 @@ WINE=
 DISABLE_BINDINGS=no
 CROSS_COMPILING=
 LDFLAGS_LIBXRL=
+
+
+AC_ARG_ENABLE([output-def], [AS_HELP_STRING([--disable-output-def],[build without the library definitions file (Windows only)])],[enable_output_def=$enableval],[enable_output_def=check] )
+
 
 #cross_compiling variable is not reliable on modern bash shells due to wine integration... look at the compiler instead
 #check instead of $build and $host differ
@@ -124,14 +117,20 @@ if test "x$host" != "x$build" ; then
 		AC_MSG_ERROR([wine is necessary when cross-compiling for windows.])
 	fi
 	CROSS_COMPILING=yes
-	LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+	LDFLAGS_LIBXRL="-no-undefined"
+	if test "x$enable_output_def" != xno ; then
+		LDFLAGS_LIBXRL+=" -Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def "
+	fi
 	LDFLAGS_FORTRAN="-no-undefined"
 	LDFLAGS_PYTHON="-no-undefined -Wl,-subsystem,windows"
 else
 	case "$host" in
 		i686-*mingw*)
 			#build dll
-			LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+			LDFLAGS_LIBXRL="-no-undefined"
+			if test "x$enable_output_def" != xno ; then
+				LDFLAGS_LIBXRL+=" -Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def "
+			fi
 			OS_WINDOWS_32=1
 			OS_WINDOWS=1
 			LDFLAGS_FORTRAN="-no-undefined"
@@ -140,7 +139,10 @@ else
 			;;
 		x86_64-*mingw*)
 			#build dll
-			LDFLAGS_LIBXRL="-Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def -no-undefined"
+			LDFLAGS_LIBXRL="-no-undefined"
+			if test "x$enable_output_def" != xno ; then
+				LDFLAGS_LIBXRL+=" -Wl,--output-def,libxrl-$LIB_CURRENT_MINUS_AGE.def "
+			fi
 			OS_WINDOWS_64=1
 			OS_WINDOWS=1
 			LDFLAGS_FORTRAN="-no-undefined"
@@ -162,10 +164,25 @@ if test $OS_WINDOWS = 1 ; then
 	fi
 fi
 
+AC_CHECK_FUNCS([strndup strdup _strdup]) # if not found, we use our own implementation
+
+if test $OS_WINDOWS = 1 ; then
+AC_CHECK_FUNC([_vscprintf], [], [AC_MSG_ERROR([_vscprintf must be present on the system])])
+AC_CHECK_FUNC([_scprintf], [], [AC_MSG_ERROR([_scprintf must be present on the system])])
+AC_CHECK_FUNC([_vsnprintf], [], [AC_MSG_ERROR([_vsnprintf must be present on the system])])
+AC_CHECK_FUNC([_snprintf], [], [AC_MSG_ERROR([_snprintf must be present on the system])])
+else
+AC_CHECK_FUNC([vasprintf], [], [AC_MSG_ERROR([vasprintf must be present on the system])])
+AC_CHECK_FUNC([asprintf], [], [AC_MSG_ERROR([asprintf must be present on the system])])
+fi
+
 AC_SUBST(LDFLAGS_LIBXRL)
 AC_SUBST(LDFLAGS_FORTRAN)
 AC_SUBST(LDFLAGS_IDL)
 AC_SUBST(LDFLAGS_PYTHON)
+
+# Detect if we need -lm
+LT_LIB_M
 
 # Symbol visibility handling.
 #
@@ -668,6 +685,15 @@ AC_SUBST(PKGPYTHONDIR,$pkgpythondir)
 AC_SUBST(PYEXECDIR,$pyexecdir)
 AC_SUBST(PKGPYEXECDIR,$pkgpyexecdir)
 AC_SUBST(XRLDATADIR,[`echo ${prefix}`/share/xraylib])
+# Turn off certain errors for python bindings when -Wall -Werror is in effect -> Cython generates a lot of warnings!
+CYTHON_ERROR_CFLAGS=
+AX_CHECK_COMPILE_FLAG([-Wno-error=cpp],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=cpp"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=attributes],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=attributes"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=deprecated-declarations],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=deprecated-declarations"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=unreachable-code],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=unreachable-code"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=ignored-optimization-argument],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=ignored-optimization-argument"],,)
+AX_CHECK_COMPILE_FLAG([-Wno-error=unused-function],[CYTHON_ERROR_CFLAGS="${CYTHON_ERROR_CFLAGS} -Wno-error=unused-function"],,)
+AC_SUBST(CYTHON_ERROR_CFLAGS)
 fi
 AC_ARG_ENABLE([python-integration],[AS_HELP_STRING([--enable-python-integration],[install the python bindings in the interpreters site-packages folder])],[enable_python_integration=$enableval],[enable_python_integration=check])
 if test "x$enable_python_integration" = xyes ; then
@@ -840,8 +866,6 @@ elif test "x$SWIG" != xnoswig && test "x$enable_ruby" != xno && test "x$DISABLE_
 			LIBS="$RUBY_EXT_LDFLAGS"
 			ac_save_CPPFLAGS="$CPPFLAGS"
 			CPPFLAGS="$RUBY_EXT_CPPFLAGS $RUBY_EXT_INC"
-			ac_save_CC="$CC"
-			CC="$RUBY_EXT_CC"
 	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
 	        	AC_LANG_PUSH([C])
 			AC_TRY_COMPILE([
@@ -852,7 +876,6 @@ elif test "x$SWIG" != xnoswig && test "x$enable_ruby" != xno && test "x$DISABLE_
 			AC_MSG_RESULT([$rubyexists])
 			AC_LANG_POP
 			# turn back to default flags
-			CC="$ac_save_CC"
 			CPPFLAGS="$ac_save_CPPFLAGS"
 			LIBS="$ac_save_LIBS"
 			if test "x$rubyexists" = xno ; then
