@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 */
 
 #include <cmath>
+#include <memory>
 #include <iostream>
 #include <sstream>
 #include <vector>
