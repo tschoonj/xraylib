@@ -117,6 +117,7 @@ jobs:
     - name: Build and test
       run: |
         set -ex
+        ls -l m4
         autoreconf -fi
         # disable java for now
         ./configure --disable-python --disable-python-numpy --${PERL_ENABLE}-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
