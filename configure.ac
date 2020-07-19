@@ -746,11 +746,12 @@ if test x$CXX_FULL != "xnone" ; then
 	AC_CHECK_HEADERS([cstdio cstdlib], ,[CXX=""])
 	AC_LANG_POP([C++])
 	if test x$CXX != x ; then
+		AX_CXX_COMPILE_STDCXX([11], [noext], [mandatory])
 		AC_MSG_NOTICE([C++ example enabled])
 		AC_SUBST(CXX)
 	fi
 fi
-AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
+AM_CONDITIONAL([ENABLE_CXX],[test "x$CXX" != x])
 
 
 #
