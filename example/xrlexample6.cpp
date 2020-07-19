@@ -23,11 +23,11 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 using namespace std;
 
 /* A (very) rudimentary error string handler */
-stringstream errorstring(int line, xrl_error &err)
+string errorstring(int line, xrl_error &err)
 {
     stringstream ss;
     ss << "Error at line " << to_string(line) << ": " + string(err.message) << endl;
-    return ss;
+    return ss.str();
 }
 
 
