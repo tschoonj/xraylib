@@ -979,43 +979,43 @@ static double AugerRate_prdata(int Z, int auger_trans) {
 	if (Auger_Transition_Individual[Z][auger_trans] == 0.0)
 		return rv;
 
-	if (/*auger_trans >= K_L1L1_AUGER && */ auger_trans < L1_L2L2_AUGER  ) {
+	if (auger_trans < L1_L2L2_AUGER  ) {
 		yield2 = AugerYield2_prdata(Z, K_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER) {
+	else if (auger_trans < L2_L3L3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L1_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER) {
+	else if (auger_trans < L3_M1M1_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L2_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER) {
+	else if (auger_trans < M1_M2M2_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L3_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER) {
+	else if (auger_trans < M2_M3M3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M1_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER) {
+	else if (auger_trans < M3_M4M4_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M2_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER) {
+	else if (auger_trans < M4_M5M5_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M3_SHELL);
 		if (yield2 < 1E-8)
 			return rv;

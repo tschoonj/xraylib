@@ -34,7 +34,8 @@ jobs:
 
     - script: |
         set -e -x
-        brew install autoconf automake libtool swig ruby python fpc lua perl php bash gcc@9
+        rm -f /usr/local/bin/2to3
+        brew install autoconf automake libtool swig ruby python fpc lua perl php@7.4 bash gcc@10
       displayName: Install shared Homebrew dependencies
 
     - script: |
@@ -49,7 +50,7 @@ jobs:
 
     - script: |
         set -e -x
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby ${EXTRA} PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL}
         make
         make check
         make distclean

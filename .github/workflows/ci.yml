@@ -1,8 +1,8 @@
 name: CI
 
 on:
-  #schedule:
-  #  - cron: '0 2 * * *' # run at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * 0'
   push:
     branches:
       - master
@@ -31,8 +31,13 @@ jobs:
     - uses: crazy-max/ghaction-chocolatey@v1.4.0
       with:
         args: install innosetup lazarus
+    # required for the lib command
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
     - uses: msys2/setup-msys2@v2
       with:
+        path-type: inherit
         update: true
         install: >
           base-devel
@@ -57,6 +62,8 @@ jobs:
     - name: Build and test with Autotools
       run: |
         set -ex
+
+        autoreconf -fi
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic"
         make
         make check
@@ -68,18 +75,16 @@ jobs:
         make check
         make distclean
 
-        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --enable-pascal FPC=/c/lazarus/fpc/3.0.4/bin/x86_64-win64/fpc
+        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --enable-pascal FPC=/c/lazarus/fpc/*/bin/x86_64-win64/fpc --disable-ruby
         make
         make check
         make distclean
 
-        ./configure --enable-python --enable-python-numpy PYTHON=python3
+        ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
         make
         make check
         make distclean
 
-        ./configure
-        make distcheck FPC=/c/lazarus/fpc/3.0.4/bin/x86_64-win64/fpc
         set +ex
       env:
         CC: ${{matrix.cc}}
