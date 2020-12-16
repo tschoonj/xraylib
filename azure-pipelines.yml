@@ -1,6 +1,6 @@
 variables:
   SHELL: /usr/local/bin/bash
-  XRL_PYTHON3: /usr/local/opt/python@3.8/bin/python3
+  XRL_PYTHON3: /usr/local/bin/python3
   PHP: /usr/local/bin/php
   PHP_CONFIG: /usr/local/bin/php-config
 
@@ -20,8 +20,8 @@ jobs:
           CC: clang
         gcc:
           EXTRA: --enable-fortran2003
-          CC: gcc-9
-          FC: gfortran-9
+          CC: gcc-10
+          FC: gfortran-10
       
       
     steps:
@@ -39,7 +39,7 @@ jobs:
 
     - script: |
         set -e -x
-        /usr/local/opt/python@3.8/bin/pip3 install Cython
+        /usr/local/bin/pip3 install Cython
       displayName: Install Cython
 
     - script: |

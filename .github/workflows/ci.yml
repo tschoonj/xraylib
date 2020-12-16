@@ -94,7 +94,7 @@ jobs:
         set -ex
         yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
         dnf install -y 'dnf-command(config-manager)'
-        dnf config-manager --set-enabled PowerTools
+        dnf config-manager --set-enabled powertools
         set +ex
     - name: Activate CentOS 7 EPEL repo
       if: matrix.image == 'centos:7'
