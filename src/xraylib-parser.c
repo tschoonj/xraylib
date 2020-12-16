@@ -83,7 +83,7 @@ static int CompoundParserSimple(char compoundString[], struct compoundAtoms *ca,
 			}
 		}
 		else if (nbrackets > 0) {
-
+			/* this is ok... */
 		}
 		else if (nbrackets == 0 && isupper(compoundString[i])) {
 			upper_locs = realloc(upper_locs, sizeof(char *) * ++nuppers);

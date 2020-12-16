@@ -1,0 +1,7 @@
+extraction:
+  cpp:
+    index:
+      build_command:
+        - make
+        - make check TESTS=
+

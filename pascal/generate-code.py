@@ -114,16 +114,14 @@ XRL_FUNCTIONS = {
 		'DCSb_Compt_CP': {'compound': str, 'E': float, 'theta': float},
 		'DCSP_Rayl_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
 		'DCSP_Compt_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
-		'DCSP_Rayl_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
-		'DCSP_Compt_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
 		'DCSPb_Rayl_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
 		'DCSPb_Compt_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
 		'CS_Photo_Total_CP': {'compound': str, 'E': float},
 		'CS_Total_Kissel_CP': {'compound': str, 'E': float},
 		'CSb_Photo_Total_CP': {'compound': str, 'E': float},
 		'CSb_Total_Kissel_CP': {'compound': str, 'E': float},
-                'Refractive_Index_Re': {'compound': str, 'E': float, 'density': float},
-                'Refractive_Index_Im': {'compound': str, 'E': float, 'density': float}
+        'Refractive_Index_Re': {'compound': str, 'E': float, 'density': float},
+        'Refractive_Index_Im': {'compound': str, 'E': float, 'density': float}
 	}
 
 def generate_iface_arg_for_str(arg_name: str) -> str:

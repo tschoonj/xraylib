@@ -114,8 +114,6 @@ XRL_FUNCTIONS = {
     'DCSb_Compt_CP': {'compound': str, 'E': float, 'theta': float},
     'DCSP_Rayl_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
     'DCSP_Compt_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
-    'DCSP_Rayl_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
-    'DCSP_Compt_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
     'DCSPb_Rayl_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
     'DCSPb_Compt_CP': {'compound': str, 'E': float, 'theta': float, 'phi': float},
     'CS_Photo_Total_CP': {'compound': str, 'E': float},

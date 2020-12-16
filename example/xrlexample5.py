@@ -35,12 +35,12 @@ print("Ca(HCO3)2 Rayleigh cs at 10.0 keV: {}".format(xraylib.CS_Rayl_CP("Ca(HCO3
 cdtest = xraylib.CompoundParser("Ca(HCO3)2")
 print("Ca(HCO3)2 contains {} atoms, {} elements and has a molar mass of {} g/mol".format(cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molarMass']))
 for i in range(cdtest['nElements']):
-    print("Element {}: %lf %% and {} atoms".format(cdtest['Elements'][i], cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
+    print("Element {}: {} % and {} atoms".format(cdtest['Elements'][i], cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
 
 cdtest = xraylib.CompoundParser("SiO2")
 print("SiO2 contains {} atoms, {} elements and has a molar mass of {} g/mol".format(cdtest['nAtomsAll'], cdtest['nElements'], cdtest['molarMass']))
 for i in range(cdtest['nElements']):
-    print("Element {}: %lf %% and {} atoms".format(cdtest['Elements'][i], cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
+    print("Element {}: {} % and {} atoms".format(cdtest['Elements'][i], cdtest['massFractions'][i]*100.0, cdtest['nAtoms'][i]))
 
 print("CS2 Refractive Index at 10.0 keV : {} - {} i".format(xraylib.Refractive_Index_Re("CS2",10.0,1.261), xraylib.Refractive_Index_Im("CS2",10.0,1.261)))
 print("C16H14O3 Refractive Index at 1 keV : {} - {} i".format(xraylib.Refractive_Index_Re("C16H14O3",1.0,1.2), xraylib.Refractive_Index_Im("C16H14O3",1.0,1.2)))

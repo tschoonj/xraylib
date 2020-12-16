@@ -4,7 +4,6 @@
 import urllib.request
 from io import BytesIO
 import lxml.etree as ET
-import sys
 
 nist_url = "http://physics.nist.gov/cgi-bin/Star/compos.pl?matno=";
 
