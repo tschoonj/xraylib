@@ -28,138 +28,138 @@ extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 #define NAME_PER_LINE 4
 
 void XRayInit(void);
-FILE *f;
+FILE *filePtr;
 
 #define PR_CUBED(DIM1MAX, DIM2MAX, DIM3MAX, ARRNAME) \
 for(k = 0; k < (DIM1MAX); k++) { \
-  fprintf(f, "{\n"); \
+  fprintf(filePtr, "{\n"); \
   for(j = 0; j < (DIM2MAX); j++) { \
     print_doublevec((DIM3MAX), ARRNAME[k][j]); \
-    fprintf(f, ",\n"); \
+    fprintf(filePtr, ",\n"); \
   } \
-  fprintf(f, "},\n");\
+  fprintf(filePtr, "},\n");\
 } \
-fprintf(f, "};\n\n");
+fprintf(filePtr, "};\n\n");
 
 #define PR_MATD(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
   print_doublevec((COLMAX), ARRNAME[j]); \
-  fprintf(f, ",\n"); \
+  fprintf(filePtr, ",\n"); \
 } \
-fprintf(f, "};\n\n");
+fprintf(filePtr, "};\n\n");
 
 #define PR_MATI(ROWMAX, COLMAX, ARRNAME) \
 for(j = 0; j < (ROWMAX); j++) { \
   print_intvec((COLMAX), ARRNAME[j]); \
-  fprintf(f, ",\n"); \
+  fprintf(filePtr, ",\n"); \
 } \
-fprintf(f, "};\n\n");
+fprintf(filePtr, "};\n\n");
 
 #define PR_DYNMATD(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
     if(NVAR[j] > 0) {\
-      fprintf(f, "static double __%s_%d[] =\n", ENAME, j);\
+      fprintf(filePtr, "static double __%s_%d[] =\n", ENAME, j);\
       print_doublevec(NVAR[j], EVAR[j]); \
     }\
     else {\
-      fprintf(f, "static double __%s_%d[1]", ENAME, j);\
+      fprintf(filePtr, "static double __%s_%d[1]", ENAME, j);\
     }\
-    fprintf(f, ";\n\n");\
+    fprintf(filePtr, ";\n\n");\
   } \
 \
-  fprintf(f, "double *%s[] =\n", ENAME);\
-  fprintf(f, "{\n"); \
+  fprintf(filePtr, "double *%s[] =\n", ENAME);\
+  fprintf(filePtr, "{\n"); \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "__%s_%d, ", ENAME, j);\
+    fprintf(filePtr, "__%s_%d, ", ENAME, j);\
     if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-      fprintf(f, "\n");\
+      fprintf(filePtr, "\n");\
   }\
-  fprintf(f, "};\n\n");
+  fprintf(filePtr, "};\n\n");
 
 #define PR_DYNMATI(NVAR, EVAR, ENAME) \
   for(j = 0; j < ZMAX+1; j++) { \
     if(NVAR[j] > 0) {\
-      fprintf(f, "static int __%s_%d[] =\n", ENAME, j);\
+      fprintf(filePtr, "static int __%s_%d[] =\n", ENAME, j);\
       print_intvec(NVAR[j], EVAR[j]); \
     }\
     else {\
-      fprintf(f, "static int __%s_%d[1]", ENAME, j);\
+      fprintf(filePtr, "static int __%s_%d[1]", ENAME, j);\
     }\
-    fprintf(f, ";\n\n");\
+    fprintf(filePtr, ";\n\n");\
   } \
 \
-  fprintf(f, "int *%s[] =\n", ENAME);\
-  fprintf(f, "{\n"); \
+  fprintf(filePtr, "int *%s[] =\n", ENAME);\
+  fprintf(filePtr, "{\n"); \
   for(j = 0; j < ZMAX+1; j++) { \
-    fprintf(f, "__%s_%d, ", ENAME, j);\
+    fprintf(filePtr, "__%s_%d, ", ENAME, j);\
     if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-      fprintf(f, "\n");\
+      fprintf(filePtr, "\n");\
   }\
-  fprintf(f, "};\n\n");
+  fprintf(filePtr, "};\n\n");
 
 #define PR_DYNMAT_3DD_K(NVAR2D, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1; i++) { \
     for (j = 0; j < SHELLNUM_K; j++) {\
       if(NVAR2D[i][j] > 0) {\
-        fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
+        fprintf(filePtr, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
         print_doublevec(NVAR2D[i][j], EVAR[i][j]);\
       }\
       else {\
-        fprintf(f, "static double __%s_%i_%i[1]", ENAME, i, j);\
+        fprintf(filePtr, "static double __%s_%i_%i[1]", ENAME, i, j);\
       }\
-      fprintf(f, ";\n\n");\
+      fprintf(filePtr, ";\n\n");\
     }\
   }\
 \
-  fprintf(f, "double *%s[ZMAX+1][SHELLNUM_K] = {\n", ENAME);\
+  fprintf(filePtr, "double *%s[ZMAX+1][SHELLNUM_K] = {\n", ENAME);\
   for (i = 0; i < ZMAX+1; i++) {\
-    fprintf(f,"{\n");\
+    fprintf(filePtr,"{\n");\
     for (j = 0; j < SHELLNUM_K; j++) {\
-      fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
+      fprintf(filePtr, "__%s_%i_%i, ", ENAME,i,j);\
       if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-        fprintf(f, "\n");\
+        fprintf(filePtr, "\n");\
     }\
-    fprintf(f,"},\n");\
+    fprintf(filePtr,"},\n");\
   }\
-  fprintf(f,"\n};\n");\
+  fprintf(filePtr,"\n};\n");\
 
 #define PR_DYNMAT_3DD_C(NVAR2D, NVAR2D2, NVAR2D3, EVAR, ENAME) \
   for (i = 0; i < ZMAX+1 ; i++) { \
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
       if (UOCCUP_ComptonProfiles[i][j] > 0.0) {\
         if(NVAR2D[i] > 0) {\
-          fprintf(f, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
+          fprintf(filePtr, "static double __%s_%i_%i[] = \n", ENAME, i, j);\
          print_doublevec(NVAR2D[i], EVAR[i][j]);\
         }\
         else {\
-          fprintf(f, "static double __%s_%i_%i[1]", ENAME, i, j);\
+          fprintf(filePtr, "static double __%s_%i_%i[1]", ENAME, i, j);\
         }\
-      	fprintf(f, ";\n\n");\
+      	fprintf(filePtr, ";\n\n");\
       }\
       else {\
-      	fprintf(f, "static double __%s_%i_%i[1];\n", ENAME, i, j);\
+      	fprintf(filePtr, "static double __%s_%i_%i[1];\n", ENAME, i, j);\
       }\
     }\
   }\
-  fprintf(f, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
+  fprintf(filePtr, "double *%s[ZMAX+1][SHELLNUM_C] = {\n", ENAME);\
   for (i = 0; i < ZMAX+1 ; i++) {\
-    fprintf(f,"{\n");\
+    fprintf(filePtr,"{\n");\
     for (j = 0; j < NShells_ComptonProfiles[i]; j++) {\
-      fprintf(f, "__%s_%i_%i, ", ENAME,i,j);\
+      fprintf(filePtr, "__%s_%i_%i, ", ENAME,i,j);\
       if(j%NAME_PER_LINE == (NAME_PER_LINE-1))\
-        fprintf(f, "\n");\
+        fprintf(filePtr, "\n");\
     }\
     if (NShells_ComptonProfiles[i] < 1) { \
-        fprintf(f, "NULL\n");\
+        fprintf(filePtr, "NULL\n");\
     }\
-    fprintf(f,"},\n");\
+    fprintf(filePtr,"},\n");\
   }\
-  fprintf(f,"\n};\n");\
+  fprintf(filePtr,"\n};\n");\
 
 #define PR_NUMVEC1D(NVAR, NNAME) \
-  fprintf(f, "int %s[] =\n", NNAME); \
+  fprintf(filePtr, "int %s[] =\n", NNAME); \
   print_intvec(ZMAX+1, NVAR); \
-  fprintf(f, ";\n\n");
+  fprintf(filePtr, ";\n\n");
 
 /* 
  * This is the AugerYield that the user will end up querying,
@@ -979,49 +979,49 @@ static double AugerRate_prdata(int Z, int auger_trans) {
 	if (Auger_Transition_Individual[Z][auger_trans] == 0.0)
 		return rv;
 
-	if (auger_trans >= K_L1L1_AUGER && auger_trans < L1_L2L2_AUGER  ) {
+	if (auger_trans < L1_L2L2_AUGER  ) {
 		yield2 = AugerYield2_prdata(Z, K_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= L1_L2L2_AUGER && auger_trans < L2_L3L3_AUGER) {
+	else if (auger_trans < L2_L3L3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L1_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= L2_L3L3_AUGER && auger_trans < L3_M1M1_AUGER) {
+	else if (auger_trans < L3_M1M1_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L2_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= L3_M1M1_AUGER && auger_trans < M1_M2M2_AUGER) {
+	else if (auger_trans < M1_M2M2_AUGER) {
 		yield2 = AugerYield2_prdata(Z, L3_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M1_M2M2_AUGER && auger_trans < M2_M3M3_AUGER) {
+	else if (auger_trans < M2_M3M3_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M1_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M2_M3M3_AUGER && auger_trans < M3_M4M4_AUGER) {
+	else if (auger_trans < M3_M4M4_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M2_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M3_M4M4_AUGER && auger_trans < M4_M5M5_AUGER) {
+	else if (auger_trans < M4_M5M5_AUGER) {
 		yield2 = AugerYield2_prdata(Z, M3_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M4_M5M5_AUGER && auger_trans <= M4_M5Q3_AUGER) {
+	else if (auger_trans >= M4_M5M5_AUGER /* && auger_trans <= M4_M5Q3_AUGER */) {
 		yield2 = AugerYield2_prdata(Z, M4_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
@@ -1039,14 +1039,14 @@ void print_mendelvec(int arrmax, struct MendelElement *arr)
 {
   int i;
   int MENDEL_PER_LINE = 10;
-  fprintf(f, "{\n");
+  fprintf(filePtr, "{\n");
   for(i = 0; i < arrmax; i++) {
-    fprintf(f, "{%d,\"%s\"}, ", arr[i].Zatom, arr[i].name);
+    fprintf(filePtr, "{%d,\"%s\"}, ", arr[i].Zatom, arr[i].name);
     if(i%MENDEL_PER_LINE == (MENDEL_PER_LINE-1))
-      fprintf(f, "\n");
+      fprintf(filePtr, "\n");
   }
-  fprintf(f, "}");
-  fprintf(f, ";\n\n");
+  fprintf(filePtr, "}");
+  fprintf(filePtr, ";\n\n");
 }
 
 void print_doublevec(int arrmax, double *arr);
@@ -1054,19 +1054,19 @@ void print_doublevec(int arrmax, double *arr);
 void print_doublevec(int arrmax, double *arr)
 {
   int i;
-  fprintf(f, "{\n");
+  fprintf(filePtr, "{\n");
   for(i = 0; i < arrmax; i++) {
     if(i < arrmax - 1) {
-      fprintf(f, "%.10E, ", arr[i]);
+      fprintf(filePtr, "%.10E, ", arr[i]);
     }
     else {
-      fprintf(f, "%.10E ", arr[i]);
+      fprintf(filePtr, "%.10E ", arr[i]);
     }
 
     if(i%FLOAT_PER_LINE == (FLOAT_PER_LINE-1))
-      fprintf(f, "\n");
+      fprintf(filePtr, "\n");
   }
-  fprintf(f, "}");
+  fprintf(filePtr, "}");
 }
 
 void print_intvec(int arrmax, int *arr);
@@ -1074,19 +1074,19 @@ void print_intvec(int arrmax, int *arr);
 void print_intvec(int arrmax, int *arr)
 {
   int i;
-  fprintf(f, "{\n");
+  fprintf(filePtr, "{\n");
   for(i = 0; i < arrmax; i++) {
     if(i < arrmax - 1) {
-      fprintf(f, "%d, ", arr[i]);
+      fprintf(filePtr, "%d, ", arr[i]);
     }
     else {
-      fprintf(f, "%d ", arr[i]);
+      fprintf(filePtr, "%d ", arr[i]);
     }
 
     if(i%INT_PER_LINE == (INT_PER_LINE-1))
-      fprintf(f, "\n");
+      fprintf(filePtr, "\n");
   }
-  fprintf(f, "}");
+  fprintf(filePtr, "}");
 }
 
 
@@ -1099,75 +1099,75 @@ int main(void)
 
   XRayInit();
 
-  f = fopen(OUTFILE, "w");
-  if(f == NULL) {
+  filePtr = fopen(OUTFILE, "w");
+  if(filePtr == NULL) {
     perror("file open");
   }
 
-  fprintf(f, "/* File created from program in pr_data.c\n");
-  fprintf(f, "// Do not directly modify this file.*/\n\n");
+  fprintf(filePtr, "/* File created from program in pr_data.c\n");
+  fprintf(filePtr, "// Do not directly modify this file.*/\n\n");
 
-  fprintf(f, "#include \"config.h\"\n\n");
-  fprintf(f, "#include \"xraylib.h\"\n\n");
-  fprintf(f, "#include \"xrayglob.h\"\n\n");
-  fprintf(f, "#include \"stddef.h\"\n\n");
+  fprintf(filePtr, "#include \"config.h\"\n\n");
+  fprintf(filePtr, "#include \"xraylib.h\"\n\n");
+  fprintf(filePtr, "#include \"xrayglob.h\"\n\n");
+  fprintf(filePtr, "#include \"stddef.h\"\n\n");
 
-  fprintf(f, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
+  fprintf(filePtr, "struct MendelElement MendelArray[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArray);
 
-  fprintf(f, "struct MendelElement MendelArraySorted[MENDEL_MAX] = \n");
+  fprintf(filePtr, "struct MendelElement MendelArraySorted[MENDEL_MAX] = \n");
   print_mendelvec(MENDEL_MAX, MendelArraySorted);
 
 
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "static Crystal_Atom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
+    fprintf(filePtr, "static Crystal_Atom __atoms_%s[%i] = {", crystal->name, crystal->n_atom);
     for (j = 0; j < crystal->n_atom; j++) {
-      if (j % 2 == 0) fprintf(f, "\n  ");
+      if (j % 2 == 0) fprintf(filePtr, "\n  ");
       atom = &crystal->atom[j];
-      fprintf(f, "{%i, %ff, %ff, %ff, %ff}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
+      fprintf(filePtr, "{%i, %ff, %ff, %ff, %ff}, ", atom->Zatom, atom->fraction, atom->x, atom->y, atom->z);
     }
-    fprintf (f, "\n};\n\n");
+    fprintf (filePtr, "\n};\n\n");
   }
 
-  fprintf(f, "static Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
+  fprintf(filePtr, "static Crystal_Struct __Crystal_arr[CRYSTALARRAY_MAX] = {\n");
   for (i = 0; i < Crystal_arr.n_crystal; i++) {
     crystal = &Crystal_arr.crystal[i];
-    fprintf(f, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name,
+    fprintf(filePtr, "  {\"%s\", %ff, %ff, %ff, %ff, %ff, %ff, %ff, %i, __atoms_%s},\n", crystal->name,
               crystal->a, crystal->b, crystal->c, crystal->alpha, crystal->beta, crystal->gamma,
               crystal->volume, crystal->n_atom, crystal->name);
   }
-  fprintf (f, "};\n\n");
+  fprintf (filePtr, "};\n\n");
 
-  fprintf(f, "Crystal_Array Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
+  fprintf(filePtr, "Crystal_Array Crystal_arr = {%i, %i, __Crystal_arr};\n\n", Crystal_arr.n_crystal, Crystal_arr.n_alloc);
 
-  fprintf(f, "double AtomicWeight_arr[ZMAX+1] =\n");
+  fprintf(filePtr, "double AtomicWeight_arr[ZMAX+1] =\n");
   print_doublevec(ZMAX+1, AtomicWeight_arr);
-  fprintf(f, ";\n\n");
+  fprintf(filePtr, ";\n\n");
 
-  fprintf(f, "double ElementDensity_arr[ZMAX+1] =\n");
+  fprintf(filePtr, "double ElementDensity_arr[ZMAX+1] =\n");
   print_doublevec(ZMAX+1, ElementDensity_arr);
-  fprintf(f, ";\n\n");
+  fprintf(filePtr, ";\n\n");
 
-  fprintf(f, "double EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(filePtr, "double EdgeEnergy_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, EdgeEnergy_arr);
 
-  fprintf(f, "double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(filePtr, "double AtomicLevelWidth_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, AtomicLevelWidth_arr);
 
-  fprintf(f, "double LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
+  fprintf(filePtr, "double LineEnergy_arr[ZMAX+1][LINENUM] = {\n");
   PR_MATD(ZMAX+1, LINENUM, LineEnergy_arr);
 
-  fprintf(f, "double FluorYield_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(filePtr, "double FluorYield_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, FluorYield_arr);
 
-  fprintf(f, "double JumpFactor_arr[ZMAX+1][SHELLNUM] = {\n");
+  fprintf(filePtr, "double JumpFactor_arr[ZMAX+1][SHELLNUM] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM, JumpFactor_arr);
 
-  fprintf(f, "double CosKron_arr[ZMAX+1][TRANSNUM] = {\n");
+  fprintf(filePtr, "double CosKron_arr[ZMAX+1][TRANSNUM] = {\n");
   PR_MATD(ZMAX+1, TRANSNUM, CosKron_arr);
 
-  fprintf(f, "double RadRate_arr[ZMAX+1][LINENUM] = {\n");
+  fprintf(filePtr, "double RadRate_arr[ZMAX+1][LINENUM] = {\n");
   PR_MATD(ZMAX+1, LINENUM, RadRate_arr);
 
   PR_NUMVEC1D(NE_Photo, "NE_Photo");
@@ -1210,10 +1210,10 @@ int main(void)
   PR_DYNMATD(NE_Fii, Fii_arr, "Fii_arr");
   PR_DYNMATD(NE_Fii, Fii_arr2, "Fii_arr2");
 
-  fprintf(f, "double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
+  fprintf(filePtr, "double Electron_Config_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_K, Electron_Config_Kissel);
 
-  fprintf(f, "double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
+  fprintf(filePtr, "double EdgeEnergy_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_K, EdgeEnergy_Kissel);
 
   PR_NUMVEC1D(NE_Photo_Total_Kissel, "NE_Photo_Total_Kissel");
@@ -1221,7 +1221,7 @@ int main(void)
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel,"Photo_Total_Kissel");
   PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel2,"Photo_Total_Kissel2");
 
-  fprintf(f, "int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
+  fprintf(filePtr, "int NE_Photo_Partial_Kissel[ZMAX+1][SHELLNUM_K] = {\n");
   PR_MATI(ZMAX+1, SHELLNUM_K, NE_Photo_Partial_Kissel);
 
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel");
@@ -1244,9 +1244,9 @@ int main(void)
 	for (j = K_SHELL ; j <= M5_SHELL ; j++)
 		Auger_Yields[i][j] = AugerYield_prdata(i, j);
   }
-  fprintf(f, "double Auger_Yields[ZMAX+1][SHELLNUM_A] = {\n");
+  fprintf(filePtr, "double Auger_Yields[ZMAX+1][SHELLNUM_A] = {\n");
   PR_MATD(ZMAX+1, SHELLNUM_A, Auger_Yields);
-  fprintf(f, "double Auger_Rates[ZMAX+1][AUGERNUM] = {\n");
+  fprintf(filePtr, "double Auger_Rates[ZMAX+1][AUGERNUM] = {\n");
   PR_MATD(ZMAX+1, AUGERNUM, Auger_Rates);
 
 #define IF_XRF_CS(shell) \
@@ -1273,13 +1273,13 @@ int main(void)
     }
   }
 
-  fprintf(f, "double xrf_cross_sections_constants_full[ZMAX+1][M5_SHELL+1][L3_SHELL+1] = {\n");
+  fprintf(filePtr, "double xrf_cross_sections_constants_full[ZMAX+1][M5_SHELL+1][L3_SHELL+1] = {\n");
   PR_CUBED(ZMAX+1, M5_SHELL+1, L3_SHELL+1, xrf_cross_sections_constants_full);
   
-  fprintf(f, "double xrf_cross_sections_constants_auger_only[ZMAX+1][M5_SHELL+1][L3_SHELL+1] = {\n");
+  fprintf(filePtr, "double xrf_cross_sections_constants_auger_only[ZMAX+1][M5_SHELL+1][L3_SHELL+1] = {\n");
   PR_CUBED(ZMAX+1, M5_SHELL+1, L3_SHELL+1, xrf_cross_sections_constants_auger_only);
 
-  fclose(f);
+  fclose(filePtr);
 
   return 0;
 }

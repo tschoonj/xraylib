@@ -12,7 +12,7 @@
 
 import numpy as np
 import xraylib_np as xrl_np
-import sys, string
+import sys 
 
 
 

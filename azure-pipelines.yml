@@ -1,6 +1,6 @@
 variables:
   SHELL: /usr/local/bin/bash
-  XRL_PYTHON3: /usr/local/opt/python@3.8/bin/python3
+  XRL_PYTHON3: /usr/local/bin/python3
   PHP: /usr/local/bin/php
   PHP_CONFIG: /usr/local/bin/php-config
 
@@ -20,8 +20,8 @@ jobs:
           CC: clang
         gcc:
           EXTRA: --enable-fortran2003
-          CC: gcc-9
-          FC: gfortran-9
+          CC: gcc-10
+          FC: gfortran-10
       
       
     steps:
@@ -34,12 +34,13 @@ jobs:
 
     - script: |
         set -e -x
-        brew install autoconf automake libtool swig ruby python fpc lua perl php bash gcc@9
+        rm -f /usr/local/bin/2to3
+        brew install autoconf automake libtool swig ruby python fpc lua perl php@7.4 bash gcc@10
       displayName: Install shared Homebrew dependencies
 
     - script: |
         set -e -x
-        /usr/local/opt/python@3.8/bin/pip3 install Cython
+        /usr/local/bin/pip3 install Cython
       displayName: Install Cython
 
     - script: |
@@ -49,7 +50,7 @@ jobs:
 
     - script: |
         set -e -x
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby ${EXTRA} SHELL=${SHELL}
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby ${EXTRA} PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL}
         make
         make check
         make distclean

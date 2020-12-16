@@ -1,8 +1,8 @@
 name: CI
 
 on:
-  #schedule:
-  #  - cron: '0 2 * * *' # run at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * 0'
   push:
     branches:
       - master
@@ -11,7 +11,87 @@ on:
       - master
 
 jobs:
-  build:
+  msys2:
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        cc:
+          - clang
+          - gcc
+        include:
+          - cc: clang
+            cxx: clang++
+          - cc: gcc
+            cxx: g++
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: crazy-max/ghaction-chocolatey@v1.4.0
+      with:
+        args: install innosetup lazarus
+    # required for the lib command
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+    - uses: msys2/setup-msys2@v2
+      with:
+        path-type: inherit
+        update: true
+        install: >
+          base-devel
+          git
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gcc-fortran
+          mingw-w64-x86_64-libtool
+          mingw-w64-x86_64-clang
+          mingw-w64-x86_64-openmp
+          mingw-w64-x86_64-lld
+          mingw-w64-x86_64-pkg-config
+          mingw-w64-x86_64-curl
+          mingw-w64-x86_64-cython
+          mingw-w64-x86_64-python3-numpy
+          automake
+          autoconf
+          make
+          patch
+          wget
+          tar
+    - uses: actions/checkout@v2
+    - name: Build and test with Autotools
+      run: |
+        set -ex
+
+        autoreconf -fi
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic"
+        make
+        make check
+        make windows
+        make distclean
+
+        ./configure --disable-all-bindings --disable-shared --enable-static
+        make
+        make check
+        make distclean
+
+        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --enable-pascal FPC=/c/lazarus/fpc/*/bin/x86_64-win64/fpc --disable-ruby
+        make
+        make check
+        make distclean
+
+        ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
+        make
+        make check
+        make distclean
+
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        CYTHON: cython
+        PYTHON: python3
+  linux:
     timeout-minutes: 60
     strategy:
       matrix:
@@ -94,7 +174,7 @@ jobs:
         set -ex
         yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
         dnf install -y 'dnf-command(config-manager)'
-        dnf config-manager --set-enabled PowerTools
+        dnf config-manager --set-enabled powertools
         set +ex
     - name: Activate CentOS 7 EPEL repo
       if: matrix.image == 'centos:7'

@@ -283,7 +283,7 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
     /*
      * it's safe to use LA_LINE since it's only composed of 2 L3-lines
      */
-    else if ((line >= L3Q1_LINE && line <= L3M1_LINE) || line == LA_LINE) {
+    else if (line <= L3M1_LINE || line == LA_LINE) {
       Factor = Jump_from_L3(Z, E, error);
     }
     if (Factor == 0.0) {

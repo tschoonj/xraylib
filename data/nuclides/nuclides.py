@@ -4,7 +4,6 @@
 import urllib.request
 from io import StringIO
 import lxml.etree as ET
-import sys
 import re
 import xraylib as xrl
 
@@ -256,7 +255,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
                     xray_lines.append(line)
                 except Exception as e:
                     print("Exception: " + str(e))
-                    pass
 
             nuclideDataSingle['nXrays'] = len(xray_intensities)
             print("nXrays: {}".format(nuclideDataSingle['nXrays']))

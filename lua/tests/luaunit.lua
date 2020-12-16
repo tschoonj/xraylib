@@ -208,9 +208,6 @@ local function sortedPairs(tbl)
 end
 M.private.sortedPairs = sortedPairs
 
--- seed the random with a strongly varying seed
-math.randomseed(os.clock()*1E11)
-
 local function randomizeTable( t )
     -- randomize the item orders of the table t
     for i = #t, 2, -1 do
