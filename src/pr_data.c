@@ -1021,7 +1021,7 @@ static double AugerRate_prdata(int Z, int auger_trans) {
 			return rv;
 		return Auger_Transition_Individual[Z][auger_trans]/yield2;
 	}
-	else if (auger_trans >= M4_M5M5_AUGER /* && auger_trans <= M4_M5Q3_AUGER */) {
+	else {
 		yield2 = AugerYield2_prdata(Z, M4_SHELL);
 		if (yield2 < 1E-8)
 			return rv;
