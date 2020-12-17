@@ -522,6 +522,7 @@ jobs:
         CYTHON: ${{matrix.cython}}
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
+        CXXFLAGS: -stdc=c++11
         LIBS: ${{matrix.libs}}
         XRL_PYTHON3: /usr/bin/python3
         LUA: ${{matrix.lua}}
