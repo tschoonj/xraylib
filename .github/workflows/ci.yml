@@ -91,6 +91,80 @@ jobs:
         CXX: ${{matrix.cxx}}
         CYTHON: cython
         PYTHON: python3
+
+  macos:
+    timeout-minutes: 60
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        compiler:
+          - llvm
+          - gcc
+        include:
+          # at least some versions of clang cannot compile php bindings
+          - compiler: llvm
+            cc: /usr/local/opt/llvm/bin/clang
+            cxx: /usr/local/opt/llvm/bin/clang++
+          - compiler: gcc
+            cc: gcc-10
+            cxx: g++-10
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Homebrew dependencies
+      run: |
+        set -ex
+        brew uninstall -f bazel bazelisk
+        brew update
+        brew upgrade
+        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby fpc lua perl php@7.4 bash numpy
+        set +ex
+      env:
+        HOMEBREW_CURL_RETRIES: 5
+
+    - name: Install Cython
+      run: |
+        /usr/local/bin/pip3 install Cython
+
+    - name: Build with Autotools
+      run: |
+        set -ex
+        autoreconf -fi
+
+        # Build without python
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL}
+        make
+        make check || (cat perl/tests/test-suite.log && exit 1)
+        make distclean
+
+        # Build without bindings in ANSI-C
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" SHELL=${SHELL}
+        make
+        make check
+        make distclean
+
+        # Build with Python3 bindings
+        ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} SHELL=${SHELL}
+        make
+        make check
+        make distclean
+
+        # Build static library
+        ./configure --disable-all-bindings --disable-shared --enable-static SHELL=${SHELL}
+        make
+        make check
+        make distclean
+
+        # Run make distcheck
+        ./configure
+        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3}
+
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        SHELL: /usr/local/bin/bash
+        XRL_PYTHON3: /usr/local/bin/python3
+
   linux:
     timeout-minutes: 60
     strategy:
