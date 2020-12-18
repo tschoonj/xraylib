@@ -7,6 +7,7 @@ check_PROGRAMS = \
 	test-atomicweight \
 	test-atomiclevelwidth \
 	test-refractive_indices \
+    test-compoundparser \
     $(NULL)
 
 TESTS = $(check_PROGRAMS)
@@ -20,3 +21,6 @@ test_atomiclevelwidth_LDADD = ../../src/libxrl.la
 
 test_refractive_indices_SOURCES = test-refractive_indices.cpp
 test_refractive_indices_LDADD = ../../src/libxrl.la
+
+test_compoundparser_SOURCES = test-compoundparser.cpp
+test_compoundparser_LDADD = ../../src/libxrl.la

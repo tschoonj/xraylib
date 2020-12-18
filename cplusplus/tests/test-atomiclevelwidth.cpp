@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		width = xrlpp::AtomicLevelWidth(185, K_SHELL);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), Z_OUT_OF_RANGE) == 0);
@@ -38,6 +39,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		width = xrlpp::AtomicLevelWidth(26, -5);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), UNKNOWN_SHELL) == 0);
@@ -45,6 +47,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		width = xrlpp::AtomicLevelWidth(26, N3_SHELL);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), INVALID_SHELL) == 0);

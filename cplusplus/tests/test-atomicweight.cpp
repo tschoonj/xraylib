@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		weight = xrlpp::AtomicWeight(185);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), Z_OUT_OF_RANGE) == 0);

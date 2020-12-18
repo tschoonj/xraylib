@@ -65,6 +65,7 @@ int main(int argc, char **argv) {
 	/* bad input */
 	try {
 		re = xrlpp::Refractive_Index_Re("", 1.0, 1.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), UNKNOWN_COMPOUND) == 0);
@@ -72,6 +73,7 @@ int main(int argc, char **argv) {
 
 	try {
 		im = xrlpp::Refractive_Index_Im("", 1.0, 1.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), UNKNOWN_COMPOUND) == 0);
@@ -79,6 +81,7 @@ int main(int argc, char **argv) {
 
 	try {
 		cplx = xrlpp::Refractive_Index("", 1.0, 1.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), UNKNOWN_COMPOUND) == 0);
@@ -86,6 +89,7 @@ int main(int argc, char **argv) {
 
 	try {
 		re = xrlpp::Refractive_Index_Re("H2O", 0.0, 1.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), NEGATIVE_ENERGY) == 0);
@@ -93,6 +97,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		im = xrlpp::Refractive_Index_Im("H2O", 0.0, 1.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), NEGATIVE_ENERGY) == 0);
@@ -100,6 +105,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		cplx = xrlpp::Refractive_Index("H2O", 0.0, 1.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), NEGATIVE_ENERGY) == 0);
@@ -107,6 +113,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		re = xrlpp::Refractive_Index_Re("H2O", 1.0, 0.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), NEGATIVE_DENSITY) == 0);
@@ -114,6 +121,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		im = xrlpp::Refractive_Index_Im("H2O", 1.0, 0.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), NEGATIVE_DENSITY) == 0);
@@ -121,6 +129,7 @@ int main(int argc, char **argv) {
 	
 	try {
 		cplx = xrlpp::Refractive_Index("H2O", 1.0, 0.0);
+		abort();
 	}
 	catch (std::invalid_argument &e) {
 		assert(strcmp(e.what(), NEGATIVE_DENSITY) == 0);

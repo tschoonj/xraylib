@@ -7,6 +7,9 @@
 #include <stdexcept>
 #include <new>
 #include <complex>
+#include <vector>
+
+    typedef struct compoundData _compoundDataPod;
 
 #define _XRL_FUNCTION_1I(_name) \
     double _name(int arg1) { \
@@ -144,6 +147,37 @@ namespace xrlpp {
         std::string rv2(rv);
         ::xrlFree(rv);
         return rv2;
+    }
+
+    class compoundData {
+        public:
+        const int nElements;
+        const std::vector<int> Elements;
+        const std::vector<double> massFractions;
+        const double nAtomsAll;
+        const std::vector<double> nAtoms;
+        const double molarMass;
+
+        friend compoundData CompoundParser(const std::string &compoundString);
+
+        private:
+        compoundData(_compoundDataPod *cd) :
+            nElements(cd->nElements), 
+            Elements(std::vector<int>(cd->Elements, cd->Elements + cd->nElements)),
+            massFractions(std::vector<double>(cd->massFractions, cd->massFractions + cd->nElements)),
+            nAtomsAll(cd->nAtomsAll),
+            nAtoms(std::vector<double>(cd->nAtoms, cd->nAtoms + cd->nElements)),
+            molarMass(cd->molarMass)
+        {}
+    };
+
+    compoundData CompoundParser(const std::string &compoundString) {
+        xrl_error *error = nullptr;
+        _compoundDataPod *cd = ::CompoundParser(compoundString.c_str(), &error);
+        _process_error(error);
+        compoundData rv(cd);
+        ::FreeCompoundData(cd);
+        return rv;
     }
 
     _XRL_FUNCTION_1I(AtomicWeight)

@@ -1,5 +1,12 @@
 {
     "files.associations": {
-        "new": "cpp"
+        "new": "cpp",
+        "stdexcept": "cpp"
+    },
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
     }
 }
