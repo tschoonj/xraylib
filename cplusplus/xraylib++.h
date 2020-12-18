@@ -10,6 +10,7 @@
 #include <vector>
 
     typedef struct compoundData _compoundDataPod;
+    typedef struct radioNuclideData _radioNuclideDataPod;
 
 #define _XRL_FUNCTION_1I(_name) \
     double _name(int arg1) { \
@@ -163,11 +164,44 @@ namespace xrlpp {
         private:
         compoundData(_compoundDataPod *cd) :
             nElements(cd->nElements), 
-            Elements(std::vector<int>(cd->Elements, cd->Elements + cd->nElements)),
-            massFractions(std::vector<double>(cd->massFractions, cd->massFractions + cd->nElements)),
+            Elements(cd->Elements, cd->Elements + cd->nElements),
+            massFractions(cd->massFractions, cd->massFractions + cd->nElements),
             nAtomsAll(cd->nAtomsAll),
-            nAtoms(std::vector<double>(cd->nAtoms, cd->nAtoms + cd->nElements)),
+            nAtoms(cd->nAtoms, cd->nAtoms + cd->nElements),
             molarMass(cd->molarMass)
+        {}
+    };
+
+    class radioNuclideData {
+        public:
+	    const std::string name;
+	    const int Z;
+	    const int A;
+	    const int N;
+	    const int Z_xray;
+	    const int nXrays;
+	    const std::vector<int> XrayLines;
+	    const std::vector<double> XrayIntensities;
+	    const int nGammas;
+	    const std::vector<double> GammaEnergies;
+	    const std::vector<double> GammaIntensities;
+
+        friend radioNuclideData GetRadioNuclideDataByName(const std::string &radioNuclideString);
+        friend radioNuclideData GetRadioNuclideDataByIndex(int radioNuclideIndex);
+
+        private:
+        radioNuclideData(_radioNuclideDataPod *rnd) :
+            name(rnd->name),
+            Z(rnd->Z),
+            A(rnd->A),
+            N(rnd->N),
+            Z_xray(rnd->Z_xray),
+            nXrays(rnd->nXrays),
+            XrayLines(rnd->XrayLines, rnd->XrayLines + rnd->nXrays),
+            XrayIntensities(rnd->XrayIntensities, rnd->XrayIntensities+ rnd->nXrays),
+            nGammas(rnd->nGammas),
+            GammaEnergies(rnd->GammaEnergies, rnd->GammaEnergies + rnd->nGammas),
+            GammaIntensities(rnd->GammaIntensities, rnd->GammaIntensities + rnd->nGammas)
         {}
     };
 
@@ -177,6 +211,38 @@ namespace xrlpp {
         _process_error(error);
         compoundData rv(cd);
         ::FreeCompoundData(cd);
+        return rv;
+    }
+
+    radioNuclideData GetRadioNuclideDataByName(const std::string &radioNuclideString) {
+        xrl_error *error = nullptr;
+        _radioNuclideDataPod *rnd = ::GetRadioNuclideDataByName(radioNuclideString.c_str(), &error);
+        _process_error(error);
+        radioNuclideData rv(rnd);
+        ::FreeRadioNuclideData(rnd);
+        return rv;
+    }
+    
+    radioNuclideData GetRadioNuclideDataByIndex(int radioNuclideIndex) {
+        xrl_error *error = nullptr;
+        _radioNuclideDataPod *rnd = ::GetRadioNuclideDataByIndex(radioNuclideIndex, &error);
+        _process_error(error);
+        radioNuclideData rv(rnd);
+        ::FreeRadioNuclideData(rnd);
+        return rv;
+    }
+
+    std::vector<std::string> GetRadioNuclideDataList(void) {
+        std::vector<std::string> rv;
+        xrl_error *error = nullptr;
+        int nRadioNuclides;
+        char **list = ::GetRadioNuclideDataList(&nRadioNuclides, &error);
+        _process_error(error);
+        for (int i = 0 ; i < nRadioNuclides ; i++) {
+            rv.push_back(list[i]);
+            ::xrlFree(list[i]);
+        }
+        ::xrlFree(list);
         return rv;
     }
 

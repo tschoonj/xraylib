@@ -19,7 +19,6 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <cmath>
 #include <cassert>
 #include <cstring>
-#include <iostream>
 
 int main(int argc, char *argv[]) {
 
