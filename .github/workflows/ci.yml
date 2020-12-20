@@ -113,6 +113,7 @@ jobs:
     - name: Install Homebrew dependencies
       run: |
         set -ex
+        rm -f /usr/local/bin/2to3
         brew uninstall -f bazel bazelisk
         brew update
         brew upgrade
