@@ -8,6 +8,7 @@ check_PROGRAMS = \
 	test-atomiclevelwidth \
 	test-refractive_indices \
     test-compoundparser \
+    test-nist-compounds \
     test-radionuclides \
     $(NULL)
 
@@ -28,3 +29,6 @@ test_compoundparser_LDADD = ../../src/libxrl.la
 
 test_radionuclides_SOURCES = test-radionuclides.cpp
 test_radionuclides_LDADD = ../../src/libxrl.la
+
+test_nist_compounds_SOURCES = test-nist-compounds.cpp
+test_nist_compounds_LDADD = ../../src/libxrl.la

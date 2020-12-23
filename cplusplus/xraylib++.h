@@ -9,8 +9,9 @@
 #include <complex>
 #include <vector>
 
-    typedef struct compoundData _compoundDataPod;
-    typedef struct radioNuclideData _radioNuclideDataPod;
+using _compoundDataPod = struct compoundData;
+using _radioNuclideDataPod = struct radioNuclideData;
+using _compoundDataNISTPod = struct compoundDataNIST;
 
 #define _XRL_FUNCTION_1I(_name) \
     double _name(int arg1) { \
@@ -205,6 +206,27 @@ namespace xrlpp {
         {}
     };
 
+    class compoundDataNIST {
+        public:
+        const std::string name;
+        const int nElements;
+        const std::vector<int> Elements;
+        const std::vector<double> massFractions;
+        const double density;
+
+        friend compoundDataNIST GetCompoundDataNISTByName(const std::string &compoundString);
+        friend compoundDataNIST GetCompoundDataNISTByIndex(int compoundIndex);
+
+        private:
+        compoundDataNIST(_compoundDataNISTPod *cdn) :
+            name(cdn->name),
+            nElements(cdn->nElements), 
+            Elements(cdn->Elements, cdn->Elements + cdn->nElements),
+            massFractions(cdn->massFractions, cdn->massFractions + cdn->nElements),
+            density(cdn->density)
+        {}
+    };
+
     compoundData CompoundParser(const std::string &compoundString) {
         xrl_error *error = nullptr;
         _compoundDataPod *cd = ::CompoundParser(compoundString.c_str(), &error);
@@ -239,6 +261,38 @@ namespace xrlpp {
         char **list = ::GetRadioNuclideDataList(&nRadioNuclides, &error);
         _process_error(error);
         for (int i = 0 ; i < nRadioNuclides ; i++) {
+            rv.push_back(list[i]);
+            ::xrlFree(list[i]);
+        }
+        ::xrlFree(list);
+        return rv;
+    }
+
+    compoundDataNIST GetCompoundDataNISTByName(const std::string &compoundString) {
+        xrl_error *error = nullptr;
+        _compoundDataNISTPod *cdn = ::GetCompoundDataNISTByName(compoundString.c_str(), &error);
+        _process_error(error);
+        compoundDataNIST rv(cdn);
+        ::FreeCompoundDataNIST(cdn);
+        return rv;
+    }
+    
+    compoundDataNIST GetCompoundDataNISTByIndex(int compoundIndex) {
+        xrl_error *error = nullptr;
+        _compoundDataNISTPod *cdn = ::GetCompoundDataNISTByIndex(compoundIndex, &error);
+        _process_error(error);
+        compoundDataNIST rv(cdn);
+        ::FreeCompoundDataNIST(cdn);
+        return rv;
+    }
+
+    std::vector<std::string> GetCompoundDataNISTList(void) {
+        std::vector<std::string> rv;
+        xrl_error *error = nullptr;
+        int nCompounds;
+        char **list = ::GetCompoundDataNISTList(&nCompounds, &error);
+        _process_error(error);
+        for (int i = 0 ; i < nCompounds; i++) {
             rv.push_back(list[i]);
             ::xrlFree(list[i]);
         }

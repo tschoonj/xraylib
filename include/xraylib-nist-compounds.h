@@ -24,10 +24,10 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 struct compoundDataNIST {
 	char *name;
-        int nElements;
-        int *Elements;
-        double *massFractions;
-        double density;
+    int nElements;
+    int *Elements;
+    double *massFractions;
+    double density;
 };
 
 /*
