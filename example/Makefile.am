@@ -12,7 +12,7 @@
 #Makefile.am for the examples. These can be used to verify that the compilation went ok by typing in "make check"
 
 
-AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include
+AM_CPPFLAGS = -I${top_srcdir}/include -I${top_builddir}/include -I${top_srcdir}/cplusplus
 
 
 #since the C lib will always be built, always check xrlexample1
