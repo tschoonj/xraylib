@@ -227,6 +227,208 @@ namespace xrlpp {
         {}
     };
 
+    namespace Crystal {
+        class Atom {
+            public:
+            const int Zatom;
+            const double fraction;
+            const double x, y, z;
+
+            friend std::vector<Atom> _create_atom_vector(Crystal_Atom *atoms, int n_atom);
+
+            private:
+            Atom(const Crystal_Atom &atom) :
+                Zatom(atom.Zatom),
+                fraction(atom.fraction),
+                x(atom.x),
+                y(atom.y),
+                z(atom.z)
+            {}
+        };
+
+        std::vector<Atom> _create_atom_vector(Crystal_Atom *atoms, int n_atom) {
+            std::vector<Atom> rv;
+
+            for (int i = 0 ; i < n_atom ; i++)
+                rv.push_back(atoms[i]);
+
+            return rv;
+        }
+
+        class Struct {
+            public:
+            const std::string name;
+            const double a, b, c;
+            const double alpha, beta, gamma;
+            const double volume;
+            const int n_atom;
+            const std::vector<Atom> atom;
+
+            double Bragg_angle(double energy, int i_miller, int j_miller, int k_miller) {
+                xrl_error *error = nullptr;
+                double rv = ::Bragg_angle(cs, energy, i_miller, j_miller, k_miller, &error);
+                _process_error(error);
+                return rv;
+            }
+
+            double Q_scattering_amplitude(double energy, int i_miller, int j_miller, int k_miller, double rel_angle) {
+                xrl_error *error = nullptr;
+                double rv = ::Q_scattering_amplitude(cs, energy, i_miller, j_miller, k_miller, rel_angle, &error);
+                _process_error(error);
+                return rv;
+            }
+
+            std::complex<double> F_H_StructureFactor(double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
+                xrl_error *error = nullptr;
+                xrlComplex rv = ::Crystal_F_H_StructureFactor(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, &error);
+                _process_error(error);
+                return std::complex<double>(rv.re, rv.im);
+            }
+
+            std::complex<double> F_H_StructureFactor_Partial(double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag) {
+                xrl_error *error = nullptr;
+                xrlComplex rv = ::Crystal_F_H_StructureFactor_Partial(cs, energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag, &error);
+                _process_error(error);
+                return std::complex<double>(rv.re, rv.im);
+            }
+
+            double UnitCellVolume(void) {
+                xrl_error *error = nullptr;
+                double rv = ::Crystal_UnitCellVolume(cs, &error);
+                _process_error(error);
+                return rv;
+            }
+
+            double dSpacing(int i_miller, int j_miller, int k_miller) {
+                xrl_error *error = nullptr;
+                double rv = ::Crystal_dSpacing(cs, i_miller, j_miller, k_miller, &error);
+                _process_error(error);
+                return rv;
+            }
+
+            int AddCrystal(void) {
+                xrl_error *error = nullptr;
+                int rv = ::Crystal_AddCrystal(cs, nullptr, &error);
+                _process_error(error);
+                return rv;
+            }
+
+            // constructor -> this needs to generate the underlying cs pointer!
+            /*Struct(const std::string &name, double a, double b, double c, double alpha, double beta, double gamma, double volume, const std::vector<Atom> &atoms) :
+                name(name),
+                a(a),
+                b(b),
+                c(c),
+                alpha(alpha),
+                beta(beta),
+                gamma(gamma),
+                volume(volume),
+                n_atom(atoms.size()),
+                atom(atoms)
+            {}*/
+
+            // copy constructor
+            Struct(const Struct &_struct) :
+                name(_struct.name),
+                a(_struct.a),
+                b(_struct.b),
+                c(_struct.c),
+                alpha(_struct.alpha),
+                beta(_struct.beta),
+                gamma(_struct.gamma),
+                volume(_struct.volume),
+                n_atom(_struct.n_atom),
+                atom(_struct.atom) {
+
+                xrl_error *error = nullptr;
+                cs = ::Crystal_MakeCopy(_struct.cs, &error);
+                _process_error(error);
+            }
+
+            // destructor
+            ~Struct() {
+                ::Crystal_Free(cs);
+            }
+
+            friend Struct GetCrystal(const std::string &material);
+
+            private:
+            Crystal_Struct *cs;
+
+            Struct(Crystal_Struct *_struct) :
+                name(_struct->name),
+                a(_struct->a),
+                b(_struct->b),
+                c(_struct->c),
+                alpha(_struct->alpha),
+                beta(_struct->beta),
+                gamma(_struct->gamma),
+                volume(_struct->volume),
+                n_atom(_struct->n_atom),
+                atom(_create_atom_vector(_struct->atom, _struct->n_atom)),
+                cs(_struct)
+            {}
+
+        };
+
+        Struct GetCrystal(const std::string &material) {
+            xrl_error *error = nullptr;
+            Crystal_Struct *cs = ::Crystal_GetCrystal(material.c_str(), nullptr, &error);
+            _process_error(error);
+            Struct rv(cs);
+            return rv;
+        }
+
+        double Bragg_angle(Struct &cs, double energy, int i_miller, int j_miller, int k_miller) {
+            return cs.Bragg_angle(energy, i_miller, j_miller, k_miller);
+        }
+
+        double Q_scattering_amplitude(Struct &cs, double energy, int i_miller, int j_miller, int k_miller, double rel_angle) {
+            return cs.Q_scattering_amplitude(energy, i_miller, j_miller, k_miller, rel_angle);
+        }
+
+        int Atomic_Factors(int Z, double energy, double q, double debye_factor, double *f0, double *f_prime, double *f_prime2) {
+            xrl_error *error = nullptr;
+            int rv = ::Atomic_Factors(Z, energy, q, debye_factor, f0, f_prime, f_prime2, &error);
+            _process_error(error);
+            return rv;
+        }
+
+        std::complex<double> F_H_StructureFactor(Struct &cs, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle) {
+            return cs.F_H_StructureFactor(energy, i_miller, j_miller, k_miller, debye_factor, rel_angle);
+        }
+
+        std::complex<double> F_H_StructureFactor_Partial(Struct &cs, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, int f0_flag, int f_prime_flag, int f_prime2_flag) {
+            return cs.F_H_StructureFactor_Partial(energy, i_miller, j_miller, k_miller, debye_factor, rel_angle, f0_flag, f_prime_flag, f_prime2_flag);
+        }
+
+        double UnitCellVolume(Struct &cs) {
+            return cs.UnitCellVolume();
+        }
+            
+        double dSpacing(Struct &cs, int i_miller, int j_miller, int k_miller) {
+            return cs.dSpacing(i_miller, j_miller, k_miller);
+        }
+
+        std::vector<std::string> GetCrystalsList(void) {
+            std::vector<std::string> rv;
+            xrl_error *error = nullptr;
+            int nCrystals;
+            char **list = ::Crystal_GetCrystalsList(nullptr, &nCrystals, &error);
+            _process_error(error);
+            for (int i = 0 ; i < nCrystals ; i++) {
+                rv.push_back(list[i]);
+                ::xrlFree(list[i]);
+            }
+            ::xrlFree(list);
+            return rv;
+        }
+
+        int AddCrystal(Struct &cs) {
+            return cs.AddCrystal();
+        }
+    }
+
     compoundData CompoundParser(const std::string &compoundString) {
         xrl_error *error = nullptr;
         _compoundDataPod *cd = ::CompoundParser(compoundString.c_str(), &error);

@@ -10,6 +10,7 @@ check_PROGRAMS = \
     test-compoundparser \
     test-nist-compounds \
     test-radionuclides \
+    test-crystal_diffraction \
     $(NULL)
 
 TESTS = $(check_PROGRAMS)
@@ -32,3 +33,6 @@ test_radionuclides_LDADD = ../../src/libxrl.la
 
 test_nist_compounds_SOURCES = test-nist-compounds.cpp
 test_nist_compounds_LDADD = ../../src/libxrl.la
+
+test_crystal_diffraction_SOURCES = test-crystal_diffraction.cpp
+test_crystal_diffraction_LDADD = ../../src/libxrl.la
