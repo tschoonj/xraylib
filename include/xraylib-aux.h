@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #ifndef _XRAYLIB_AUX_H
 #define _XRAYLIB_AUX_H
 
-#include "xraylib.h"
+#ifndef SWIG
 #include <stddef.h>
 
 XRL_EXTERN
@@ -23,4 +23,8 @@ char *xrl_strdup(const char *str);
 XRL_EXTERN
 char *xrl_strndup(const char *str, size_t len);
 
+XRL_EXTERN
+void *xrl_malloc(size_t size);
+
+#endif
 #endif

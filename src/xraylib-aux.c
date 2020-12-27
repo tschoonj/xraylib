@@ -40,3 +40,7 @@ char *xrl_strndup(const char *str, size_t len) {
 	return strndup(str, len);
 #endif
 }
+
+void *xrl_malloc(size_t size) {
+	return malloc(size);
+}

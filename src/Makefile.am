@@ -48,9 +48,8 @@ libprdata_la_SOURCES = \
 		 radrate.c \
 		 auger_trans.c \
 		 kissel_pe.c \
-	         cross_sections.c \
-		 xraylib-aux.c \
-		 xraylib-aux.h 
+	     cross_sections.c \
+		 xraylib-aux.c
 
 libprdata_la_LIBADD = $(LIBM)
 
@@ -80,7 +79,6 @@ libxrl_la_SOURCES = xrayvars.c \
 		    xrayglob.h \
 		    xrayvars.h \
 		    xraylib-aux.c \
-		    xraylib-aux.h \
 		    xraylib-parser.c \
 		    cs_cp.c \
 		    refractive_indices.c \

@@ -63,6 +63,7 @@ extern "C" {
 #include "xraylib-nist-compounds.h"
 #include "xraylib-radionuclides.h"
 #include "xraylib-deprecated.h"
+#include "xraylib-aux.h"
 
 /*
  * Siegbahn notation

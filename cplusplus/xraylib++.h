@@ -16,10 +16,8 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 #include <xraylib.h>
 #include <stdexcept>
-#include <new>
 #include <complex>
 #include <vector>
-#include <cstring>
 
 using _compoundDataPod = struct compoundData;
 using _radioNuclideDataPod = struct radioNuclideData;
@@ -338,8 +336,8 @@ namespace xrlpp {
                 n_atom(atoms.size()),
                 atom(atoms)
             {
-                cs = (Crystal_Struct *) malloc(sizeof(Crystal_Struct));
-                cs->name = strdup(name.c_str());
+                cs = (Crystal_Struct *) xrl_malloc(sizeof(Crystal_Struct));
+                cs->name = xrl_strdup(name.c_str());
                 cs->a = a;
                 cs->b = b;
                 cs->c = c;
@@ -348,7 +346,7 @@ namespace xrlpp {
                 cs->gamma = gamma;
                 cs->volume = volume;
                 cs->n_atom = n_atom;
-                cs->atom = (Crystal_Atom *) malloc(sizeof(Crystal_Atom) * n_atom);
+                cs->atom = (Crystal_Atom *) xrl_malloc(sizeof(Crystal_Atom) * n_atom);
                 for (int i = 0 ; i < n_atom ; i++) {
                     cs->atom[i].Zatom = atoms[i].Zatom;
                     cs->atom[i].fraction = atoms[i].fraction;
