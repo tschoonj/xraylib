@@ -117,7 +117,7 @@ jobs:
         brew uninstall -f bazel bazelisk
         brew update
         brew upgrade
-        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby fpc lua perl php@7.4 bash numpy
+        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby@2.6 fpc lua perl php@7.4 bash numpy
         set +ex
       env:
         HOMEBREW_CURL_RETRIES: 5
@@ -132,7 +132,7 @@ jobs:
         autoreconf -fi
 
         # Build without python
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL}
+        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL} RUBY=/usr/local/opt/ruby@2.6/bin/ruby
         make
         make check || (cat perl/tests/test-suite.log && exit 1)
         make distclean
@@ -157,7 +157,7 @@ jobs:
 
         # Run make distcheck
         ./configure
-        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3}
+        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} RUBY=/usr/local/opt/ruby@2.6/bin/ruby
 
         set +ex
       env:
