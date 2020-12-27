@@ -39,6 +39,8 @@ int main(int argc, char *argv[]) {
 
     auto cs = xrlpp::Crystal::GetCrystal("Diamond");
     auto cs_copy(cs);
+    auto *cs_copy2 = new xrlpp::Crystal::Struct(cs_copy);
+    delete cs_copy2;
 
     try {
         xrlpp::Crystal::AddCrystal(cs);
@@ -53,6 +55,12 @@ int main(int argc, char *argv[]) {
     }
     catch (std::invalid_argument &e) {
     }
+
+    auto *cs_new = new xrlpp::Crystal::Struct("Diamond Copy", cs.a, cs.b, cs.c, cs.alpha, cs.beta, cs.gamma, cs.volume, cs.atom);
+    xrlpp::Crystal::AddCrystal(*cs_new);
+    delete cs_new;
+    crystals_list = xrlpp::Crystal::GetCrystalsList();
+    assert(crystals_list.size() == 39);
 
     double angle = cs.Bragg_angle(10.0, 1, 1, 1);
     assert(fabs(angle - 0.3057795845795849) < 1E-6);
