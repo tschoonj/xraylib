@@ -106,6 +106,7 @@ libxrl_sources = shared_sources + [xrayglob_inline] + files(
 xraylib_lib = library(
   'xrl',
   libxrl_sources,
+  name_prefix: 'lib', # also on MSVC!
   version: version,
   darwin_versions: darwin_versions,
   dependencies: xraylib_build_dep,

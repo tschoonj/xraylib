@@ -61,10 +61,6 @@ foreach f : special_funcs
   endif
 endforeach
 
-if cc.has_header('complex.h')
-    config_h_data.set('HAVE_COMPLEX_H', 1)
-endif
-
 # Detect and set symbol visibility
 if get_option('default_library') != 'static'
   if host_system == 'windows' or host_system == 'cygwin'
@@ -77,6 +73,10 @@ if get_option('default_library') != 'static'
   elif cc.has_argument('-fvisibility=hidden')
     config_h_data.set('XRL_EXTERN', '__attribute__((visibility("default"))) extern')
   endif
+endif
+ 
+if cc.get_id() != 'msvc' and cc.has_header('complex.h')
+  config_h_data.set('HAVE_COMPLEX_H', true)
 endif
 
 configure_file(output : 'config.h', configuration : config_h_data)
