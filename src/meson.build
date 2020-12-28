@@ -50,7 +50,7 @@ prdata_sources = files(
     'pr_data.c'
 )
 
-prdata_lib = shared_library(
+prdata_lib = static_library(
   'prdata',
   libprdata_sources,
   dependencies: xraylib_build_dep,
