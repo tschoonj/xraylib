@@ -11,6 +11,20 @@ on:
       - master
 
 jobs:
+  visual-studio:
+    timeout-minutes: 60
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: BSFishy/meson-build@v1.0.1
+      with:
+        action: test
+
   msys2:
     timeout-minutes: 60
     strategy:
