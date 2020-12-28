@@ -1104,6 +1104,7 @@ int main(int argc, char *argv[])
 	  return 1;
   }
 
+  XRayInit();
   XRayInitFromPath(argv[1]);
 
   filePtr = fopen(argv[2], "w");
