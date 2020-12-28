@@ -28,6 +28,8 @@ extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 #define NAME_PER_LINE 4
 
 void XRayInit(void);
+void XRayInitFromPath(char *path);
+
 FILE *filePtr;
 
 #define PR_CUBED(DIM1MAX, DIM2MAX, DIM3MAX, ARRNAME) \
@@ -1090,16 +1092,21 @@ void print_intvec(int arrmax, int *arr)
 }
 
 
-int main(void)
+int main(int argc, char *argv[])
 {
 
   int i,j,k, Z;
   Crystal_Struct* crystal;
   Crystal_Atom* atom;
 
-  XRayInit();
+  if (argc != 3) {
+	  fprintf(stderr, "Invoke this program with the xraylib source root directory as first argument and destination file as second argument!\n");
+	  return 1;
+  }
 
-  filePtr = fopen(OUTFILE, "w");
+  XRayInitFromPath(argv[1]);
+
+  filePtr = fopen(argv[2], "w");
   if(filePtr == NULL) {
     perror("file open");
   }

@@ -71,3 +71,4 @@ xraylib.spec
 *ppu
 *.pyc
 .DS_Store
+meson-build
