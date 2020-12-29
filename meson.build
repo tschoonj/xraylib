@@ -84,5 +84,6 @@ configure_file(output : 'config.h', configuration : config_h_data)
 m_dep = cc.find_library('m', required : false)
 xraylib_build_dep = [m_dep]
 
+subdir('include')
 subdir('src')
 subdir('tests')
