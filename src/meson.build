@@ -121,3 +121,8 @@ xraylib_lib_dep = declare_dependency(
   include_directories: extra_include_dirs,
   dependencies: xraylib_build_dep,
 )
+
+swig_interface = files('xraylib.i')
+
+src_source_dir = meson.current_source_dir()
+src_build_dir = meson.current_build_dir()

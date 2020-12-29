@@ -1,0 +1,5 @@
+option('python-bindings', type: 'feature', value: 'auto', description: 'Build classic Python bindings')
+option('python-numpy-bindings', type: 'feature', value: 'auto', description: 'Build numpy Python bindings')
+option('swig', type : 'string', value : 'swig', description: 'Path to swig executable')
+option('python', type : 'string', value : 'python3', description: 'Python interpreter to compile bindings for')
+option('cython', type : 'string', value : 'cython', description: 'Cython to use for generating C glue code')

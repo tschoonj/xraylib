@@ -1,4 +1,8 @@
-project('xraylib', ['c'], version:'4.0.0', license: 'BSD')
+project('xraylib',
+    ['c'],
+    meson_version: '>= 0.53.0',
+    version:'4.0.0',
+    license: 'BSD')
 
 # versioning stuff -> maintain compatibility with libtool!
 # # a) If binary compatibility has been broken (eg removed or changed interfaces)
@@ -34,8 +38,11 @@ config_h_data.set_quoted('VERSION', meson.project_version())
 funcs = [
   'strdup',
   '_strdup',
-  'strndup',
 ]
+
+if host_system != 'windows'
+    funcs += ['strndup']
+endif
 
 foreach f : funcs
   if cc.has_function(f)
@@ -64,7 +71,6 @@ endforeach
 # Detect and set symbol visibility
 if get_option('default_library') != 'static'
   if host_system == 'windows' or host_system == 'cygwin'
-    config_h_data.set('WIN32', true)
     if cc.get_id() == 'msvc' or cc.get_id() == 'clang-cl'
       config_h_data.set('XRL_EXTERN', '__declspec(dllexport) extern')
     elif cc.has_argument('-fvisibility=hidden')
@@ -87,3 +93,19 @@ xraylib_build_dep = [m_dep]
 subdir('include')
 subdir('src')
 subdir('tests')
+
+if not (get_option('python-bindings').disabled() and get_option('python-numpy-bindings').disabled())
+    pymod = import('python')
+    python = pymod.find_installation(get_option('python'), required: false, modules: ['numpy',])
+
+    if not python.found() or python.language_version().version_compare('< 3.6')
+        if get_option('python-bindings').enabled() or get_option('python-numpy-bindings').enabled()
+            error('No suitable Python installation was found. The Python bindings cannot not be built')
+        else
+            warning('No suitable Python installation was found. The Python bindings cannot not be built')
+        endif
+    else
+        python_dep = python.dependency()
+        subdir('python')
+    endif
+endif

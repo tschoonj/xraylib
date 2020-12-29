@@ -14,21 +14,42 @@ jobs:
   visual-studio:
     timeout-minutes: 60
     runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [ '3.6', '3.7', '3.8', '3.9']
+        # don't know why but cl.exe does not like the Cython generated code with python < 3.8
+        include:
+          - numpy: enabled
+          - python-version: 3.6
+            numpy: disabled
+          - python-version: 3.7
+            numpy: disabled
+    name: Visual Studio with Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v2
-    - name: Setup python
-      uses: actions/setup-python@v1
+    - uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: 3.8
+        auto-update-conda: true
+        channels: conda-forge
+        python-version: ${{ matrix.python-version }}
+    - name: Install meson, ninja, numpy and cython
+      run: |
+        conda install -q -y meson ninja numpy cython swig
     - uses: ilammy/msvc-dev-cmd@v1
-    - uses: BSFishy/meson-build@v1.0.1
-      with:
-        action: test
+    - name: Build with meson
+      run: |
+        meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
+        ninja -C builddir
+        ninja -C builddir test
+        ninja -C builddir dist
 
   msys2:
     timeout-minutes: 60
     strategy:
       matrix:
+        buildsystem:
+          - autotools
+          - meson
         cc:
           - clang
           - gcc
@@ -66,6 +87,7 @@ jobs:
           mingw-w64-x86_64-curl
           mingw-w64-x86_64-cython
           mingw-w64-x86_64-python3-numpy
+          mingw-w64-x86_64-meson
           automake
           autoconf
           make
@@ -73,7 +95,24 @@ jobs:
           wget
           tar
     - uses: actions/checkout@v2
+    - name: Build and test with Meson
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+
+        mkdir build
+        cd build
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        ninja test
+        ninja dist
+
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
     - name: Build and test with Autotools
+      if: matrix.buildsystem == 'autotools'
       run: |
         set -ex
 
@@ -111,6 +150,9 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
+        buildsystem:
+          - autotools
+          - meson
         compiler:
           - llvm
           - gcc
@@ -131,7 +173,7 @@ jobs:
         brew uninstall -f bazel bazelisk
         brew update
         brew upgrade
-        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby@2.6 fpc lua perl php@7.4 bash numpy
+        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby@2.6 fpc lua perl php@7.4 bash numpy meson ninja
         set +ex
       env:
         HOMEBREW_CURL_RETRIES: 5
@@ -140,7 +182,25 @@ jobs:
       run: |
         /usr/local/bin/pip3 install Cython
 
+    - name: Build and test with Meson
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+
+        mkdir build
+        cd build
+        meson -Dpython=/usr/local/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        ninja test
+        ninja dist
+
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+  
     - name: Build with Autotools
+      if: matrix.buildsystem == 'autotools'
       run: |
         set -ex
         autoreconf -fi

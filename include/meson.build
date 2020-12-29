@@ -13,3 +13,5 @@ xraylib_headers = files(
 )
 
 install_headers(xraylib_headers, subdir: 'xraylib')
+
+include_source_dir = meson.current_source_dir()
