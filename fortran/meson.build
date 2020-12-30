@@ -6,6 +6,7 @@ xraylib_fortran_lib = library(
     darwin_versions: darwin_versions,
     dependencies: [xraylib_lib_dep],
     install: true,
+    include_directories: include_directories('.'),
     link_language: 'fortran',
 )
 

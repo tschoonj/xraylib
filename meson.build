@@ -1,6 +1,6 @@
 project('xraylib',
     ['c'],
-    meson_version: '>= 0.55.0',
+    meson_version: '>= 0.56.0',
     version:'4.0.0',
     license: 'BSD')
 

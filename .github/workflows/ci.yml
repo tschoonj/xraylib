@@ -321,17 +321,40 @@ jobs:
   linux:
     timeout-minutes: 60
     strategy:
+      fail-fast: false
       matrix:
         image: 
           - ubuntu:bionic
           - ubuntu:focal
+          - ubuntu:devel
           - debian:buster
+          - debian:sid
           - centos:7
           - centos:8
           - fedora:latest
+          - fedora:rawhide
         cc:
           - clang
           - gcc
+        buildsystem:
+          - autotools
+          - meson
+        exclude:
+          - image: ubuntu:bionic
+            buildsystem: meson
+          - image: ubuntu:focal
+            buildsystem: meson
+          - image: debian:buster
+            buildsystem: meson
+          - image: centos:7
+            buildsystem: meson
+          - image: centos:8
+            buildsystem: meson
+          - image: fedora:latest
+            buildsystem: meson
+          # autoconf doesnt like the rawhide shell
+          - image: fedora:rawhide
+            buildsystem: autotools
         include:
           # at least some versions of clang cannot compile php bindings
           - cython: cython
@@ -370,7 +393,11 @@ jobs:
             lua: /usr/bin/lua5.3
           - image: ubuntu:focal
             lua: /usr/bin/lua5.3
+          - image: ubuntu:devel
+            lua: /usr/bin/lua5.3
           - image: debian:buster
+            lua: /usr/bin/lua5.3
+          - image: debian:sid
             lua: /usr/bin/lua5.3
           - image: centos:7
             lua: /usr/bin/lua
@@ -384,6 +411,21 @@ jobs:
       image: ${{ matrix.image }}
 
     steps:
+    - name: Install Git
+      if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
+      run: |
+        set -ex
+        apt-get --yes --force-yes update
+        apt-get --yes --force-yes install git
+        set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    - name: Install Git
+      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora')
+      run: |
+        set -ex
+        yum install -y git
+        set +ex
     - uses: actions/checkout@v2
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
@@ -392,6 +434,14 @@ jobs:
         apt-get --yes --force-yes update
         apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk clang
         pip3 install Cython
+        set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    - name: Install ubuntu dependencies Meson and Ninja
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian'))
+      run: |
+        set -ex
+        apt-get --yes --force-yes install meson ninja-build
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -421,7 +471,30 @@ jobs:
         javac -version
         which javac
         set +ex
-    - name: Build and test
+    - name: Install RHEL dependencies Meson and Ninja
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora'))
+      run: |
+        set -ex
+        yum install -y meson ninja-build
+        set +ex
+    - name: Build and test with Meson
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+        mkdir build
+        cd build
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        ninja test
+        ninja dist
+        set +ex
+      env:
+        CYTHON: ${{matrix.cython}}
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        LIBS: ${{matrix.libs}}
+    - name: Build and test with Autotools
+      if: matrix.buildsystem == 'autotools'
       run: |
         set -ex
         autoreconf -fi
