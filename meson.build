@@ -1,6 +1,6 @@
 project('xraylib',
     ['c'],
-    meson_version: '>= 0.53.0',
+    meson_version: '>= 0.55.0',
     version:'4.0.0',
     license: 'BSD')
 
@@ -107,5 +107,77 @@ if not (get_option('python-bindings').disabled() and get_option('python-numpy-bi
     else
         python_dep = python.dependency()
         subdir('python')
+    endif
+endif
+
+if not get_option('fortran-bindings').disabled()
+    if add_languages('fortran', required: get_option('fortran-bindings'), native: false)
+    	fc = meson.get_compiler('fortran')
+
+    	c_loc_test = '''
+MODULE f2003_test
+USE, INTRINSIC ::ISO_C_BINDING
+
+TYPE, BIND(C) :: test_C
+	INTEGER (C_INT) :: arrayLen
+	TYPE (C_PTR) :: cpointer
+ENDTYPE
+
+TYPE :: test_F
+	INTEGER (C_INT), DIMENSION(:), POINTER :: fpointer
+ENDTYPE
+
+INTERFACE
+	FUNCTION foo (bar,morebar) BIND(C,NAME='foo')
+		USE, INTRINSIC ::ISO_C_BINDING
+		IMPLICIT NONE
+		REAL (KIND=C_DOUBLE) :: foo
+		INTEGER (KIND=C_INT), INTENT(IN) :: bar
+		REAL (KIND=C_DOUBLE), INTENT(IN) :: morebar
+	ENDFUNCTION foo
+	FUNCTION strlen(s) BIND(C,NAME='strlen')
+		USE, INTRINSIC ::ISO_C_BINDING
+		IMPLICIT NONE
+		CHARACTER (KIND=C_CHAR),DIMENSION(*) :: s
+		INTEGER (C_SIZE_T) :: strlen
+	ENDFUNCTION
+ENDINTERFACE
+ENDMODULE f2003_test
+PROGRAM f2003_main
+USE f2003_test
+IMPLICIT NONE
+
+CHARACTER (LEN=10,KIND=C_CHAR) :: string = C_CHAR_'123456789' // C_NULL_CHAR
+TYPE (test_C) :: tester_C
+TYPE (test_F) :: tester_F
+
+
+
+IF (strlen(string) /= 9) THEN
+	CALL EXIT(1)
+ELSE
+	CALL EXIT(0)
+ENDIF
+
+!next line should produce a compile-time error when using g95
+CALL C_F_POINTER(tester_C%cpointer,tester_F%fpointer,[tester_C%arrayLen])
+
+!use c_loc
+tester_C%cpointer = C_LOC(tester_F%fpointer(1))
+
+
+ENDPROGRAM f2003_main
+'''
+
+    	if fc.compiles(c_loc_test)
+            subdir('fortran')
+        else
+            if get_option('fortran-bindings').enabled()
+    		    error('The Fortran compiler does not support the required 2003 standard features')
+            else
+    		    warning('The Fortran compiler does not support the required 2003 standard features')
+            endif
+    	endif
+
     endif
 endif

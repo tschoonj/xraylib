@@ -1,3 +1,4 @@
+option('fortran-bindings', type: 'feature', value: 'auto', description: 'Build Fortran 2003 bindings')
 option('python-bindings', type: 'feature', value: 'auto', description: 'Build classic Python bindings')
 option('python-numpy-bindings', type: 'feature', value: 'auto', description: 'Build numpy Python bindings')
 option('swig', type : 'string', value : 'swig', description: 'Path to swig executable')
