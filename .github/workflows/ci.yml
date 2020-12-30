@@ -157,6 +157,10 @@ jobs:
           - llvm
           - gcc
         include:
+          - ldflags: ""
+          - compiler: llvm
+            buildsystem: Meson
+            ldflags: -L/usr/local/opt/llvm/lib
           # at least some versions of clang cannot compile php bindings
           - compiler: llvm
             cc: /usr/local/opt/llvm/bin/clang
@@ -198,6 +202,7 @@ jobs:
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
+        LDFLAGS: ${{matrix.ldflags}}
   
     - name: Build with Autotools
       if: matrix.buildsystem == 'autotools'

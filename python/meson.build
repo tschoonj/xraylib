@@ -57,6 +57,7 @@ endif
 
 if not get_option('python-numpy-bindings').disabled()
     cython = find_program(get_option('cython'), 'cython', 'cython3', 'cython-3', 'cython' + python.language_version(), 'cython-' + python.language_version(), required : false)
+    openmp_dep = dependency('openmp', language: 'c', required: false)
     if cython.found()
         xraylib_np_c = custom_target('xraylib_np_c',
             output : 'xraylib_np.c',
@@ -72,7 +73,7 @@ if not get_option('python-numpy-bindings').disabled()
             ],
         )
         xraylib_np_ext = python.extension_module('xraylib_np', xraylib_np_c,
-            dependencies : [python_dep, xraylib_lib_dep],
+            dependencies : [python_dep, xraylib_lib_dep, openmp_dep],
             include_directories: extra_include_dirs,
             install: true,
             install_dir: python.get_install_dir(pure: false),
