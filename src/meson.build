@@ -5,13 +5,19 @@ core_c_args = [
 
 xraylib_error_flags = [
   '-Werror=implicit-function-declaration',
-  '-Werror=deprecated',
-  '-Werror=deprecated-declarations',
   '-Werror=implicit',
   '-Werror=unused-function',
   '-Werror=parentheses',
   '-Werror=unused-result',
 ]
+
+# clang-cl really doesnt like posix functions like strerror etc
+if cc.get_id() != 'clang-cl'
+    xraylib_error_flags += [
+        '-Werror=deprecated',
+        '-Werror=deprecated-declarations',
+    ]
+endif
 
 xraylib_error_flags = cc.get_supported_arguments(xraylib_error_flags)
 

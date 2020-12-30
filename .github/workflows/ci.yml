@@ -17,14 +17,19 @@ jobs:
     strategy:
       matrix:
         python-version: [ '3.6', '3.7', '3.8', '3.9']
+        compiler:
+          - cl
+          - clang-cl
         # don't know why but cl.exe does not like the Cython generated code with python < 3.8
         include:
           - numpy: enabled
           - python-version: 3.6
             numpy: disabled
+            compiler: cl
           - python-version: 3.7
             numpy: disabled
-    name: Visual Studio with Python ${{ matrix.python-version }}
+            compiler: cl
+    name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v2
     - uses: conda-incubator/setup-miniconda@v2
@@ -42,6 +47,9 @@ jobs:
         ninja -C builddir
         ninja -C builddir test
         ninja -C builddir dist
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
 
   msys2:
     timeout-minutes: 60

@@ -81,7 +81,7 @@ if get_option('default_library') != 'static'
   endif
 endif
  
-if cc.get_id() != 'msvc' and cc.has_header('complex.h')
+if cc.get_id() not in ['msvc', 'clang-cl'] and cc.has_header('complex.h')
   config_h_data.set('HAVE_COMPLEX_H', true)
 endif
 
