@@ -19,3 +19,4 @@ dist_check_SCRIPTS = \
 endif
 
 TESTS = $(dist_check_SCRIPTS)
+EXTRA_DIST = meson.build

@@ -103,7 +103,7 @@ jobs:
           wget
           tar
     - uses: actions/checkout@v2
-    - name: Build and test with Meson
+    - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
@@ -119,7 +119,24 @@ jobs:
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
-    - name: Build and test with Autotools
+    - name: Secondary build with Autotools 
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+        cd build/meson-dist/
+        TARBALL=$(ls *.tar.xz)
+        tar xfJ $TARBALL
+        cd ${TARBALL%.tar.xz}
+        autoreconf -fi
+        ./configure --enable-python --disable-ruby
+        make
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        CYTHON: cython
+        PYTHON: python3
+    - name: Primary build and test with Autotools
       if: matrix.buildsystem == 'autotools'
       run: |
         set -ex
@@ -144,7 +161,7 @@ jobs:
         ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
         make
         make check
-        make distclean
+        make dist
 
         set +ex
       env:
@@ -152,6 +169,23 @@ jobs:
         CXX: ${{matrix.cxx}}
         CYTHON: cython
         PYTHON: python3
+    
+    - name: Secondary build with Meson
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
+        export PATH=${HOME}/.local/bin:${PATH}
+        TARBALL=$(ls *.tar.gz)
+        tar xfz $TARBALL
+        cd ${TARBALL%.tar.gz}
+        mkdir build-meson
+        cd build-meson
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
 
   macos:
     timeout-minutes: 60
@@ -166,13 +200,11 @@ jobs:
           - gcc
         include:
           - ldflags: ""
-          - compiler: llvm
-            buildsystem: Meson
-            ldflags: -L/usr/local/opt/llvm/lib
           # at least some versions of clang cannot compile php bindings
           - compiler: llvm
             cc: /usr/local/opt/llvm/bin/clang
             cxx: /usr/local/opt/llvm/bin/clang++
+            ldflags: -L/usr/local/opt/llvm/lib
           - compiler: gcc
             cc: gcc-10
             cxx: g++-10
@@ -194,7 +226,7 @@ jobs:
       run: |
         /usr/local/bin/pip3 install Cython
 
-    - name: Build and test with Meson
+    - name: Primary Build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
@@ -211,7 +243,23 @@ jobs:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
         LDFLAGS: ${{matrix.ldflags}}
-  
+    - name: Secondary build with Autotools 
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+        cd build/meson-dist/
+        TARBALL=$(ls *.tar.xz)
+        tar xfJ $TARBALL
+        cd ${TARBALL%.tar.xz}
+        autoreconf -fi
+        ./configure --enable-python SHELL=${SHELL} PYTHON=/usr/local/bin/python3
+        make
+        make check
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        SHELL: /usr/local/bin/bash
     - name: Build with Autotools
       if: matrix.buildsystem == 'autotools'
       run: |
@@ -252,6 +300,23 @@ jobs:
         CXX: ${{matrix.cxx}}
         SHELL: /usr/local/bin/bash
         XRL_PYTHON3: /usr/local/bin/python3
+    - name: Secondary build with Meson
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
+        export PATH=${HOME}/.local/bin:${PATH}
+        TARBALL=$(ls *.tar.gz)
+        tar xfz $TARBALL
+        cd ${TARBALL%.tar.gz}
+        mkdir build-meson
+        cd build-meson
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        LDFLAGS: ${{matrix.ldflags}}
 
   linux:
     timeout-minutes: 60

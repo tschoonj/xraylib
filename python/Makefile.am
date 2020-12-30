@@ -60,4 +60,4 @@ if ENABLE_PYTHON
 SUBDIRS = tests
 endif
 
-EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx pyfragments.swg
+EXTRA_DIST = xraylib_np_c.pxd xraylib_np.pyx pyfragments.swg meson.build
