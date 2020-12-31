@@ -1,0 +1,88 @@
+# get numpy header location
+numpy_include_script = '''
+import numpy
+print(numpy.get_include())
+'''
+
+rv = run_command(get_option('python'), '-c', numpy_include_script,)
+if rv.returncode() != 0
+  error('Could not retrieve numpy include location. Please check that numpy has been installed.')
+endif
+numpy_header_location = rv.stdout().strip()
+
+python_error_flags = [
+  '-Wno-error=cpp',
+  '-Wno-error=attributes',
+  '-Wno-error=deprecated-declarations',
+  '-Wno-error=unreachable-code',
+  '-Wno-error=ignored-optimization-argument',
+]
+
+python_error_flags = cc.get_supported_arguments(python_error_flags)
+
+pydir = meson.current_build_dir()
+
+if not get_option('python-bindings').disabled()
+    swig = find_program(get_option('swig'), 'swig', required : get_option('python-bindings'))
+    if swig.found()
+        xraylib_wrap_c = custom_target('xraylib_wrap_c',
+            output : ['xraylib_wrap.c', 'xraylib.py'],
+            input : swig_interface,
+            depend_files : xraylib_headers,
+            command : [
+                swig,
+                '-DVERSION=\'@0@\''.format(meson.project_version()),
+                '-includeall',
+                '-I@0@'.format(include_source_dir),
+                '-I@0@'.format(src_source_dir),
+                '-o', '@OUTPUT0@',
+                '-python',
+                '-py3',
+                '@INPUT@',
+                ],
+            install_dir: [false, python.get_install_dir(pure: false)],
+            install: true,
+        )
+        xraylib_ext = python.extension_module('_xraylib', xraylib_wrap_c[0],
+            dependencies : [python_dep, xraylib_lib_dep],
+            include_directories: extra_include_dirs,
+            install: true,
+            install_dir: python.get_install_dir(pure: false),
+            c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+        )
+        subdir('tests')
+    endif
+
+endif
+
+if not get_option('python-numpy-bindings').disabled()
+    cython = find_program(get_option('cython'), 'cython', 'cython3', 'cython-3', 'cython' + python.language_version(), 'cython-' + python.language_version(), required : false)
+    deps = [python_dep, xraylib_lib_dep]
+    # lld-link doesnt find the openmp import libraries
+    if cc.get_id() != 'clang-cl'
+      deps += [dependency('openmp', language: 'c', required: false)]
+    endif
+    if cython.found()
+        xraylib_np_c = custom_target('xraylib_np_c',
+            output : 'xraylib_np.c',
+            input : 'xraylib_np.pyx',
+            depend_files : 'xraylib_np_c.pxd',
+            command : [
+                cython,
+                '-X',
+                'language_level=3,boundscheck=False,wraparound=False,cdivision=True',
+                '@INPUT@',
+                '-o',
+                '@OUTPUT@',
+            ],
+        )
+        xraylib_np_ext = python.extension_module('xraylib_np', xraylib_np_c,
+            dependencies : deps,
+            include_directories: extra_include_dirs,
+            install: true,
+            install_dir: python.get_install_dir(pure: false),
+            c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+        )
+
+    endif
+endif

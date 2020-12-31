@@ -1,0 +1,26 @@
+extraction:
+  cpp:
+    configure:
+      command:
+        - autoreconf -fi
+        - ./configure
+    index:
+      build_command:
+        - make
+        - make check TESTS=
+
+  java:
+    prepare:
+      packages:
+        - autoconf
+        - automake
+        - libtool
+    index:
+      build_command:
+        - autoreconf -fi
+        - mkdir build
+        - cd build
+        - ../configure --enable-java
+        - make
+        - make check TESTS=
+

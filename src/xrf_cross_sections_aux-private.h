@@ -1,3 +1,6 @@
+#ifndef XRAYLIB_XRF_CROSS_SECTION_AUX_PRIVATE_H
+#define XRAYLIB_XRF_CROSS_SECTION_AUX_PRIVATE_H
+
 /*
  * The following methods are not visible outside the library!
  */
@@ -24,3 +27,5 @@ double PM4_get_cross_sections_constant_full(int Z, int shell);
 
 double PM5_get_cross_sections_constant_auger_only(int Z, int shell);
 double PM5_get_cross_sections_constant_full(int Z, int shell);
+
+#endif

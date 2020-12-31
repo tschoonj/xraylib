@@ -155,11 +155,11 @@ int main(int argc, char **argv) {
 	current_ncrystals = nCrystals;
 
 	for (i = 0 ; i < CRYSTALARRAY_MAX ; i++) {
-		char *name = NULL;
-		assert(asprintf(&name, "Diamond copy %d", i) > 0);
+		char name[100];
+		assert(snprintf(name, 100, "Diamond copy %d", i) > 0);
 		cs_copy = Crystal_MakeCopy(cs, &error);
 		free(cs_copy->name);
-		cs_copy->name = name;
+		cs_copy->name = xrl_strdup(name);
 		rv = Crystal_AddCrystal(cs_copy, NULL, &error);
 		if (current_ncrystals < CRYSTALARRAY_MAX) {
 			assert(rv == 1);
@@ -211,25 +211,25 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 
 	/* Q_scattering_amplitude */
-	tmp = Q_scattering_amplitude(cs, 10.0, 1, 1, 1, M_PI/4.0, &error);
+	tmp = Q_scattering_amplitude(cs, 10.0, 1, 1, 1, PI/4.0, &error);
 	assert(error == NULL);
 	assert(fabs(tmp - 0.19184445408324474) < 1E-6);
 
-	tmp = Q_scattering_amplitude(NULL, 10.0, 1, 1, 1, M_PI/4, &error);
+	tmp = Q_scattering_amplitude(NULL, 10.0, 1, 1, 1, PI/4, &error);
 	assert(tmp == 0.0);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, CRYSTAL_NULL) == 0);
 	xrl_clear_error(&error);
 
-	tmp = Q_scattering_amplitude(cs, -10.0, 1, 1, 1, M_PI/4, &error);
+	tmp = Q_scattering_amplitude(cs, -10.0, 1, 1, 1, PI/4, &error);
 	assert(tmp == 0.0);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
 	assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
 	xrl_clear_error(&error);
 
-	tmp = Q_scattering_amplitude(cs, 10.0, 0, 0, 0, M_PI/4, &error);
+	tmp = Q_scattering_amplitude(cs, 10.0, 0, 0, 0, PI/4, &error);
 	assert(tmp == 0.0);
 	assert(error == NULL);
 

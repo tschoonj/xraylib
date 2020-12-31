@@ -135,7 +135,7 @@ public class compoundData implements compoundDataBase {
       else if (nbrackets > 0) {
 
       }
-      else if (nbrackets == 0 && Character.isUpperCase(csa[i])) {
+      else if (Character.isUpperCase(csa[i])) {
         nuppers++;
         upper_locs.add(i);
       }
@@ -335,23 +335,6 @@ public class compoundData implements compoundDataBase {
     public compoundAtom(int Element, double nAtoms) {
       this.Element = Element;
       this.nAtoms = nAtoms;
-    }
-
-    @Override
-    public boolean equals(Object object2) {
-      if (object2 == null) {
-        return false;
-      }
-      else if (object2 instanceof compoundAtom &&
-          this.Element == ((compoundAtom) object2).Element) {
-        return true;
-      }
-      else if (object2 instanceof Integer &&
-          this.Element == (Integer) object2) {
-        return true;
-      }
-
-      return false; 
     }
   }
 

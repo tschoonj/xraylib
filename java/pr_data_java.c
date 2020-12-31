@@ -31,6 +31,7 @@ extern double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 #define NAME_PER_LINE 4
 
 void XRayInit(void);
+void XRayInitFromPath(char *path);
 FILE *f;
 
 #define PR_MATD(ARRNAME) \
@@ -950,7 +951,7 @@ void print_intvec(int arrmax, int *arr)
 }
 
 
-int main(void)
+int main(int argc, char *argv[])
 {
 
   int i,j;
@@ -969,7 +970,13 @@ int main(void)
   double kev2angst = KEV2ANGST;
   double r_e = R_E;
 
+  if (argc != 2) {
+	  fprintf(stderr, "Invoke this program with the xraylib source root directory as only argument!\n");
+	  return 1;
+  }
+
   XRayInit();
+  XRayInitFromPath(argv[1]);
 
   f = fopen(OUTFILE, "w");
   if(f == NULL) {

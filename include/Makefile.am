@@ -11,3 +11,5 @@ xraylibinclude_HEADERS = 	xraylib.h \
 				xraylib-radionuclides.h \
 				xraylib-error.h \
 				xraylib-deprecated.h
+
+EXTRA_DIST = meson.build

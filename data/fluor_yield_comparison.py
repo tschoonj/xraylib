@@ -1,5 +1,4 @@
 import numpy as np
-import xraylib as xrl
 import xraylib_np as xrl_np
 import matplotlib.pyplot as plt
 from matplotlib import gridspec

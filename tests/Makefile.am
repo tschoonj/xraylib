@@ -129,6 +129,8 @@ test_nist_compounds_LDADD = ../src/libxrl.la
 test_radionuclides_SOURCES = test-radionuclides.c
 test_radionuclides_LDADD = ../src/libxrl.la
 
+EXTRA_DIST = meson.build
+
 clean-local:
 	rm -rf test-error.dSYM
 

@@ -43,7 +43,7 @@ xraylib-$(VERSION).jar: xraylib.dat $(java_source)
 	$(srcdir)/gradlew build sourcesJar javadocJar -x test
 
 xraylib.dat: prdata_java$(EXEEXT)
-	$(AM_V_GEN) XRAYLIB_DIR=${top_srcdir} $(WINE) ./prdata_java$(EXEEXT)
+	$(AM_V_GEN) $(WINE) ./prdata_java$(EXEEXT) ${top_srcdir}
 
 clean-local:
 	rm -rf xraylib-$(VERSION).jar xraylib-$(VERSION)-javadoc.jar xraylib-$(VERSION)-sources.jar  xraylib.dat com build .gradle META-INF xrlexample7.class prdata_java.dSYM
