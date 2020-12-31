@@ -112,7 +112,6 @@ libxrl_sources = shared_sources + [xrayglob_inline] + files(
 xraylib_lib = library(
   'xrl',
   libxrl_sources,
-  name_prefix: 'lib', # also on MSVC!
   version: version,
   darwin_versions: darwin_versions,
   dependencies: xraylib_build_dep,
@@ -132,3 +131,11 @@ swig_interface = files('xraylib.i')
 
 src_source_dir = meson.current_source_dir()
 src_build_dir = meson.current_build_dir()
+
+pkgconfig.generate(
+    xraylib_lib,
+    name: 'xraylib',
+    description: 'xraylib provides access to x-ray related physical data',
+    filebase: 'libxrl',
+    subdirs: ['xraylib'],
+)
