@@ -20,5 +20,6 @@ pkgconfig.generate(
 )
 
 # need to setup post install script for mod file
+meson.add_install_script('install_fortran_mod.py')
 
 subdir('tests')
