@@ -10,6 +10,7 @@ xraylib_headers = files(
     'xraylib-radionuclides.h',
     'xraylib-error.h',
     'xraylib-deprecated.h',
+    'xraylib-aux.h',
 )
 
 install_headers(xraylib_headers, subdir: 'xraylib')
