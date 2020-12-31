@@ -6,3 +6,4 @@ if ENABLE_CXX
 SUBDIRS = tests
 endif
 
+EXTRA_DIST = meson.build

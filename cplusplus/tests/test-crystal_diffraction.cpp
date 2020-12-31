@@ -14,6 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #ifdef NDEBUG
   #undef NDEBUG
 #endif
+#define _USE_MATH_DEFINES
 #include "xraylib++.h"
 #include "xraylib-error-private.h"
 #include <cmath>

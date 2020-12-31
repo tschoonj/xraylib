@@ -1,8 +1,11 @@
 project('xraylib',
-    ['c'],
+    'c',
     meson_version: '>= 0.56.0',
     version:'4.0.0',
-    license: 'BSD')
+    license: 'BSD',
+    default_options: ['cpp_std=c++11',]
+)
+
 
 # versioning stuff -> maintain compatibility with libtool!
 # # a) If binary compatibility has been broken (eg removed or changed interfaces)
@@ -95,6 +98,7 @@ pkgconfig = import('pkgconfig')
 subdir('include')
 subdir('src')
 subdir('tests')
+subdir('cplusplus')
 
 if not (get_option('python-bindings').disabled() and get_option('python-numpy-bindings').disabled())
     pymod = import('python')

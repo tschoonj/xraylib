@@ -36,3 +36,5 @@ test_nist_compounds_LDADD = ../../src/libxrl.la
 
 test_crystal_diffraction_SOURCES = test-crystal_diffraction.cpp
 test_crystal_diffraction_LDADD = ../../src/libxrl.la
+
+EXTRA_DIST = meson.build
