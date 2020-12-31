@@ -1,5 +1,9 @@
 extraction:
   cpp:
+    configure:
+      command:
+        - autoreconf -fi
+        - ./configure
     index:
       build_command:
         - make

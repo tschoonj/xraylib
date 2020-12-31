@@ -32,4 +32,4 @@ SUBDIRS = tests
 
 endif
 
-EXTRA_DIST = xraylib_wrap_generated.F90
+EXTRA_DIST = xraylib_wrap_generated.F90 meson.build install_fortran_mod.py

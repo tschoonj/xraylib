@@ -66,3 +66,5 @@ clean-local:
 	rm -f libtest.mod
 
 endif
+
+EXTRA_DIST = meson.build

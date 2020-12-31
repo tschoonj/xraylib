@@ -31,15 +31,17 @@ double Auger_Transition_Individual[ZMAX+1][AUGERNUM];
 
 void ArrayInit(void);
 
+void XRayInit(void) {
 
-void XRayInit(void)
+}
+
+void XRayInitFromPath(char *path)
 {
 
   char XRayLibDir[MAXFILENAMESIZE];
   FILE *fp;
   char file_name[MAXFILENAMESIZE];
   char shell_name[25], line_name[25], trans_name[5], auger_name[10];
-  char *path;
   int Z, iE;
   int i, ex, stat;
   int shell, line, trans, auger;
@@ -62,17 +64,17 @@ void XRayInit(void)
 
   /* Define XRayLibDir */
 
-  if ((path = getenv("XRAYLIB_DIR")) == NULL) {
-    if ((path = getenv("HOME")) == NULL) {
-      fprintf(stderr, "Environment variables XRAYLIB_DIR and HOME not defined");
+  if (path == NULL) {
+      fprintf(stderr, "path cannot be NULL!");
       exit(1);
-    }
-    strcpy(XRayLibDir, path);
-    strcat(XRayLibDir, "/.xraylib/data/");
   }
   else {
     strcpy(XRayLibDir, path);
+#ifdef _WIN32
+    strcat(XRayLibDir, "\\data\\");
+#else
     strcat(XRayLibDir, "/data/");
+ #endif
   }
 
   ArrayInit();
