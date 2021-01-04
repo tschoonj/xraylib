@@ -87,7 +87,7 @@ double Q_scattering_amplitude(Crystal_Struct* crystal, double energy,
  */
 
 XRL_EXTERN
-int Atomic_Factors (int Z, double energy, double q, double debye_factor, double* f0, double* f_primep, double* f_prime2, xrl_error **error);
+int Atomic_Factors (int Z, double energy, double q, double debye_factor, double *f0, double *f_primep, double *f_prime2, xrl_error **error);
 
 /*--------------------------------------------------------------------------------
  * Compute F_H

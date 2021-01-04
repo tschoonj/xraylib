@@ -37,19 +37,18 @@ shared_sources = files(
     'splint.c',
     'splint.h',
     'xraylib-aux.c',
-    'xraylib-aux.h',
     'xraylib-error.c',
     'xraylib-error-private.h',
     'xrayglob.h',
     'xrayvars.c',
     'xrayvars.h',
-    'xrf_cross_sections_aux-private.h',
-    'xrf_cross_sections_aux-private.c',
 )
 
 libprdata_sources = shared_sources + files(
     'xrayglob.c',
     'xrayfiles.c',
+    'xrf_cross_sections_aux-private.h',
+    'xrf_cross_sections_aux-private.c',
 )
 
 prdata_sources = files(

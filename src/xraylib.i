@@ -61,7 +61,6 @@ __version__ = VERSION
 
 XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #include "xraylib.h"
-#include "xraylib-aux.h"
 #include "xrf_cross_sections_aux.h"
 
 

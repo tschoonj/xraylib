@@ -747,7 +747,7 @@ if test x$CXX_FULL != "xnone" ; then
 	AC_CHECK_HEADERS([cstdio cstdlib], ,[CXX=""])
 	AC_LANG_POP([C++])
 	if test x$CXX != x ; then
-		AC_MSG_NOTICE([C++ example enabled])
+		AC_MSG_NOTICE([C++ example and tests enabled])
 		AC_SUBST(CXX)
 	fi
 fi
@@ -1045,6 +1045,8 @@ AC_CONFIG_FILES([Makefile
 				 src/Makefile
 				 include/Makefile
 				 example/Makefile
+				 cplusplus/Makefile
+				 cplusplus/tests/Makefile
 				 idl/Makefile
 				 python/Makefile
 				 doc/Makefile

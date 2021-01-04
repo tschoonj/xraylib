@@ -13,6 +13,7 @@
 
 SUBDIRS = include \
 	  src \
+	  cplusplus \
 	  idl \
 	  python \
 	  doc \
