@@ -150,11 +150,11 @@ int main(int argc, char **argv) {
     }
 
     /* 1 int, 2 double */
-    res = xrlpp::DCS_Rayl(26, 10.0, M_PI_4);
+    res = xrlpp::DCS_Rayl(26, 10.0, 0.7853981633974483);
     assert(fabs(res - 0.17394691) < 1.0e-6);
 
     try {
-        xrlpp::DCS_Rayl(185, 10.0, M_PI_4);
+        xrlpp::DCS_Rayl(185, 10.0, 0.7853981633974483);
         abort();
     }
     catch (std::invalid_argument &e) {
@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
     }
 
     try {
-        xrlpp::DCS_Rayl(26, -10.0, M_PI_4);
+        xrlpp::DCS_Rayl(26, -10.0, 0.7853981633974483);
         abort();
     }
     catch (std::invalid_argument &e) {
@@ -178,11 +178,11 @@ int main(int argc, char **argv) {
     }
 
     /* 1 int, 3 double */
-    res = xrlpp::DCSP_Rayl(26, 10.0, M_PI_2, M_PI_4);
+    res = xrlpp::DCSP_Rayl(26, 10.0, 1.5707963267948966, 0.7853981633974483);
     assert(fabs(res - 0.044355521) < 1.0e-9);
 
     try {
-        xrlpp::DCSP_Rayl(185, 10.0, M_PI_2, M_PI_4);
+        xrlpp::DCSP_Rayl(185, 10.0, 1.5707963267948966, 0.7853981633974483);
         abort();
     }
     catch (std::invalid_argument &e) {
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
     }
 
     try {
-        xrlpp::DCSP_Rayl(26, -10.0, M_PI_2, M_PI_4);
+        xrlpp::DCSP_Rayl(26, -10.0, 1.5707963267948966, 0.7853981633974483);
         abort();
     }
     catch (std::invalid_argument &e) {
@@ -198,7 +198,7 @@ int main(int argc, char **argv) {
     }
 
     try {
-        xrlpp::DCSP_Rayl(26, 10.0, -5., M_PI_4);
+        xrlpp::DCSP_Rayl(26, 10.0, -5., 0.7853981633974483);
         abort();
     }
     catch (std::invalid_argument &e) {
