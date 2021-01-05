@@ -241,6 +241,9 @@ int main(int argc, char **argv) {
     res = xrlpp::Refractive_Index_Re("H2O", 1.0, 1.0);
     assert(fabs(res - 0.999763450676632) < 1E-9);
 
+    res = xrlpp::Refractive_Index_Re(std::string("H2O"), 1.0, 1.0);
+    assert(fabs(res - 0.999763450676632) < 1E-9);
+
     try {
         xrlpp::Refractive_Index_Re("", 1.0, 1.0);
         abort();

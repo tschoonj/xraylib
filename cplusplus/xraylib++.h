@@ -24,15 +24,22 @@ using _radioNuclideDataPod = struct radioNuclideData;
 using _compoundDataNISTPod = struct compoundDataNIST;
 
 
-// Macro to be used below
 #define _XRL_FUNCTION(_name) \
     template<typename... T> \
+    double _name(const std::string &compound, const T... args) { \
+        xrl_error *error = nullptr; \
+        double rv = ::_name(compound.c_str(), args..., &error); \
+        _process_error(error); \
+        return rv; \
+    } \
+    template<typename ...T> \
     double _name(const T... args) { \
         xrl_error *error = nullptr; \
         double rv = ::_name(args..., &error); \
         _process_error(error); \
         return rv; \
     }
+
 
 namespace xrlpp {
     void _process_error(xrl_error *error) {
