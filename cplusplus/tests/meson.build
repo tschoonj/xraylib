@@ -6,6 +6,7 @@ tests = [
 	'nist-compounds',
 	'radionuclides',
 	'refractive_indices',
+        'xrl_functions',
 ]
 
 foreach _test : tests
