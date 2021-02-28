@@ -44,9 +44,9 @@ jobs:
     - name: Build with meson
       run: |
         meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
-        ninja -C builddir
-        ninja -C builddir test
-        ninja -C builddir dist
+        ninja -v -C builddir
+        ninja -v -C builddir test
+        # ninja -v -C builddir dist
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
@@ -326,7 +326,7 @@ jobs:
         image: 
           - ubuntu:bionic
           - ubuntu:focal
-          - ubuntu:devel
+          # - ubuntu:devel currently broken
           - debian:buster
           - debian:sid
           - centos:7
@@ -393,8 +393,8 @@ jobs:
             lua: /usr/bin/lua5.3
           - image: ubuntu:focal
             lua: /usr/bin/lua5.3
-          - image: ubuntu:devel
-            lua: /usr/bin/lua5.3
+          #- image: ubuntu:devel
+          #  lua: /usr/bin/lua5.3
           - image: debian:buster
             lua: /usr/bin/lua5.3
           - image: debian:sid
