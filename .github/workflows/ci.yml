@@ -44,9 +44,9 @@ jobs:
     - name: Build with meson
       run: |
         meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
-        ninja -C builddir
-        ninja -C builddir test
-        ninja -C builddir dist
+        ninja -v -C builddir
+        ninja -v -C builddir test
+        # ninja -v -C builddir dist
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
