@@ -129,6 +129,11 @@ AC_DEFUN([AX_RUBY_EXT],[
                 if test -z "$RUBY_EXT_CPPFLAGS" ; then
                         [RUBY_EXT_CPPFLAGS=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG["CPPFLAGS"]'`];
                 fi
+                case "$RUBY_EXT_CC" in
+                    *fdeclspec*)
+                        [RUBY_EXT_CPPFLAGS="$RUBY_EXT_CPPFLAGS -fdeclspec"]
+                    ;;
+                esac
                 AC_MSG_RESULT([$RUBY_EXT_CPPFLAGS])
                 AC_SUBST(RUBY_EXT_CPPFLAGS)
 
