@@ -205,9 +205,12 @@ jobs:
             cc: /usr/local/opt/llvm/bin/clang
             cxx: /usr/local/opt/llvm/bin/clang++
             ldflags: -L/usr/local/opt/llvm/lib
+            enable_ruby: enable
           - compiler: gcc
             cc: gcc-10
             cxx: g++-10
+            # -fdeclspec is only supported by llvm's clang!
+            enable_ruby: disable
     steps:
     - uses: actions/checkout@v2
     - name: Install Homebrew dependencies
@@ -217,7 +220,7 @@ jobs:
         brew uninstall -f bazel bazelisk
         brew update
         brew upgrade
-        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby@2.6 fpc lua perl php@7.4 bash numpy meson ninja
+        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby fpc lua perl php@7.4 bash numpy meson ninja
         set +ex
       env:
         HOMEBREW_CURL_RETRIES: 5
@@ -267,7 +270,7 @@ jobs:
         autoreconf -fi
 
         # Build without python
-        ./configure --disable-python --disable-python-numpy --disable-ruby --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --enable-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL} RUBY=/usr/local/opt/ruby@2.6/bin/ruby
+        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --${{matrix.enable_ruby}}-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL} RUBY=/usr/local/opt/ruby/bin/ruby
         make
         make check || (cat perl/tests/test-suite.log && exit 1)
         make distclean
@@ -292,7 +295,7 @@ jobs:
 
         # Run make distcheck
         ./configure
-        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} RUBY=/usr/local/opt/ruby@2.6/bin/ruby
+        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} DISTCHECK_CONFIGURE_FLAGS="--${{matrix.enable_ruby}}-ruby" RUBY=/usr/local/opt/ruby/bin/ruby
 
         set +ex
       env:
