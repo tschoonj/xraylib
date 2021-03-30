@@ -14,11 +14,9 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 package com.github.tschoonj.xraylib;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
-import java.util.Locale.Category;
-import java.lang.Double;
 
 /** 
  *  
