@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2015-2019, Tom Schoonjans
+Copyright (c) 2015-2021, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -14,16 +14,14 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 package com.github.tschoonj.xraylib;
 
 import java.io.DataInputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.lang.Math;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.text.Format;
+
 import org.apache.commons.math3.complex.Complex;
 
 
@@ -40,6 +38,7 @@ public class Xraylib {
 
   static {
     try {
+      new GoogleAnalyticsThread().start();
       XRayInit();
     }
     catch (Exception e){

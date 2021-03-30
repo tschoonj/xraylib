@@ -1,4 +1,4 @@
-#Copyright (c) 2014-2018 Tom Schoonjans
+#Copyright (c) 2014-2021 Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -18,7 +18,91 @@ cimport cython.parallel
 
 np.import_array()
 
-__version__ = xrl.__version__
+__version__ = xrl.__version__.decode("utf-8")
+
+import urllib
+import os
+import http.client
+import uuid
+from uuid import UUID
+import platform
+from pathlib import Path
+import threading
+
+def __valid_uuid(_uuid):
+    try:
+        a = UUID(_uuid)
+    except ValueError:
+        return False
+    return True
+
+def __send_google_analytics_launch_event():
+    GOOGLE_ANALYTICS_ENDPOINT = "https://www.google-analytics.com/collect"
+    GOOGLE_ANALYTICS_TRACKING_ID = "UA-42595764-5"
+    GOOGLE_ANALYTICS_APPLICATION_NAME = "xraylib"
+    GOOGLE_ANALYTICS_APPLICATION_VERSION = __version__
+    GOOGLE_ANALYTICS_HIT_TYPE = "event"
+
+    payload = dict(
+        v=1, # protocol version
+	    tid=GOOGLE_ANALYTICS_TRACKING_ID, # tracking id
+	    t=GOOGLE_ANALYTICS_HIT_TYPE, # hit type
+	    an=GOOGLE_ANALYTICS_APPLICATION_NAME, # app name
+	    av=GOOGLE_ANALYTICS_APPLICATION_VERSION, # app version
+    )
+
+    if 'CI' in os.environ:
+        payload['cid'] = '60220817-0a15-49ce-b581-9cab2b225e7d' # our default UUID for CI
+        payload['ec'] = 'CI-python_np'
+    else:
+        if os.name == 'nt':
+            import winreg
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, r'Software\xraylib\ga_conf') as _key:
+                try:
+                    _uuid = winreg.QueryValueEx(_key, 'uuid')[0]
+                    if not __valid_uuid(_uuid):
+                        raise Exception("Invalid UUID")
+                except Exception as e:
+                    _uuid = str(uuid.uuid4())
+                    winreg.SetValueEx(_key, 'uuid', 0, winreg.REG_SZ, _uuid)
+        else:
+            try:
+                f = Path('~', '.config', 'xraylib', 'ga.conf').expanduser()
+                f.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+                if f.exists():
+                    if f.is_file():
+                        _uuid = f.read_text().strip()
+                        if not __valid_uuid(_uuid):
+                            _uuid = str(uuid.uuid4())
+                            f.write_text(_uuid)
+                    else:
+                        return
+                else:
+                    _uuid = str(uuid.uuid4())
+                    f.write_text(_uuid)
+            except:
+                pass
+
+        payload['cid'] = _uuid
+        payload['ec'] = 'python_np'
+
+    payload['ea'] = 'import'
+    payload['el'] = 'xraylib-{}-Python-{}-{}'.format(__version__, platform.python_version(), platform.platform())
+    payload['ua'] = "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14"
+
+    try:
+        data = urllib.parse.urlencode(payload).encode()
+        connection = http.client.HTTPSConnection('www.google-analytics.com')
+        connection.request('POST', '/collect', data)
+        response = connection.getresponse()
+    except:
+        pass
+
+threading.Thread(target=__send_google_analytics_launch_event).start()
+
+
+
+
 XRAYLIB_MAJOR = xrl.XRAYLIB_MAJOR
 XRAYLIB_MINOR = xrl.XRAYLIB_MINOR
 AVOGNUM = xrl.AVOGNUM

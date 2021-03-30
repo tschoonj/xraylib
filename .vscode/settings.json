@@ -12,5 +12,7 @@
         "**/.project": true,
         "**/.settings": true,
         "**/.factorypath": true
-    }
+    },
+    "java.saveActions.organizeImports": true,
+    "javascript.suggest.paths": false
 }
