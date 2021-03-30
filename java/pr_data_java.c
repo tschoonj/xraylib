@@ -1086,9 +1086,6 @@ int main(int argc, char *argv[])
   PR_MATD(EdgeEnergy_Kissel);
 
   PR_NUMVEC1D(NE_Photo_Total_Kissel, "NE_Photo_Total_Kissel");
-  PR_DYNMATD(NE_Photo_Total_Kissel,E_Photo_Total_Kissel,"E_Photo_Total_Kissel");
-  PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel,"Photo_Total_Kissel");
-  PR_DYNMATD(NE_Photo_Total_Kissel,Photo_Total_Kissel2,"Photo_Total_Kissel2");
 
   PR_MATI(NE_Photo_Partial_Kissel);
   PR_DYNMAT_3DD_K(NE_Photo_Partial_Kissel, E_Photo_Partial_Kissel, "E_Photo_Partial_Kissel");
