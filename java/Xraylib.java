@@ -246,9 +246,6 @@ public class Xraylib {
       EdgeEnergy_Kissel_arr = readDoubleArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
 
       NE_Photo_Total_Kissel_arr = readIntArray(ZMAX +1, byte_buffer);
-      E_Photo_Total_Kissel_arr = readDoubleArrayOfArrays(NE_Photo_Total_Kissel_arr, byte_buffer);
-      Photo_Total_Kissel_arr = readDoubleArrayOfArrays(NE_Photo_Total_Kissel_arr, byte_buffer);
-      Photo_Total_Kissel_arr2 = readDoubleArrayOfArrays(NE_Photo_Total_Kissel_arr, byte_buffer);
 
       //NE_Photo_Partial_Kissel_arr = readIntArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
       int[] temp_arr = readIntArray((ZMAX + 1) * SHELLNUM_K, byte_buffer);
@@ -1134,7 +1131,6 @@ public class Xraylib {
    */
   public static double AugerRate(int Z, int auger_trans) {
     double rv;
-    double yield, yield2;
 
     rv = 0.0;
 
@@ -2258,13 +2254,6 @@ public class Xraylib {
         return 0.0;
       }
     }
-    public double PM5_cascade_kissel_catch(int Z, double E, double PK, double PL1, double PL2, double PL3, double PM1, double PM2, double PM3, double PM4) {
-      try {
-        return PM5_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4);
-      } catch (IllegalArgumentException e) {
-        return 0.0;
-      }
-    }
   }
 
   private static final class CS_FluorLine_Kissel_Radiative_CascadeImpl extends CS_FluorLine_Cascade_Body {
@@ -2783,7 +2772,6 @@ public class Xraylib {
     double lE, rr;
     double tmp = 0.0, tmp1 = 0.0, tmp2 = 0.0;
     int i;
-    int temp_line;
   
     if (Z < 1 || Z > ZMAX) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -3877,9 +3865,6 @@ public class Xraylib {
   private static double[][] Fii_arr2;
 
   private static int[] NE_Photo_Total_Kissel_arr;
-  private static double[][] E_Photo_Total_Kissel_arr;
-  private static double[][] Photo_Total_Kissel_arr;
-  private static double[][] Photo_Total_Kissel_arr2;
 
   private static double[] Electron_Config_Kissel_arr;
   private static double[] EdgeEnergy_Kissel_arr;
@@ -5651,13 +5636,9 @@ public class Xraylib {
   };
 
   private static final int KL1 = -KL1_LINE - 1;
-  private static final int KL2 = -KL2_LINE - 1;
   private static final int KL3 = -KL3_LINE - 1;
   private static final int KM1 = -KM1_LINE - 1;
-  private static final int KM2 = -KM2_LINE - 1;
-  private static final int KM3 = -KM3_LINE - 1;
   private static final int KP5 = -KP5_LINE - 1;
-
 
   private Xraylib() {
     // intentionally empty constructor

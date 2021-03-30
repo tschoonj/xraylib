@@ -31,7 +31,6 @@ public class compoundData implements compoundDataBase {
   public final double nAtomsAll;
   public final double[] nAtoms;
   public final double molarMass;
-  private final String compoundString;
   private final String formattedCompoundString;
  
   @Override
@@ -47,7 +46,6 @@ public class compoundData implements compoundDataBase {
    * @param  compoundString the chemical formula that will be parsed
    */
   public compoundData(String compoundString) {
-    this.compoundString = compoundString;
     ArrayList<compoundAtom> ca = new ArrayList<>();
    
     Locale old_locale = Locale.getDefault(Locale.Category.FORMAT); 
