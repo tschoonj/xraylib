@@ -9,16 +9,13 @@ buildscript {
 }
 
 plugins {
+    id 'java-library'
     id 'com.adarshr.test-logger' version '1.7.0'
     id 'maven-publish'
-
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'signing'
 }
 
-apply plugin: 'java'
-apply plugin: 'java-library'
 apply plugin: 'biz.aQute.bnd.builder'
-
 
 version = '4.0.0'
 group = 'com.github.tschoonj'
@@ -136,22 +133,18 @@ publishing {
             }
         }
     }
-}
-
-bintray {
-    user = 'tschoonj'
-    key = System.getenv('BINTRAY_KEY')
-    pkg {
-        repo = 'maven'
-        name = 'xraylib'
-        userOrg = 'tschoonj'
-        licenses = ['BSD 3-Clause']
-        vcsUrl = 'https://github.com/tschoonj/xraylib.git'
-        version {
-            name = project.version
-            released  = new Date()
+    repositories {
+        maven {
+            name = 'Sonatype'
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username System.getenv('SONATYPE_USERNAME')
+                password System.getenv('SONATYPE_PASSWORD')
+            }
         }
     }
-    // Upload the 'maven' publication i.e jar, sourcesJar, javadocJar, POM
-    publications = ['maven']
+}
+
+signing {
+    sign publishing.publications.maven
 }

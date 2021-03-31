@@ -57,8 +57,8 @@ check-local:
 publishToMavenLocal:
 	$(srcdir)/gradlew publishToMavenLocal
 
-bintrayUpload:
-	$(srcdir)/gradlew bintrayUpload
+publish:
+	$(srcdir)/gradlew publish
 
 endif
 
