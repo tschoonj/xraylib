@@ -21,6 +21,7 @@ public class TestFluorYield {
 		return Stream.of(
 			arguments(82, Xraylib.K_SHELL, 1.0 - Xraylib.AugerYield(82, Xraylib.K_SHELL)),
 			arguments(74, Xraylib.L3_SHELL, 0.255),
+			arguments(50, Xraylib.L1_SHELL, 0.036),
 			arguments(82, Xraylib.M3_SHELL, 0.0050475)
 		);
 	}
