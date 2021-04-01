@@ -19,7 +19,7 @@ public class TestCosKron {
 	static Stream<Arguments> goodValuesProvider() {
 		return Stream.of(
 			arguments(92, Xraylib.FL13_TRANS, 0.620),
-			arguments(75, Xraylib.FL12_TRANS, 1.6E-1),
+			arguments(75, Xraylib.FL12_TRANS, 1.03E-1),
 			arguments(86, Xraylib.FM45_TRANS, 6E-2),
 			arguments(109, Xraylib.FM45_TRANS, 1.02E-1),
 			arguments(92, Xraylib.FM45_TRANS, 0.088)

@@ -32,6 +32,10 @@ int main(int argc, char **argv) {
 	assert(error == NULL);
 	assert(fabs(yield - 0.0050475) < 1E-6);
 	
+	yield = FluorYield(74, L3_SHELL, &error);
+	assert(error == NULL);
+	assert(fabs(yield - 0.255) < 1E-6);
+	
 	yield = FluorYield(-35, K_SHELL, &error);
 	assert(yield == 0.0);
 	assert(error != NULL);

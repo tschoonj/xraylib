@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 
 	coskron = CosKronTransProb(75, FL12_TRANS, &error);
 	assert(error == NULL);
-	assert(fabs(coskron - 1.6E-1) < 1E-6);
+	assert(fabs(coskron - 1.03E-1) < 1E-6);
 
 	coskron = CosKronTransProb(86, FM45_TRANS, &error);
 	assert(error == NULL);
