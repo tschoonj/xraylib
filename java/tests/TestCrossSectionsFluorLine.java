@@ -40,9 +40,9 @@ public class TestCrossSectionsFluorLine {
 		return Stream.of(
 			arguments(26, Xraylib.L3M5_LINE, 10.0, Xraylib.UNAVAILABLE_CK),
 			arguments(0, Xraylib.KL3_LINE, 10.0, Xraylib.Z_OUT_OF_RANGE),
-			arguments(Xraylib.ZMAX, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
+			arguments(Xraylib.ZMAX, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(Xraylib.ZMAX + 1, Xraylib.KL3_LINE, 10.0, Xraylib.Z_OUT_OF_RANGE),
-			arguments(1, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
+			arguments(1, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(92, Xraylib.M5N7_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(26, Xraylib.KL3_LINE, 0.0, Xraylib.NEGATIVE_ENERGY),
 			arguments(92, Xraylib.L3M5_LINE, 10.0, Xraylib.TOO_LOW_EXCITATION_ENERGY),

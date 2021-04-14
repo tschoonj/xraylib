@@ -2477,10 +2477,25 @@ public class Xraylib {
     return CS_FluorLine_Kissel_no_Cascade(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  public static double Jump_from_K(int Z, double E) {
+    double edgeK = EdgeEnergy(Z, K_SHELL);
+    double Factor;
+    if (E > edgeK && edgeK > 0.0) {
+      double yield;
+      double JumpK = JumpFactor(Z, K_SHELL);
+      yield = FluorYield(Z, K_SHELL);
+      Factor = ((JumpK - 1)/JumpK) * yield;
+    }
+    else {
+      throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
+    }
+    return Factor;
+  }
+
   private static double Jump_from_L1(int Z, double E) {
     double Factor = 1.0, JumpL1, JumpK;
     double edgeK = EdgeEnergy_catch(Z, K_SHELL);
-    double edgeL1 = EdgeEnergy_catch(Z, L1_SHELL);
+    double edgeL1 = EdgeEnergy(Z, L1_SHELL);
     double yield;
 
     if (E > edgeK && edgeK > 0.0) {
@@ -2514,7 +2529,7 @@ public class Xraylib {
     double TaoL1 = 0.0, TaoL2 = 0.0;
     double edgeK = EdgeEnergy_catch(Z, K_SHELL);
     double edgeL1 = EdgeEnergy_catch(Z, L1_SHELL);
-    double edgeL2 = EdgeEnergy_catch(Z, L2_SHELL);
+    double edgeL2 = EdgeEnergy(Z, L2_SHELL);
     double ck_L12, yield;
 
     if (E > edgeK && edgeK > 0.0) {
@@ -2567,7 +2582,7 @@ public class Xraylib {
     double edgeK = EdgeEnergy_catch(Z, K_SHELL);
     double edgeL1 = EdgeEnergy_catch(Z, L1_SHELL);
     double edgeL2 = EdgeEnergy_catch(Z, L2_SHELL);
-    double edgeL3 = EdgeEnergy_catch(Z, L3_SHELL);
+    double edgeL3 = EdgeEnergy(Z, L3_SHELL);
     double ck_L23, ck_L13, ck_LP13, ck_L12;
     double yield;
 
@@ -2658,20 +2673,28 @@ public class Xraylib {
      }
   }
 
+  private static double Jump_from_K_catch(int Z, double E) {
+     try {
+       return Jump_from_K(Z, E);
+     } catch (IllegalArgumentException e) {
+       return 0.0;
+     }
+  }
+
   /** 
-   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section for all lines that may originate from the provided shell.
    * 
    * This method used the jump factor approximation to calculate the photoionization cross section,
-   * which is only support for K- and L-lines.
+   * which is only supported for K- and L-lines.
    * 
    * @param Z The atomic number
-   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
    * @param E The energy of the photon, expressed in keV.
    * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
    */
-  public static double CS_FluorLine(int Z, int line, double E) {
-    double JumpK;
-    double cs_line, Factor = 1.0;
+  public static double CS_FluorShell(int Z, int shell, double E) {
+    double cs = 0.0;
+    double Factor = 0.0;
 
     if (Z < 1 || Z > ZMAX) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -2681,50 +2704,70 @@ public class Xraylib {
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
     }
 
+    switch (shell) {
+      case K_SHELL:
+        Factor = Jump_from_K(Z, E);
+        break;
+      case L1_SHELL:
+        Factor = Jump_from_L1(Z, E);
+        break;
+      case L2_SHELL:
+        Factor = Jump_from_L2(Z, E);
+        break;
+      case L3_SHELL:
+        Factor = Jump_from_L3(Z, E);
+        break;
+      default:
+        throw new IllegalArgumentException(INVALID_SHELL);
+    }
+  
+    return CS_Photo(Z, E) * Factor;
+  }
+
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method used the jump factor approximation to calculate the photoionization cross section,
+   * which is only supported for K- and L-lines.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorLine(int Z, int line, double E) {
+    double Factor = 1.0;
+    double rr;
+
     if (line >= KN5_LINE && line <= KB_LINE) {
-      double edgeK = EdgeEnergy(Z, K_SHELL);
-      double cs, rr;
-      if (E > edgeK) {
-        double yield;
-        JumpK = JumpFactor(Z, K_SHELL);
-        yield = FluorYield(Z, K_SHELL);
-        Factor = ((JumpK - 1)/JumpK) * yield;
-      }
-      else {
-        throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
-      }
-
-      cs = CS_Photo(Z, E);
       rr = RadRate(Z, line);
-
-      cs_line = cs * Factor * rr;
+      Factor = CS_FluorShell(Z, K_SHELL, E);
+      return rr * Factor;
     }
     else if ((line <= L1L2_LINE && line >= L3Q1_LINE) || line == LA_LINE) {
-      double cs, rr;
-      cs = CS_Photo(Z, E);
       rr = RadRate(Z, line);
 
       if (line >= L1P5_LINE && line <= L1L2_LINE) {
-        Factor = Jump_from_L1(Z, E);
+        Factor = CS_FluorShell(Z, L1_SHELL, E);
       }
       else if (line >= L2Q1_LINE && line <= L2L3_LINE)  {
-        Factor = Jump_from_L2(Z, E);
+        Factor = CS_FluorShell(Z, L2_SHELL, E);
       }
       /*
        * it's safe to use LA_LINE since it's only composed of 2 L3-lines
        */
-      else if ((line >= L3Q1_LINE && line <= L3M1_LINE) || line == LA_LINE) {
-        Factor = Jump_from_L3(Z, E);
+      else if (line <= L3M1_LINE || line == LA_LINE) {
+        Factor = CS_FluorShell(Z, L3_SHELL, E);
       }
-      cs_line = cs * Factor * rr;
+
+      return rr * Factor;
     }
     else if (line == LB_LINE) {
       /*
        * b1->b17
        */
       double cs;
-      cs_line = 
-	Jump_from_L2_catch(Z, E) * (RadRate_catch(Z, L2M4_LINE) + RadRate_catch(Z, L2M3_LINE)) +
+      double cs_line = Jump_from_L2_catch(Z, E) * (RadRate_catch(Z, L2M4_LINE) + RadRate_catch(Z, L2M3_LINE)) +
         Jump_from_L3_catch(Z, E) * (RadRate_catch(Z, L3N5_LINE) + RadRate_catch(Z, L3O4_LINE) + RadRate_catch(Z, L3O5_LINE) + RadRate_catch(Z, L3O45_LINE) + RadRate_catch(Z, L3N1_LINE) + RadRate_catch(Z, L3O1_LINE) + RadRate_catch(Z, L3N6_LINE) + RadRate_catch(Z, L3N7_LINE) + RadRate_catch(Z, L3N4_LINE)) +
         Jump_from_L1_catch(Z, E) * (RadRate_catch(Z, L1M3_LINE) + RadRate_catch(Z, L1M2_LINE) + RadRate_catch(Z, L1M5_LINE) + RadRate_catch(Z, L1M4_LINE));
 
@@ -2732,13 +2775,11 @@ public class Xraylib {
         throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
       }
       cs = CS_Photo(Z, E);
-      cs_line *= cs;
+      return cs_line * cs;
     }
     else {
       throw new IllegalArgumentException(INVALID_LINE);
     }
-  
-    return cs_line;
   }
 
   private static double LineEnergyComposed(int Z, int line1, int line2) {
@@ -2929,6 +2970,21 @@ public class Xraylib {
    */
   public static double CSb_FluorLine(int Z, int line, double E) {
     return CS_FluorLine(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
+  }
+
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section for all lines that may originate from the provided shell.
+   * 
+   * This method used the jump factor approximation to calculate the photoionization cross section,
+   * which is only supported for K- and L-lines.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell(int Z, int shell, double E) {
+    return CS_FluorShell(Z, shell, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
   /** 

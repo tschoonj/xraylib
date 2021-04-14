@@ -88,7 +88,7 @@ public class TestCrossSectionsBarns {
 			double cs = barns.execute(Xraylib.ZMAX, Xraylib.KL3_LINE, 10.0);
 		});
 		exc.printStackTrace();
-		assertEquals(exc.getMessage(), Xraylib.INVALID_SHELL);
+		assertEquals(exc.getMessage(), Xraylib.INVALID_LINE);
 
 		exc = assertThrows(IllegalArgumentException.class, () -> {
 			double cs = barns.execute(26, -500, 10.0);

@@ -34,6 +34,8 @@ function EdgeEnergy(Z:longint; shell:longint):double;
 function JumpFactor(Z:longint; shell:longint):double;
 function CS_FluorLine(Z:longint; line:longint; E:double):double;
 function CSb_FluorLine(Z:longint; line:longint; E:double):double;
+function CS_FluorShell(Z:longint; shell:longint; E:double):double;
+function CSb_FluorShell(Z:longint; shell:longint; E:double):double;
 function RadRate(Z:longint; line:longint):double;
 function ComptonEnergy(E0:double; theta:double):double;
 function Fi(Z:longint; E:double):double;

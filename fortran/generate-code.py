@@ -39,6 +39,8 @@ XRL_FUNCTIONS = {
     'JumpFactor': {'Z': int, 'shell': int},
     'CS_FluorLine': {'Z': int, 'line': int, 'E': float},
     'CSb_FluorLine': {'Z': int, 'line': int, 'E': float},
+    'CS_FluorShell': {'Z': int, 'shell': int, 'E': float},
+    'CSb_FluorShell': {'Z': int, 'shell': int, 'E': float},
     'RadRate': {'Z': int, 'line': int},
     'ComptonEnergy': {'E0': float, 'theta': float},
     'Fi': {'Z': int, 'E': float},

@@ -544,6 +544,38 @@ begin
     result := rv
 end;
 
+function CS_FluorShell_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell';
+
+function CS_FluorShell(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell';
+
+function CSb_FluorShell(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
 function RadRate_C(Z:longint; line:longint; error:PPxrl_error):double;cdecl;external External_library name 'RadRate';
 
 function RadRate(Z:longint; line:longint):double;

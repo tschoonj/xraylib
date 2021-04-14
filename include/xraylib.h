@@ -234,6 +234,12 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error);
 XRL_EXTERN
 double CSb_FluorLine(int Z, int line, double E, xrl_error **error);
 
+/* Fluorescence cross sections for an entire shell */
+XRL_EXTERN
+double CS_FluorShell(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell(int Z, int shell, double E, xrl_error **error);
+
 /* Fractional radiative rate */
 XRL_EXTERN
 double RadRate(int Z, int line, xrl_error **error);

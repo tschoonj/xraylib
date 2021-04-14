@@ -75,6 +75,8 @@ cdef extern from "xraylib.h" nogil:
     double DCSP_KN(double arg1, double arg2, double arg3, xrl_error **error)
     double CS_FluorLine(int arg1, double arg2, double arg3, xrl_error **error)
     double CSb_FluorLine(int arg1, double arg2, double arg3, xrl_error **error)
+    double CS_FluorShell(int arg1, double arg2, double arg3, xrl_error **error)
+    double CSb_FluorShell(int arg1, double arg2, double arg3, xrl_error **error)
     double CS_Photo_Partial(int arg1, double arg2, double arg3, xrl_error **error)
     double CSb_Photo_Partial(int arg1, double arg2, double arg3, xrl_error **error)
     double CS_FluorLine_Kissel(int arg1, double arg2, double arg3, xrl_error **error)

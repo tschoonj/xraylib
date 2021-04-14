@@ -70,6 +70,14 @@ double CSb_FluorLine(int Z, int line, double E, xrl_error **error) {
 	return cs * aw / AVOGNUM;
 }
 
+double CSb_FluorShell(int Z, int shell, double E, xrl_error **error) {
+	double cs = CS_FluorShell(Z, shell, E, error);
+	if (cs == 0.0)
+		return 0.0;
+	INIT
+	return cs * aw / AVOGNUM;
+}
+
 double DCSb_Rayl(int Z, double E, double theta, xrl_error **error) {
 	double cs = DCS_Rayl(Z, E, theta, error);
 	if (cs == 0.0)

@@ -506,10 +506,12 @@ namespace xrlpp {
     _XRL_FUNCTION(CSb_FluorLine_Kissel_Nonradiative_Cascade)
     _XRL_FUNCTION(CS_FluorLine_Kissel_Radiative_Cascade)
     _XRL_FUNCTION(CSb_FluorLine_Kissel_Radiative_Cascade)
-    /* 1 int, 2 double */
     _XRL_FUNCTION(CS_FluorLine)
-    _XRL_FUNCTION(CS_Photo_Partial)
     _XRL_FUNCTION(CSb_FluorLine)
+    _XRL_FUNCTION(CS_FluorShell)
+    _XRL_FUNCTION(CSb_FluorShell)
+    /* 1 int, 2 double */
+    _XRL_FUNCTION(CS_Photo_Partial)
     _XRL_FUNCTION(CSb_Photo_Partial)
     _XRL_FUNCTION(DCS_Compt)
     _XRL_FUNCTION(DCS_Rayl)
