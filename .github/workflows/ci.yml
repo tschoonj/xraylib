@@ -71,7 +71,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: crazy-max/ghaction-chocolatey@v1.4.1
+    - uses: crazy-max/ghaction-chocolatey@v1.4.2
       with:
         args: install innosetup lazarus
     # required for the lib command
