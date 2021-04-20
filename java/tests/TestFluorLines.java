@@ -27,9 +27,9 @@ public class TestFluorLines {
 			arguments(26, Xraylib.KA_LINE, 6.399505664957576),
 			arguments(26, Xraylib.KB_LINE, 7.058),
 			arguments(26, Xraylib.LA_LINE, 0.7045),
-			arguments(26, Xraylib.LB_LINE, 0.724374),
+			arguments(26, Xraylib.LB_LINE, 0.724378),
 			arguments(92, Xraylib.L1N67_LINE, (Xraylib.LineEnergy(92, Xraylib.L1N6_LINE) + Xraylib.LineEnergy(92, Xraylib.L1N7_LINE)) / 2.0),
-			arguments(13, Xraylib.LB_LINE, 0.1122),
+			arguments(13, Xraylib.LB_LINE, 0.112131),
 			arguments(21, Xraylib.LA_LINE, 0.3956),
 			arguments(48, Xraylib.KO_LINE, Xraylib.LineEnergy(48, Xraylib.KO1_LINE)),
 			arguments(82, Xraylib.KP_LINE, Xraylib.LineEnergy(82, Xraylib.KP1_LINE))

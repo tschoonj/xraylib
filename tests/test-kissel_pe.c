@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 	cs = CS_FluorLine_Kissel(ZMAX, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	assert(strcmp(error->message, INVALID_LINE) == 0);
 	xrl_clear_error(&error);
 
 	cs = CS_FluorLine_Kissel(ZMAX + 1, KL3_LINE, 10.0, &error);
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
 	cs = CS_FluorLine_Kissel(1, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	assert(strcmp(error->message, INVALID_LINE) == 0);
 	xrl_clear_error(&error);
 
 	/* N-lines are not supported at all due to missing RadRate/CosKronTransProb data */
@@ -144,6 +144,8 @@ int main(int argc, char **argv) {
 	cs += CS_FluorLine_Kissel(92, L3N7_LINE, 30.0, &error);
 	assert(error == NULL);
 	cs2 = CS_FluorLine_Kissel(92, LB_LINE, 30.0, NULL);
+	fprintf(stderr, "cs: %f\n", cs);
+	fprintf(stderr, "cs2: %f\n", cs2);
 	assert(fabs(cs2 - cs) < 1E-6);
 
 	/* CS_Photo_Partial tests */

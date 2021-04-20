@@ -26,13 +26,19 @@ THIS SOFTWARE IS PROVIDED BY Bruno Golosio, Antonio Brunetti, Manuel Sanchez del
 #define KP5 -(int)KP5_LINE-1
 
 static struct {int line; int shell;} lb_pairs[] = {
-  {L2M4_LINE, L2_SHELL}, /* b1 */
-  {L3N5_LINE, L3_SHELL}, /* b2 */
-  {L1M3_LINE, L1_SHELL}, /* b3 */
-  {L1M2_LINE, L1_SHELL}, /* b4 */
-  {L3O3_LINE, L3_SHELL}, /* b5 */
-  {L3O4_LINE, L3_SHELL}, /* b5 */
-  {L3N1_LINE, L3_SHELL}, /* b6 */
+  {LB1_LINE, L2_SHELL},
+  {LB2_LINE, L3_SHELL},
+  {LB3_LINE, L1_SHELL},
+  {LB4_LINE, L1_SHELL},
+  {LB5_LINE, L3_SHELL},
+  {LB6_LINE, L3_SHELL},
+  {LB7_LINE, L3_SHELL},
+  {LB9_LINE, L1_SHELL},
+  {LB10_LINE, L1_SHELL},
+  {LB15_LINE, L3_SHELL},
+  {LB17_LINE, L2_SHELL},
+  {L3N6_LINE, L3_SHELL},
+  {L3N7_LINE, L3_SHELL},
 };
 
 static double LineEnergyComposed(int Z, int line1, int line2, xrl_error **error) {

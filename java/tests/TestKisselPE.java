@@ -39,10 +39,10 @@ public class TestKisselPE {
 	static Stream<Arguments> badCSFluorLineKisselValuesProvider() {
 		return Stream.of(
 			arguments(0, Xraylib.KL3_LINE, 10.0, Xraylib.Z_OUT_OF_RANGE),
-			arguments(Xraylib.ZMAX, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
+			arguments(Xraylib.ZMAX, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(Xraylib.ZMAX + 1, Xraylib.KL3_LINE, 10.0, Xraylib.Z_OUT_OF_RANGE),
 			arguments(Xraylib.ZMAX + 1, Xraylib.KL3_LINE, 10.0, Xraylib.Z_OUT_OF_RANGE),
-			arguments(1, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
+			arguments(1, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(92, Xraylib.N1O3_LINE, 10.0, Xraylib.INVALID_LINE),
 			arguments(26, Xraylib.KL3_LINE, 0.0, Xraylib.NEGATIVE_ENERGY),
 			arguments(92, Xraylib.L3M5_LINE, 10.0, Xraylib.TOO_LOW_EXCITATION_ENERGY),
@@ -73,15 +73,28 @@ public class TestKisselPE {
 
 		// LB_LINE
 		final int[] lb_line_macros = new int[]{
-			Xraylib.LB1_LINE, Xraylib.LB2_LINE, Xraylib.LB3_LINE, Xraylib.LB4_LINE,
-			Xraylib.LB5_LINE, Xraylib.LB6_LINE, Xraylib.LB7_LINE, Xraylib.LB9_LINE,
-			Xraylib.LB10_LINE, Xraylib.LB15_LINE, Xraylib.LB17_LINE, Xraylib.L3N6_LINE,
-			Xraylib.L3N7_LINE
+    		Xraylib.LB1_LINE,
+    		Xraylib.LB2_LINE,
+    		Xraylib.LB3_LINE,
+    		Xraylib.LB4_LINE,
+    		Xraylib.LB5_LINE,
+    		Xraylib.LB6_LINE,
+    		Xraylib.LB7_LINE,
+    		Xraylib.LB9_LINE,
+    		Xraylib.LB10_LINE,
+    		Xraylib.LB15_LINE,
+    		Xraylib.LB17_LINE,
+    		Xraylib.L3N6_LINE,
+    		Xraylib.L3N7_LINE,
 		};
 
 		cs = 0.0;
 		for (int line: lb_line_macros) {
-			cs += Xraylib.CS_FluorLine_Kissel(92, line, 30.0);
+			try {
+				cs += Xraylib.CS_FluorLine_Kissel(92, line, 30.0);
+			} catch (IllegalArgumentException e) {
+				continue;
+			}
 		}
 		assertEquals(cs, Xraylib.CS_FluorLine_Kissel(92, Xraylib.LB_LINE, 30.0), 1E-6);
 

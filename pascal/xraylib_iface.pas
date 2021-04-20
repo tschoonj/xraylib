@@ -63,6 +63,16 @@ function CS_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double
 function CSb_FluorLine_Kissel_Radiative_Cascade(Z:longint; line:longint; E:double):double;
 function CS_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;
 function CSb_FluorLine_Kissel_no_Cascade(Z:longint; line:longint; E:double):double;
+function CS_FluorShell_Kissel(Z:longint; shell:longint; E:double):double;
+function CSb_FluorShell_Kissel(Z:longint; shell:longint; E:double):double;
+function CS_FluorShell_Kissel_Cascade(Z:longint; shell:longint; E:double):double;
+function CSb_FluorShell_Kissel_Cascade(Z:longint; shell:longint; E:double):double;
+function CS_FluorShell_Kissel_Nonradiative_Cascade(Z:longint; shell:longint; E:double):double;
+function CSb_FluorShell_Kissel_Nonradiative_Cascade(Z:longint; shell:longint; E:double):double;
+function CS_FluorShell_Kissel_Radiative_Cascade(Z:longint; shell:longint; E:double):double;
+function CSb_FluorShell_Kissel_Radiative_Cascade(Z:longint; shell:longint; E:double):double;
+function CS_FluorShell_Kissel_no_Cascade(Z:longint; shell:longint; E:double):double;
+function CSb_FluorShell_Kissel_no_Cascade(Z:longint; shell:longint; E:double):double;
 function PL1_pure_kissel(Z:longint; E:double):double;
 function PL1_rad_cascade_kissel(Z:longint; E:double; PK:double):double;
 function PL1_auger_cascade_kissel(Z:longint; E:double; PK:double):double;

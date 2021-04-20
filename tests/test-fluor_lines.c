@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 
 	line_energy = LineEnergy(26, LB_LINE, &error);
 	assert(error == NULL);
-	assert(fabs(line_energy - 0.724374) < 1E-6);
+	assert(fabs(line_energy - 0.724378) < 1E-6);
 
 	line_energy = LineEnergy(0, KA_LINE, &error);
 	assert(line_energy == 0.0);
@@ -140,7 +140,7 @@ int main(int argc, char **argv) {
 	xrl_clear_error(&error);
 
 	line_energy = LineEnergy(13, LB_LINE, &error);
-	assert(fabs(line_energy - 0.1122) < 1E-6);
+	assert(fabs(line_energy - 0.112131) < 1E-6);
 	assert(error == NULL);
 
 	/* test that LA_LINE starts at Z=21 */

@@ -22,21 +22,19 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include "xrf_cross_sections_aux.h"
 
 static int LB_LINE_MACROS[] = {
-  L2M4_LINE,
-  L2M3_LINE,
-  L3N5_LINE,
-  L3O4_LINE,
-  L3O5_LINE,
-  L3O45_LINE,
-  L3N1_LINE,
-  L3O1_LINE,
+  LB1_LINE,
+  LB2_LINE,
+  LB3_LINE,
+  LB4_LINE,
+  LB5_LINE,
+  LB6_LINE,
+  LB7_LINE,
+  LB9_LINE,
+  LB10_LINE,
+  LB15_LINE,
+  LB17_LINE,
   L3N6_LINE,
   L3N7_LINE,
-  L3N4_LINE,
-  L1M3_LINE,
-  L1M2_LINE,
-  L1M5_LINE,
-  L1M4_LINE
 };
 
 /*/////////////////////////////////////////////////////////
@@ -200,6 +198,10 @@ double CS_FluorLine_Kissel(int Z, int line, double E, xrl_error **error) {
   return CS_FluorLine_Kissel_Cascade(Z, line, E, error);
 }
 
+double CS_FluorShell_Kissel(int Z, int shell, double E, xrl_error **error) {
+  return CS_FluorShell_Kissel_Cascade(Z, shell, E, error);
+}
+
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
@@ -216,6 +218,13 @@ double CS_FluorLine_Kissel(int Z, int line, double E, xrl_error **error) {
 
 double CSb_FluorLine_Kissel(int Z, int line, double E, xrl_error **error) {
   double cs = CS_FluorLine_Kissel_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
+}
+
+double CSb_FluorShell_Kissel(int Z, int shell, double E, xrl_error **error) {
+  double cs = CS_FluorShell_Kissel_Cascade(Z, shell, E, error);
   if (cs == 0.0)
     return 0.0;
   return cs * AtomicWeight_arr[Z] / AVOGNUM;
@@ -322,7 +331,81 @@ double ElectronConfig(int Z, int shell, xrl_error **error) {
 //                                                                  //
 /////////////////////////////////////////////////////////////////// */
 
+static struct {int line_lower; int line_upper; int shell;} line_mappings[] = {
+  {KN5_LINE, KB_LINE, K_SHELL},
+  {L1P5_LINE, L1L2_LINE, L1_SHELL},
+  {L2Q1_LINE, L2L3_LINE, L2_SHELL},
+  {L3Q1_LINE, L3M1_LINE, L3_SHELL},
+  {M1P5_LINE, M1N1_LINE, M1_SHELL},
+  {M2P5_LINE, M2N1_LINE, M2_SHELL},
+  {M3Q1_LINE, M3N1_LINE, M3_SHELL},
+  {M4P5_LINE, M4N1_LINE, M4_SHELL},
+  {M5P5_LINE, M5N1_LINE, M5_SHELL},
+};
+
+#define CS_FLUORLINE_BODY(base) \
+  int i; \
+  \
+  if (Z < 1 || Z > ZMAX) { \
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE); \
+    return 0.0; \
+  } \
+  \
+  if (E <= 0.0) { \
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, NEGATIVE_ENERGY); \
+    return 0.0; \
+  } \
+  \
+  for (i = 0 ; i < sizeof(line_mappings)/sizeof(line_mappings[0]) ; i++) { \
+    if (line >= line_mappings[i].line_lower && line <= line_mappings[i].line_upper) { \
+      double Factor, rr; \
+      rr = RadRate(Z, line, error); \
+      if (rr == 0.0) { \
+        return 0.0; \
+      } \
+      \
+      Factor = CS_FluorShell_Kissel_ ## base(Z, line_mappings[i].shell, E, error); \
+      if (Factor == 0.0) { \
+        return 0.0; \
+      } \
+      \
+      return Factor * rr; \
+    } \
+  } \
+  \
+  /* special cases */ \
+  if (line == LA_LINE) { \
+    double Factor, rr; \
+    rr = RadRate(Z, line, error); \
+    if (rr == 0.0) { \
+      return 0.0; \
+    } \
+    \
+    Factor = CS_FluorShell_Kissel_ ## base(Z, L3_SHELL, E, error); \
+    if (Factor == 0.0) { \
+      return 0.0; \
+    } \
+    \
+    return Factor * rr; \
+  } \
+  else if (line == LB_LINE) { \
+    double rv = 0.0; \
+    for (i = 0 ; i < sizeof(LB_LINE_MACROS)/sizeof(LB_LINE_MACROS[0]) ; i++) { \
+      rv += CS_FluorLine_Kissel_ ## base(Z, LB_LINE_MACROS[i], E, NULL); \
+    } \
+    if (rv == 0.0) { \
+      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY); \
+    } \
+    return rv; \
+  } \
+  xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE); \
+  return 0.0;
+
 double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error) {
+  CS_FLUORLINE_BODY(no_Cascade)
+}
+
+double CS_FluorShell_Kissel_no_Cascade(int Z, int shell, double E, xrl_error **error) {
 
   if (Z < 1 || Z > ZMAX) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
@@ -334,62 +417,45 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     return 0.0;
   }
 
-  if (line >= KN5_LINE && line <= KB_LINE) {
-    /*
-     * K lines -> never cascade effect!
-     */
-    double cs, yield, rr;
-    cs = CS_Photo_Partial(Z, K_SHELL, E, error);
-    if (cs == 0.0)
-      return 0.0;
+  if (shell == K_SHELL) {
+    double cs, yield;
     yield = FluorYield(Z, K_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
+    cs = CS_Photo_Partial(Z, K_SHELL, E, error);
+    if (cs == 0.0)
       return 0.0;
-    return cs * yield * rr;
+    return cs * yield;
   }
-  else if (line>=L1P5_LINE && line<=L1M1_LINE) {
-    /*
-     * L1 lines
-     */
-    double yield, rr;
-    double PL1 = PL1_pure_kissel(Z, E, error);
-    if (PL1 == 0.0)
-      return 0.0;
+  else if (shell == L1_SHELL) {
+    double yield, PL1;
     yield = FluorYield(Z, L1_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
+
+    PL1 = PL1_pure_kissel(Z, E, error);
+    if (PL1 == 0.0)
       return 0.0;
-    return PL1 * yield * rr;
+    return PL1 * yield;
   }
-  else if (line >= L2Q1_LINE && line <= L2M1_LINE) {
-    /*
-     * L2 lines
-     */
-    double PL2, yield, rr;
+  else if (shell == L2_SHELL) {
+    double PL2, yield;
+    yield = FluorYield(Z, L2_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
     {
       double PL1 = PL1_pure_kissel(Z, E, NULL);
       PL2 = PL2_pure_kissel(Z, E, PL1, error);
     }
     if (PL2 == 0.0)
       return 0.0;
-    yield = FluorYield(Z, L2_SHELL, error);
+    return PL2 * yield;
+  }
+  else if (shell == L3_SHELL) {
+    double PL3, yield;
+    yield = FluorYield(Z, L3_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
-      return 0.0;
-    return PL2 * yield * rr;
-  }
-  else if (line >= L3Q1_LINE && line <= L3M1_LINE) {
-    /*
-     * L3 lines
-     */
-    double PL3, yield, rr;
     {
       double PL1, PL2;
       PL1 = PL1_pure_kissel(Z, E, NULL);
@@ -398,69 +464,36 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     }
     if (PL3 == 0.0)
       return 0.0;
-    yield = FluorYield(Z, L3_SHELL, error);
-    if (yield == 0.0)
-      return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
-      return 0.0;
-    return PL3 * yield * rr;
+    return PL3 * yield;
   }
-  else if (line == LA_LINE) {
-    double rv = CS_FluorLine_Kissel_no_Cascade(Z, L3M4_LINE, E, NULL) + CS_FluorLine_Kissel_no_Cascade(Z, L3M5_LINE, E, NULL);
-    if (rv == 0.0)
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
-    return rv; 
-  }
-  else if (line == LB_LINE) {
-    double rv = 0.0;
-    int i;
-    for (i = 0 ; i < sizeof(LB_LINE_MACROS)/sizeof(LB_LINE_MACROS[0]) ; i++)
-      rv += CS_FluorLine_Kissel_no_Cascade(Z, LB_LINE_MACROS[i], E, NULL);
-    if (rv == 0.0)
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
-    return rv; 
-  }
-  else if (line >= M1P5_LINE && line <= M1N1_LINE) {
-    /*
-     * M1 lines
-     */
-    double PM1, yield, rr;
-    PM1 = PM1_pure_kissel(Z, E, error);
-    if (PM1 == 0.0)
-      return 0.0;
+  else if (shell == M1_SHELL) {
+    double PM1, yield;
     yield = FluorYield(Z, M1_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
+    PM1 = PM1_pure_kissel(Z, E, error);
+    if (PM1 == 0.0)
       return 0.0;
-    return PM1 * yield * rr;
+    return PM1 * yield;
   }
-  else if (line >= M2P5_LINE && line <= M2N1_LINE) {
-    /*
-     * M2 lines
-     */
-    double PM2, yield, rr;
+  else if (shell == M2_SHELL) {
+    double PM2, yield;
+    yield = FluorYield(Z, M2_SHELL, error);
+    if (yield == 0.0)
+      return 0.0;
     {
       double PM1 = PM1_pure_kissel(Z, E, NULL);
       PM2 = PM2_pure_kissel(Z, E, PM1, error);
     }
     if (PM2 == 0.0)
       return 0.0;
-    yield = FluorYield(Z, M2_SHELL, error);
+    return PM2 * yield;
+  }
+  else if (shell == M3_SHELL) {
+    double PM3, yield;
+    yield = FluorYield(Z, M3_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
-      return 0.0;
-    return PM2 * yield * rr;
-  }
-  else if (line >= M3Q1_LINE && line <= M3N1_LINE) {
-    /*
-     * M3 lines
-     */
-    double PM3, yield, rr;
     {
       double PM1, PM2;
       PM1 = PM1_pure_kissel(Z, E, NULL);
@@ -469,19 +502,13 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     }
     if (PM3 == 0.0)
       return 0.0;
-    yield = FluorYield(Z, M3_SHELL, error);
+    return PM3 * yield;
+  }
+  else if (shell == M4_SHELL) {
+    double PM4, yield;
+    yield = FluorYield(Z, M4_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
-      return 0.0;
-    return PM3 * yield * rr;
-  }
-  else if (line >= M4P5_LINE && line <= M4N1_LINE) {
-    /*
-     * M4 lines
-     */
-    double PM4, yield, rr;
     {
       double PM1, PM2, PM3;
       PM1 = PM1_pure_kissel(Z, E, NULL);
@@ -491,19 +518,13 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     }
     if (PM4 == 0.0)
       return 0.0;
-    yield = FluorYield(Z, M4_SHELL, error);
+    return PM4 * yield;
+  }
+  else if (shell == M5_SHELL) {
+    double PM5, yield;
+    yield = FluorYield(Z, M5_SHELL, error);
     if (yield == 0.0)
       return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
-      return 0.0;
-    return PM4 * yield * rr;
-  }
-  else if (line >= M5P5_LINE && line <= M5N1_LINE) {
-    /*
-     * M5 lines
-     */
-    double PM5, yield, rr;
     {
       double PM1, PM2, PM3, PM4;
       PM1 = PM1_pure_kissel(Z, E, NULL);
@@ -514,21 +535,15 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     }
     if (PM5 == 0.0)
       return 0.0;
-    yield = FluorYield(Z, M5_SHELL, error);
-    if (yield == 0.0)
-      return 0.0;
-    rr = RadRate(Z, line, error);
-    if (rr == 0.0)
-      return 0.0;
-    return PM5 * yield * rr;
+    return PM5 * yield;
   }
   else {
-    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
     return 0.0;
   }  
 }
 
-#define CS_FLUORLINE_CASCADE_BODY(kind) \
+#define CS_FLUORSHELL_CASCADE_BODY(kind) \
   if (Z < 1 || Z > ZMAX) { \
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE); \
     return 0.0; \
@@ -539,27 +554,27 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     return 0.0; \
   } \
   \
-  if (line >= KN5_LINE && line <= KB_LINE) { \
+  if (shell == K_SHELL) { \
     /* \
      * K lines -> never cascade effect! \
      */ \
-    double cs, yield, rr; \
-    cs = CS_Photo_Partial(Z, K_SHELL, E, error); \
-    if (cs == 0.0) \
-      return 0.0; \
+    double cs, yield; \
     yield = FluorYield(Z, K_SHELL, error); \
     if (yield == 0.0) \
       return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
+    cs = CS_Photo_Partial(Z, K_SHELL, E, error); \
+    if (cs == 0.0) \
       return 0.0; \
-    return cs * yield * rr; \
+    return cs * yield; \
   } \
-  else if (line >= L1P5_LINE && line <= L1M1_LINE) { \
+  else if (shell == L1_SHELL) { \
     /* \
      * L1 lines \
      */ \
-    double PL1, yield, rr; \
+    double PL1, yield; \
+    yield = FluorYield(Z, L1_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -567,19 +582,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PL1 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, L1_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PL1 * yield * rr; \
+    return PL1 * yield; \
   } \
-  else if (line>=L2Q1_LINE && line<=L2M1_LINE) { \
+  else if (shell == L2_SHELL) { \
     /* \
      * L2 lines \
      */ \
-    double PL2, yield, rr; \
+    double PL2, yield; \
+    yield = FluorYield(Z, L2_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -588,19 +600,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PL2 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, L2_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PL2 * yield * rr; \
+    return PL2 * yield; \
   } \
-  else if (line>=L3Q1_LINE && line<=L3M1_LINE) { \
+  else if (shell == L3_SHELL) { \
     /* \
      * L3 lines \
      */ \
-    double PL3, yield, rr; \
+    double PL3, yield; \
+    yield = FluorYield(Z, L3_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1, PL2; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -610,34 +619,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PL3 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, L3_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PL3 * yield * rr; \
+    return PL3 * yield; \
   } \
-  else if (line == LA_LINE) { \
-    double rv = CS_FluorLine_Kissel_Radiative_Cascade(Z, L3M4_LINE, E, NULL) + CS_FluorLine_Kissel_Radiative_Cascade(Z, L3M5_LINE, E, NULL); \
-    if (rv == 0.0) \
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY); \
-    return rv;  \
-  } \
-  else if (line == LB_LINE) { \
-    double rv = 0.0; \
-    int i; \
-    for (i = 0 ; i < sizeof(LB_LINE_MACROS)/sizeof(LB_LINE_MACROS[0]) ; i++) \
-      rv += CS_FluorLine_Kissel_no_Cascade(Z, LB_LINE_MACROS[i], E, NULL); \
-    if (rv == 0.0) \
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY); \
-    return rv;  \
-  } \
-  else if (line>=M1P5_LINE && line<=M1N1_LINE) { \
+  else if (shell == M1_SHELL) { \
     /* \
      * M1 lines \
      */ \
-    double PM1, yield, rr; \
+    double PM1, yield; \
+    yield = FluorYield(Z, M1_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1, PL2, PL3; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -648,19 +639,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PM1 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, M1_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PM1 * yield * rr; \
+    return PM1 * yield; \
   } \
-  else if (line>=M2P5_LINE && line<=M2N1_LINE) { \
+  else if (shell == M2_SHELL) { \
     /* \
      * M2 lines \
      */ \
-    double PM2, yield, rr; \
+    double PM2, yield; \
+    yield = FluorYield(Z, M2_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1, PL2, PL3, PM1; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -672,19 +660,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PM2 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, M2_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PM2 * yield * rr; \
+    return PM2 * yield; \
   } \
-  else if (line>=M3Q1_LINE && line<=M3N1_LINE) { \
+  else if (shell == M3_SHELL) { \
     /* \
      * M3 lines \
      */ \
-    double PM3, yield, rr; \
+    double PM3, yield; \
+    yield = FluorYield(Z, M3_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1, PL2, PL3, PM1, PM2; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -697,19 +682,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PM3 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, M3_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PM3 * yield * rr; \
+    return PM3 * yield; \
   } \
-  else if (line>=M4P5_LINE && line<=M4N1_LINE) { \
+  else if (shell == M4_SHELL) { \
     /* \
      * M4 lines \
      */ \
-    double PM4, yield, rr; \
+    double PM4, yield; \
+    yield = FluorYield(Z, M4_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1, PL2, PL3, PM1, PM2, PM3; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -723,19 +705,16 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PM4 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, M4_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PM4 * yield * rr; \
+    return PM4 * yield; \
   } \
-  else if (line>=M5P5_LINE && line<=M5N1_LINE) { \
+  else if (shell == M5_SHELL) { \
     /* \
      * M5 lines \
      */ \
-    double PM5, yield, rr; \
+    double PM5, yield; \
+    yield = FluorYield(Z, M5_SHELL, error); \
+    if (yield == 0.0) \
+      return 0.0; \
     { \
       double PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4; \
       PK = CS_Photo_Partial(Z, K_SHELL, E, NULL); \
@@ -750,13 +729,7 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
     } \
     if (PM5 == 0.0) \
       return 0.0; \
-    yield = FluorYield(Z, M5_SHELL, error); \
-    if (yield == 0.0) \
-      return 0.0; \
-    rr = RadRate(Z, line, error); \
-    if (rr == 0.0) \
-      return 0.0; \
-    return PM5 * yield * rr; \
+    return PM5 * yield; \
   } \
   else { \
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE); \
@@ -779,7 +752,11 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
 /////////////////////////////////////////////////////////////////// */
 
 double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_error **error) {
-  CS_FLUORLINE_CASCADE_BODY(rad)
+  CS_FLUORLINE_BODY(Radiative_Cascade)
+}
+
+double CS_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E, xrl_error **error) {
+  CS_FLUORSHELL_CASCADE_BODY(rad)
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -798,7 +775,11 @@ double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_erro
 /////////////////////////////////////////////////////////////////// */
 
 double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_error **error) {
-  CS_FLUORLINE_CASCADE_BODY(auger)
+  CS_FLUORLINE_BODY(Nonradiative_Cascade)
+}
+
+double CS_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E, xrl_error **error) {
+  CS_FLUORSHELL_CASCADE_BODY(auger)
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -817,7 +798,11 @@ double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_e
 /////////////////////////////////////////////////////////////////// */
 
 double CS_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error) {
-  CS_FLUORLINE_CASCADE_BODY(full)
+  CS_FLUORLINE_BODY(Cascade)
+}
+
+double CS_FluorShell_Kissel_Cascade(int Z, int shell, double E, xrl_error **error) {
+  CS_FLUORSHELL_CASCADE_BODY(full)
 }
 
 /*////////////////////////////////////////////////////////////////////
@@ -837,6 +822,13 @@ double CS_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error)
 
 double CSb_FluorLine_Kissel_Cascade(int Z, int line, double E, xrl_error **error) {
   double cs = CS_FluorLine_Kissel_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
+}
+
+double CSb_FluorShell_Kissel_Cascade(int Z, int shell, double E, xrl_error **error) {
+  double cs = CS_FluorShell_Kissel_Cascade(Z, shell, E, error);
   if (cs == 0.0)
     return 0.0;
   return cs * AtomicWeight_arr[Z] / AVOGNUM;
@@ -864,6 +856,13 @@ double CSb_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E, xrl_
   return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
+double CSb_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E, xrl_error **error) {
+  double cs = CS_FluorShell_Kissel_Nonradiative_Cascade(Z, shell, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
+}
+
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
@@ -886,6 +885,13 @@ double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_err
   return cs * AtomicWeight_arr[Z] / AVOGNUM;
 }
 
+double CSb_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E, xrl_error **error) {
+  double cs = CS_FluorShell_Kissel_Radiative_Cascade(Z, shell, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
+}
+
 /*////////////////////////////////////////////////////////////////////
 //                                                                  //
 //                    Fluorescent line cross section (barns/atom)   //
@@ -903,6 +909,13 @@ double CSb_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E, xrl_err
 
 double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error) {
   double cs = CS_FluorLine_Kissel_no_Cascade(Z, line, E, error);
+  if (cs == 0.0)
+    return 0.0;
+  return cs * AtomicWeight_arr[Z] / AVOGNUM;
+}
+
+double CSb_FluorShell_Kissel_no_Cascade(int Z, int shell, double E, xrl_error **error) {
+  double cs = CS_FluorShell_Kissel_no_Cascade(Z, shell, E, error);
   if (cs == 0.0)
     return 0.0;
   return cs * AtomicWeight_arr[Z] / AVOGNUM;

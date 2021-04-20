@@ -2262,6 +2262,155 @@ def CSb_FluorLine_Kissel_Radiative_Cascade(
         rv[i,j,k] = xrl.CSb_FluorLine_Kissel_Radiative_Cascade(arg1[i], arg2[j], arg3[k], NULL)
     return rv
 
+def CS_FluorShell_Kissel(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CS_FluorShell_Kissel(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CSb_FluorShell_Kissel(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CSb_FluorShell_Kissel(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CS_FluorShell_Kissel_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CS_FluorShell_Kissel_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CSb_FluorShell_Kissel_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CSb_FluorShell_Kissel_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CS_FluorShell_Kissel_no_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CS_FluorShell_Kissel_no_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CSb_FluorShell_Kissel_no_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CSb_FluorShell_Kissel_no_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CS_FluorShell_Kissel_Nonradiative_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CS_FluorShell_Kissel_Nonradiative_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CSb_FluorShell_Kissel_Nonradiative_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CSb_FluorShell_Kissel_Nonradiative_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CS_FluorShell_Kissel_Radiative_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CS_FluorShell_Kissel_Radiative_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
+
+def CSb_FluorShell_Kissel_Radiative_Cascade(
+    np.ndarray[np.int_t, ndim=1] arg1 not None,
+    np.ndarray[np.int_t, ndim=1] arg2 not None,
+    np.ndarray[double, ndim=1] arg3 not None):
+    cdef int i, j, k
+    cdef int ijk
+    cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
+    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    for ijk in prange(i_max * j_max * k_max, nogil=True):
+        k = ijk % k_max
+        j = ijk // k_max % j_max
+        i = ijk // k_max // j_max
+        rv[i,j,k] = xrl.CSb_FluorShell_Kissel_Radiative_Cascade(arg1[i], arg2[j], arg3[k], NULL)
+    return rv
 
 def DCSP_Rayl(
     np.ndarray[np.int_t, ndim=1] arg1 not None,
