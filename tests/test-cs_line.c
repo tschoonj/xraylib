@@ -21,9 +21,17 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <math.h>
 #include <stdio.h>
 
+static struct {int line_lower; int line_upper; int shell;} line_mappings[] = {
+  {KP5_LINE, KL1_LINE, K_SHELL},
+  {L1P5_LINE, L1L2_LINE, L1_SHELL},
+  {L2Q1_LINE, L2L3_LINE, L2_SHELL},
+  {L3Q1_LINE, L3M1_LINE, L3_SHELL},
+};
+
 int main(int argc, char **argv) {
 	xrl_error *error = NULL;
-	double cs, cs2;
+	double cs, cs2, rr;
+	int i, j;
 
 	cs = CS_FluorLine(29, L3M5_LINE, 10.0, &error);
 	assert(error == NULL);
@@ -149,6 +157,75 @@ int main(int argc, char **argv) {
 	assert(error == NULL);
 	cs2 = CS_FluorLine(92, LB_LINE, 30.0, NULL);
 	assert(fabs(cs2 - cs) < 1E-6);
+
+	/* FluorShell tests */
+	cs = CS_FluorShell(0, K_SHELL, 10.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(ZMAX, K_SHELL, 10.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(ZMAX + 1, K_SHELL, 10.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(1, K_SHELL, 10.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	xrl_clear_error(&error);
+
+	/* M-lines are not supported at all due to missing jump factors for the M-subshells */
+	cs = CS_FluorShell(92, M1_SHELL, 10.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(92, KL3_LINE, 10.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(26, K_SHELL, 0.0, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(26, K_SHELL, 1001, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+	xrl_clear_error(&error);
+
+	cs = CS_FluorShell(26, K_SHELL, 5, &error);
+	assert(error != NULL);
+	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+	assert(strcmp(error->message, TOO_LOW_EXCITATION_ENERGY) == 0);
+	xrl_clear_error(&error);
+
+
+    for (i = 0 ; i < sizeof(line_mappings)/sizeof(line_mappings[0]) ; i++) {
+		cs = CS_FluorShell(92, line_mappings[i].shell, 120.0, &error);
+		assert(error == NULL);
+		cs2 = 0;
+		rr = 0;
+		for (j = line_mappings[i].line_lower ; j <= line_mappings[i].line_upper ; j++) {
+			rr += RadRate(92, j, NULL);
+			cs2 += CS_FluorLine(92, j, 120.0, NULL);
+		}
+		assert(fabs(cs2 - rr*cs) < 1E-6);
+	}
 
 	return 0;
 }

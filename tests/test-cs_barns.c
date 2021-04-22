@@ -157,6 +157,7 @@ int main(int argc, char **argv) {
 	IE(Rayl, 26, 10.0)
 	IE(Compt, 26, 10.0)
 	IIE(FluorLine, 26, KL3_LINE, 10.0)
+	IIE(FluorShell, 26, K_SHELL, 10.0)
 	IEE(Rayl, 26, 10.0, M_PI/4.0)
 	IEE(Compt, 26, 10.0, M_PI/4.0)
 	IEEE(Rayl, 26, 10.0, M_PI/4.0, M_PI/4.0)

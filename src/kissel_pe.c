@@ -332,7 +332,7 @@ double ElectronConfig(int Z, int shell, xrl_error **error) {
 /////////////////////////////////////////////////////////////////// */
 
 static struct {int line_lower; int line_upper; int shell;} line_mappings[] = {
-  {KN5_LINE, KB_LINE, K_SHELL},
+  {KP5_LINE, KB_LINE, K_SHELL},
   {L1P5_LINE, L1L2_LINE, L1_SHELL},
   {L2Q1_LINE, L2L3_LINE, L2_SHELL},
   {L3Q1_LINE, L3M1_LINE, L3_SHELL},
@@ -732,7 +732,7 @@ double CS_FluorShell_Kissel_no_Cascade(int Z, int shell, double E, xrl_error **e
     return PM5 * yield; \
   } \
   else { \
-    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE); \
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL); \
     return 0.0; \
   }  
 

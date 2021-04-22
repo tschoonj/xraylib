@@ -278,12 +278,12 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
   double Factor = 1.0;
   double rr;
 
-  if (line >= KN5_LINE && line <= KB_LINE) {
+  if (line >= KP5_LINE && line <= KB_LINE) {
     rr = RadRate(Z, line, error);
     if (rr == 0.0) {
       return 0.0;
     }
-    
+
     Factor = CS_FluorShell(Z, K_SHELL, E, error);
     if (Factor == 0.0) {
       return 0.0;

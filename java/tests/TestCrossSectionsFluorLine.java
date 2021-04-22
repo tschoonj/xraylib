@@ -86,4 +86,66 @@ public class TestCrossSectionsFluorLine {
 		}
 		assertEquals(cs, Xraylib.CS_FluorLine(92, Xraylib.LB_LINE, 30.0), 1E-6);
 	}
+
+	private static class LineMapping {
+
+	    public final int line_lower;
+	    public final int line_upper;
+	    public final int shell;
+
+	    public LineMapping(final int line_lower, final int line_upper, final int shell) {
+	      this.line_lower = line_lower;
+	      this.line_upper = line_upper;
+	      this.shell = shell;
+	    }
+	}
+
+	private static final LineMapping[] line_mappings = new LineMapping[]{
+	    new LineMapping(Xraylib.KN5_LINE, Xraylib.KB_LINE, Xraylib.K_SHELL),
+	    new LineMapping(Xraylib.L1P5_LINE, Xraylib.L1L2_LINE, Xraylib.L1_SHELL),
+	    new LineMapping(Xraylib.L2Q1_LINE, Xraylib.L2L3_LINE, Xraylib.L2_SHELL),
+	    new LineMapping(Xraylib.L3Q1_LINE, Xraylib.L3M1_LINE, Xraylib.L3_SHELL),
+	};
+
+	@Test
+	public void test_fluor_shell_all() {
+		for (LineMapping mapping: line_mappings) {
+			double cs = Xraylib.CS_FluorShell(92, mapping.shell, 120.0);
+			double cs2 = 0;
+			double rr = 0;
+
+			for (int j = mapping.line_lower ; j <= mapping.line_upper ; j++) {
+				try {
+					rr += Xraylib.RadRate(92, j);
+					cs2 += Xraylib.CS_FluorLine(92, j, 120.0);
+				} catch (IllegalArgumentException e) {
+					continue;
+				}
+			}
+			assertEquals(cs2, rr * cs, 1E-6);
+		}
+	}
+
+	static Stream<Arguments> badShellValuesProvider() {
+		return Stream.of(
+			arguments(0, Xraylib.K_SHELL, 10.0, Xraylib.Z_OUT_OF_RANGE),
+			arguments(Xraylib.ZMAX, Xraylib.K_SHELL, 10.0, Xraylib.INVALID_SHELL),
+			arguments(Xraylib.ZMAX + 1, Xraylib.K_SHELL, 10.0, Xraylib.Z_OUT_OF_RANGE),
+			arguments(1, Xraylib.K_SHELL, 10.0, Xraylib.INVALID_SHELL),
+			arguments(92, Xraylib.M1_SHELL, 10.0, Xraylib.INVALID_SHELL),
+			arguments(92, Xraylib.KL3_LINE, 10.0, Xraylib.INVALID_SHELL),
+			arguments(26, Xraylib.K_SHELL, 0.0, Xraylib.NEGATIVE_ENERGY),
+			arguments(26, Xraylib.K_SHELL, 1001.0, Xraylib.SPLINT_X_TOO_HIGH),
+			arguments(26, Xraylib.K_SHELL, 5, Xraylib.TOO_LOW_EXCITATION_ENERGY)
+		);
+	}
+
+	@ParameterizedTest(name="test_bad_shell_values {index} -> {0} {1} {2}")
+	@MethodSource("badShellValuesProvider")
+	public void test_bad_shell_values(int Z, int shell, double energy, String message) {
+		IllegalArgumentException exc = assertThrows(IllegalArgumentException.class, () -> {
+			double cs = Xraylib.CS_FluorShell(Z, shell, energy);
+		}, message);
+		assertEquals(exc.getMessage(), message);
+	}
 }
