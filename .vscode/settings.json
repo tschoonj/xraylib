@@ -5,7 +5,8 @@
         "array": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "xraylib-error-private.h": "c"
     },
     "files.exclude": {
         "**/.classpath": true,

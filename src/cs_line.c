@@ -212,10 +212,38 @@ static double Jump_from_L3(int Z, double E, xrl_error **error)
   return Factor;
 }
 
-double CS_FluorLine(int Z, int line, double E, xrl_error **error)
+static double Jump_from_K(int Z, double E, xrl_error **error)
 {
-  double JumpK;
-  double cs_line, Factor = 1.0;
+  double edgeK = EdgeEnergy(Z, K_SHELL, error);
+  double Factor;
+  if (E > edgeK && edgeK > 0.0) {
+    double yield;
+    double JumpK = JumpFactor(Z, K_SHELL, error);
+    if (JumpK == 0.0) {
+      return 0.0;
+    }
+    yield = FluorYield(Z, K_SHELL, error);
+    if (yield == 0.0) {
+      return 0.0;
+    }
+    Factor = ((JumpK - 1)/JumpK) * yield;
+  }
+  else if (edgeK == 0.0) {
+    return 0.0;
+  }
+  else {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
+    return 0.0;
+  }
+  return Factor;
+}
+
+static double (*jumpers[])(int, double, xrl_error **) = {Jump_from_K, Jump_from_L1, Jump_from_L2, Jump_from_L3};
+
+double CS_FluorShell(int Z, int shell, double E, xrl_error **error)
+{
+  double cs = 0.0;
+  double Factor = 0.0;
 
   if (Z < 1 || Z > ZMAX) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, Z_OUT_OF_RANGE);
@@ -227,76 +255,72 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
     return 0.0;
   }
 
-  if (line >= KN5_LINE && line <= KB_LINE) {
-    double edgeK = EdgeEnergy(Z, K_SHELL, error);
-    double cs, rr;
-    if (E > edgeK && edgeK > 0.0) {
-      double yield;
-      JumpK = JumpFactor(Z, K_SHELL, error);
-      if (JumpK == 0.0) {
-	return 0.0;
-      }
-      yield = FluorYield(Z, K_SHELL, error);
-      if (yield == 0.0) {
-	return 0.0;
-      }
-      Factor = ((JumpK - 1)/JumpK) * yield;
-    }
-    else if (edgeK == 0.0) {
-      return 0.0;
-    }
-    else {
-      xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, TOO_LOW_EXCITATION_ENERGY);
-      return 0.0;
-    }
+  if (shell < K_SHELL || shell > L3_SHELL) {
+    xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_SHELL);
+    return 0.0;
+  }
 
-    cs = CS_Photo(Z, E, error);
-    if (cs == 0.0) {
-      return 0.0;
-    }
+  Factor = jumpers[shell](Z, E, error);
+  if (Factor == 0.0) {
+    return 0.0;
+  }
+  
+  cs = CS_Photo(Z, E, error);
+  if (cs == 0.0) {
+    return 0.0;
+  }
 
+  return cs * Factor;
+}
+
+double CS_FluorLine(int Z, int line, double E, xrl_error **error)
+{
+  double Factor = 1.0;
+  double rr;
+
+  if (line >= KP5_LINE && line <= KB_LINE) {
     rr = RadRate(Z, line, error);
     if (rr == 0.0) {
       return 0.0;
     }
 
-    cs_line = cs * Factor * rr;
-  }
-  else if ((line <= L1L2_LINE && line >= L3Q1_LINE) || line == LA_LINE) {
-    double cs, rr;
-    cs = CS_Photo(Z, E, error);
-    if (cs == 0.0) {
+    Factor = CS_FluorShell(Z, K_SHELL, E, error);
+    if (Factor == 0.0) {
       return 0.0;
     }
 
+    return rr * Factor;
+  }
+  else if ((line <= L1L2_LINE && line >= L3Q1_LINE) || line == LA_LINE) {
     rr = RadRate(Z, line, error);
     if (rr == 0.0) {
       return 0.0;
     }
 
     if (line >= L1P5_LINE && line <= L1L2_LINE) {
-      Factor = Jump_from_L1(Z, E, error);
+      Factor = CS_FluorShell(Z, L1_SHELL, E, error);
     }
     else if (line >= L2Q1_LINE && line <= L2L3_LINE)  {
-      Factor = Jump_from_L2(Z, E, error);
+      Factor = CS_FluorShell(Z, L2_SHELL, E, error);
     }
     /*
      * it's safe to use LA_LINE since it's only composed of 2 L3-lines
      */
     else if (line <= L3M1_LINE || line == LA_LINE) {
-      Factor = Jump_from_L3(Z, E, error);
+      Factor = CS_FluorShell(Z, L3_SHELL, E, error);
     }
+
     if (Factor == 0.0) {
       return 0.0;
     }
-    cs_line = cs * Factor * rr;
+    return rr * Factor;
   }
   else if (line == LB_LINE) {
     /*
      * b1->b17
      */
     double cs;
-    cs_line = Jump_from_L2(Z, E, NULL) * (RadRate(Z, L2M4_LINE, NULL) + RadRate(Z, L2M3_LINE, NULL)) +
+    double cs_line = Jump_from_L2(Z, E, NULL) * (RadRate(Z, L2M4_LINE, NULL) + RadRate(Z, L2M3_LINE, NULL)) +
       Jump_from_L3(Z, E, NULL) * (RadRate(Z, L3N5_LINE, NULL) + RadRate(Z, L3O4_LINE, NULL) + RadRate(Z, L3O5_LINE, NULL) + RadRate(Z, L3O45_LINE, NULL) + RadRate(Z, L3N1_LINE, NULL) + RadRate(Z, L3O1_LINE, NULL) + RadRate(Z, L3N6_LINE, NULL) + RadRate(Z, L3N7_LINE, NULL) + RadRate(Z, L3N4_LINE, NULL)) +
       Jump_from_L1(Z, E, NULL) * (RadRate(Z, L1M3_LINE, NULL) + RadRate(Z, L1M2_LINE, NULL) + RadRate(Z, L1M5_LINE, NULL) + RadRate(Z, L1M4_LINE, NULL));
 
@@ -308,13 +332,11 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error)
     if (cs == 0.0) {
       return 0.0;
     }
-    cs_line *= cs;
+    return cs_line * cs;
   }
   else {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, INVALID_LINE);
     return 0.0;
   }
-  
-  
-  return cs_line;
+  return 0.0;
 }            

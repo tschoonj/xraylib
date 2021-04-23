@@ -1587,6 +1587,102 @@ FUNCTION CSb_FluorLine(Z, line, E, error) RESULT(rv)
 ENDFUNCTION CSb_FluorLine
 
 
+FUNCTION CS_FluorShell(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CS_FluorShellC(Z, shell, E, error) &
+            BIND(C,NAME='CS_FluorShell')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CS_FluorShellC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CS_FluorShellC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CS_FluorShellC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CS_FluorShell
+
+
+FUNCTION CSb_FluorShell(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CSb_FluorShellC(Z, shell, E, error) &
+            BIND(C,NAME='CSb_FluorShell')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CSb_FluorShellC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CSb_FluorShellC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CSb_FluorShellC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CSb_FluorShell
+
+
 FUNCTION RadRate(Z, line, error) RESULT(rv)
         USE, INTRINSIC :: ISO_C_BINDING
         USE, INTRINSIC :: ISO_FORTRAN_ENV
@@ -2853,6 +2949,486 @@ FUNCTION CSb_FluorLine_Kissel_no_Cascade(Z, line, E, error) RESULT(rv)
                 CALL process_error(errorPtr, error)
         ENDIF
 ENDFUNCTION CSb_FluorLine_Kissel_no_Cascade
+
+
+FUNCTION CS_FluorShell_Kissel(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CS_FluorShell_KisselC(Z, shell, E, error) &
+            BIND(C,NAME='CS_FluorShell_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CS_FluorShell_KisselC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CS_FluorShell_KisselC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CS_FluorShell_KisselC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CS_FluorShell_Kissel
+
+
+FUNCTION CSb_FluorShell_Kissel(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CSb_FluorShell_KisselC(Z, shell, E, error) &
+            BIND(C,NAME='CSb_FluorShell_Kissel')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CSb_FluorShell_KisselC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CSb_FluorShell_KisselC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CSb_FluorShell_KisselC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CSb_FluorShell_Kissel
+
+
+FUNCTION CS_FluorShell_Kissel_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CS_FluorShell_Kissel_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CS_FluorShell_Kissel_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CS_FluorShell_Kissel_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CS_FluorShell_Kissel_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CS_FluorShell_Kissel_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CS_FluorShell_Kissel_Cascade
+
+
+FUNCTION CSb_FluorShell_Kissel_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CSb_FluorShell_Kissel_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CSb_FluorShell_Kissel_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CSb_FluorShell_Kissel_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CSb_FluorShell_Kissel_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CSb_FluorShell_Kissel_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CSb_FluorShell_Kissel_Cascade
+
+
+FUNCTION CS_FluorShell_Kissel_Nonradiative_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CS_FluorShell_Kissel_Nonradiative_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CS_FluorShell_Kissel_Nonradiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CS_FluorShell_Kissel_Nonradiative_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CS_FluorShell_Kissel_Nonradiative_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CS_FluorShell_Kissel_Nonradiative_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CS_FluorShell_Kissel_Nonradiative_Cascade
+
+
+FUNCTION CSb_FluorShell_Kissel_Nonradiative_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CSb_FluorShell_Kissel_Nonradiative_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CSb_FluorShell_Kissel_Nonradiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CSb_FluorShell_Kissel_Nonradiative_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CSb_FluorShell_Kissel_Nonradiative_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CSb_FluorShell_Kissel_Nonradiative_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CSb_FluorShell_Kissel_Nonradiative_Cascade
+
+
+FUNCTION CS_FluorShell_Kissel_Radiative_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CS_FluorShell_Kissel_Radiative_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CS_FluorShell_Kissel_Radiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CS_FluorShell_Kissel_Radiative_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CS_FluorShell_Kissel_Radiative_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CS_FluorShell_Kissel_Radiative_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CS_FluorShell_Kissel_Radiative_Cascade
+
+
+FUNCTION CSb_FluorShell_Kissel_Radiative_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CSb_FluorShell_Kissel_Radiative_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CSb_FluorShell_Kissel_Radiative_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CSb_FluorShell_Kissel_Radiative_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CSb_FluorShell_Kissel_Radiative_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CSb_FluorShell_Kissel_Radiative_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CSb_FluorShell_Kissel_Radiative_Cascade
+
+
+FUNCTION CS_FluorShell_Kissel_no_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CS_FluorShell_Kissel_no_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CS_FluorShell_Kissel_no_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CS_FluorShell_Kissel_no_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CS_FluorShell_Kissel_no_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CS_FluorShell_Kissel_no_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CS_FluorShell_Kissel_no_Cascade
+
+
+FUNCTION CSb_FluorShell_Kissel_no_Cascade(Z, shell, E, error) RESULT(rv)
+        USE, INTRINSIC :: ISO_C_BINDING
+        USE, INTRINSIC :: ISO_FORTRAN_ENV
+        IMPLICIT NONE
+
+        INTEGER (C_INT), INTENT(IN) :: Z
+        INTEGER (C_INT), INTENT(IN) :: shell
+        REAL (C_DOUBLE), INTENT(IN) :: E
+        REAL (C_DOUBLE) :: rv
+
+        TYPE(xrl_error), POINTER, OPTIONAL :: error
+        TYPE (C_PTR) :: errorPtr, errorPtrLoc
+        TARGET :: errorPtr
+
+        INTERFACE
+            FUNCTION CSb_FluorShell_Kissel_no_CascadeC(Z, shell, E, error) &
+            BIND(C,NAME='CSb_FluorShell_Kissel_no_Cascade')
+                USE, INTRINSIC :: ISO_C_BINDING
+                IMPLICIT NONE
+                INTEGER (C_INT), INTENT(IN), VALUE :: Z
+                INTEGER (C_INT), INTENT(IN), VALUE :: shell
+                REAL (C_DOUBLE), INTENT(IN), VALUE :: E
+                REAL (C_DOUBLE) :: CSb_FluorShell_Kissel_no_CascadeC
+                TYPE (C_PTR),INTENT(IN),VALUE :: error
+            ENDFUNCTION CSb_FluorShell_Kissel_no_CascadeC
+        ENDINTERFACE
+
+        errorPtr = C_NULL_PTR
+        errorPtrLoc = C_NULL_PTR
+
+        IF (PRESENT(error)) THEN
+                IF (.NOT. ASSOCIATED(error)) THEN
+                        errorPtrLoc = C_LOC(errorPtr)
+                ELSE
+                        ! print warning
+                        WRITE (error_unit, '(A)') & 
+                        'error POINTER must be disassociated!'
+                ENDIF
+        ENDIF
+        
+        rv = CSb_FluorShell_Kissel_no_CascadeC(Z, shell, E, errorPtrLoc)
+
+        IF (C_ASSOCIATED(errorPtr)) THEN
+                CALL process_error(errorPtr, error)
+        ENDIF
+ENDFUNCTION CSb_FluorShell_Kissel_no_Cascade
 
 
 FUNCTION PL1_pure_kissel(Z, E, error) RESULT(rv)

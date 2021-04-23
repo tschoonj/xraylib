@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
 	assert(cs == 0.0);\
 	assert(error != NULL);\
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);\
-	assert(strcmp(error->message, INVALID_SHELL) == 0);\
+	assert(strcmp(error->message, INVALID_LINE) == 0);\
 	xrl_clear_error(&error);\
 	cs = CSb_ ## name(26, -500, 10.0, &error);\
 	assert(cs == 0.0);\
@@ -157,6 +157,7 @@ int main(int argc, char **argv) {
 	IE(Rayl, 26, 10.0)
 	IE(Compt, 26, 10.0)
 	IIE(FluorLine, 26, KL3_LINE, 10.0)
+	IIE(FluorShell, 26, K_SHELL, 10.0)
 	IEE(Rayl, 26, 10.0, M_PI/4.0)
 	IEE(Compt, 26, 10.0, M_PI/4.0)
 	IEEE(Rayl, 26, 10.0, M_PI/4.0, M_PI/4.0)

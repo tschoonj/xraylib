@@ -234,6 +234,12 @@ double CS_FluorLine(int Z, int line, double E, xrl_error **error);
 XRL_EXTERN
 double CSb_FluorLine(int Z, int line, double E, xrl_error **error);
 
+/* Fluorescence cross sections for an entire shell */
+XRL_EXTERN
+double CS_FluorShell(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell(int Z, int shell, double E, xrl_error **error);
+
 /* Fractional radiative rate */
 XRL_EXTERN
 double RadRate(int Z, int line, xrl_error **error);
@@ -280,6 +286,26 @@ double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **err
 XRL_EXTERN
 double CSb_FluorLine_Kissel_no_Cascade(int Z, int line, double E, xrl_error **error);
 
+XRL_EXTERN
+double CS_FluorShell_Kissel(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell_Kissel(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CS_FluorShell_Kissel_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell_Kissel_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CS_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CS_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CS_FluorShell_Kissel_no_Cascade(int Z, int shell, double E, xrl_error **error);
+XRL_EXTERN
+double CSb_FluorShell_Kissel_no_Cascade(int Z, int shell, double E, xrl_error **error);
 
 
 /* Total cross sections (photoionization+Rayleigh+Compton) using Kissel Total photoelectric cross sections */

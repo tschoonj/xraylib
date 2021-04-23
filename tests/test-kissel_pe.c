@@ -21,9 +21,51 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 #include <math.h>
 #include <stdio.h>
 
+static struct {int line_lower; int line_upper; int shell;} line_mappings[] = {
+  {KP5_LINE, KL1_LINE, K_SHELL},
+  {L1P5_LINE, L1L2_LINE, L1_SHELL},
+  {L2Q1_LINE, L2L3_LINE, L2_SHELL},
+  {L3Q1_LINE, L3M1_LINE, L3_SHELL},
+  {M1P5_LINE, M1N1_LINE, M1_SHELL},
+  {M2P5_LINE, M2N1_LINE, M2_SHELL},
+  {M3Q1_LINE, M3N1_LINE, M3_SHELL},
+  {M4P5_LINE, M4N1_LINE, M4_SHELL},
+  {M5P5_LINE, M5N1_LINE, M5_SHELL},
+};
+
+static int test_lines[] ={
+	KL3_LINE,
+	L1M3_LINE,
+	L2M4_LINE,
+	L3M5_LINE,
+	M1N3_LINE,
+	M2N4_LINE,
+	M3N5_LINE,
+	M4N6_LINE,
+	M5N7_LINE,
+};
+
+static struct {
+	double (*shell)(int, int, double, xrl_error **);
+	double(*line)(int, int, double, xrl_error **);
+	double line_vals_expected[9];
+	} function_mappings[] = {
+	{CS_FluorShell_Kissel, CS_FluorLine_Kissel, {1.488296, 0.021101, 0.431313, 0.701276, 0.000200, 0.004753, 0.004467, 0.099232, 0.134301}},
+	{CSb_FluorShell_Kissel, CSb_FluorLine_Kissel, {588.359681, 8.341700, 170.508401, 277.231590, 0.078971, 1.878953, 1.766078, 39.228801, 53.092598}},
+	{CS_FluorShell_Kissel_Cascade, CS_FluorLine_Kissel_Cascade, {1.488296, 0.021101, 0.431313, 0.701276, 0.000200, 0.004753, 0.004467, 0.099232, 0.134301}},
+	{CS_FluorShell_Kissel_Radiative_Cascade, CS_FluorLine_Kissel_Radiative_Cascade, {1.488296, 0.017568, 0.413908, 0.671135, 0.000092, 0.001906, 0.001758, 0.043009, 0.055921}},
+	{CS_FluorShell_Kissel_Nonradiative_Cascade, CS_FluorLine_Kissel_Nonradiative_Cascade, {1.488296, 0.021101, 0.100474, 0.169412, 0.000104, 0.001204, 0.001106, 0.018358, 0.025685}},
+	{CS_FluorShell_Kissel_no_Cascade, CS_FluorLine_Kissel_no_Cascade, {1.488296, 0.017568, 0.083069, 0.139271, 0.000053, 0.000417, 0.000327, 0.003360, 0.004457}},
+	{CSb_FluorShell_Kissel_Cascade, CSb_FluorLine_Kissel_Cascade, {588.359681, 8.341700, 170.508401, 277.231590, 0.078971, 1.878953, 1.766078, 39.228801, 53.092598}},
+	{CSb_FluorShell_Kissel_Radiative_Cascade, CSb_FluorLine_Kissel_Radiative_Cascade, {588.359681, 6.945250, 163.627802, 265.316234, 0.036434, 0.753313, 0.695153, 17.002549, 22.106758}},
+	{CSb_FluorShell_Kissel_Nonradiative_Cascade, CSb_FluorLine_Kissel_Nonradiative_Cascade, {588.359681, 8.341700, 39.719983, 66.972714, 0.041157, 0.475948, 0.437288, 7.257269, 10.153862}},
+	{CSb_FluorShell_Kissel_no_Cascade, CSb_FluorLine_Kissel_no_Cascade, {588.359681, 6.945250, 32.839384, 55.057358, 0.020941, 0.164658, 0.129253, 1.328221, 1.762099}},
+};
+
 int main(int argc, char **argv) {
 	xrl_error *error = NULL;
 	double cs, cs2, ec;
+	int i, j, k;
 
 	/* some simpler ones */
 	cs = CS_FluorLine_Kissel(29, L3M5_LINE, 10.0, &error);
@@ -60,7 +102,7 @@ int main(int argc, char **argv) {
 	cs = CS_FluorLine_Kissel(ZMAX, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	assert(strcmp(error->message, INVALID_LINE) == 0);
 	xrl_clear_error(&error);
 
 	cs = CS_FluorLine_Kissel(ZMAX + 1, KL3_LINE, 10.0, &error);
@@ -72,7 +114,7 @@ int main(int argc, char **argv) {
 	cs = CS_FluorLine_Kissel(1, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
 	assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
-	assert(strcmp(error->message, INVALID_SHELL) == 0);
+	assert(strcmp(error->message, INVALID_LINE) == 0);
 	xrl_clear_error(&error);
 
 	/* N-lines are not supported at all due to missing RadRate/CosKronTransProb data */
@@ -144,6 +186,8 @@ int main(int argc, char **argv) {
 	cs += CS_FluorLine_Kissel(92, L3N7_LINE, 30.0, &error);
 	assert(error == NULL);
 	cs2 = CS_FluorLine_Kissel(92, LB_LINE, 30.0, NULL);
+	fprintf(stderr, "cs: %f\n", cs);
+	fprintf(stderr, "cs2: %f\n", cs2);
 	assert(fabs(cs2 - cs) < 1E-6);
 
 	/* CS_Photo_Partial tests */
@@ -218,5 +262,74 @@ int main(int argc, char **argv) {
 	assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
 	xrl_clear_error(&error);
 
+	/* FluorShell tests */
+    for (i = 0 ; i < sizeof(function_mappings)/sizeof(function_mappings[0]) ; i++) {
+
+		for (j = 0 ; j < 9 ; j++) {
+			cs = function_mappings[i].line(92, test_lines[j], 120.0, &error);
+			assert(error == NULL);
+			assert(fabs(cs - function_mappings[i].line_vals_expected[j]) < 1E-6);
+		}
+
+		cs = function_mappings[i].shell(0, K_SHELL, 10.0, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(ZMAX, K_SHELL, 10.0, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, INVALID_SHELL) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(ZMAX + 1, K_SHELL, 10.0, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, Z_OUT_OF_RANGE) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(1, K_SHELL, 10.0, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, INVALID_SHELL) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(92, KL3_LINE, 10.0, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, INVALID_SHELL) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(26, K_SHELL, 0.0, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, NEGATIVE_ENERGY) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(26, K_SHELL, 1001, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, SPLINT_X_TOO_HIGH) == 0);
+		xrl_clear_error(&error);
+
+		cs = function_mappings[i].shell(26, K_SHELL, 5, &error);
+		assert(error != NULL);
+		assert(error->code == XRL_ERROR_INVALID_ARGUMENT);
+		assert(strcmp(error->message, TOO_LOW_EXCITATION_ENERGY) == 0);
+		xrl_clear_error(&error);
+
+    	for (j = 0 ; j < sizeof(line_mappings)/sizeof(line_mappings[0]) ; j++) {
+			double cs = function_mappings[i].shell(92, line_mappings[j].shell, 120.0, &error);
+			assert(error == NULL);
+			double cs2 = 0;
+			double rr = 0;
+			for (k = line_mappings[j].line_lower ; k <= line_mappings[j].line_upper ; k++) {
+				rr += RadRate(92, k, NULL);
+				cs2 += function_mappings[i].line(92, k, 120.0, NULL);
+			}
+			assert(fabs(cs2 - rr*cs) < 1E-6);
+		}
+	}
 	return 0;
 }

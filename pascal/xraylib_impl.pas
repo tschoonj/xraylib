@@ -544,6 +544,38 @@ begin
     result := rv
 end;
 
+function CS_FluorShell_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell';
+
+function CS_FluorShell(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell';
+
+function CSb_FluorShell(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
 function RadRate_C(Z:longint; line:longint; error:PPxrl_error):double;cdecl;external External_library name 'RadRate';
 
 function RadRate(Z:longint; line:longint):double;
@@ -972,6 +1004,166 @@ begin
     error := nil;
     
     rv := CSb_FluorLine_Kissel_no_Cascade_C(Z, line, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CS_FluorShell_Kissel_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell_Kissel';
+
+function CS_FluorShell_Kissel(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_Kissel_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_Kissel_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell_Kissel';
+
+function CSb_FluorShell_Kissel(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_Kissel_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CS_FluorShell_Kissel_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell_Kissel_Cascade';
+
+function CS_FluorShell_Kissel_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_Kissel_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_Kissel_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell_Kissel_Cascade';
+
+function CSb_FluorShell_Kissel_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_Kissel_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CS_FluorShell_Kissel_Nonradiative_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell_Kissel_Nonradiative_Cascade';
+
+function CS_FluorShell_Kissel_Nonradiative_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_Kissel_Nonradiative_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_Kissel_Nonradiative_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell_Kissel_Nonradiative_Cascade';
+
+function CSb_FluorShell_Kissel_Nonradiative_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_Kissel_Nonradiative_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CS_FluorShell_Kissel_Radiative_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell_Kissel_Radiative_Cascade';
+
+function CS_FluorShell_Kissel_Radiative_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_Kissel_Radiative_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_Kissel_Radiative_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell_Kissel_Radiative_Cascade';
+
+function CSb_FluorShell_Kissel_Radiative_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_Kissel_Radiative_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CS_FluorShell_Kissel_no_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CS_FluorShell_Kissel_no_Cascade';
+
+function CS_FluorShell_Kissel_no_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CS_FluorShell_Kissel_no_Cascade_C(Z, shell, E, @error);
+    process_error(error);
+    result := rv
+end;
+
+function CSb_FluorShell_Kissel_no_Cascade_C(Z:longint; shell:longint; E:double; error:PPxrl_error):double;cdecl;external External_library name 'CSb_FluorShell_Kissel_no_Cascade';
+
+function CSb_FluorShell_Kissel_no_Cascade(Z:longint; shell:longint; E:double):double;
+
+var
+    error: Pxrl_error;
+    rv: double;
+    
+begin
+    error := nil;
+    
+    rv := CSb_FluorShell_Kissel_no_Cascade_C(Z, shell, E, @error);
     process_error(error);
     result := rv
 end;

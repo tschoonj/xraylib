@@ -1870,7 +1870,7 @@ public class Xraylib {
   }
 
   /** 
-   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * For a given atomic number, line, and excitation energy, returns the corresponding XRF production cross section.
    * 
    * This method is an alias for #CS_FluorLine_Kissel_Cascade, meaning that the cascade effect will be taken into account.
    *
@@ -1886,7 +1886,96 @@ public class Xraylib {
   }
 
   /** 
-   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method is an alias for #CSb_FluorLine_Kissel_Cascade, meaning that the cascade effect will be taken into account.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorLine_Kissel(int Z, int line, double E) {
+    return CSb_FluorLine_Kissel_Cascade(Z, line, E);
+  }
+
+  private static class LineMapping {
+
+    public final int line_lower;
+    public final int line_upper;
+    public final int shell;
+
+    public LineMapping(final int line_lower, final int line_upper, final int shell) {
+      this.line_lower = line_lower;
+      this.line_upper = line_upper;
+      this.shell = shell;
+    }
+  }
+
+  private static final LineMapping[] line_mappings = new LineMapping[]{
+    new LineMapping(Xraylib.KP5_LINE, Xraylib.KB_LINE, Xraylib.K_SHELL),
+    new LineMapping(Xraylib.L1P5_LINE, Xraylib.L1L2_LINE, Xraylib.L1_SHELL),
+    new LineMapping(Xraylib.L2Q1_LINE, Xraylib.L2L3_LINE, Xraylib.L2_SHELL),
+    new LineMapping(Xraylib.L3Q1_LINE, Xraylib.L3M1_LINE, Xraylib.L3_SHELL),
+    new LineMapping(Xraylib.M1P5_LINE, Xraylib.M1N1_LINE, Xraylib.M1_SHELL),
+    new LineMapping(Xraylib.M2P5_LINE, Xraylib.M2N1_LINE, Xraylib.M2_SHELL),
+    new LineMapping(Xraylib.M3Q1_LINE, Xraylib.M3N1_LINE, Xraylib.M3_SHELL),
+    new LineMapping(Xraylib.M4P5_LINE, Xraylib.M4N1_LINE, Xraylib.M4_SHELL),
+    new LineMapping(Xraylib.M5P5_LINE, Xraylib.M5N1_LINE, Xraylib.M5_SHELL)
+  };
+
+  @FunctionalInterface
+  private static interface CS_FluorLine_Kissel_Body {
+    public default double execute(int Z, int line, double energy) {
+      if (Z < 1 || Z > ZMAX)
+        throw new IllegalArgumentException(Z_OUT_OF_RANGE);
+
+      if (energy <= 0.0)
+        throw new IllegalArgumentException(NEGATIVE_ENERGY);
+
+      for (LineMapping mapping: line_mappings) {
+        if (line >= mapping.line_lower && line <= mapping.line_upper) {
+          double rr = RadRate(Z, line);
+          double Factor = CS_FluorShell_Kissel_base(Z, mapping.shell, energy);
+          return rr * Factor;
+        }
+      }
+
+      /* special cases */
+      if (line == LA_LINE) {
+        double rr = RadRate(Z, line);
+        double Factor = CS_FluorShell_Kissel_base(Z, L3_SHELL, energy);
+        return rr * Factor;
+      } else if (line == LB_LINE) {
+        double rv = 0.0;
+
+        for (LineShellPair pair : lb_pairs) {
+          try {
+            rv += RadRate(Z, pair.line) * CS_FluorShell_Kissel_base(Z, pair.shell, energy);
+          } catch (Exception e) {
+            continue;
+          }
+        }
+        if (rv == 0.0)
+          throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
+        return rv;
+      }
+
+      throw new IllegalArgumentException(INVALID_LINE);
+    }
+
+    public double CS_FluorShell_Kissel_base(int Z, int shell, double energy);
+  }
+
+  private static final CS_FluorLine_Kissel_Body CS_FLUORLINE_KISSEL_NO_CASCADE = Xraylib::CS_FluorShell_Kissel_no_Cascade;
+  private static final CS_FluorLine_Kissel_Body CS_FLUORLINE_KISSEL_RADIATIVE = Xraylib::CS_FluorShell_Kissel_Radiative_Cascade;
+  private static final CS_FluorLine_Kissel_Body CS_FLUORLINE_KISSEL_NONRADIATIVE = Xraylib::CS_FluorShell_Kissel_Nonradiative_Cascade;
+  private static final CS_FluorLine_Kissel_Body CS_FLUORLINE_KISSEL_FULL = Xraylib::CS_FluorShell_Kissel_Cascade;
+
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
    * 
    * This method excludes the cascade effect from the calculation!
    *
@@ -1898,6 +1987,69 @@ public class Xraylib {
    * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
    */
   public static double CS_FluorLine_Kissel_no_Cascade(int Z, int line, double E) {
+    return CS_FLUORLINE_KISSEL_NO_CASCADE.execute(Z, line, E);
+  }
+
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the radiative cascade contributions but excludes the non-radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
+    return CS_FLUORLINE_KISSEL_RADIATIVE.execute(Z, line, E);
+  }
+
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the non-radiative cascade contributions but excludes the radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
+    return CS_FLUORLINE_KISSEL_NONRADIATIVE.execute(Z, line, E);
+  }
+
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes both non-radiative and radiative cascade effect contributions!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorLine_Kissel_Cascade(int Z, int line, double E) {
+    return CS_FLUORLINE_KISSEL_FULL.execute(Z, line, E);
+  }
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method excludes the cascade effect from the calculation!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorShell_Kissel_no_Cascade(int Z, int shell, double E) {
     if (Z < 1 || Z > ZMAX) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
     }
@@ -1906,19 +2058,19 @@ public class Xraylib {
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
     }
 
-    if (line >= KN5_LINE && line <= KB_LINE) {
+    if (shell == K_SHELL) {
       /*
        * K lines -> never cascade effect!
        */
-      return CS_Photo_Partial(Z, K_SHELL, E) * FluorYield(Z, K_SHELL) * RadRate(Z, line);
+      return FluorYield(Z, K_SHELL) * CS_Photo_Partial(Z, K_SHELL, E);
     }
-    else if (line >= L1P5_LINE && line <= L1M1_LINE) {
+    else if (shell == L1_SHELL) {
       /*
        * L1 lines
        */
-      return PL1_pure_kissel(Z, E) * FluorYield(Z, L1_SHELL) * RadRate(Z, line);
+      return FluorYield(Z, L1_SHELL) * PL1_pure_kissel(Z, E);
     }
-    else if (line >= L2Q1_LINE && line <= L2M1_LINE) {
+    else if (shell == L2_SHELL) {
       /*
        * L2 lines
        */
@@ -1927,9 +2079,9 @@ public class Xraylib {
         PL1 = PL1_pure_kissel(Z, E);
       } catch (IllegalArgumentException e) {
       }
-      return FluorYield(Z, L2_SHELL) * RadRate(Z, line)* PL2_pure_kissel(Z, E, PL1);
+      return FluorYield(Z, L2_SHELL) * PL2_pure_kissel(Z, E, PL1);
     }
-    else if (line >= L3Q1_LINE && line <= L3M1_LINE) {
+    else if (shell == L3_SHELL) {
       /*
        * L3 lines
        */
@@ -1943,45 +2095,15 @@ public class Xraylib {
         PL2 = PL2_pure_kissel(Z, E, PL1);
       } catch (IllegalArgumentException e) {
       }
-      return FluorYield(Z, L3_SHELL) * RadRate(Z, line) * PL3_pure_kissel(Z, E, PL1, PL2);
+      return FluorYield(Z, L3_SHELL) * PL3_pure_kissel(Z, E, PL1, PL2);
     }
-    else if (line == LA_LINE) {
-      double cs_L3M4 = 0.0;
-      double cs_L3M5 = 0.0;
-
-      try {
-        cs_L3M4 = CS_FluorLine_Kissel_no_Cascade(Z, L3M4_LINE, E);
-      } catch (IllegalArgumentException e) {
-      }
-      try {
-        cs_L3M5 = CS_FluorLine_Kissel_no_Cascade(Z, L3M5_LINE, E);
-      } catch (IllegalArgumentException e) {
-      }
-
-      double rv = cs_L3M4 + cs_L3M5;
-      if (rv == 0.0)
-        throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
-      return rv;
-    }
-    else if (line == LB_LINE) {
-      double rv = 0.0;
-      for (int _line : LB_LINE_MACROS) {
-      	try {
-	  rv += CS_FluorLine_Kissel_no_Cascade(Z, _line, E);
-	} catch (IllegalArgumentException e) {
-	}
-      }
-      if (rv == 0.0)
-        throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
-      return rv;
-    }
-    else if (line >= M1P5_LINE && line <= M1N1_LINE) {
+    else if (shell == M1_SHELL) {
       /*
        * M1 lines
        */
-      return PM1_pure_kissel(Z, E) * FluorYield(Z, M1_SHELL) * RadRate(Z, line);
+      return FluorYield(Z, M1_SHELL) * PM1_pure_kissel(Z, E);
     }
-    else if (line>=M2P5_LINE && line<=M2N1_LINE) {
+    else if (shell == M2_SHELL) {
       /*
        * M2 lines
        */
@@ -1990,9 +2112,9 @@ public class Xraylib {
         PM1 = PM1_pure_kissel(Z, E);
       } catch (IllegalArgumentException e) {
       }
-      return FluorYield(Z, M2_SHELL) * RadRate(Z,line) * PM2_pure_kissel(Z, E, PM1);
+      return FluorYield(Z, M2_SHELL) * PM2_pure_kissel(Z, E, PM1);
     }
-    else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
+    else if (shell == M3_SHELL) {
       /*
        * M3 lines
        */
@@ -2006,9 +2128,9 @@ public class Xraylib {
         PM2 = PM2_pure_kissel(Z, E, PM1);
       } catch (IllegalArgumentException e) {
       }
-      return FluorYield(Z, M3_SHELL) * RadRate(Z,line) * PM3_pure_kissel(Z, E, PM1, PM2);
+      return FluorYield(Z, M3_SHELL) * PM3_pure_kissel(Z, E, PM1, PM2);
     }
-    else if (line >= M4P5_LINE && line <= M4N1_LINE) {
+    else if (shell == M4_SHELL) {
       /*
        * M4 lines
        */
@@ -2027,9 +2149,9 @@ public class Xraylib {
         PM3 = PM3_pure_kissel(Z, E, PM1, PM2);
       } catch (IllegalArgumentException e) {
       }
-      return FluorYield(Z, M4_SHELL) * RadRate(Z,line) * PM4_pure_kissel(Z, E, PM1, PM2, PM3);
+      return FluorYield(Z, M4_SHELL) * PM4_pure_kissel(Z, E, PM1, PM2, PM3);
     }
-    else if (line >= M5P5_LINE && line <= M5N1_LINE) {
+    else if (shell == M5_SHELL) {
       /*
        * M5 lines
        */
@@ -2053,16 +2175,16 @@ public class Xraylib {
         PM4 = PM4_pure_kissel(Z, E, PM1, PM2, PM3);
       } catch (IllegalArgumentException e) {
       }
-      return FluorYield(Z, M5_SHELL) * RadRate(Z,line) * PM5_pure_kissel(Z, E, PM1, PM2, PM3, PM4);
+      return FluorYield(Z, M5_SHELL) * PM5_pure_kissel(Z, E, PM1, PM2, PM3, PM4);
     }
     else {
-      throw new IllegalArgumentException(INVALID_LINE);
+      throw new IllegalArgumentException(INVALID_SHELL);
     }
   }
 
-  private static abstract class CS_FluorLine_Cascade_Body {
+  private static abstract class CS_FluorShell_Cascade_Body {
 
-    public final double execute(int Z, int line, double E) {
+    public final double execute(int Z, int shell, double E) {
       if (Z < 1 || Z > ZMAX) {
         throw new IllegalArgumentException(Z_OUT_OF_RANGE);
       }
@@ -2071,67 +2193,37 @@ public class Xraylib {
         throw new IllegalArgumentException(NEGATIVE_ENERGY);
       }
 
-      if (line >= KN5_LINE && line <= KB_LINE) {
+      if (shell == K_SHELL) {
         /*
          * K lines -> never cascade effect!
          */
-        return CS_Photo_Partial(Z, K_SHELL, E) * FluorYield(Z, K_SHELL) * RadRate(Z, line);
+        return FluorYield(Z, shell) * CS_Photo_Partial(Z, K_SHELL, E);
       }
-      else if (line >= L1P5_LINE && line <= L1M1_LINE) {
+      else if (shell == L1_SHELL) {
         /*
          * L1 lines
          */
         double PK = CS_Photo_Partial_catch(Z, K_SHELL, E);
-        return PL1_cascade_kissel(Z, E, PK) * FluorYield(Z, L1_SHELL) * RadRate(Z, line);
+        return FluorYield(Z, shell)* PL1_cascade_kissel(Z, E, PK);
       }
-      else if (line >= L2Q1_LINE && line <= L2M1_LINE) {
+      else if (shell == L2_SHELL) {
         /*
          * L2 lines
          */
         double PK = CS_Photo_Partial_catch(Z, K_SHELL, E);
         double PL1 = PL1_cascade_kissel_catch(Z, E, PK);
-        return FluorYield(Z, L2_SHELL) * RadRate(Z,line) * PL2_cascade_kissel(Z, E, PK, PL1);
+        return FluorYield(Z, shell) * PL2_cascade_kissel(Z, E, PK, PL1);
       }
-      else if (line >= L3Q1_LINE && line <= L3M1_LINE) {
+      else if (shell == L3_SHELL) {
         /*
          * L3 lines
          */
         double PK = CS_Photo_Partial_catch(Z, K_SHELL, E);
         double PL1 = PL1_cascade_kissel_catch(Z, E, PK);
         double PL2 = PL2_cascade_kissel_catch(Z, E, PK, PL1);
-        return FluorYield(Z, L3_SHELL) * RadRate(Z, line) * PL3_cascade_kissel(Z, E, PK, PL1, PL2);
+        return FluorYield(Z, shell) * PL3_cascade_kissel(Z, E, PK, PL1, PL2);
       }
-      else if (line == LA_LINE) {
-        double cs_L3M4 = 0.0;
-        double cs_L3M5 = 0.0;
-
-        try {
-          cs_L3M4 = execute(Z, L3M4_LINE, E);
-        } catch (IllegalArgumentException e) {
-        }
-        try {
-          cs_L3M5 = execute(Z, L3M5_LINE, E);
-        } catch (IllegalArgumentException e) {
-        }
-
-        double rv = cs_L3M4 + cs_L3M5;
-        if (rv == 0.0)
-          throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
-        return rv;
-      }
-      else if (line == LB_LINE) {
-        double rv = 0.0;
-        for (int _line : LB_LINE_MACROS) {
-      	  try {
-	    rv += execute(Z, _line, E);
-	  } catch (IllegalArgumentException e) {
-	  }
-        }
-        if (rv == 0.0)
-          throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
-        return rv;
-      }
-      else if (line >= M1P5_LINE && line <= M1N1_LINE) {
+      else if (shell == M1_SHELL) {
         /*
          * M1 lines
          */
@@ -2139,9 +2231,9 @@ public class Xraylib {
         double PL1 = PL1_cascade_kissel_catch(Z, E, PK);
         double PL2 = PL2_cascade_kissel_catch(Z, E, PK, PL1);
         double PL3 = PL3_cascade_kissel_catch(Z, E, PK, PL1, PL2);
-        return FluorYield(Z, M1_SHELL) * RadRate(Z, line) * PM1_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
+        return FluorYield(Z, shell) * PM1_cascade_kissel(Z, E, PK, PL1, PL2, PL3);
       }
-      else if (line>=M2P5_LINE && line<=M2N1_LINE) {
+      else if (shell == M2_SHELL) {
         /*
          * M2 lines
          */
@@ -2150,9 +2242,9 @@ public class Xraylib {
         double PL2 = PL2_cascade_kissel_catch(Z, E, PK, PL1);
         double PL3 = PL3_cascade_kissel_catch(Z, E, PK, PL1, PL2);
         double PM1 = PM1_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3);
-        return FluorYield(Z, M2_SHELL) * RadRate(Z, line) * PM2_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
+        return FluorYield(Z, shell) * PM2_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1);
       }
-      else if (line>=M3Q1_LINE && line<=M3N1_LINE) {
+      else if (shell == M3_SHELL) {
         /*
          * M3 lines
          */
@@ -2162,9 +2254,9 @@ public class Xraylib {
         double PL3 = PL3_cascade_kissel_catch(Z, E, PK, PL1, PL2);
         double PM1 = PM1_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3);
         double PM2 = PM2_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3, PM1);
-        return FluorYield(Z, M3_SHELL) * RadRate(Z, line) * PM3_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
+        return FluorYield(Z, shell) * PM3_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
       }
-      else if (line >= M4P5_LINE && line <= M4N1_LINE) {
+      else if (shell == M4_SHELL) {
         /*
          * M4 lines
          */
@@ -2175,9 +2267,9 @@ public class Xraylib {
         double PM1 = PM1_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3);
         double PM2 = PM2_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3, PM1);
         double PM3 = PM3_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
-        return FluorYield(Z, M4_SHELL) * RadRate(Z, line) * PM4_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
+        return FluorYield(Z, shell) * PM4_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
       }
-      else if (line >= M5P5_LINE && line <= M5N1_LINE) {
+      else if (shell == M5_SHELL) {
         /*
          * M5 lines
          */
@@ -2189,10 +2281,10 @@ public class Xraylib {
         double PM2 = PM2_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3, PM1);
         double PM3 = PM3_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3, PM1, PM2);
         double PM4 = PM4_cascade_kissel_catch(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3);
-        return FluorYield(Z, M5_SHELL) * RadRate(Z, line) * PM5_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4);
+        return FluorYield(Z, shell) * PM5_cascade_kissel(Z, E, PK, PL1, PL2, PL3, PM1, PM2, PM3, PM4);
       }
       else {
-        throw new IllegalArgumentException(INVALID_LINE);
+        throw new IllegalArgumentException(INVALID_SHELL);
       }
     }
   	
@@ -2256,7 +2348,7 @@ public class Xraylib {
     }
   }
 
-  private static final class CS_FluorLine_Kissel_Radiative_CascadeImpl extends CS_FluorLine_Cascade_Body {
+  private static final class CS_FluorShell_Kissel_Radiative_CascadeImpl extends CS_FluorShell_Cascade_Body {
   
     public double PL1_cascade_kissel(int Z, double E, double PK) {
       return PL1_rad_cascade_kissel(Z, E, PK);
@@ -2291,7 +2383,7 @@ public class Xraylib {
     }
   }
 
-  private static final class CS_FluorLine_Kissel_Nonradiative_CascadeImpl extends CS_FluorLine_Cascade_Body {
+  private static final class CS_FluorShell_Kissel_Nonradiative_CascadeImpl extends CS_FluorShell_Cascade_Body {
   
     public double PL1_cascade_kissel(int Z, double E, double PK) {
       return PL1_auger_cascade_kissel(Z, E, PK);
@@ -2326,7 +2418,7 @@ public class Xraylib {
     }
   }
 
-  private static final class CS_FluorLine_Kissel_CascadeImpl extends CS_FluorLine_Cascade_Body {
+  private static final class CS_FluorShell_Kissel_CascadeImpl extends CS_FluorShell_Cascade_Body {
   
     public double PL1_cascade_kissel(int Z, double E, double PK) {
       return PL1_full_cascade_kissel(Z, E, PK);
@@ -2361,9 +2453,9 @@ public class Xraylib {
     }
   }
 
-  private static final CS_FluorLine_Cascade_Body CS_FLUORLINE_KISSEL_RADIATIVE = new CS_FluorLine_Kissel_Radiative_CascadeImpl();
-  private static final CS_FluorLine_Cascade_Body CS_FLUORLINE_KISSEL_NONRADIATIVE = new CS_FluorLine_Kissel_Nonradiative_CascadeImpl();
-  private static final CS_FluorLine_Cascade_Body CS_FLUORLINE_KISSEL_FULL = new CS_FluorLine_Kissel_CascadeImpl();
+  private static final CS_FluorShell_Cascade_Body CS_FLUORSHELL_KISSEL_RADIATIVE = new CS_FluorShell_Kissel_Radiative_CascadeImpl();
+  private static final CS_FluorShell_Cascade_Body CS_FLUORSHELL_KISSEL_NONRADIATIVE = new CS_FluorShell_Kissel_Nonradiative_CascadeImpl();
+  private static final CS_FluorShell_Cascade_Body CS_FLUORSHELL_KISSEL_FULL = new CS_FluorShell_Kissel_CascadeImpl();
 
   /** 
    * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
@@ -2373,12 +2465,12 @@ public class Xraylib {
    * This method used the Kissel database to calculate the photoionization cross section.
    * 
    * @param Z The atomic number
-   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
    * @param E The energy of the photon, expressed in keV.
    * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
    */
-  public static double CS_FluorLine_Kissel_Radiative_Cascade(int Z, int line, double E) {
-    return CS_FLUORLINE_KISSEL_RADIATIVE.execute(Z, line, E);
+  public static double CS_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E) {
+    return CS_FLUORSHELL_KISSEL_RADIATIVE.execute(Z, shell, E);
   }
 
   /** 
@@ -2389,12 +2481,12 @@ public class Xraylib {
    * This method used the Kissel database to calculate the photoionization cross section.
    * 
    * @param Z The atomic number
-   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
    * @param E The energy of the photon, expressed in keV.
    * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
    */
-  public static double CS_FluorLine_Kissel_Nonradiative_Cascade(int Z, int line, double E) {
-    return CS_FLUORLINE_KISSEL_NONRADIATIVE.execute(Z, line, E);
+  public static double CS_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E) {
+    return CS_FLUORSHELL_KISSEL_NONRADIATIVE.execute(Z, shell, E);
   }
 
   /** 
@@ -2405,12 +2497,108 @@ public class Xraylib {
    * This method used the Kissel database to calculate the photoionization cross section.
    * 
    * @param Z The atomic number
-   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
    * @param E The energy of the photon, expressed in keV.
    * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
    */
-  public static double CS_FluorLine_Kissel_Cascade(int Z, int line, double E) {
-    return CS_FLUORLINE_KISSEL_FULL.execute(Z, line, E);
+  public static double CS_FluorShell_Kissel_Cascade(int Z, int shell, double E) {
+    return CS_FLUORSHELL_KISSEL_FULL.execute(Z, shell, E);
+  }
+
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes both non-radiative and radiative cascade effect contributions!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell_Kissel_Cascade(int Z, int shell, double E) {
+    return CS_FluorShell_Kissel_Cascade(Z, shell, E) * AtomicWeight_arr[Z] / AVOGNUM;
+  }
+
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the non-radiative cascade contributions but excludes the radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E) {
+    return CS_FluorShell_Kissel_Nonradiative_Cascade(Z, shell, E) * AtomicWeight_arr[Z] / AVOGNUM;
+  }
+
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This implementation includes the radiative cascade contributions but excludes the non-radiative cascade effect!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E) {
+    return CS_FluorShell_Kissel_Radiative_Cascade(Z, shell, E) * AtomicWeight_arr[Z] / AVOGNUM;
+  }
+
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method excludes the cascade effect from the calculation!
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell_Kissel_no_Cascade(int Z, int shell, double E) {
+    return CS_FluorShell_Kissel_no_Cascade(Z, shell, E) * AtomicWeight_arr[Z] / AVOGNUM;
+  }
+
+  /** 
+   * For a given atomic number, shell, and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method is an alias for #CS_FluorShell_Kissel_Cascade, meaning that the cascade effect will be taken into account.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorShell_Kissel(int Z, int shell, double E) {
+    return CS_FluorShell_Kissel_Cascade(Z, shell, E);
+  }
+
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method is an alias for #CSb_FluorShell_Kissel_Cascade, meaning that the cascade effect will be taken into account.
+   *
+   * This method used the Kissel database to calculate the photoionization cross section.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell_Kissel(int Z, int shell, double E) {
+    return CSb_FluorShell_Kissel_Cascade(Z, shell, E);
   }
 
   /** 
@@ -2477,10 +2665,25 @@ public class Xraylib {
     return CS_FluorLine_Kissel_no_Cascade(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
+  public static double Jump_from_K(int Z, double E) {
+    double edgeK = EdgeEnergy(Z, K_SHELL);
+    double Factor;
+    if (E > edgeK && edgeK > 0.0) {
+      double yield;
+      double JumpK = JumpFactor(Z, K_SHELL);
+      yield = FluorYield(Z, K_SHELL);
+      Factor = ((JumpK - 1)/JumpK) * yield;
+    }
+    else {
+      throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
+    }
+    return Factor;
+  }
+
   private static double Jump_from_L1(int Z, double E) {
     double Factor = 1.0, JumpL1, JumpK;
     double edgeK = EdgeEnergy_catch(Z, K_SHELL);
-    double edgeL1 = EdgeEnergy_catch(Z, L1_SHELL);
+    double edgeL1 = EdgeEnergy(Z, L1_SHELL);
     double yield;
 
     if (E > edgeK && edgeK > 0.0) {
@@ -2514,7 +2717,7 @@ public class Xraylib {
     double TaoL1 = 0.0, TaoL2 = 0.0;
     double edgeK = EdgeEnergy_catch(Z, K_SHELL);
     double edgeL1 = EdgeEnergy_catch(Z, L1_SHELL);
-    double edgeL2 = EdgeEnergy_catch(Z, L2_SHELL);
+    double edgeL2 = EdgeEnergy(Z, L2_SHELL);
     double ck_L12, yield;
 
     if (E > edgeK && edgeK > 0.0) {
@@ -2567,7 +2770,7 @@ public class Xraylib {
     double edgeK = EdgeEnergy_catch(Z, K_SHELL);
     double edgeL1 = EdgeEnergy_catch(Z, L1_SHELL);
     double edgeL2 = EdgeEnergy_catch(Z, L2_SHELL);
-    double edgeL3 = EdgeEnergy_catch(Z, L3_SHELL);
+    double edgeL3 = EdgeEnergy(Z, L3_SHELL);
     double ck_L23, ck_L13, ck_LP13, ck_L12;
     double yield;
 
@@ -2658,20 +2861,28 @@ public class Xraylib {
      }
   }
 
+  private static double Jump_from_K_catch(int Z, double E) {
+     try {
+       return Jump_from_K(Z, E);
+     } catch (IllegalArgumentException e) {
+       return 0.0;
+     }
+  }
+
   /** 
-   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section.
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section for all lines that may originate from the provided shell.
    * 
    * This method used the jump factor approximation to calculate the photoionization cross section,
-   * which is only support for K- and L-lines.
+   * which is only supported for K- and L-lines.
    * 
    * @param Z The atomic number
-   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
    * @param E The energy of the photon, expressed in keV.
    * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
    */
-  public static double CS_FluorLine(int Z, int line, double E) {
-    double JumpK;
-    double cs_line, Factor = 1.0;
+  public static double CS_FluorShell(int Z, int shell, double E) {
+    double cs = 0.0;
+    double Factor = 0.0;
 
     if (Z < 1 || Z > ZMAX) {
       throw new IllegalArgumentException(Z_OUT_OF_RANGE);
@@ -2681,50 +2892,70 @@ public class Xraylib {
       throw new IllegalArgumentException(NEGATIVE_ENERGY);
     }
 
-    if (line >= KN5_LINE && line <= KB_LINE) {
-      double edgeK = EdgeEnergy(Z, K_SHELL);
-      double cs, rr;
-      if (E > edgeK) {
-        double yield;
-        JumpK = JumpFactor(Z, K_SHELL);
-        yield = FluorYield(Z, K_SHELL);
-        Factor = ((JumpK - 1)/JumpK) * yield;
-      }
-      else {
-        throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
-      }
+    switch (shell) {
+      case K_SHELL:
+        Factor = Jump_from_K(Z, E);
+        break;
+      case L1_SHELL:
+        Factor = Jump_from_L1(Z, E);
+        break;
+      case L2_SHELL:
+        Factor = Jump_from_L2(Z, E);
+        break;
+      case L3_SHELL:
+        Factor = Jump_from_L3(Z, E);
+        break;
+      default:
+        throw new IllegalArgumentException(INVALID_SHELL);
+    }
+  
+    return CS_Photo(Z, E) * Factor;
+  }
 
-      cs = CS_Photo(Z, E);
+  /** 
+   * For a given atomic number, line and excitation energy, returns the corresponding XRF production cross section.
+   * 
+   * This method used the jump factor approximation to calculate the photoionization cross section,
+   * which is only supported for K- and L-lines.
+   * 
+   * @param Z The atomic number
+   * @param line A macro identifying the line, such as #KL3_LINE or #LA1_LINE.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in cm<sup>2</sup>/g.
+   */
+  public static double CS_FluorLine(int Z, int line, double E) {
+    double Factor = 1.0;
+    double rr;
+
+    if (line >= KP5_LINE && line <= KB_LINE) {
       rr = RadRate(Z, line);
-
-      cs_line = cs * Factor * rr;
+      Factor = CS_FluorShell(Z, K_SHELL, E);
+      return rr * Factor;
     }
     else if ((line <= L1L2_LINE && line >= L3Q1_LINE) || line == LA_LINE) {
-      double cs, rr;
-      cs = CS_Photo(Z, E);
       rr = RadRate(Z, line);
 
       if (line >= L1P5_LINE && line <= L1L2_LINE) {
-        Factor = Jump_from_L1(Z, E);
+        Factor = CS_FluorShell(Z, L1_SHELL, E);
       }
       else if (line >= L2Q1_LINE && line <= L2L3_LINE)  {
-        Factor = Jump_from_L2(Z, E);
+        Factor = CS_FluorShell(Z, L2_SHELL, E);
       }
       /*
        * it's safe to use LA_LINE since it's only composed of 2 L3-lines
        */
-      else if ((line >= L3Q1_LINE && line <= L3M1_LINE) || line == LA_LINE) {
-        Factor = Jump_from_L3(Z, E);
+      else if (line <= L3M1_LINE || line == LA_LINE) {
+        Factor = CS_FluorShell(Z, L3_SHELL, E);
       }
-      cs_line = cs * Factor * rr;
+
+      return rr * Factor;
     }
     else if (line == LB_LINE) {
       /*
        * b1->b17
        */
       double cs;
-      cs_line = 
-	Jump_from_L2_catch(Z, E) * (RadRate_catch(Z, L2M4_LINE) + RadRate_catch(Z, L2M3_LINE)) +
+      double cs_line = Jump_from_L2_catch(Z, E) * (RadRate_catch(Z, L2M4_LINE) + RadRate_catch(Z, L2M3_LINE)) +
         Jump_from_L3_catch(Z, E) * (RadRate_catch(Z, L3N5_LINE) + RadRate_catch(Z, L3O4_LINE) + RadRate_catch(Z, L3O5_LINE) + RadRate_catch(Z, L3O45_LINE) + RadRate_catch(Z, L3N1_LINE) + RadRate_catch(Z, L3O1_LINE) + RadRate_catch(Z, L3N6_LINE) + RadRate_catch(Z, L3N7_LINE) + RadRate_catch(Z, L3N4_LINE)) +
         Jump_from_L1_catch(Z, E) * (RadRate_catch(Z, L1M3_LINE) + RadRate_catch(Z, L1M2_LINE) + RadRate_catch(Z, L1M5_LINE) + RadRate_catch(Z, L1M4_LINE));
 
@@ -2732,13 +2963,11 @@ public class Xraylib {
         throw new IllegalArgumentException(TOO_LOW_EXCITATION_ENERGY);
       }
       cs = CS_Photo(Z, E);
-      cs_line *= cs;
+      return cs_line * cs;
     }
     else {
       throw new IllegalArgumentException(INVALID_LINE);
     }
-  
-    return cs_line;
   }
 
   private static double LineEnergyComposed(int Z, int line1, int line2) {
@@ -2929,6 +3158,21 @@ public class Xraylib {
    */
   public static double CSb_FluorLine(int Z, int line, double E) {
     return CS_FluorLine(Z, line, E) * AtomicWeight_arr[Z] / AVOGNUM;
+  }
+
+  /** 
+   * For a given atomic number, shell and excitation energy, returns the corresponding XRF production cross section for all lines that may originate from the provided shell.
+   * 
+   * This method used the jump factor approximation to calculate the photoionization cross section,
+   * which is only supported for K- and L-lines.
+   * 
+   * @param Z The atomic number
+   * @param shell A macro identifying the shell, such as #K_SHELL or #L1_SHELL.
+   * @param E The energy of the photon, expressed in keV.
+   * @return The XRF production cross section, expressed in barn/atom.
+   */
+  public static double CSb_FluorShell(int Z, int shell, double E) {
+    return CS_FluorShell(Z, shell, E) * AtomicWeight_arr[Z] / AVOGNUM;
   }
 
   /** 
@@ -3217,6 +3461,7 @@ public class Xraylib {
 
     public abstract double CS_base(int Z, double energy, double theta, double phi);
   }
+
 
   private static final CS_Body_Energy CS_TOTAL_CP = Xraylib::CS_Total;
   private static final CS_Body_Energy CS_TOTAL_KISSEL_CP = Xraylib::CS_Total_Kissel;
@@ -5626,13 +5871,19 @@ public class Xraylib {
   }
 
   private static final LineShellPair[] lb_pairs = new LineShellPair[]{
-    new LineShellPair(L2M4_LINE, L2_SHELL), /* b1 */
-    new LineShellPair(L3N5_LINE, L3_SHELL), /* b2 */
-    new LineShellPair(L1M3_LINE, L1_SHELL), /* b3 */
-    new LineShellPair(L1M2_LINE, L1_SHELL), /* b4 */
-    new LineShellPair(L3O3_LINE, L3_SHELL), /* b5 */
-    new LineShellPair(L3O4_LINE, L3_SHELL), /* b5 */
-    new LineShellPair(L3N1_LINE, L3_SHELL)  /* b6 */
+    new LineShellPair(LB1_LINE, L2_SHELL),
+    new LineShellPair(LB2_LINE, L3_SHELL),
+    new LineShellPair(LB3_LINE, L1_SHELL),
+    new LineShellPair(LB4_LINE, L1_SHELL),
+    new LineShellPair(LB5_LINE, L3_SHELL),
+    new LineShellPair(LB6_LINE, L3_SHELL),
+    new LineShellPair(LB7_LINE, L3_SHELL),
+    new LineShellPair(LB9_LINE, L1_SHELL),
+    new LineShellPair(LB10_LINE, L1_SHELL),
+    new LineShellPair(LB15_LINE, L3_SHELL),
+    new LineShellPair(LB17_LINE, L2_SHELL),
+    new LineShellPair(L3N6_LINE, L3_SHELL),
+    new LineShellPair(L3N7_LINE, L3_SHELL),
   };
 
   private static final int KL1 = -KL1_LINE - 1;
