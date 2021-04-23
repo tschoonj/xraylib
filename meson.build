@@ -3,7 +3,7 @@ project('xraylib',
     meson_version: '>= 0.56.0',
     version: '4.0.0',
     license: 'BSD',
-    default_options: ['cpp_std=c++11',]
+    default_options: ['cpp_std=c++11']
 )
 
 
@@ -185,5 +185,11 @@ ENDPROGRAM f2003_main
             endif
     	endif
 
+    endif
+endif
+
+if not get_option('csharp-bindings').disabled() and cc.get_id() == 'msvc'
+    if add_languages('cpp', 'cs', required: get_option('csharp-bindings'), native: false)
+        subdir('csharp')
     endif
 endif

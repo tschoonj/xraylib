@@ -98,6 +98,11 @@ XRL_EXTERN
 xrlComplex Crystal_F_H_StructureFactor (Crystal_Struct* crystal, double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrl_error **error);
 
+#ifndef SWIG
+XRL_EXTERN
+void Crystal_F_H_StructureFactor2(Crystal_Struct* crystal, double energy, int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle, xrlComplex* result, xrl_error **error);
+#endif
+
 /*--------------------------------------------------------------------------------------------------
  * Compute F_H
  * See also Crystal_F_H_StructureFactor
@@ -112,6 +117,13 @@ XRL_EXTERN
 xrlComplex Crystal_F_H_StructureFactor_Partial (Crystal_Struct* crystal, double energy,
                       int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
                       int f0_flag, int f_prime_flag, int f_prime2_flag, xrl_error **error);
+
+#ifndef SWIG
+XRL_EXTERN
+void Crystal_F_H_StructureFactor_Partial2(Crystal_Struct* crystal, double energy,
+	int i_miller, int j_miller, int k_miller, double debye_factor, double rel_angle,
+	int f0_flag, int f_prime_flag, int f_prime2_flag, xrlComplex* result, xrl_error **error);
+#endif
 
 /*--------------------------------------------------------------------------------
  * Compute unit cell volume.

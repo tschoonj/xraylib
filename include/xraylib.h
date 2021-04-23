@@ -371,6 +371,11 @@ double Refractive_Index_Im(const char compound[], double E, double density, xrl_
 XRL_EXTERN
 xrlComplex Refractive_Index(const char compound[], double E, double density, xrl_error **error);
 
+#ifndef SWIG
+XRL_EXTERN
+void Refractive_Index2(const char compound[], double E, double density, xrlComplex* result, xrl_error **error);
+#endif
+
 /* ComptonProfiles */
 XRL_EXTERN
 double ComptonProfile(int Z, double pz, xrl_error **error);
