@@ -31,8 +31,8 @@ jobs:
             compiler: cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/checkout@v2.3.4
+    - uses: conda-incubator/setup-miniconda@v2.1.1
       with:
         auto-update-conda: true
         channels: conda-forge
@@ -40,7 +40,7 @@ jobs:
     - name: Install meson, ninja, numpy and cython
       run: |
         conda install -q -y meson ninja numpy cython swig
-    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: ilammy/msvc-dev-cmd@v1.8.0
     - name: Build with meson
       run: |
         meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
@@ -75,7 +75,7 @@ jobs:
       with:
         args: install innosetup lazarus
     # required for the lib command
-    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: ilammy/msvc-dev-cmd@v1.8.0
       with:
         arch: x64
     - uses: msys2/setup-msys2@v2
@@ -102,7 +102,7 @@ jobs:
           patch
           wget
           tar
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -207,12 +207,12 @@ jobs:
             ldflags: -L/usr/local/opt/llvm/lib
             enable_ruby: enable
           - compiler: gcc
-            cc: gcc-10
-            cxx: g++-10
+            cc: gcc-11
+            cxx: g++-11
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -429,7 +429,7 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
