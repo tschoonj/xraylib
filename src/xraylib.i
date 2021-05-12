@@ -109,7 +109,7 @@ def __send_google_analytics_launch_event():
 
     try:
         data = urllib.parse.urlencode(payload).encode()
-        connection = http.client.HTTPSConnection('www.google-analytics.com')
+        connection = http.client.HTTPSConnection('www.google-analytics.com', port=443, key_file=None, cert_file=None, timeout=1)
         connection.request('POST', '/collect', data)
         response = connection.getresponse()
     except:

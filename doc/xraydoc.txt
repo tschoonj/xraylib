@@ -153,7 +153,15 @@ Taken from http://physics.nist.gov/cgi-bin/Star/compos.pl using the nist-compoun
 Fluorescence yields and Coster-Kronig transition probabilities
 ==============================================================
 
-Some of the values have been replaced by those from Campbell's paper "Fluorescence yields and Coster–Kronig probabilities for the atomic L subshells. Part II: The L1 subshell revisited", Atomic Data and Nulear Data Tables (2009)
+Initial data taken from:
+
+M. Krause, C. Nestor Jr., C. Sparks Jr., and E. Ricci. X-ray fluorescence cross sections for K and L X-rays of the elements ORNL-5399. Technical report, Oak-Ridge National Laboratory, 1978.
+
+Some of the values have been replaced with newer values from
+
+* J. Campbell. Fluorescence yields and Coster–Kronig probabilities for the atomic L subshells. Part II: The L1 subshell revisited. At. Data Nucl. Data Tables, 95(1):115–124, 2009.
+* V. Ayri, S. Kaur, A. Kumar, M. Czyzycki, A. Karydas, and S. Puri. Experimental evidence for onset of l 1–l 3 m 5 transition at z= 75 through measurements of fluorescence and coster–kronig yields for w and re. Journal of Analytical Atomic Spectrometry, 36(2):380–389, 2021.
+* S. Kaur, V. Ayri, A. Kumar, M. Czyzycki, A. G. Karydas, and S. Puri. Experimental validation of theoretically predicted cut-off of L1-L3M4,5 transitions at Z= 50 through measurements of fluorescence and coster-kronig yields for Sn and Sb. Metrologia, 2021.
 
 Radionuclides
 =============
