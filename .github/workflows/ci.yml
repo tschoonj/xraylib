@@ -207,8 +207,8 @@ jobs:
             ldflags: -L/usr/local/opt/llvm/lib
             enable_ruby: enable
           - compiler: gcc
-            cc: gcc-10
-            cxx: g++-10
+            cc: gcc-11
+            cxx: g++-11
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
