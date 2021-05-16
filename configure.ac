@@ -11,7 +11,7 @@
 
 
 
-AC_INIT([xraylib],[4.0.0],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[4.0.1],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -1052,7 +1052,6 @@ AC_CONFIG_FILES([Makefile
 				 doc/Makefile
 				 libxrl.pc
 				 libxrlf03.pc
-				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
 				 java/tests/Makefile
