@@ -88,6 +88,7 @@ jobs:
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-libtool
+          mingw-w64-x86_64-libxml2
           mingw-w64-x86_64-clang
           mingw-w64-x86_64-openmp
           mingw-w64-x86_64-lld
@@ -142,7 +143,7 @@ jobs:
         set -ex
 
         autoreconf -fi
-        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic"
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || (cat config.log && exit 1)
         make
         make check
         make windows
