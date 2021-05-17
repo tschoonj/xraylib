@@ -14,7 +14,7 @@ public class GoogleAnalyticsThread extends Thread {
     private static final String GOOGLE_ANALYTICS_ENDPOINT = "https://www.google-analytics.com/collect";
     private static final String GOOGLE_ANALYTICS_TRACKING_ID = "UA-42595764-5";
     private static final String GOOGLE_ANALYTICS_APPLICATION_NAME = "xraylib";
-    private static final String GOOGLE_ANALYTICS_APPLICATION_VERSION = "4.0.0";
+    private static final String GOOGLE_ANALYTICS_APPLICATION_VERSION = "4.0.1";
     private static final String GOOGLE_ANALYTICS_HIT_TYPE = "event";
 
     public void run() {

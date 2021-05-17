@@ -11,7 +11,7 @@
 
 
 
-AC_INIT([xraylib],[4.0.0],[Tom.Schoonjans@me.com])
+AC_INIT([xraylib],[4.0.1],[Tom.Schoonjans@me.com])
 AC_PREREQ([2.60])
 AC_CONFIG_SRCDIR([include/xraylib.h])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -553,7 +553,7 @@ if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes && test "x$DISABLE_B
 	AC_MSG_ERROR([--enable-python was given as an option but swig was not found on the system])
 elif test "x$SWIG" != xnoswig && test "x$enable_python" != xno && test "x$DISABLE_BINDINGS" = xno  ; then
 	#verify the python installation
-	AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
+	AM_PATH_PYTHON([3.6], [PYTHON_FOUND=true],[PYTHON_FOUND=false])
 	if test "x$PYTHON_FOUND" = xtrue ; then
 		PYTHON_CPPFLAGS=
 		PYTHON_LDFLAGS=
@@ -611,7 +611,7 @@ AC_ARG_VAR(CYTHON, [the Cython command])
 if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 	##check for python if not done yet
 	if test "x$VALID_PYTHON" != xyes ; then
-		AM_PATH_PYTHON(,[PYTHON_FOUND=true],[PYTHON_FOUND=false])
+		AM_PATH_PYTHON([3.6], [PYTHON_FOUND=true],[PYTHON_FOUND=false])
 		if test "x$PYTHON_FOUND" = xtrue ; then
 			PYTHON_CPPFLAGS=
 			PYTHON_LDFLAGS=
@@ -1052,7 +1052,6 @@ AC_CONFIG_FILES([Makefile
 				 doc/Makefile
 				 libxrl.pc
 				 libxrlf03.pc
-				 xraylib.spec
 				 data/Makefile
 				 java/Makefile
 				 java/tests/Makefile

@@ -330,7 +330,7 @@ jobs:
         image: 
           - ubuntu:bionic
           - ubuntu:focal
-          # - ubuntu:devel currently broken
+          - ubuntu:devel
           - debian:buster
           - debian:sid
           - centos:7
@@ -397,8 +397,8 @@ jobs:
             lua: /usr/bin/lua5.3
           - image: ubuntu:focal
             lua: /usr/bin/lua5.3
-          #- image: ubuntu:devel
-          #  lua: /usr/bin/lua5.3
+          - image: ubuntu:devel
+            lua: /usr/bin/lua5.3
           - image: debian:buster
             lua: /usr/bin/lua5.3
           - image: debian:sid
@@ -469,7 +469,7 @@ jobs:
       run: |
         set -ex
         yum update -y
-        yum install -y make autoconf automake libtool python3-Cython python3-setuptools python3-devel python3-numpy fpc gcc-gfortran gcc php-devel swig perl-devel perl perl-Test-Simple lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel  gcc-c++ which
+        yum install -y make autoconf automake libtool python3-Cython python3-setuptools python3-devel python3-numpy fpc gcc-gfortran gcc php-devel swig perl-devel perl perl-Test-Simple lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel gcc-c++ which rpm-build rpmdevtools lua-srpm-macros perl-macros
         java -version
         which java
         javac -version
@@ -538,3 +538,12 @@ jobs:
         FPC_ENABLE: ${{matrix.fpc}}
         DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --${{matrix.perl}}-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --${{matrix.php}}-php --enable-ruby --${{matrix.fortran}}-fortran2003
         CFLAGS: ${{matrix.clang_cflags}}
+    - name: Test rpm-build
+      if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora'))
+      run: |
+        set -ex
+        rpmdev-setuptree
+        cp xraylib-*.tar.gz ~/rpmbuild/SOURCES
+        cp xraylib.spec ~/rpmbuild/SPECS
+        rpmbuild -ba ~/rpmbuild/SPECS/xraylib.spec
+        set +ex

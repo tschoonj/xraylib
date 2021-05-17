@@ -1,4 +1,4 @@
-#Copyright (c) 2009-2014, Tom Schoonjans
+#Copyright (c) 2009-2021, Tom Schoonjans
 #All rights reserved.
 
 #Redistribution and use in source and binary forms, with or without
@@ -9,21 +9,16 @@
 
 #THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# this is necessary for CentOS 7
+# for compiled modules
+%{!?lua_libdir: %global lua_libdir %{_libdir}/lua/%{lua_version}}
 
-
-
-%define luaver @LUA_VERSION@
-%define lualibdir %{_libdir}/lua/%{luaver}
-
-%define rubydir @RUBY_EXT_LIB@
-%define perldir @PERL_EXT_LIB@
-%define perllibdir @PERL_EXT_LIB@/auto/xraylib
-
-%define phpdir @PHP_DIR@
-%define phpscriptdir @PHP_SCRIPT_DIR@
+# and for Perl, for all distros...
+%define perl_vendor_archlib	%(eval "`%__perl -V:installvendorarch`"; echo "$installvendorarch")
+%define perl_vendor_autolib	%{perl_vendor_archlib}/auto
 
 Name: xraylib
-Version: @VERSION@	
+Version: 4.0.1
 Release:	1%{?dist}
 Summary: A library for X-ray matter interactions cross sections for X-ray fluorescence applications: core C library
 Group:	 Applications/Engineering and Scientific	
@@ -35,9 +30,6 @@ BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildRequires: gcc glibc glibc-headers glibc-devel gcc-gfortran >= 4.3.0 swig lua-devel ruby-devel perl-devel php-devel
 
 %if 0%{?rhel}
-
-# python 2
-BuildRequires: python2-numpy python2-devel
 
 %if 0%{?rhel} == 7
 # python2-Cython is too old!
@@ -60,10 +52,6 @@ BuildRequires: python3-Cython python3-numpy python3-devel python3-setuptools
 %if 0%{?fedora}
 BuildRequires: python3-Cython python3-numpy python3-devel
 %define cython3 /usr/bin/cython
-%if 0%{?fedora} < 31
-BuildRequires: python2-numpy python2-devel
-%define cython2 /usr/bin/cython
-%endif
 %endif
 
 %endif
@@ -106,24 +94,10 @@ Quantitative estimate of elemental composition by spectroscopic and imaging tech
 
 This rpm package provides the python3 bindings of xraylib.
 
-# this should also cover rhel!
-%if 0%{?fedora} < 31
-%package python2
-Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: python2 bindings
-Requires:  %{name}%{?_isa} = %{version}-%{release}
-Requires: python2-numpy
-
-%description python2
-Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
-
-This rpm package provides the python2 bindings of xraylib.
-%endif
-
-
-
 %package lua
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: lua bindings
-Requires: lua %{name}%{?_isa} = %{version}-%{release}
+Requires: lua(abi) = %{lua_version}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description lua
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
@@ -132,7 +106,8 @@ This rpm package provides the lua bindings of xraylib.
 
 %package ruby
 Summary:A library for X-ray matter interactions cross sections for X-ray fluorescence applications: ruby bindings
-Requires: ruby %{name}%{?_isa} = %{version}-%{release}
+Requires: ruby(release)
+Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description ruby
 Quantitative estimate of elemental composition by spectroscopic and imaging techniques using X-ray fluorescence requires the availability of accurate data of X-ray interaction with matter. Although a wide number of computer codes and data sets are reported in literature, none of them is presented in the form of freely available library functions which can be easily included in software applications for X-ray fluorescence. This work presents a compilation of data sets from different published works and an xraylib interface in the form of callable functions. Although the target applications are on X-ray fluorescence, cross sections of interactions like photoionization, coherent scattering and Compton scattering, as well as form factors and anomalous scattering functions, are also available. 
@@ -161,69 +136,26 @@ This rpm package provides the PHP bindings of xraylib.
 %prep
 
 %setup -q
-pushd ..
-cp -a xraylib-%{version} xraylib-%{version}-python3
-%if 0%{?fedora} < 31
-cp -a xraylib-%{version} xraylib-%{version}-python2
-%endif
-popd
 
 %build
-#first run WITHOUT python
-%configure --disable-java --disable-idl --enable-fortran2003 --disable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --disable-python-numpy --enable-php --enable-php-integration --enable-static FC=gfortran 
+%configure --disable-java --disable-idl --enable-fortran2003 --enable-python --enable-lua --enable-ruby --enable-ruby-integration --enable-perl-integration --enable-perl --enable-python-numpy --enable-php --enable-php-integration --enable-static FC=gfortran PYTHON=%{__python3} PERL=%{__perl} CYTHON=%{cython3}
 #necessary to fix rpath issues during rpmbuild
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-#python3
-pushd ../xraylib-%{version}-python3
-%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python3} CYTHON=%{cython3}
-popd
-
-%if 0%{?fedora} < 31
-#python2
-pushd ../xraylib-%{version}-python2
-%configure --disable-java --disable-idl --disable-fortran2003 --enable-python --disable-lua --disable-ruby --disable-perl --disable-php --enable-python-numpy PYTHON=%{__python2} CYTHON=%{cython2}
-popd
-%endif
-
 make 
-
-mv ../xraylib-%{version}-python3/python python3
-cd python3
-make
-cd ..
-%if 0%{?fedora} < 31
-mv ../xraylib-%{version}-python2/python python2
-cd python2
-make
-cd ..
-%endif
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
 
-cd python3
-make install DESTDIR=$RPM_BUILD_ROOT
-cd ..
-%if 0%{?fedora} < 31
-cd python2
-make install DESTDIR=$RPM_BUILD_ROOT
-cd ..
-%endif
-
 libtool --finish $RPM_BUILD_ROOT%{_libdir}
 rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
-rm -f $RPM_BUILD_ROOT%{lualibdir}/*.la
-rm -f $RPM_BUILD_ROOT%{rubydir}/*.la
-rm -f $RPM_BUILD_ROOT%{perllibdir}/*.la
-rm -f $RPM_BUILD_ROOT%{phpdir}/*.la
+rm -f $RPM_BUILD_ROOT%{lua_libdir}/*.la
+rm -f $RPM_BUILD_ROOT%{ruby_vendorarchdir}/*.la
+rm -f $RPM_BUILD_ROOT%{perl_vendor_autolib}/xraylib/*.la
+rm -f $RPM_BUILD_ROOT%{php_extdir}/*.la
 rm -f $RPM_BUILD_ROOT%{python3_sitearch}/*.la
-%if 0%{?fedora} < 31
-rm -f $RPM_BUILD_ROOT%{python2_sitearch}/*.la
-%endif
 
 mkdir -p $RPM_BUILD_ROOT/%{_sysconfdir}/php.d
 cat >$RPM_BUILD_ROOT/%{_sysconfdir}/php.d/xraylib.ini <<EOF
@@ -269,34 +201,30 @@ rm -rf $RPM_BUILD_ROOT
 %{python3_sitearch}/_xraylib.*
 %{python3_sitearch}/xraylib_np.*
 
-%if 0%{?fedora} < 31
-%files python2
-%defattr(-,root,root)
-%{python2_sitelib}/xraylib.py*
-%{python2_sitearch}/_xraylib.*
-%{python2_sitearch}/xraylib_np.*
-%endif
-
 %files lua
 %defattr(-,root,root)
-%{lualibdir}/*
+%{lua_libdir}/*
 
 %files ruby
 %defattr(-,root,root)
-%{rubydir}/*
+%{ruby_vendorarchdir}/*
 
 %files perl
 %defattr(-,root,root)
-%{perldir}/xraylib.pm
-%{perllibdir}/xraylib.so
+%{perl_vendor_archlib}/xraylib.pm
+%{perl_vendor_autolib}/xraylib/xraylib.so
 
 %files php
 %defattr(-,root,root)
-%{phpdir}/xraylib.so
-%{phpscriptdir}/xraylib.php
+%{php_extdir}/xraylib.so
+%{_datadir}/php/xraylib.php
 %config(noreplace) %{_sysconfdir}/php.d/xraylib.ini
 
 %changelog
+* Sun May 16 2021 Tom Schoonjans
+- Remove python2 support
+- Do not use automake variables, switch to RPM macros
+
 * Wed Sep 4 2019 Tom Schoonjans
 - Remove RHEL6 support
 - Fix python packaging bugs

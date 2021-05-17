@@ -40,6 +40,6 @@ windows:
 	$(MAKE) -C windows windows
 
 
-EXTRA_DIST = xraylib.spec.in Changelog meson.build meson_options.txt
+EXTRA_DIST = xraylib.spec Changelog meson.build meson_options.txt
 
 .PHONY: windows 
