@@ -1,7 +1,7 @@
 project('xraylib',
     'c',
     meson_version: '>= 0.56.0',
-    version: '4.0.1',
+    version: '4.1.0',
     license: 'BSD',
     default_options: ['cpp_std=c++11',]
 )
