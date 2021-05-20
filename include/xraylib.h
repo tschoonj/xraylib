@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2009-2016, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
+Copyright (c) 2009-2021, Bruno Golosio, Antonio Brunetti, Manuel Sanchez del Rio, Tom Schoonjans and Teemu Ikonen
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,8 +23,8 @@ extern "C" {
 
 
 #define XRAYLIB_MAJOR 4
-#define XRAYLIB_MINOR 0
-#define XRAYLIB_MICRO 1
+#define XRAYLIB_MINOR 1
+#define XRAYLIB_MICRO 0
 
 
 #ifndef PI
