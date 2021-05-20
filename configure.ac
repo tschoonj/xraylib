@@ -38,8 +38,6 @@ m4_ifdef([AM_PROG_AR],[AM_PROG_AR])
 LT_PREREQ([2.0.0])
 #dlopen is necessary for IDL bindings
 LT_INIT([dlopen disable-fast-install win32-dll disable-static])
-#AC_LIBTOOL_DLOPEN
-AC_PROG_LIBTOOL
 
 AC_PROG_SED
 
@@ -201,11 +199,9 @@ case "$host" in
         SAVED_CFLAGS="${CFLAGS}"
         CFLAGS="-fvisibility=hidden"
         AC_MSG_CHECKING([for -fvisibility=hidden compiler flag])
-        AC_TRY_COMPILE([], [return 0],
-                       AC_MSG_RESULT(yes)
-                       enable_fvisibility_hidden=yes,
-                       AC_MSG_RESULT(no)
-                       enable_fvisibility_hidden=no)
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[return 0]])],[AC_MSG_RESULT(yes)
+                       enable_fvisibility_hidden=yes],[AC_MSG_RESULT(no)
+                       enable_fvisibility_hidden=no])
         CFLAGS="${SAVED_CFLAGS}"
 
         AS_IF([test "${enable_fvisibility_hidden}" = "yes"], [
@@ -508,18 +504,18 @@ if test "x$enable_perl" != xno && test "x$SWIG" != xnoswig && test "x$DISABLE_BI
 			ac_save_CFLAGS="$CFLAGS"
 			CFLAGS="-I$PERL_EXT_INC $PERL_EXT_CPPFLAGS"
 	       		AC_LANG_PUSH([C])
-			AC_TRY_COMPILE([
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 				#include <EXTERN.h>
 				#include <perl.h>
 				static PerlInterpreter *my_perl;
-			],[
+			]], [[
         		my_perl = perl_alloc();
         		perl_construct(my_perl);
 			PL_exit_flags |= PERL_EXIT_DESTRUCT_END;
         		perl_run(my_perl);
         		perl_destruct(my_perl);
         		perl_free(my_perl);
-			],[perlexists=yes],[perlexists=no])
+			]])],[perlexists=yes],[perlexists=no])
 			AC_MSG_RESULT([$perlexists])
 			AC_LANG_POP
 			CFLAGS="$ac_save_CFLAGS"
@@ -711,13 +707,8 @@ AC_ARG_ENABLE([java],[AS_HELP_STRING([--disable-java],[build without the java bi
 VALID_JAVA=
 
 if test "x$enable_java" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
-	#search for java compiler
-	AX_PROG_JAVAC
-	#search for java virtual machine
-	if test "x$JAVAC" != x ; then
-		AX_PROG_JAVA
-	fi
-	if test "x$JAVAC" = x || test "x$JAVA" = x ; then
+	AC_CHECK_PROG(JAVA, [java], [java], [none])
+	if test "x$JAVA" = "xnone" ; then
 		if test "x$enable_java" = xyes ; then
 			AC_MSG_ERROR([Cannot build java bindings])
 		else
@@ -728,8 +719,6 @@ if test "x$enable_java" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 		VALID_JAVA=yes
 	fi
 fi
-
-GRADLE=
 
 if test "x$VALID_JAVA" = xyes ; then
 	AC_MSG_NOTICE([Building with java bindings])
@@ -782,12 +771,12 @@ elif test "x$SWIG" != xnoswig && test "x$enable_lua" != xno && test "x$DISABLE_B
 			CFLAGS="$LUA_INCLUDE"
 			LIBS="$LUA_LIB"
 	       		AC_LANG_PUSH([C])
-			AC_TRY_COMPILE([
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 			#include <lua.h>
 			#include "lauxlib.h"
-			],[
+			]], [[
 			lua_State *L = luaL_newstate();
-			],[luaexists=yes],[luaexists=no])
+			]])],[luaexists=yes],[luaexists=no])
 			AC_MSG_RESULT([$luaexists])
 			AC_LANG_POP
 			CFLAGS="$ac_save_CFLAGS"
@@ -869,11 +858,11 @@ elif test "x$SWIG" != xnoswig && test "x$enable_ruby" != xno && test "x$DISABLE_
 			CPPFLAGS="$RUBY_EXT_CPPFLAGS $RUBY_EXT_INC"
 	    		AC_MSG_CHECKING([consistency of all components of ruby development environment])
 	        	AC_LANG_PUSH([C])
-			AC_TRY_COMPILE([
+			AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 			#include <ruby.h>
-			],[
+			]], [[
 			ruby_init();
-			],[rubyexists=yes],[rubyexists=no])
+			]])],[rubyexists=yes],[rubyexists=no])
 			AC_MSG_RESULT([$rubyexists])
 			AC_LANG_POP
 			# turn back to default flags
