@@ -84,6 +84,7 @@ Source: "{#builddir}\windows\xraylib-deprecated.h" ; DestDir: "{app}\Include" ; 
 Source: "{#builddir}\windows\xraylib-error.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-radionuclides.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib-aux.h" ; DestDir: "{app}\Include" ; Components: sdk
 
 #ifdef XRL64
 Source: "{#srcdir}\windows\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
