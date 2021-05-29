@@ -14,10 +14,8 @@ The current stable version of xraylib is always available from http://github.com
 Installation
 ============
 
-xraylib follows the standard GNU installation procedure. Please consult the INSTALL file in this distribution for more detailed instructions. 
-An installer for Windows including a 32-bit dll and the xraylib headers is also available from the Download section of the github repository. 
-
-For information about specific platforms and compilers see the "Compilation Notes" section in the INSTALL file.
+xraylib can be compiled using GNU Autotools or meson. Please consult the INSTALL file in this distribution for more detailed instructions. 
+An installer for Windows including a 64-bit dll and the xraylib headers is also available. 
 
 More information about xraylib
 ==============================
@@ -32,7 +30,7 @@ This paper was recently superseded by a new publication, covering all aspects of
 
 If you would publish scientific results that were obtained using xraylib, please refer to this paper.
 
-We recently started a mailinglist. Subscription is possible at https://lists.ugent.be/wws/info/xraylib
+Subscription to our mailing list is possible at https://lists.ugent.be/wws/info/xraylib
 
 Reporting bugs
 ==============

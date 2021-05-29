@@ -1,3 +1,14 @@
+Version 4.1.0 Tom Schoonjans
+
+- Add meson as alternative buildsystem
+- Add API to calculate XRF cross sections for whole shells, instead of
+individual lines (suggested by Oleg Shirokobrod)
+- Lightweight C++ wrappers through a header-only library (contributed by Marius Schollmeier and myself)
+- Add Google Analytics tracking to Python bindings and Java implementation
+- Update L values of CosKronTransProb and FluorYield for W, Re, Sn and Sb,
+using work from Ayri, Kaur, Kumar, Czyzycki, Karydas and Puri
+
+
 Version 4.0.0 Tom Schoonjans
 
 Major changes:

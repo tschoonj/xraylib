@@ -13,7 +13,7 @@ required in addition to the C compiler.
 After unpacking the distribution, if the "configure" file is missing, this file
 is generated using the command:
 
-	autoreconf -i
+  autoreconf -i
 
 If errors are generated, make sure you have a relatively up-to-date version of autoconf.
 Makefiles can be prepared using the configure command:
@@ -42,7 +42,15 @@ configure. Consult the "Further information" section below for
 instructions on installing the library in another location or changing
 other default compilation options.
 
+Alternatively, you can also use the meson buildsystem to compile the core C library, Python and Fortran bindings:
 
+  mkdir build
+  meson ..
+  ninja
+  ninja test
+  ninja install
+
+This works particularly well on Windows, and comes with support for the Visual Studio compilers.
 
     -----------------------------------------------
 
@@ -50,91 +58,27 @@ other default compilation options.
 Platforms known to compile and run xraylib
 ==========================================
 
-  Linux (32-bit/64-bit)
-  Solaris 10 (32-bit/64-bit)
-  Mac OS X (32-bit/64-bit)
-  Windows (native and Cygwin)
-  FreeBSD (64-bit)
+  Linux (64-bit)
+  macOS (64-bit)
+  Windows (MSYS2 and Visual Studio)
+
+32-bit builds should still work, but are no longer routinely tested.
 
 Not all bindings have been tested on each of these platforms. The
 following table summarizes the current status.
 
-         | Linux | Mac OS X | Solaris | Cygwin | FreeBSD | MinGW |
-------------------------------------------------------------------
- Fortran |   x   |     x    |    x    |    x   |    x    |   x   |
-  Perl   |   x   |     x    |    x    |    x   |    x    |       |
- Python  |   x   |     x    |         |    x   |         |   x   |
-   IDL   |   x   |     x    |         |        |         |       |
-  Java   |   x   |     x    |    ?    |    ?   |         |       |
-   Lua   |   x   |     x    |         |        |         |       |
+         | Linux |   macOS  |  MSYS2  |   VS   |
+------------------------------------------------
+ Fortran |   x   |     x    |    x    |    x   |
+  Perl   |   x   |     x    |    x    |    x   |
+ Python  |   x   |     x    |    x    |    x   |
+  Java   |   x   |     x    |    ?    |    ?   |
+   Lua   |   x   |     x    |    ?    |        |
+  Ruby   |   x   |     x    |    ?    |        |
 
 
     -----------------------------------------------
 
-
-
-
-Platform Specific Compilation Notes
-===================================
-
-This section documents any known issues with installing xraylib on
-specific platforms.
-  * Mac OS X
-  * Solaris
-  * mingw32
-
-Hints for Mac OS X
-==================
-
-Standard Mac OS X installations do not come with a C compiler. You can
-install this essential compiler by installing the XCode package which
-can be found on the Mac OS X cd or can be downloaded from the Apple
-Developer Connection website.  A free Fortran compiler can be
-downloaded from macports.org.
-
-When compiling the IDL bindings on Snow Leopard, make sure that you
-are using IDL 7.1. Older IDL versions do not have the necessary 64-bit
-libraries
-
-
-Hints for Solaris
-=================
-
-The Sun compiler tools are stored in non-standard directories -- make
-sure that all the compiler and linker tools (cc, ar, ranlib, ld) are
-on the PATH.  A typical PATH should include the directories
-/opt/SUNWspro/bin:/usr/ccs/bin:/usr/ucb in that order.
-
-For example,
-
-  $ PATH=/opt/SUNWspro/bin:/usr/ccs/bin:/usr/ucb:$PATH
-  $ ./configure CC=cc 
-
-Use gmake instead of make. To do this, invoke:
-
-  $ ./configure MAKE=gmake
-
-gmake is not installed by default on Solaris 10, it can be downloaded
-from blastwave.org
-
-We have noticed that the compilation of the xrayglob_inline.c file
-(using the Sun Studio C compiler) produces many warnings. These can be
-ignored safely.
-
-Also, the fortran compiler of the Sun Studio package requires the -M
-command line option or the MODDIR environment variable to search for
-.mod files. Since not all fortran compilers support this option, we
-did not include this in the Makefile of the examples, causing the
-fortran test to fail. This can however be circumvented by setting the
-MODDIR variable pointing to the src directory.
-
-The IDL bindings currently do not work on Solaris. The main reason
-would be that none of the developers currently have access to an IDL
-software package on this platform. If you do, and can test the
-bindings, please contact the developers.
-
-
-                    ------------------------------
 
 Further information on the standard GNU installation procedure
 ==============================================================
