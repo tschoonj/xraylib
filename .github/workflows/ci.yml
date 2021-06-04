@@ -354,8 +354,6 @@ jobs:
             buildsystem: meson
           - image: centos:8
             buildsystem: meson
-          - image: fedora:latest
-            buildsystem: meson
           # autoconf doesnt like the rawhide shell
           - image: fedora:rawhide
             buildsystem: autotools
