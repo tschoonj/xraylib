@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010-2019 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2021 Matthew Wormington. All rights reserved.
 	
 	File: XrayLib.NET.h
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2017
+	Compiler: Microsoft Visual Studio 2019
 	Created: September 4, 2010
 	$Version:$
 	$Revision:$
@@ -1903,7 +1903,7 @@ namespace Science {
 		/// <param name="shell">Atomic shell ID</param>
 		/// <returns>Jump ratio</returns> 
 		static double JumpFactor(int Z, int shell);
-
+		
 		/// <summary>
 		/// Calculates the fluorescent line cross section    
 		/// </summary>
@@ -1921,7 +1921,25 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns> 
 		static double CSb_FluorLine(int Z, int line, double E);
+		
+		/// <summary>
+		/// Calculates the fluorescent cross section for an entire shell   
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns> 
+		static double CS_FluorShell(int Z, int shell, double E);
 
+		/// <summary>
+		/// Calculates the fluorescent cross section for an entire shell   
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns> 
+		static double CSb_FluorShell(int Z, int shell, double E);
+		
 		/// <summary>
 		/// Gets the fractional radiative rate    
 		/// </summary>
@@ -1991,24 +2009,6 @@ namespace Science {
 		static double CSb_Photo_Partial(int Z, int shell, double E);
 
 		// XRF cross sections using Kissel partial photoelectric cross sections
-		/// <summary>
-		/// Calculates the fluorescent line cross section using Kissel partial photoelectric cross sections   
-		/// </summary>
-		/// <param name="Z">Atomic number</param>
-		/// <param name="line">Atomic line ID</param>
-		/// <param name="E">Energy (keV)</param>
-		/// <returns>Cross section (cm2/g)</returns> 
-		static double CS_FluorLine_Kissel(int Z, int line, double E);
-
-		/// <summary>
-		/// Calculates the fluorescent line cross section using Kissel partial photoelectric cross sections   
-		/// </summary>
-		/// <param name="Z">Atomic number</param>
-		/// <param name="line">Atomic line ID</param>
-		/// <param name="E">Energy (keV)</param>
-		/// <returns>Cross section (barn)</returns> 
-		static double CSb_FluorLine_Kissel(int Z, int line, double E);
-
 		// Total cross sections (photoionization + Rayleigh + Compton) using Kissel total photoelectric cross sections
 		/// <summary>
 		/// Calculates the total cross section using Kissel partial photoelectric cross sections.
@@ -2026,7 +2026,25 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
 		static double CSb_Total_Kissel(int Z, double E);
+		
+		/// <summary>
+		/// Calculates the fluorescent line cross section using Kissel partial photoelectric cross sections   
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns> 
+		static double CS_FluorLine_Kissel(int Z, int line, double E);
 
+		/// <summary>
+		/// Calculates the fluorescent line cross section using Kissel partial photoelectric cross sections   
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="line">Atomic line ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns> 
+		static double CSb_FluorLine_Kissel(int Z, int line, double E);
+		
 		/// <summary>
 		/// Calculates the fluorescent line cross section including cascade effects.  
 		/// </summary>
@@ -2098,7 +2116,97 @@ namespace Science {
 		/// <param name="E">Energy (keV)</param>
 		/// <returns>Cross section (barn)</returns>
 		static double CSb_FluorLine_Kissel_No_Cascade(int Z, int line, double E);
+		
+		/// <summary>
+		/// Calculates the fluorescent shell cross section using Kissel partial photoelectric cross sections   
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns> 
+		static double CS_FluorShell_Kissel(int Z, int shell, double E);
 
+		/// <summary>
+		/// Calculates the fluorescent shell cross section using Kissel partial photoelectric cross sections   
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns> 
+		static double CSb_FluorShell_Kissel(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section including cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns> 
+		static double CS_FluorShell_Kissel_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section including cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns> 
+		static double CSb_FluorShell_Kissel_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section with non-radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns>
+		static double CS_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section with non-radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns>
+		static double CSb_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section with radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns>
+		static double CS_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section with non-radiative cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns>
+		static double CSb_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section without cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (cm2/g)</returns>
+		static double CS_FluorShell_Kissel_No_Cascade(int Z, int shell, double E);
+
+		/// <summary>
+		/// Calculates the fluorescent shell cross section without cascade effects.  
+		/// </summary>
+		/// <param name="Z">Atomic number</param>
+		/// <param name="shell">Atomic shell ID</param>
+		/// <param name="E">Energy (keV)</param>
+		/// <returns>Cross section (barn)</returns>
+		static double CSb_FluorShell_Kissel_No_Cascade(int Z, int shell, double E);
+		
 		//Cross Section functions using the compound parser
 		/// <summary>
 		/// Calculates the total cross section of a compound.

@@ -90,11 +90,14 @@ Source: "{#builddir}\windows\xraylib++.h" ; DestDir: "{app}\Include" ; Component
 
 #ifdef XRL64
 Source: "{#srcdir}\windows\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+Source: "{#srcdir}\windows\dotNet64\XrayLib.NETCore.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
 #else
 Source: "{#srcdir}\windows\dotNet32\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
+Source: "{#srcdir}\windows\dotNet32\XrayLib.NETCore.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile
 #endif
 Source: "{#builddir}\windows\xrlexample8.cs" ; DestDir: "{app}\Example" ; Components: dotnet
 Source: "{#srcdir}\windows\dotNetSrc\Docs\Help\XrayLibNET.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
+Source: "{#srcdir}\windows\dotNetSrc\Docs\Help\XrayLibNETCore.chm" ; DestDir: "{app}\Doc" ; Components: dotnet
 
 Source: "{#builddir}\windows\xraylib.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
 Source: "{#builddir}\windows\xraylib_const.pas" ; DestDir: "{app}\Pascal" ; Components: pascal
