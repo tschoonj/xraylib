@@ -204,7 +204,7 @@ printf ("Uranium Monocarbide\n");
 printf ("  Name: %s\n", $cdn["name"]);
 printf ("  Density: %f g/cm3\n", $cdn["density"]);
 for ($i = 0 ; $i < $cdn["nElements"] ; $i++) {
-	printf("  Element %i: %f %%\n",$cdn["Elements"][$i],$cdn["massFractions"][$i]*100.0);
+	printf("  Element %d: %f %%\n",$cdn["Elements"][$i],$cdn["massFractions"][$i]*100.0);
 }
 
 $cdn = GetCompoundDataNISTByIndex(NIST_COMPOUND_BRAIN_ICRP);
@@ -212,7 +212,7 @@ printf ("NIST_COMPOUND_BRAIN_ICRP\n");
 printf ("  Name: %s\n", $cdn["name"]);
 printf ("  Density: %f g/cm3\n", $cdn["density"]);
 for ($i = 0 ; $i < $cdn["nElements"] ; $i++) {
-	printf("  Element %i: %f %%\n",$cdn["Elements"][$i],$cdn["massFractions"][$i]*100.0);
+	printf("  Element %d: %f %%\n",$cdn["Elements"][$i],$cdn["massFractions"][$i]*100.0);
 }
 
 $nistCompounds = GetCompoundDataNISTList();
