@@ -55,6 +55,7 @@ Name: "custom" ; Description: "Custom installation" ; Flags: iscustom
 [Components]
 Name: "core" ; Description: "xraylib shared library and documentation" ; Flags: fixed ; Types: full minimal custom
 Name: "sdk" ; Description: "SDK: headers and static libraries" ; Types: full 
+Name: "cplusplus" ;  Description: "C++ header-only bindings" ; Types: full
 Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full 
 Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
 
@@ -72,7 +73,7 @@ Source: "{#builddir}\src\.libs\libxrl.dll.a" ; DestDir: "{app}\Lib" ; Components
 Source: "{#builddir}\src\libxrl-{#LIB_CURRENT_MINUS_AGE}.def" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\windows\README2.txt" ; DestDir: "{app}\Doc" ; DestName: "README.txt";Components: sdk
 Source: "{#builddir}\windows\xrlexample1.c" ; DestDir: "{app}\Example" ; Components: sdk
-Source: "{#builddir}\windows\xrlexample6.cpp" ; DestDir: "{app}\Example" ; Components: sdk
+Source: "{#builddir}\windows\xrlexample6.cpp" ; DestDir: "{app}\Example" ; Components: cplusplus
 Source: "{#builddir}\windows\xraylib.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-parser.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-lines.h" ; DestDir: "{app}\Include" ; Components: sdk
@@ -85,6 +86,7 @@ Source: "{#builddir}\windows\xraylib-error.h" ; DestDir: "{app}\Include" ; Compo
 Source: "{#builddir}\windows\xraylib-nist-compounds.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-radionuclides.h" ; DestDir: "{app}\Include" ; Components: sdk
 Source: "{#builddir}\windows\xraylib-aux.h" ; DestDir: "{app}\Include" ; Components: sdk
+Source: "{#builddir}\windows\xraylib++.h" ; DestDir: "{app}\Include" ; Components: cplusplus
 
 #ifdef XRL64
 Source: "{#srcdir}\windows\dotNet64\XrayLib.NET.dll" ; DestDir: "{app}\Lib" ; Components: dotnet ; Flags: sharedfile

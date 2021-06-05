@@ -54,6 +54,7 @@ common:
 	unix2dos -n ${top_srcdir}/pascal/xraylib_iface.pas xraylib_iface.pas
 	unix2dos -n ${top_srcdir}/pascal/xraylib_impl.pas xraylib_impl.pas
 	unix2dos -n ${top_srcdir}/example/xrlexample14.pas xrlexample14.pas
+	unix2dos -n ${top_srcdir}/cplusplus/xraylib++.h xraylib++.h
 
 
 
