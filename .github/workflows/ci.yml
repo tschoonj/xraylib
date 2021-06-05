@@ -354,11 +354,6 @@ jobs:
             buildsystem: meson
           - image: centos:8
             buildsystem: meson
-          - image: fedora:latest
-            buildsystem: meson
-          # autoconf doesnt like the rawhide shell
-          - image: fedora:rawhide
-            buildsystem: autotools
         include:
           # at least some versions of clang cannot compile php bindings
           - cython: cython
@@ -390,6 +385,11 @@ jobs:
             python: disable
           - cc: clang
             image: fedora:latest
+            perl: disable
+            python: disable
+            clang_cflags: -Qunused-arguments
+          - cc: clang
+            image: fedora:rawhide
             perl: disable
             python: disable
             clang_cflags: -Qunused-arguments
@@ -505,7 +505,7 @@ jobs:
         # disable java for now
         ./configure --disable-python --disable-python-numpy --${PERL_ENABLE}-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
         make
-        make check || (cat ruby/tests/test-suite.log && exit 1)
+        make check || (cat example/xrlexample12.sh.log && exit 1)
         make distclean
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
         make

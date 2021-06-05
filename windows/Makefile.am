@@ -48,11 +48,13 @@ common:
 	unix2dos -n ${top_srcdir}/include/xraylib-error.h xraylib-error.h
 	unix2dos -n ${top_srcdir}/include/xraylib-nist-compounds.h xraylib-nist-compounds.h
 	unix2dos -n ${top_srcdir}/include/xraylib-radionuclides.h xraylib-radionuclides.h
+	unix2dos -n ${top_srcdir}/include/xraylib-aux.h xraylib-aux.h
 	unix2dos -n ${top_srcdir}/pascal/xraylib.pas xraylib.pas
 	unix2dos -n ${top_srcdir}/pascal/xraylib_const.pas xraylib_const.pas
 	unix2dos -n ${top_srcdir}/pascal/xraylib_iface.pas xraylib_iface.pas
 	unix2dos -n ${top_srcdir}/pascal/xraylib_impl.pas xraylib_impl.pas
 	unix2dos -n ${top_srcdir}/example/xrlexample14.pas xrlexample14.pas
+	unix2dos -n ${top_srcdir}/cplusplus/xraylib++.h xraylib++.h
 
 
 

@@ -1,10 +1,10 @@
 /*
-	XrayLib.NET copyright (c) 2010-2019 Matthew Wormington. All rights reserved.
+	XrayLib.NET copyright (c) 2010-2021 Matthew Wormington. All rights reserved.
 	
 	File: XrfLibNET.cpp
 	Author: Matthew Wormington
 	Language: C++/CLI   
-	Compiler: Microsoft Visual Studio 2017
+	Compiler: Microsoft Visual Studio 2019
 	Created: September 4, 2010
 	$Version:$
 	$Revision:$
@@ -357,6 +357,23 @@ double Science::XrayLib::CSb_FluorLine(int Z, int line, double E)
 	return result;
 }
 
+// Fluorescence cross sections for an entire shell 
+double Science::XrayLib::CS_FluorShell(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorShell(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorShell(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorShell(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
 // Fractional radiative rate
 double Science::XrayLib::RadRate(int Z, int line)
 {
@@ -424,22 +441,6 @@ double Science::XrayLib::CSb_Photo_Partial( int Z, int shell, double E )
 	return result;
 }
 
-double Science::XrayLib::CS_FluorLine_Kissel( int Z, int line, double E )
-{
-	::xrl_error *error = nullptr;
-	double result = ::CS_FluorLine_Kissel(Z, line, E, &error);
-	Errors::HandleError(error);
-	return result;
-}
-
-double Science::XrayLib::CSb_FluorLine_Kissel( int Z, int line, double E )
-{
-	::xrl_error *error = nullptr;
-	double result = ::CSb_FluorLine_Kissel(Z, line, E, &error);
-	Errors::HandleError(error);
-	return result;
-}
-
 double Science::XrayLib::CS_Total_Kissel( int Z, double E )
 {
 	::xrl_error *error = nullptr;
@@ -452,6 +453,22 @@ double Science::XrayLib::CSb_Total_Kissel( int Z, double E )
 {
 	::xrl_error *error = nullptr;
 	double result = ::CSb_Total_Kissel(Z, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CS_FluorLine_Kissel(int Z, int line, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorLine_Kissel(Z, line, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorLine_Kissel(int Z, int line, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorLine_Kissel(Z, line, E, &error);
 	Errors::HandleError(error);
 	return result;
 }
@@ -516,6 +533,86 @@ double Science::XrayLib::CSb_FluorLine_Kissel_No_Cascade( int Z, int line, doubl
 {
 	::xrl_error *error = nullptr;
 	double result = ::CSb_FluorLine_Kissel_no_Cascade(Z, line, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CS_FluorShell_Kissel(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorShell_Kissel(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorShell_Kissel(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorShell_Kissel(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CS_FluorShell_Kissel_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorShell_Kissel_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorShell_Kissel_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorShell_Kissel_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CS_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorShell_Kissel_Nonradiative_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorShell_Kissel_Nonradiative_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorShell_Kissel_Nonradiative_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CS_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorShell_Kissel_Radiative_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorShell_Kissel_Radiative_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorShell_Kissel_Radiative_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CS_FluorShell_Kissel_No_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CS_FluorShell_Kissel_no_Cascade(Z, shell, E, &error);
+	Errors::HandleError(error);
+	return result;
+}
+
+double Science::XrayLib::CSb_FluorShell_Kissel_No_Cascade(int Z, int shell, double E)
+{
+	::xrl_error* error = nullptr;
+	double result = ::CSb_FluorShell_Kissel_no_Cascade(Z, shell, E, &error);
 	Errors::HandleError(error);
 	return result;
 }

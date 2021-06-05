@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder and Tools" version="2018.7.8.0" projectFile="D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\XrayLibNET.shfbproj" started="1/19/2019 3:22:15 PM">
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2018.7.8.0" projectFile="D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\XrayLibNET.shfbproj" started="6/5/2021 8:31:51 AM">
 <buildStep step="Initializing">
 Finding tools...
 The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\&#39;
 Searching for HTML Help 1 compiler...
 Found HTML Help 1 compiler in &#39;C:\Program Files (x86)\HTML Help Workshop\&#39;
 Locating components in the following folder(s):
-    D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs
+    D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs
     C:\ProgramData\EWSoftware\Sandcastle Help File Builder\Components and Plug-Ins\
     C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\
-Using framework reflection data for &#39;.NET Framework 4.6&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Data\.NETFramework&#39;
+Using framework reflection data for &#39;Cross-platform (.NET Core/.NET Standard)&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\Data\.NETFramework&#39;
 Using presentation style &#39;VS2013&#39; located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013&#39;
 Loading and initializing plug-ins...
 Lightweight Website Style Version 2018.7.8.0
@@ -18,27 +18,27 @@ Portions Copyright &#169; 2014, Sam Harwell, All Rights Reserved
 </buildStep>
 <buildStep step="ValidatingDocumentationSources">
 Validating and copying documentation source information
-Source: D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Debug\XrayLib.NET.dll
-    Found assembly &#39;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Debug\XrayLib.NET.dll&#39;
-Source: D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Debug\XrayLib.NET.xml
+Source: D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Debug\XrayLib.NET.dll
+    Found assembly &#39;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Debug\XrayLib.NET.dll&#39;
+Source: D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Debug\XrayLib.NET.xml
 
 Copying XML comments files
-    D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Debug\XrayLib.NET.xml -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\XrayLib.NET.xml
+    D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Debug\XrayLib.NET.xml -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\XrayLib.NET.xml
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
 <plugIn name="Lightweight Website Style" behavior="After" priority="1000">
-</plugIn>    Last step completed in 00:00:00.0279
+</plugIn>    Last step completed in 00:00:00.0080
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0143
+    Last step completed in 00:00:00.0020
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - GenerateRefInfo.proj]
-Build started 1/19/2019 3:22:17 PM.
-Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\GenerateRefInfo.proj&quot; on node 1 (default targets).
+Build started 6/5/2021 8:31:53 AM.
+Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\GenerateRefInfo.proj&quot; on node 1 (default targets).
 PrepareForBuild:
   Creating directory &quot;obj\Debug\&quot;.
 GenerateRefInfo:
@@ -47,24 +47,24 @@ GenerateRefInfo:
   Portions Copyright c 2006-2018, Eric Woodruff, All Rights Reserved.
   No source code context base path specified.  Source context information is unavailable.
   Loaded 1 assemblies for reflection and 1 dependency assemblies.
-  Wrote information on 1 namespaces, 9 types, and 1666 members
+  Wrote information on 1 namespaces, 9 types, and 1678 members
   Copying file from &quot;reflection.org&quot; to &quot;reflection.all&quot;.
   XslTransform (v2018.7.8.0)
   Copyright c 2006-2018, Microsoft Corporation, All Rights Reserved.
   Portions Copyright c 2006-2018, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\ProductionTransforms\MergeDuplicates.xsl&#39;.
-Done Building Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\GenerateRefInfo.proj&quot; (default targets).
+Done Building Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\GenerateRefInfo.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.13
-    Last step completed in 00:00:01.5767
+Time Elapsed 00:00:00.96
+    Last step completed in 00:00:01.1630
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - TransformManifest.proj]
-Build started 1/19/2019 3:22:18 PM.
-Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\TransformManifest.proj&quot; on node 1 (default targets).
+Build started 6/5/2021 8:31:54 AM.
+Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\TransformManifest.proj&quot; on node 1 (default targets).
 TransformManifest:
   XslTransform (v2018.7.8.0)
   Copyright c 2006-2018, Microsoft Corporation, All Rights Reserved.
@@ -79,82 +79,83 @@ TransformManifest:
   Copyright c 2006-2018, Microsoft Corporation, All Rights Reserved.
   Portions Copyright c 2006-2018, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\ProductionTransforms\ReflectionToManifest.xsl&#39;.
-Done Building Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\TransformManifest.proj&quot; (default targets).
+Done Building Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\TransformManifest.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.74
-    Last step completed in 00:00:03.0733
+Time Elapsed 00:00:04.17
+    Last step completed in 00:00:04.4100
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.0375
+    Last step completed in 00:00:00.0380
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
 No additional content to copy
-    Last step completed in 00:00:00.0028
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0010
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - GenerateIntermediateTOC.proj]
-Build started 1/19/2019 3:22:21 PM.
-Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
+Build started 6/5/2021 8:31:58 AM.
+Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
 GenerateIntermediateTOC:
   XslTransform (v2018.7.8.0)
   Copyright c 2006-2018, Microsoft Corporation, All Rights Reserved.
   Portions Copyright c 2006-2018, Eric Woodruff, All Rights Reserved.
   Applying XSL transformation &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\\ProductionTransforms\CreateVSToc.xsl&#39;.
-Done Building Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\GenerateIntermediateTOC.proj&quot; (default targets).
+Done Building Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\GenerateIntermediateTOC.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.24
+Time Elapsed 00:00:00.26
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.5301
+    Last step completed in 00:00:00.4740
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.1938
+    Last step completed in 00:00:00.2120
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
-D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\sandcastle.config
+D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\sandcastle.config
   Updating reference topic configurations.
   No conceptual content.  Removing conceptual content components.
-    Last step completed in 00:00:00.0092
+    Last step completed in 00:00:00.0030
 </buildStep>
 <buildStep step="BuildTopics">
 Building help topics...
 [C:\Program Files (x86)\MSBuild\14.0\bin\amd64\MSBuild.exe - BuildTopics.proj]
-Build started 1/19/2019 3:22:22 PM.
-Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\BuildTopics.proj&quot; on node 1 (default targets).
+Build started 6/5/2021 8:31:59 AM.
+Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\BuildTopics.proj&quot; on node 1 (default targets).
 BuildTopics:
   BuildAssembler (v2018.7.8.0)
   Copyright c 2006-2018, Microsoft Corporation, All Rights Reserved.
   Portions Copyright c 2006-2018, Eric Woodruff, All Rights Reserved.
   Loading configuration...
   Processing topics...
-BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Science.Errors.HandleError(_xrl_error*)] Unknown reference link target &#39;T:_xrl_error&#39;. [D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\BuildTopics.proj]
-  Processed 1696 topic(s)
+BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Science.Errors.HandleError(_xrl_error*)] Unknown reference link target &#39;T:_xrl_error&#39;. [D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\BuildTopics.proj]
+  Processed 1708 topic(s)
   1 warning(s)
   CopyFromIndexComponent: &quot;reflection&quot; in-memory cache entries used: 4 of 15.
   CopyFromIndexComponent: &quot;comments&quot; in-memory cache entries used: 2 of 30.
-Done Building Project &quot;D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\BuildTopics.proj&quot; (default targets).
+  SaveComponent: Waiting for the document writer task to finish (2 Help1 API file(s) remaining)...
+Done Building Project &quot;D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\BuildTopics.proj&quot; (default targets).
 
 Build succeeded.
 
-Time Elapsed 00:00:12.31
-    Last step completed in 00:00:12.5882
+Time Elapsed 00:00:25.36
+    Last step completed in 00:00:25.5758
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
-    Last step completed in 00:00:00.0159
+    Last step completed in 00:00:00.0120
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -165,78 +166,78 @@ E-Mail: Eric@EWoodruff.us
 
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
-Processing Help 1 files in D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1
-Processed 1696 HTML files
+Processing Help 1 files in D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1
+Processed 1708 HTML files
 Sorting keywords and generating See Also indices
-Saving HTML Help 1 keyword index to D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\XrayLibNET.hhk
-Saving HTML Help 1 table of contents to D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\XrayLibNET.hhc
-    Last step completed in 00:00:02.3468
+Saving HTML Help 1 keyword index to D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\XrayLibNET.hhk
+Saving HTML Help 1 table of contents to D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\XrayLibNET.hhc
+    Last step completed in 00:00:01.4870
 </buildStep>
 <buildStep step="CopyStandardHelpContent">
 Copying standard help content...
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\AlertCaution.png -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\AlertCaution.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\AlertNote.png -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\AlertNote.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\AlertSecurity.png -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\AlertSecurity.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\CFW.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\CFW.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\CodeExample.png -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\CodeExample.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\favicon.ico -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\favicon.ico
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privclass.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privclass.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privdelegate.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privdelegate.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privenumeration.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privenumeration.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privevent.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privevent.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privextension.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privextension.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privfield.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privfield.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privinterface.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privinterface.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privmethod.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privmethod.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privproperty.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privproperty.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privstructure.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\privstructure.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protclass.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protclass.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protdelegate.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protdelegate.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protenumeration.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protenumeration.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protevent.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protevent.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protextension.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protextension.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protfield.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protfield.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protinterface.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protinterface.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protmethod.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protmethod.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protoperator.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protoperator.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protproperty.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protproperty.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protstructure.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\protstructure.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubclass.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubclass.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubdelegate.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubdelegate.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubenumeration.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubenumeration.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubevent.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubevent.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubextension.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubextension.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubfield.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubfield.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubinterface.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubinterface.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubmethod.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubmethod.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\puboperator.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\puboperator.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubproperty.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubproperty.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubstructure.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubstructure.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\SectionCollapsed.png -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\SectionCollapsed.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\SectionExpanded.png -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\SectionExpanded.png
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\slMobile.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\slMobile.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\static.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\static.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\xna.gif -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\icons\xna.gif
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\scripts\branding.js -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\scripts\branding.js
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-cs-CZ.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-cs-CZ.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-de-DE.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-de-DE.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-en-US.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-en-US.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-es-ES.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-es-ES.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-fr-FR.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-fr-FR.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-Help1.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-Help1.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-HelpViewer.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-HelpViewer.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-it-IT.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-it-IT.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-ja-JP.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-ja-JP.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-ko-KR.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-ko-KR.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-pl-PL.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-pl-PL.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-pt-BR.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-pt-BR.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-ru-RU.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-ru-RU.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-tr-TR.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-tr-TR.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-Website.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-Website.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-zh-CN.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-zh-CN.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-zh-TW.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-zh-TW.css
-C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding.css -&gt; D:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding.css
-    Last step completed in 00:00:00.1102
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\AlertCaution.png -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\AlertCaution.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\AlertNote.png -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\AlertNote.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\AlertSecurity.png -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\AlertSecurity.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\CFW.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\CFW.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\CodeExample.png -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\CodeExample.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\favicon.ico -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\favicon.ico
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privclass.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privclass.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privdelegate.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privdelegate.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privenumeration.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privenumeration.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privevent.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privevent.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privextension.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privextension.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privfield.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privfield.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privinterface.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privinterface.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privmethod.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privmethod.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privproperty.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privproperty.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\privstructure.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\privstructure.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protclass.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protclass.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protdelegate.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protdelegate.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protenumeration.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protenumeration.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protevent.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protevent.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protextension.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protextension.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protfield.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protfield.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protinterface.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protinterface.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protmethod.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protmethod.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protoperator.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protoperator.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protproperty.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protproperty.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\protstructure.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\protstructure.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubclass.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubclass.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubdelegate.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubdelegate.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubenumeration.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubenumeration.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubevent.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubevent.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubextension.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubextension.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubfield.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubfield.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubinterface.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubinterface.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubmethod.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubmethod.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\puboperator.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\puboperator.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubproperty.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubproperty.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\pubstructure.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\pubstructure.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\SectionCollapsed.png -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\SectionCollapsed.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\SectionExpanded.png -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\SectionExpanded.png
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\slMobile.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\slMobile.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\static.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\static.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\icons\xna.gif -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\icons\xna.gif
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\scripts\branding.js -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\scripts\branding.js
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-cs-CZ.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-cs-CZ.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-de-DE.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-de-DE.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-en-US.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-en-US.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-es-ES.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-es-ES.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-fr-FR.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-fr-FR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-Help1.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-Help1.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-HelpViewer.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-HelpViewer.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-it-IT.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-it-IT.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-ja-JP.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-ja-JP.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-ko-KR.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-ko-KR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-pl-PL.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-pl-PL.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-pt-BR.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-pt-BR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-ru-RU.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-ru-RU.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-tr-TR.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-tr-TR.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-Website.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-Website.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-zh-CN.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-zh-CN.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding-zh-TW.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding-zh-TW.css
+C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\styles\branding.css -&gt; D:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\styles\branding.css
+    Last step completed in 00:00:00.2250
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
@@ -244,11 +245,11 @@ Generating HTML Help 1 table of contents file...
 </buildStep>
 <buildStep step="GenerateHelpFileIndex">
 Generating HTML Help 1 index file...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0010
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0085
+    Last step completed in 00:00:00.0110
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -257,19 +258,19 @@ Compiling HTML Help 1 file...
   
   
   
-  Compiling d:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\XrayLibNET.chm
+  Compiling d:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\XrayLibNET.chm
   
   
   
   
   
-  Compile time: 0 minutes, 5 seconds
+  Compile time: 0 minutes, 8 seconds
   
-  1,698	Topics
+  1,710	Topics
   
-  18,534	Local links
+  18,666	Local links
   
-  2,230	Internet links
+  2,278	Internet links
   
   0	Graphics
   
@@ -277,19 +278,19 @@ Compiling HTML Help 1 file...
   
   
   
-  Created d:\XrayLib.NET v4.0.0\X-rayLib.NET v4.0.0\Source\Docs\Help\Working\Output\HtmlHelp1\XrayLibNET.chm, 1,261,922 bytes
+  Created d:\Development\Matthew\XrayLib 4.1.0\XrayLib.NET v4.1.0 - Source\Docs\Help\Working\Output\HtmlHelp1\XrayLibNET.chm, 1,276,354 bytes
   
-  Compression decreased file by 11,380,533 bytes.
+  Compression decreased file by 11,488,739 bytes.
   
-    Last step completed in 00:00:06.6204
+    Last step completed in 00:00:09.1866
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:00.7095
+    Last step completed in 00:00:00.8990
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 1/19/2019 3:22:44 PM.  Total time: 00:00:29.1257
+Build completed successfully at 6/5/2021 8:32:36 AM.  Total time: 00:00:45.3395
 
 </buildStep>
 </shfbBuild>
