@@ -139,33 +139,15 @@ variable to configure. See ``configure --help'' for reference.
 	fi
 
 	#
-	# Check if you have distutils, else fail
-	#
-	if test x$PYTHON != x ; then
-	AC_MSG_CHECKING([for the distutils Python package])
-	ac_distutils_result=`$PYTHON -c "import distutils" 2>&1`
-	if test -z "$ac_distutils_result"; then
-		AC_MSG_RESULT([yes])
-	else
-		AC_MSG_RESULT([no])
-		AC_MSG_WARN([cannot import Python module "distutils".
-Please check your Python installation. The error was:
-$ac_distutils_result])
-		PYTHON_VERSION=""
-		PYTHON=""
-	fi
-	fi
-
-	#
 	# Check for Python include path
 	#
 	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for Python include path])
 	if test -z "$PYTHON_CPPFLAGS"; then
-		python_path=`$PYTHON -c "import distutils.sysconfig; \
-			print (distutils.sysconfig.get_python_inc ());"`
-		plat_python_path=`$PYTHON -c "import distutils.sysconfig; \
-			print (distutils.sysconfig.get_python_inc (plat_specific=1));"`
+		python_path=`$PYTHON -c "import sysconfig; \
+			print(sysconfig.get_path('include'));"`
+		plat_python_path=`$PYTHON -c "import sysconfig; \
+			print(sysconfig.get_path('platinclude'));"`
 		if test -n "${python_path}"; then
 			if test "${plat_python_path}" != "${python_path}"; then
 				python_path="-I$python_path -I$plat_python_path"
@@ -194,7 +176,7 @@ $ac_distutils_result])
 
 # join all versioning strings, on some systems
 # major/minor numbers could be in different list elements
-from distutils.sysconfig import *
+from sysconfig import *
 e = get_config_var('VERSION')
 if e is not None:
 	print(e)
@@ -217,8 +199,8 @@ EOD`
 		ac_python_libdir=`cat<<EOD | $PYTHON -
 
 # There should be only one
-import distutils.sysconfig
-e = distutils.sysconfig.get_config_var('LIBDIR')
+import sysconfig
+e = sysconfig.get_config_var('LIBDIR')
 if e is not None:
 	print (e)
 EOD`
@@ -226,8 +208,8 @@ EOD`
 		# Now, for the library:
 		ac_python_library=`cat<<EOD | $PYTHON -
 
-import distutils.sysconfig
-c = distutils.sysconfig.get_config_vars()
+import sysconfig
+c = sysconfig.get_config_vars()
 if 'LDVERSION' in c:
 	print ('python'+c[['LDVERSION']])
 else:
@@ -238,23 +220,13 @@ EOD`
 		# credits goes to momjian, I think. I'd like to put the right name
 		# in the credits, if someone can point me in the right direction... ?
 		#
-		#if test -n "$ac_python_libdir" -a -n "$ac_python_library"
-		#then
-			# use the official shared library
-			ac_python_library=`echo "$ac_python_library" | sed "s/^lib//"`
-			if test -z "$ac_python_libdir" ; then
-				full_python=`which $PYTHON`
-				ac_python_libdir=`AS_DIRNAME($full_python)`
-			fi
-			PYTHON_LDFLAGS="-L$ac_python_libdir -l$ac_python_library"
-		#else
-		#	# old way: use libpython from python_configdir
-		#	ac_python_libdir=`$PYTHON -c \
-		#	  "from distutils.sysconfig import get_python_lib as f; \
-		#	  import os; \
-		#	  print (os.path.join(f(plat_specific=1, standard_lib=1), 'config'));"`
-		#	PYTHON_LDFLAGS="-L$ac_python_libdir -lpython$ac_python_version"
-		#fi
+		# use the official shared library
+		ac_python_library=`echo "$ac_python_library" | sed "s/^lib//"`
+		if test -z "$ac_python_libdir" ; then
+			full_python=`which $PYTHON`
+			ac_python_libdir=`AS_DIRNAME($full_python)`
+		fi
+		PYTHON_LDFLAGS="-L$ac_python_libdir -l$ac_python_library"
 
 		if test -z "PYTHON_LDFLAGS"; then
 			AC_MSG_WARN([
@@ -275,8 +247,8 @@ EOD`
 	if test x$PYTHON != x ; then
 	AC_MSG_CHECKING([for Python site-packages path])
 	if test -z "$PYTHON_SITE_PKG"; then
-		PYTHON_SITE_PKG=`$PYTHON -c "import distutils.sysconfig; \
-			print (distutils.sysconfig.get_python_lib(0,0));"`
+		PYTHON_SITE_PKG=`$PYTHON -c "import sysconfig; \
+			print(sysconfig.get_path('purelib'));"`
 		if test $OS_WINDOWS = 1 ; then
 			PYTHON_SITE_PKG=`cygpath -u $PYTHON_SITE_PKG`
 		fi
@@ -289,8 +261,8 @@ EOD`
 	#
 	AC_MSG_CHECKING([for Python site-packages extension modules path])
 	if test -z "$PYTHON_SITE_PKG_EXEC"; then
-		PYTHON_SITE_PKG_EXEC=`$PYTHON -c "import distutils.sysconfig; \
-		        print (distutils.sysconfig.get_python_lib(1,0));"`
+		PYTHON_SITE_PKG_EXEC=`$PYTHON -c "import sysconfig; \
+			print(sysconfig.get_path('platlib'));"`
 		if test $OS_WINDOWS = 1 ; then
 			PYTHON_SITE_PKG_EXEC=`cygpath -u $PYTHON_SITE_PKG_EXEC`
 		fi
@@ -304,7 +276,7 @@ EOD`
 	AC_MSG_CHECKING([for Python module cflags])
 	if test -z "$PYTHON_CFLAGS"; then
 		PYTHON_CFLAGS=`cat<<EOD | $PYTHON -
-from distutils.sysconfig import *
+from sysconfig import *
 import re
 flags = get_config_var('CFLAGS')
 if flags is not None:
@@ -322,7 +294,7 @@ EOD`
 	AC_MSG_CHECKING([for Python module extension])
 	if test -z "$PYTHON_EXT"; then
 		PYTHON_EXT=`cat<<EOD | $PYTHON -
-from distutils.sysconfig import *
+from sysconfig import *
 e = get_config_var('EXT_SUFFIX')
 if e is None:
   e = get_config_var('SO')
@@ -339,8 +311,8 @@ EOD`
 	#
 	#AC_MSG_CHECKING(python extra libraries)
 	#if test -z "$PYTHON_EXTRA_LIBS"; then
-	#   PYTHON_EXTRA_LIBS=`$PYTHON -c "import distutils.sysconfig; \
-        #        conf = distutils.sysconfig.get_config_var; \
+	#   PYTHON_EXTRA_LIBS=`$PYTHON -c "import sysconfig; \
+        #        conf = sysconfig.get_config_var; \
         #        print (conf('LIBS'))"`
 	#fi
 	#AC_MSG_RESULT([$PYTHON_EXTRA_LIBS])
