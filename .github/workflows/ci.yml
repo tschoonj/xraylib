@@ -218,7 +218,7 @@ jobs:
       run: |
         set -ex
         rm -f /usr/local/bin/2to3
-        brew uninstall -f bazel bazelisk
+        brew uninstall -f bazel bazelisk mongodb-community
         brew update
         brew upgrade
         brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby fpc lua perl php@7.4 bash numpy meson ninja
