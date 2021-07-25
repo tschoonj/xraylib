@@ -56,7 +56,7 @@ if not get_option('python-bindings').disabled()
 endif
 
 if not get_option('python-numpy-bindings').disabled()
-    cython = find_program(get_option('cython'), 'cython', 'cython3', 'cython-3', 'cython' + python.language_version(), 'cython-' + python.language_version(), required : false)
+    cython = find_program('cython', 'cython3', 'cython-3', 'cython' + python.language_version(), 'cython-' + python.language_version(), required : false)
     deps = [python_dep, xraylib_lib_dep]
     # lld-link doesnt find the openmp import libraries
     if cc.get_id() != 'clang-cl'
