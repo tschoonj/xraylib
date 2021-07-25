@@ -1,3 +1,10 @@
+Version 4.1.1 Tom Schoonjans
+
+- Do not use distutils in autoconf macros, as it will not be available in
+python 3.10
+- Drop the `cython` option for the meson buildscript, as it became a reserved
+option in meson 0.59.0
+
 Version 4.1.0 Tom Schoonjans
 
 - Add meson as alternative buildsystem
