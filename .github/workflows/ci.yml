@@ -31,7 +31,7 @@ jobs:
             compiler: cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - uses: conda-incubator/setup-miniconda@v2.1.1
       with:
         auto-update-conda: true
@@ -103,7 +103,7 @@ jobs:
           patch
           wget
           tar
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -213,7 +213,7 @@ jobs:
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -430,7 +430,7 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.3.5
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
