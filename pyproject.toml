@@ -1,0 +1,19 @@
+[build-system]
+requires = ["mesonpep517", "ninja", "Cython", "numpy"]
+build-backend = "mesonpep517.buildapi"
+
+dependencies = [
+  "numpy"
+]
+
+[tool.mesonpep517.metadata]
+author = "Leon M. Lohse"
+author-email = "llohse@uni-goettingen.de"
+summary = "numpy bindings for xraylib"
+home-page = "https://gitlab.gwdg.de/leonmerten.lohse1/xraylib-numpy"
+meson-python-option-name = "python"
+meson-options = [
+  "-Ddefault_library=static",
+  "-Dpython-bindings=enabled",
+  "-Dpython-numpy-bindings=enabled"
+]

@@ -1,0 +1,32 @@
+{% set version = "4.1.1" %}
+
+package:
+  name: xraylib
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  number: 999
+
+requirements:
+  build:
+    - ninja
+    - swig
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
+    - python
+    - pip
+    - mesonpep517
+    - cython
+    - numpy
+  run:
+    - python
+    - {{ pin_compatible('numpy') }}
+
+test:
+  imports:
+    - xraylib
+    - xraylib_np

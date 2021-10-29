@@ -82,6 +82,8 @@ if get_option('default_library') != 'static'
   elif cc.has_argument('-fvisibility=hidden')
     config_h_data.set('XRL_EXTERN', '__attribute__((visibility("default"))) extern')
   endif
+else
+  config_h_data.set('XRL_EXTERN', 'extern')
 endif
  
 if cc.get_id() not in ['msvc', 'clang-cl'] and cc.has_header('complex.h')
