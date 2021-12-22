@@ -84,7 +84,6 @@ jobs:
           git
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gcc-fortran
-          mingw-w64-x86_64-libtool
           mingw-w64-x86_64-libxml2
           mingw-w64-x86_64-clang
           mingw-w64-x86_64-openmp
@@ -96,6 +95,7 @@ jobs:
           mingw-w64-x86_64-meson
           automake
           autoconf
+          libtool
           make
           patch
           wget
