@@ -16,16 +16,13 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9']
+        python-version: [ '3.7', '3.8', '3.9', '3.10']
         compiler:
           - cl
           - clang-cl
         # don't know why but cl.exe does not like the Cython generated code with python < 3.8
         include:
           - numpy: enabled
-          - python-version: 3.6
-            numpy: disabled
-            compiler: cl
           - python-version: 3.7
             numpy: disabled
             compiler: cl
@@ -334,7 +331,7 @@ jobs:
           - debian:buster
           - debian:sid
           - centos:7
-          - centos:8
+          - rockylinux:8
           - fedora:latest
           - fedora:rawhide
         cc:
@@ -352,7 +349,7 @@ jobs:
             buildsystem: meson
           - image: centos:7
             buildsystem: meson
-          - image: centos:8
+          - image: rockylinux:8
             buildsystem: meson
         include:
           # at least some versions of clang cannot compile php bindings
@@ -368,7 +365,7 @@ jobs:
             cxx: g++
             php: enable
           - cc: clang
-            image: centos:8
+            image: rockylinux:8
             perl: disable
             libs: -stdlib=libstdc++
             fortran: disable
@@ -399,13 +396,13 @@ jobs:
             lua: /usr/bin/lua5.3
           - image: ubuntu:devel
             lua: /usr/bin/lua5.3
-          - image: debian:buster
+          - image: debian:bullseye
             lua: /usr/bin/lua5.3
           - image: debian:sid
             lua: /usr/bin/lua5.3
           - image: centos:7
             lua: /usr/bin/lua
-          - image: centos:8
+          - image: rockylinux:8
             lua: /usr/bin/lua
           - image: fedora:latest
             lua: /usr/bin/lua
@@ -450,7 +447,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
     - name: Activate CentOS 8 PowerTools and EPEL repo
-      if: matrix.image == 'centos:8'
+      if: matrix.image == 'rockylinux:8'
       run: |
         set -ex
         yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
@@ -465,7 +462,7 @@ jobs:
         yum install -y python36-Cython # this one needs to be brought in separately for CentOS 7
         set +ex
     - name: Install RHEL dependencies
-      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora')
+      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
       run: |
         set -ex
         yum update -y
@@ -476,7 +473,7 @@ jobs:
         which javac
         set +ex
     - name: Install RHEL dependencies Meson and Ninja
-      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora'))
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
       run: |
         set -ex
         yum install -y meson ninja-build
@@ -539,7 +536,7 @@ jobs:
         DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --${{matrix.perl}}-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --${{matrix.php}}-php --enable-ruby --${{matrix.fortran}}-fortran2003
         CFLAGS: ${{matrix.clang_cflags}}
     - name: Test rpm-build
-      if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora'))
+      if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startswith(matrix.image, 'rockylinux'))
       run: |
         set -ex
         rpmdev-setuptree
