@@ -7,10 +7,10 @@ dependencies = [
 ]
 
 [tool.mesonpep517.metadata]
-author = "Leon M. Lohse"
-author-email = "llohse@uni-goettingen.de"
-summary = "numpy bindings for xraylib"
-home-page = "https://gitlab.gwdg.de/leonmerten.lohse1/xraylib-numpy"
+author = "Tom Schoonjans"
+author-email = "Tom.Schoonjans@gmail.com"
+summary = "pip-installable xraylib"
+home-page = "https://github.com/tschoonj/xraylib"
 meson-python-option-name = "python"
 meson-options = [
   "-Ddefault_library=static",
