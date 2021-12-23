@@ -13,6 +13,8 @@ test_env = environment()
 test_env.prepend('PYTHONPATH', pydir)
 if host_system == 'windows'
     test_env.prepend('PATH', src_build_dir)
+    # see https://github.com/xhochy/python-feedstock/blob/6efc12d0479e958a138bfaf3d1eb6b47a10d5f68/recipe/patches/0014-Add-CondaEcosystemModifyDllSearchPath.patch
+    test_env.prepend('CONDA_DLL_SEARCH_MODIFICATION_ENABLE', '1')
 endif
 
 foreach _test : tests

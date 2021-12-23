@@ -47,7 +47,6 @@ jobs:
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
-        CONDA_DLL_SEARCH_MODIFICATION: "1"
 
   msys2:
     timeout-minutes: 60
