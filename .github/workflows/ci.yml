@@ -23,9 +23,13 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      - uses: seanmiddleditch/gha-setup-ninja@master
       - name: Install xraylib with pip
         run: |
-          python -m pip install -U numpy
+          python -m pip install -U numpy pip
+          python -m pip install git+https://gitlab.com/tschoonj/mesonpep517.git@dump-pep425tags
+          python -m pip cache list
           python -m pip install . -vv
       - name: Test importing xraylib
         run: |

@@ -20,7 +20,7 @@ repository = "https://github.com/tschoonj/xraylib"
 documentation = "https://github.com/tschoonj/xraylib"
 
 [build-system]
-requires = ["mesonpep517", "ninja", "Cython", "numpy"]
+requires = ["mesonpep517>=0.3", "ninja", "Cython", "numpy"]
 build-backend = "mesonpep517.buildapi"
 
 [tool.mesonpep517.metadata]
