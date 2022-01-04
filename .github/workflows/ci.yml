@@ -11,27 +11,47 @@ on:
       - master
 
 jobs:
+  pip:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+    name: Pip install with Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install xraylib with pip
+        run: |
+          python -m pip install -U numpy pip
+          python -m pip install . -vv
+      - name: Test importing xraylib
+        run: |
+          python -c "import xraylib"
+          python -c "import xraylib_np"
+
   visual-studio:
     timeout-minutes: 60
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [ '3.6', '3.7', '3.8', '3.9']
+        python-version: [ '3.7', '3.8', '3.9', '3.10']
         compiler:
           - cl
           - clang-cl
         # don't know why but cl.exe does not like the Cython generated code with python < 3.8
         include:
           - numpy: enabled
-          - python-version: 3.6
-            numpy: disabled
-            compiler: cl
           - python-version: 3.7
             numpy: disabled
             compiler: cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.4.0
     - uses: conda-incubator/setup-miniconda@v2.1.1
       with:
         auto-update-conda: true
@@ -40,7 +60,7 @@ jobs:
     - name: Install meson, ninja, numpy and cython
       run: |
         conda install -q -y meson ninja numpy cython swig
-    - uses: ilammy/msvc-dev-cmd@v1.9.0
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
     - name: Build with meson
       run: |
         meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
@@ -71,11 +91,11 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: crazy-max/ghaction-chocolatey@v1.5.0
+    - uses: crazy-max/ghaction-chocolatey@v1.6.0
       with:
         args: install innosetup lazarus
     # required for the lib command
-    - uses: ilammy/msvc-dev-cmd@v1.9.0
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
       with:
         arch: x64
     - uses: msys2/setup-msys2@v2
@@ -87,7 +107,6 @@ jobs:
           git
           mingw-w64-x86_64-gcc
           mingw-w64-x86_64-gcc-fortran
-          mingw-w64-x86_64-libtool
           mingw-w64-x86_64-libxml2
           mingw-w64-x86_64-clang
           mingw-w64-x86_64-openmp
@@ -99,11 +118,12 @@ jobs:
           mingw-w64-x86_64-meson
           automake
           autoconf
+          libtool
           make
           patch
           wget
           tar
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.4.0
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -213,7 +233,7 @@ jobs:
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.4.0
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -328,13 +348,12 @@ jobs:
       fail-fast: false
       matrix:
         image: 
-          - ubuntu:bionic
           - ubuntu:focal
           - ubuntu:devel
-          - debian:buster
+          - debian:bullseye
           - debian:sid
           - centos:7
-          - centos:8
+          - rockylinux:8
           - fedora:latest
           - fedora:rawhide
         cc:
@@ -344,15 +363,11 @@ jobs:
           - autotools
           - meson
         exclude:
-          - image: ubuntu:bionic
-            buildsystem: meson
           - image: ubuntu:focal
-            buildsystem: meson
-          - image: debian:buster
             buildsystem: meson
           - image: centos:7
             buildsystem: meson
-          - image: centos:8
+          - image: rockylinux:8
             buildsystem: meson
         include:
           # at least some versions of clang cannot compile php bindings
@@ -368,7 +383,7 @@ jobs:
             cxx: g++
             php: enable
           - cc: clang
-            image: centos:8
+            image: rockylinux:8
             perl: disable
             libs: -stdlib=libstdc++
             fortran: disable
@@ -393,19 +408,18 @@ jobs:
             perl: disable
             python: disable
             clang_cflags: -Qunused-arguments
-          - image: ubuntu:bionic
-            lua: /usr/bin/lua5.3
           - image: ubuntu:focal
             lua: /usr/bin/lua5.3
           - image: ubuntu:devel
             lua: /usr/bin/lua5.3
-          - image: debian:buster
+          - image: debian:bullseye
             lua: /usr/bin/lua5.3
           - image: debian:sid
             lua: /usr/bin/lua5.3
+            php: disable # comes with PHP 8, unsupported by SWIG
           - image: centos:7
             lua: /usr/bin/lua
-          - image: centos:8
+          - image: rockylinux:8
             lua: /usr/bin/lua
           - image: fedora:latest
             lua: /usr/bin/lua
@@ -430,7 +444,7 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v2.4.0
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
@@ -450,7 +464,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
     - name: Activate CentOS 8 PowerTools and EPEL repo
-      if: matrix.image == 'centos:8'
+      if: matrix.image == 'rockylinux:8'
       run: |
         set -ex
         yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
@@ -465,7 +479,7 @@ jobs:
         yum install -y python36-Cython # this one needs to be brought in separately for CentOS 7
         set +ex
     - name: Install RHEL dependencies
-      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora')
+      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
       run: |
         set -ex
         yum update -y
@@ -476,7 +490,7 @@ jobs:
         which javac
         set +ex
     - name: Install RHEL dependencies Meson and Ninja
-      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora'))
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
       run: |
         set -ex
         yum install -y meson ninja-build
@@ -539,7 +553,7 @@ jobs:
         DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --${{matrix.perl}}-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --${{matrix.php}}-php --enable-ruby --${{matrix.fortran}}-fortran2003
         CFLAGS: ${{matrix.clang_cflags}}
     - name: Test rpm-build
-      if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora'))
+      if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startswith(matrix.image, 'rockylinux'))
       run: |
         set -ex
         rpmdev-setuptree
