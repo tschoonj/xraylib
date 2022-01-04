@@ -348,10 +348,9 @@ jobs:
       fail-fast: false
       matrix:
         image: 
-          - ubuntu:bionic
           - ubuntu:focal
           - ubuntu:devel
-          - debian:buster
+          - debian:bullseye
           - debian:sid
           - centos:7
           - rockylinux:8
@@ -364,11 +363,7 @@ jobs:
           - autotools
           - meson
         exclude:
-          - image: ubuntu:bionic
-            buildsystem: meson
           - image: ubuntu:focal
-            buildsystem: meson
-          - image: debian:buster
             buildsystem: meson
           - image: centos:7
             buildsystem: meson
@@ -413,8 +408,6 @@ jobs:
             perl: disable
             python: disable
             clang_cflags: -Qunused-arguments
-          - image: ubuntu:bionic
-            lua: /usr/bin/lua5.3
           - image: ubuntu:focal
             lua: /usr/bin/lua5.3
           - image: ubuntu:devel
@@ -423,6 +416,7 @@ jobs:
             lua: /usr/bin/lua5.3
           - image: debian:sid
             lua: /usr/bin/lua5.3
+            php: disable # comes with PHP 8, unsupported by SWIG
           - image: centos:7
             lua: /usr/bin/lua
           - image: rockylinux:8
