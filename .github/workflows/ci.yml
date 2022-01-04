@@ -18,6 +18,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         python-version: ['3.7', '3.8', '3.9', '3.10']
+    name: Pip install with Python ${{ matrix.python-version }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
@@ -33,536 +34,536 @@ jobs:
           python -c "import xraylib"
           python -c "import xraylib_np"
 
-  # visual-studio:
-  #   timeout-minutes: 60
-  #   runs-on: windows-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [ '3.7', '3.8', '3.9', '3.10']
-  #       compiler:
-  #         - cl
-  #         - clang-cl
-  #       # don't know why but cl.exe does not like the Cython generated code with python < 3.8
-  #       include:
-  #         - numpy: enabled
-  #         - python-version: 3.7
-  #           numpy: disabled
-  #           compiler: cl
-  #   name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
-  #   steps:
-  #   - uses: actions/checkout@v2.4.0
-  #   - uses: conda-incubator/setup-miniconda@v2.1.1
-  #     with:
-  #       auto-update-conda: true
-  #       channels: conda-forge
-  #       python-version: ${{ matrix.python-version }}
-  #   - name: Install meson, ninja, numpy and cython
-  #     run: |
-  #       conda install -q -y meson ninja numpy cython swig
-  #   - uses: ilammy/msvc-dev-cmd@v1.10.0
-  #   - name: Build with meson
-  #     run: |
-  #       meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
-  #       ninja -v -C builddir
-  #       ninja -v -C builddir test
-  #       # ninja -v -C builddir dist
-  #     env:
-  #       CC: ${{ matrix.compiler }}
-  #       CXX: ${{ matrix.compiler }}
+  visual-studio:
+    timeout-minutes: 60
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [ '3.7', '3.8', '3.9', '3.10']
+        compiler:
+          - cl
+          - clang-cl
+        # don't know why but cl.exe does not like the Cython generated code with python < 3.8
+        include:
+          - numpy: enabled
+          - python-version: 3.7
+            numpy: disabled
+            compiler: cl
+    name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
+    steps:
+    - uses: actions/checkout@v2.4.0
+    - uses: conda-incubator/setup-miniconda@v2.1.1
+      with:
+        auto-update-conda: true
+        channels: conda-forge
+        python-version: ${{ matrix.python-version }}
+    - name: Install meson, ninja, numpy and cython
+      run: |
+        conda install -q -y meson ninja numpy cython swig
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
+    - name: Build with meson
+      run: |
+        meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
+        ninja -v -C builddir
+        ninja -v -C builddir test
+        # ninja -v -C builddir dist
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
 
-  # msys2:
-  #   timeout-minutes: 60
-  #   strategy:
-  #     matrix:
-  #       buildsystem:
-  #         - autotools
-  #         - meson
-  #       cc:
-  #         - clang
-  #         - gcc
-  #       include:
-  #         - cc: clang
-  #           cxx: clang++
-  #         - cc: gcc
-  #           cxx: g++
-  #   runs-on: windows-latest
-  #   defaults:
-  #     run:
-  #       shell: msys2 {0}
-  #   steps:
-  #   - uses: crazy-max/ghaction-chocolatey@v1.6.0
-  #     with:
-  #       args: install innosetup lazarus
-  #   # required for the lib command
-  #   - uses: ilammy/msvc-dev-cmd@v1.10.0
-  #     with:
-  #       arch: x64
-  #   - uses: msys2/setup-msys2@v2
-  #     with:
-  #       path-type: inherit
-  #       update: true
-  #       install: >
-  #         base-devel
-  #         git
-  #         mingw-w64-x86_64-gcc
-  #         mingw-w64-x86_64-gcc-fortran
-  #         mingw-w64-x86_64-libxml2
-  #         mingw-w64-x86_64-clang
-  #         mingw-w64-x86_64-openmp
-  #         mingw-w64-x86_64-lld
-  #         mingw-w64-x86_64-pkg-config
-  #         mingw-w64-x86_64-curl
-  #         mingw-w64-x86_64-cython
-  #         mingw-w64-x86_64-python3-numpy
-  #         mingw-w64-x86_64-meson
-  #         automake
-  #         autoconf
-  #         libtool
-  #         make
-  #         patch
-  #         wget
-  #         tar
-  #   - uses: actions/checkout@v2.4.0
-  #   - name: Primary build and test with Meson
-  #     if: matrix.buildsystem == 'meson'
-  #     run: |
-  #       set -ex
+  msys2:
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        buildsystem:
+          - autotools
+          - meson
+        cc:
+          - clang
+          - gcc
+        include:
+          - cc: clang
+            cxx: clang++
+          - cc: gcc
+            cxx: g++
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: crazy-max/ghaction-chocolatey@v1.6.0
+      with:
+        args: install innosetup lazarus
+    # required for the lib command
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
+      with:
+        arch: x64
+    - uses: msys2/setup-msys2@v2
+      with:
+        path-type: inherit
+        update: true
+        install: >
+          base-devel
+          git
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gcc-fortran
+          mingw-w64-x86_64-libxml2
+          mingw-w64-x86_64-clang
+          mingw-w64-x86_64-openmp
+          mingw-w64-x86_64-lld
+          mingw-w64-x86_64-pkg-config
+          mingw-w64-x86_64-curl
+          mingw-w64-x86_64-cython
+          mingw-w64-x86_64-python3-numpy
+          mingw-w64-x86_64-meson
+          automake
+          autoconf
+          libtool
+          make
+          patch
+          wget
+          tar
+    - uses: actions/checkout@v2.4.0
+    - name: Primary build and test with Meson
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
 
-  #       mkdir build
-  #       cd build
-  #       meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-  #       ninja
-  #       ninja test
-  #       ninja dist
+        mkdir build
+        cd build
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        ninja test
+        ninja dist
 
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #   - name: Secondary build with Autotools 
-  #     if: matrix.buildsystem == 'meson'
-  #     run: |
-  #       set -ex
-  #       cd build/meson-dist/
-  #       TARBALL=$(ls *.tar.xz)
-  #       tar xfJ $TARBALL
-  #       cd ${TARBALL%.tar.xz}
-  #       autoreconf -fi
-  #       ./configure --enable-python --disable-ruby
-  #       make
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       CYTHON: cython
-  #       PYTHON: python3
-  #   - name: Primary build and test with Autotools
-  #     if: matrix.buildsystem == 'autotools'
-  #     run: |
-  #       set -ex
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+    - name: Secondary build with Autotools 
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+        cd build/meson-dist/
+        TARBALL=$(ls *.tar.xz)
+        tar xfJ $TARBALL
+        cd ${TARBALL%.tar.xz}
+        autoreconf -fi
+        ./configure --enable-python --disable-ruby
+        make
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        CYTHON: cython
+        PYTHON: python3
+    - name: Primary build and test with Autotools
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
 
-  #       autoreconf -fi
-  #       ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || (cat config.log && exit 1)
-  #       make
-  #       make check
-  #       make windows
-  #       make distclean
+        autoreconf -fi
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || (cat config.log && exit 1)
+        make
+        make check
+        make windows
+        make distclean
 
-  #       ./configure --disable-all-bindings --disable-shared --enable-static
-  #       make
-  #       make check
-  #       make distclean
+        ./configure --disable-all-bindings --disable-shared --enable-static
+        make
+        make check
+        make distclean
 
-  #       ./configure --disable-python --disable-python-numpy --enable-fortran2003 --enable-pascal FPC=/c/lazarus/fpc/*/bin/x86_64-win64/fpc --disable-ruby
-  #       make
-  #       make check
-  #       make distclean
+        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --enable-pascal FPC=/c/lazarus/fpc/*/bin/x86_64-win64/fpc --disable-ruby
+        make
+        make check
+        make distclean
 
-  #       ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
-  #       make
-  #       make check
-  #       make dist
+        ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
+        make
+        make check
+        make dist
 
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       CYTHON: cython
-  #       PYTHON: python3
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        CYTHON: cython
+        PYTHON: python3
     
-  #   - name: Secondary build with Meson
-  #     if: matrix.buildsystem == 'autotools'
-  #     run: |
-  #       set -ex
-  #       export PATH=${HOME}/.local/bin:${PATH}
-  #       TARBALL=$(ls *.tar.gz)
-  #       tar xfz $TARBALL
-  #       cd ${TARBALL%.tar.gz}
-  #       mkdir build-meson
-  #       cd build-meson
-  #       meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-  #       ninja
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
+    - name: Secondary build with Meson
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
+        export PATH=${HOME}/.local/bin:${PATH}
+        TARBALL=$(ls *.tar.gz)
+        tar xfz $TARBALL
+        cd ${TARBALL%.tar.gz}
+        mkdir build-meson
+        cd build-meson
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
 
-  # macos:
-  #   timeout-minutes: 60
-  #   runs-on: macos-latest
-  #   strategy:
-  #     matrix:
-  #       buildsystem:
-  #         - autotools
-  #         - meson
-  #       compiler:
-  #         - llvm
-  #         - gcc
-  #       include:
-  #         - ldflags: ""
-  #         # at least some versions of clang cannot compile php bindings
-  #         - compiler: llvm
-  #           cc: /usr/local/opt/llvm/bin/clang
-  #           cxx: /usr/local/opt/llvm/bin/clang++
-  #           ldflags: -L/usr/local/opt/llvm/lib
-  #           enable_ruby: enable
-  #         - compiler: gcc
-  #           cc: gcc-11
-  #           cxx: g++-11
-  #           # -fdeclspec is only supported by llvm's clang!
-  #           enable_ruby: disable
-  #   steps:
-  #   - uses: actions/checkout@v2.4.0
-  #   - name: Install Homebrew dependencies
-  #     run: |
-  #       set -ex
-  #       rm -f /usr/local/bin/2to3
-  #       brew uninstall -f bazel bazelisk mongodb-community
-  #       brew update
-  #       brew upgrade
-  #       brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby fpc lua perl php@7.4 bash numpy meson ninja
-  #       set +ex
-  #     env:
-  #       HOMEBREW_CURL_RETRIES: 5
+  macos:
+    timeout-minutes: 60
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        buildsystem:
+          - autotools
+          - meson
+        compiler:
+          - llvm
+          - gcc
+        include:
+          - ldflags: ""
+          # at least some versions of clang cannot compile php bindings
+          - compiler: llvm
+            cc: /usr/local/opt/llvm/bin/clang
+            cxx: /usr/local/opt/llvm/bin/clang++
+            ldflags: -L/usr/local/opt/llvm/lib
+            enable_ruby: enable
+          - compiler: gcc
+            cc: gcc-11
+            cxx: g++-11
+            # -fdeclspec is only supported by llvm's clang!
+            enable_ruby: disable
+    steps:
+    - uses: actions/checkout@v2.4.0
+    - name: Install Homebrew dependencies
+      run: |
+        set -ex
+        rm -f /usr/local/bin/2to3
+        brew uninstall -f bazel bazelisk mongodb-community
+        brew update
+        brew upgrade
+        brew install git autoconf automake libtool pkg-config python ${{ matrix.compiler }} swig ruby fpc lua perl php@7.4 bash numpy meson ninja
+        set +ex
+      env:
+        HOMEBREW_CURL_RETRIES: 5
 
-  #   - name: Install Cython
-  #     run: |
-  #       /usr/local/bin/pip3 install Cython
+    - name: Install Cython
+      run: |
+        /usr/local/bin/pip3 install Cython
 
-  #   - name: Primary Build and test with Meson
-  #     if: matrix.buildsystem == 'meson'
-  #     run: |
-  #       set -ex
+    - name: Primary Build and test with Meson
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
 
-  #       mkdir build
-  #       cd build
-  #       meson -Dpython=/usr/local/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-  #       ninja
-  #       ninja test
-  #       ninja dist
+        mkdir build
+        cd build
+        meson -Dpython=/usr/local/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        ninja test
+        ninja dist
 
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       LDFLAGS: ${{matrix.ldflags}}
-  #   - name: Secondary build with Autotools 
-  #     if: matrix.buildsystem == 'meson'
-  #     run: |
-  #       set -ex
-  #       cd build/meson-dist/
-  #       TARBALL=$(ls *.tar.xz)
-  #       tar xfJ $TARBALL
-  #       cd ${TARBALL%.tar.xz}
-  #       autoreconf -fi
-  #       ./configure --enable-python SHELL=${SHELL} PYTHON=/usr/local/bin/python3
-  #       make
-  #       make check
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       SHELL: /usr/local/bin/bash
-  #   - name: Build with Autotools
-  #     if: matrix.buildsystem == 'autotools'
-  #     run: |
-  #       set -ex
-  #       autoreconf -fi
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        LDFLAGS: ${{matrix.ldflags}}
+    - name: Secondary build with Autotools 
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+        cd build/meson-dist/
+        TARBALL=$(ls *.tar.xz)
+        tar xfJ $TARBALL
+        cd ${TARBALL%.tar.xz}
+        autoreconf -fi
+        ./configure --enable-python SHELL=${SHELL} PYTHON=/usr/local/bin/python3
+        make
+        make check
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        SHELL: /usr/local/bin/bash
+    - name: Build with Autotools
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
+        autoreconf -fi
 
-  #       # Build without python
-  #       ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --${{matrix.enable_ruby}}-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL} RUBY=/usr/local/opt/ruby/bin/ruby
-  #       make
-  #       make check || (cat perl/tests/test-suite.log && exit 1)
-  #       make distclean
+        # Build without python
+        ./configure --disable-python --disable-python-numpy --enable-perl --enable-lua --enable-pascal --disable-java --enable-php --${{matrix.enable_ruby}}-ruby PHP=/usr/local/opt/php@7.4/bin/php PHP_CONFIG=/usr/local/opt/php@7.4/bin/php-config SHELL=${SHELL} RUBY=/usr/local/opt/ruby/bin/ruby
+        make
+        make check || (cat perl/tests/test-suite.log && exit 1)
+        make distclean
 
-  #       # Build without bindings in ANSI-C
-  #       ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" SHELL=${SHELL}
-  #       make
-  #       make check
-  #       make distclean
+        # Build without bindings in ANSI-C
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" SHELL=${SHELL}
+        make
+        make check
+        make distclean
 
-  #       # Build with Python3 bindings
-  #       ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} SHELL=${SHELL}
-  #       make
-  #       make check
-  #       make distclean
+        # Build with Python3 bindings
+        ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} SHELL=${SHELL}
+        make
+        make check
+        make distclean
 
-  #       # Build static library
-  #       ./configure --disable-all-bindings --disable-shared --enable-static SHELL=${SHELL}
-  #       make
-  #       make check
-  #       make distclean
+        # Build static library
+        ./configure --disable-all-bindings --disable-shared --enable-static SHELL=${SHELL}
+        make
+        make check
+        make distclean
 
-  #       # Run make distcheck
-  #       ./configure
-  #       make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} DISTCHECK_CONFIGURE_FLAGS="--${{matrix.enable_ruby}}-ruby" RUBY=/usr/local/opt/ruby/bin/ruby
+        # Run make distcheck
+        ./configure
+        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} DISTCHECK_CONFIGURE_FLAGS="--${{matrix.enable_ruby}}-ruby" RUBY=/usr/local/opt/ruby/bin/ruby
 
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       SHELL: /usr/local/bin/bash
-  #       XRL_PYTHON3: /usr/local/bin/python3
-  #   - name: Secondary build with Meson
-  #     if: matrix.buildsystem == 'autotools'
-  #     run: |
-  #       set -ex
-  #       export PATH=${HOME}/.local/bin:${PATH}
-  #       TARBALL=$(ls *.tar.gz)
-  #       tar xfz $TARBALL
-  #       cd ${TARBALL%.tar.gz}
-  #       mkdir build-meson
-  #       cd build-meson
-  #       meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-  #       ninja
-  #       set +ex
-  #     env:
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       LDFLAGS: ${{matrix.ldflags}}
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        SHELL: /usr/local/bin/bash
+        XRL_PYTHON3: /usr/local/bin/python3
+    - name: Secondary build with Meson
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
+        export PATH=${HOME}/.local/bin:${PATH}
+        TARBALL=$(ls *.tar.gz)
+        tar xfz $TARBALL
+        cd ${TARBALL%.tar.gz}
+        mkdir build-meson
+        cd build-meson
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        set +ex
+      env:
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        LDFLAGS: ${{matrix.ldflags}}
 
-  # linux:
-  #   timeout-minutes: 60
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       image: 
-  #         - ubuntu:bionic
-  #         - ubuntu:focal
-  #         - ubuntu:devel
-  #         - debian:buster
-  #         - debian:sid
-  #         - centos:7
-  #         - rockylinux:8
-  #         - fedora:latest
-  #         - fedora:rawhide
-  #       cc:
-  #         - clang
-  #         - gcc
-  #       buildsystem:
-  #         - autotools
-  #         - meson
-  #       exclude:
-  #         - image: ubuntu:bionic
-  #           buildsystem: meson
-  #         - image: ubuntu:focal
-  #           buildsystem: meson
-  #         - image: debian:buster
-  #           buildsystem: meson
-  #         - image: centos:7
-  #           buildsystem: meson
-  #         - image: rockylinux:8
-  #           buildsystem: meson
-  #       include:
-  #         # at least some versions of clang cannot compile php bindings
-  #         - cython: cython
-  #           perl: enable
-  #           fpc: enable
-  #           fortran: enable
-  #           python: enable
-  #         - cc: clang
-  #           cxx: clang++
-  #           php: disable
-  #         - cc: gcc
-  #           cxx: g++
-  #           php: enable
-  #         - cc: clang
-  #           image: rockylinux:8
-  #           perl: disable
-  #           libs: -stdlib=libstdc++
-  #           fortran: disable
-  #           clang_cflags: -Qunused-arguments
-  #           python: disable
-  #         - image: centos:7
-  #           fpc: disable
-  #           cython: cython3.6
-  #         - image: centos:7
-  #           cc: clang
-  #           libs: -stdlib=libstdc++
-  #           fortran: disable
-  #           clang_cflags: -Qunused-arguments
-  #           python: disable
-  #         - cc: clang
-  #           image: fedora:latest
-  #           perl: disable
-  #           python: disable
-  #           clang_cflags: -Qunused-arguments
-  #         - cc: clang
-  #           image: fedora:rawhide
-  #           perl: disable
-  #           python: disable
-  #           clang_cflags: -Qunused-arguments
-  #         - image: ubuntu:bionic
-  #           lua: /usr/bin/lua5.3
-  #         - image: ubuntu:focal
-  #           lua: /usr/bin/lua5.3
-  #         - image: ubuntu:devel
-  #           lua: /usr/bin/lua5.3
-  #         - image: debian:bullseye
-  #           lua: /usr/bin/lua5.3
-  #         - image: debian:sid
-  #           lua: /usr/bin/lua5.3
-  #         - image: centos:7
-  #           lua: /usr/bin/lua
-  #         - image: rockylinux:8
-  #           lua: /usr/bin/lua
-  #         - image: fedora:latest
-  #           lua: /usr/bin/lua
+  linux:
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        image: 
+          - ubuntu:bionic
+          - ubuntu:focal
+          - ubuntu:devel
+          - debian:buster
+          - debian:sid
+          - centos:7
+          - rockylinux:8
+          - fedora:latest
+          - fedora:rawhide
+        cc:
+          - clang
+          - gcc
+        buildsystem:
+          - autotools
+          - meson
+        exclude:
+          - image: ubuntu:bionic
+            buildsystem: meson
+          - image: ubuntu:focal
+            buildsystem: meson
+          - image: debian:buster
+            buildsystem: meson
+          - image: centos:7
+            buildsystem: meson
+          - image: rockylinux:8
+            buildsystem: meson
+        include:
+          # at least some versions of clang cannot compile php bindings
+          - cython: cython
+            perl: enable
+            fpc: enable
+            fortran: enable
+            python: enable
+          - cc: clang
+            cxx: clang++
+            php: disable
+          - cc: gcc
+            cxx: g++
+            php: enable
+          - cc: clang
+            image: rockylinux:8
+            perl: disable
+            libs: -stdlib=libstdc++
+            fortran: disable
+            clang_cflags: -Qunused-arguments
+            python: disable
+          - image: centos:7
+            fpc: disable
+            cython: cython3.6
+          - image: centos:7
+            cc: clang
+            libs: -stdlib=libstdc++
+            fortran: disable
+            clang_cflags: -Qunused-arguments
+            python: disable
+          - cc: clang
+            image: fedora:latest
+            perl: disable
+            python: disable
+            clang_cflags: -Qunused-arguments
+          - cc: clang
+            image: fedora:rawhide
+            perl: disable
+            python: disable
+            clang_cflags: -Qunused-arguments
+          - image: ubuntu:bionic
+            lua: /usr/bin/lua5.3
+          - image: ubuntu:focal
+            lua: /usr/bin/lua5.3
+          - image: ubuntu:devel
+            lua: /usr/bin/lua5.3
+          - image: debian:bullseye
+            lua: /usr/bin/lua5.3
+          - image: debian:sid
+            lua: /usr/bin/lua5.3
+          - image: centos:7
+            lua: /usr/bin/lua
+          - image: rockylinux:8
+            lua: /usr/bin/lua
+          - image: fedora:latest
+            lua: /usr/bin/lua
 
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
 
-  #   steps:
-  #   - name: Install Git
-  #     if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
-  #     run: |
-  #       set -ex
-  #       apt-get --yes --force-yes update
-  #       apt-get --yes --force-yes install git
-  #       set +ex
-  #     env:
-  #       DEBIAN_FRONTEND: noninteractive
-  #   - name: Install Git
-  #     if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora')
-  #     run: |
-  #       set -ex
-  #       yum install -y git
-  #       set +ex
-  #   - uses: actions/checkout@v2.4.0
-  #   - name: Install ubuntu dependencies
-  #     if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
-  #     run: |
-  #       set -ex
-  #       apt-get --yes --force-yes update
-  #       apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk clang
-  #       pip3 install Cython
-  #       set +ex
-  #     env:
-  #       DEBIAN_FRONTEND: noninteractive
-  #   - name: Install ubuntu dependencies Meson and Ninja
-  #     if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian'))
-  #     run: |
-  #       set -ex
-  #       apt-get --yes --force-yes install meson ninja-build
-  #       set +ex
-  #     env:
-  #       DEBIAN_FRONTEND: noninteractive
-  #   - name: Activate CentOS 8 PowerTools and EPEL repo
-  #     if: matrix.image == 'rockylinux:8'
-  #     run: |
-  #       set -ex
-  #       yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-  #       dnf install -y 'dnf-command(config-manager)'
-  #       dnf config-manager --set-enabled powertools
-  #       set +ex
-  #   - name: Activate CentOS 7 EPEL repo
-  #     if: matrix.image == 'centos:7'
-  #     run: |
-  #       set -ex
-  #       yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  #       yum install -y python36-Cython # this one needs to be brought in separately for CentOS 7
-  #       set +ex
-  #   - name: Install RHEL dependencies
-  #     if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
-  #     run: |
-  #       set -ex
-  #       yum update -y
-  #       yum install -y make autoconf automake libtool python3-Cython python3-setuptools python3-devel python3-numpy fpc gcc-gfortran gcc php-devel swig perl-devel perl perl-Test-Simple lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel gcc-c++ which rpm-build rpmdevtools lua-srpm-macros perl-macros
-  #       java -version
-  #       which java
-  #       javac -version
-  #       which javac
-  #       set +ex
-  #   - name: Install RHEL dependencies Meson and Ninja
-  #     if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
-  #     run: |
-  #       set -ex
-  #       yum install -y meson ninja-build
-  #       set +ex
-  #   - name: Build and test with Meson
-  #     if: matrix.buildsystem == 'meson'
-  #     run: |
-  #       set -ex
-  #       mkdir build
-  #       cd build
-  #       meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-  #       ninja
-  #       ninja test
-  #       ninja dist
-  #       set +ex
-  #     env:
-  #       CYTHON: ${{matrix.cython}}
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       LIBS: ${{matrix.libs}}
-  #   - name: Build and test with Autotools
-  #     if: matrix.buildsystem == 'autotools'
-  #     run: |
-  #       set -ex
-  #       autoreconf -fi
-  #       # disable java for now
-  #       ./configure --disable-python --disable-python-numpy --${PERL_ENABLE}-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
-  #       make
-  #       make check || (cat example/xrlexample12.sh.log && exit 1)
-  #       make distclean
-  #       ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
-  #       make
-  #       make check
-  #       make distclean
-  #       ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
-  #       make
-  #       make check
-  #       make distclean
-  #       ./configure --disable-all-bindings --disable-shared --enable-static
-  #       make
-  #       make check
-  #       make distclean
-  #       ./configure --disable-all-bindings
-  #       make distcheck PYTHON=${XRL_PYTHON3}
-  #       set +ex
-  #     env:
-  #       CYTHON: ${{matrix.cython}}
-  #       CC: ${{matrix.cc}}
-  #       CXX: ${{matrix.cxx}}
-  #       CXXFLAGS: -std=c++11
-  #       LIBS: ${{matrix.libs}}
-  #       XRL_PYTHON3: /usr/bin/python3
-  #       LUA: ${{matrix.lua}}
-  #       JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
-  #       PHP_ENABLE: ${{matrix.php}}
-  #       PYTHON_ENABLE: ${{matrix.python}}
-  #       FORTRAN_ENABLE: ${{matrix.fortran}}
-  #       PERL_ENABLE: ${{matrix.perl}}
-  #       FPC_ENABLE: ${{matrix.fpc}}
-  #       DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --${{matrix.perl}}-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --${{matrix.php}}-php --enable-ruby --${{matrix.fortran}}-fortran2003
-  #       CFLAGS: ${{matrix.clang_cflags}}
-  #   - name: Test rpm-build
-  #     if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startswith(matrix.image, 'rockylinux'))
-  #     run: |
-  #       set -ex
-  #       rpmdev-setuptree
-  #       cp xraylib-*.tar.gz ~/rpmbuild/SOURCES
-  #       cp xraylib.spec ~/rpmbuild/SPECS
-  #       rpmbuild -ba ~/rpmbuild/SPECS/xraylib.spec
-  #       set +ex
+    steps:
+    - name: Install Git
+      if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
+      run: |
+        set -ex
+        apt-get --yes --force-yes update
+        apt-get --yes --force-yes install git
+        set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    - name: Install Git
+      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora')
+      run: |
+        set -ex
+        yum install -y git
+        set +ex
+    - uses: actions/checkout@v2.4.0
+    - name: Install ubuntu dependencies
+      if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
+      run: |
+        set -ex
+        apt-get --yes --force-yes update
+        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy fpc gfortran gcc php-dev swig libperl-dev perl lua5.3 liblua5.3-dev ruby-dev default-jdk clang
+        pip3 install Cython
+        set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    - name: Install ubuntu dependencies Meson and Ninja
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian'))
+      run: |
+        set -ex
+        apt-get --yes --force-yes install meson ninja-build
+        set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    - name: Activate CentOS 8 PowerTools and EPEL repo
+      if: matrix.image == 'rockylinux:8'
+      run: |
+        set -ex
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+        dnf install -y 'dnf-command(config-manager)'
+        dnf config-manager --set-enabled powertools
+        set +ex
+    - name: Activate CentOS 7 EPEL repo
+      if: matrix.image == 'centos:7'
+      run: |
+        set -ex
+        yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        yum install -y python36-Cython # this one needs to be brought in separately for CentOS 7
+        set +ex
+    - name: Install RHEL dependencies
+      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
+      run: |
+        set -ex
+        yum update -y
+        yum install -y make autoconf automake libtool python3-Cython python3-setuptools python3-devel python3-numpy fpc gcc-gfortran gcc php-devel swig perl-devel perl perl-Test-Simple lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel gcc-c++ which rpm-build rpmdevtools lua-srpm-macros perl-macros
+        java -version
+        which java
+        javac -version
+        which javac
+        set +ex
+    - name: Install RHEL dependencies Meson and Ninja
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
+      run: |
+        set -ex
+        yum install -y meson ninja-build
+        set +ex
+    - name: Build and test with Meson
+      if: matrix.buildsystem == 'meson'
+      run: |
+        set -ex
+        mkdir build
+        cd build
+        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
+        ninja
+        ninja test
+        ninja dist
+        set +ex
+      env:
+        CYTHON: ${{matrix.cython}}
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        LIBS: ${{matrix.libs}}
+    - name: Build and test with Autotools
+      if: matrix.buildsystem == 'autotools'
+      run: |
+        set -ex
+        autoreconf -fi
+        # disable java for now
+        ./configure --disable-python --disable-python-numpy --${PERL_ENABLE}-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --${PHP_ENABLE}-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
+        make
+        make check || (cat example/xrlexample12.sh.log && exit 1)
+        make distclean
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
+        make
+        make check
+        make distclean
+        ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
+        make
+        make check
+        make distclean
+        ./configure --disable-all-bindings --disable-shared --enable-static
+        make
+        make check
+        make distclean
+        ./configure --disable-all-bindings
+        make distcheck PYTHON=${XRL_PYTHON3}
+        set +ex
+      env:
+        CYTHON: ${{matrix.cython}}
+        CC: ${{matrix.cc}}
+        CXX: ${{matrix.cxx}}
+        CXXFLAGS: -std=c++11
+        LIBS: ${{matrix.libs}}
+        XRL_PYTHON3: /usr/bin/python3
+        LUA: ${{matrix.lua}}
+        JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF8
+        PHP_ENABLE: ${{matrix.php}}
+        PYTHON_ENABLE: ${{matrix.python}}
+        FORTRAN_ENABLE: ${{matrix.fortran}}
+        PERL_ENABLE: ${{matrix.perl}}
+        FPC_ENABLE: ${{matrix.fpc}}
+        DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --${{matrix.perl}}-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --${{matrix.php}}-php --enable-ruby --${{matrix.fortran}}-fortran2003
+        CFLAGS: ${{matrix.clang_cflags}}
+    - name: Test rpm-build
+      if: matrix.buildsystem == 'autotools' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startswith(matrix.image, 'rockylinux'))
+      run: |
+        set -ex
+        rpmdev-setuptree
+        cp xraylib-*.tar.gz ~/rpmbuild/SOURCES
+        cp xraylib.spec ~/rpmbuild/SPECS
+        rpmbuild -ba ~/rpmbuild/SPECS/xraylib.spec
+        set +ex
