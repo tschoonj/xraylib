@@ -150,6 +150,15 @@ double CSb_Photo_Partial(int Z, int shell, double E, xrl_error **error) {
       m = -1.0;
     ln_sigma = y0 + m * (ln_E - x0);
   }
+  else if (ln_E < E_Photo_Partial_Kissel[Z][shell][0]) {
+    /* Address edge case where Kissel edge energy is less than the lowest value in the energies array
+       Fixes https://github.com/tschoonj/xraylib/issues/187 
+       A better fix would involve setting the Kissel edge energies to the lowest value present in the energies array,
+       but this needs to be done in the script that extracts the data from the Kissel files.
+       This script is currently written in IDL, and I am in no mood to translate to Python right now
+    */
+    ln_sigma = Photo_Partial_Kissel[Z][shell][0];
+  }
   else {
     int splint_rv = splint(E_Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel[Z][shell] - 1, Photo_Partial_Kissel2[Z][shell] - 1, NE_Photo_Partial_Kissel[Z][shell], ln_E, &ln_sigma, error);
     if (!splint_rv)
