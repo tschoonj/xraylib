@@ -106,6 +106,9 @@ public class TestKisselPE {
 		assertEquals(cs, 22.40452459077649, 1E-6);
 		cs = Xraylib.CS_Photo_Partial(26, Xraylib.K_SHELL, 300.0);
 		assertEquals(cs, 0.0024892741933504824, 1E-6);
+		/* see https://github.com/tschoonj/xraylib/issues/187 */
+		cs = Xraylib.CSb_Photo_Partial(47, Xraylib.L2_SHELL, 3.5282);
+		assertEquals(cs, 1.56958E+04, 1E-2);
 	}
 
 	static Stream<Arguments> badCSPhotoPartialsValuesProvider() {
