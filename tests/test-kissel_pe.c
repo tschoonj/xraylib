@@ -92,6 +92,10 @@ int main(int argc, char **argv) {
 	assert(error == NULL);
 	assert(fabs(0.102639909656483 - cs) < 1E-6);
 
+	/* see https://github.com/tschoonj/xraylib/issues/187 */
+	cs = CS_FluorLine_Kissel(47, L2M4_LINE, 3.5282, &error);
+	assert(error == NULL);
+
 	/* lets try some bad input */
 	cs = CS_FluorLine_Kissel(0, KL3_LINE, 10.0, &error);
 	assert(error != NULL);
@@ -186,14 +190,17 @@ int main(int argc, char **argv) {
 	cs += CS_FluorLine_Kissel(92, L3N7_LINE, 30.0, &error);
 	assert(error == NULL);
 	cs2 = CS_FluorLine_Kissel(92, LB_LINE, 30.0, NULL);
-	fprintf(stderr, "cs: %f\n", cs);
-	fprintf(stderr, "cs2: %f\n", cs2);
 	assert(fabs(cs2 - cs) < 1E-6);
 
 	/* CS_Photo_Partial tests */
 	cs = CS_Photo_Partial(26, K_SHELL, 20.0, &error);
 	assert(error == NULL);
 	assert(fabs(cs - 22.40452459077649) < 1E-6);
+
+	/* see https://github.com/tschoonj/xraylib/issues/187 */
+	cs = CSb_Photo_Partial(47, L2_SHELL, 3.5282, &error);
+	assert(error == NULL);
+	assert(fabs(cs - 1.56958E+04)/cs < 1E-6);
 
 	cs = CS_Photo_Partial(26, K_SHELL, 6.0, &error);
 	assert(error != NULL);
