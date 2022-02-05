@@ -935,7 +935,10 @@ public class Xraylib {
     }
 
     ln_E = Math.log(E);
-    if (EdgeEnergy_Kissel_arr[Z * SHELLNUM_K + shell] > EdgeEnergy_arr[Z * SHELLNUM + shell] && E < EdgeEnergy_Kissel_arr[Z * SHELLNUM_K + shell]) {
+    if (ln_E < E_Photo_Partial_Kissel_arr[Z][shell][0]) {
+	  /* Address a case where energy E is less than the lowest value in the energies array of Kissel's cross section
+         Fixes https://github.com/tschoonj/xraylib/issues/187 
+      */
       /*
        * use log-log extrapolation
        */
