@@ -200,7 +200,7 @@ int main(int argc, char **argv) {
 	/* see https://github.com/tschoonj/xraylib/issues/187 */
 	cs = CSb_Photo_Partial(47, L2_SHELL, 3.5282, &error);
 	assert(error == NULL);
-	assert(fabs(cs - 1.56958E+04)/cs < 1E-6);
+	assert(fabs(cs - 1.569549E+04)/cs < 1E-6);
 
 	cs = CS_Photo_Partial(26, K_SHELL, 6.0, &error);
 	assert(error != NULL);
