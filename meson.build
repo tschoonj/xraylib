@@ -14,7 +14,7 @@ project('xraylib',
 # #    been preserved, change to C+1:0:A+1
 # # c) If the interface is the same as the previous version, change to C:R+1:A
 lib_current = 12
-lib_revision = 0
+lib_revision = 1
 lib_age = 1
 
 version = '@0@.@1@.@2@'.format((lib_current - lib_age), lib_age, lib_revision)
