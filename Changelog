@@ -1,3 +1,10 @@
+Version 4.1.2 Tom Schoonjans
+
+- Fix edge case in CS_Photo_Partial, where Kissel edge energies don't actually
+correspond to the first energy in the list of energies (reported by Ulla
+Vainio, and fixed by Oleg Shirokobrod)
+- Fix memory leak in SWIG generated Python bindings (reported by David Vine)
+
 Version 4.1.1 Tom Schoonjans
 
 - Do not use distutils in autoconf macros, as it will not be available in
