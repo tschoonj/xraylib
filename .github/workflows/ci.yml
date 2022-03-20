@@ -521,15 +521,15 @@ jobs:
         make
         make check || (cat example/xrlexample12.sh.log && exit 1)
         make distclean
-        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
+        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS" || (cat config.log && exit 1)
         make
         make check
         make distclean
-        ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
+        ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3} || (cat config.log && exit 1)
         make
         make check
         make distclean
-        ./configure --disable-all-bindings --disable-shared --enable-static
+        ./configure --disable-all-bindings --disable-shared --enable-static || (cat config.log && exit 1)
         make
         make check
         make distclean
