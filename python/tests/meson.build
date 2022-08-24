@@ -7,6 +7,7 @@ tests = [
 	'crystal_diffraction',
 	'nist-compounds',
 	'radionuclides',
+	'numpy',
 ]
 
 test_env = environment()
