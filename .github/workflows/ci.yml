@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10']
     name: Pip install with Python ${{ matrix.python-version }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -39,16 +39,10 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: [ '3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.8', '3.9', '3.10']
         compiler:
           - cl
           - clang-cl
-        # don't know why but cl.exe does not like the Cython generated code with python < 3.8
-        include:
-          - numpy: enabled
-          - python-version: 3.7
-            numpy: disabled
-            compiler: cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v3
@@ -63,10 +57,10 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1.10.0
     - name: Build with meson
       run: |
-        meson setup builddir --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=${{ matrix.numpy }}
-        ninja -v -C builddir
-        ninja -v -C builddir test
-        # ninja -v -C builddir dist
+        meson setup meson-build --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson compile -C meson-build
+        meson test -C meson-build
+        # ninja -v -C meson-build dist
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
@@ -91,9 +85,9 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: crazy-max/ghaction-chocolatey@v1.6.0
-      with:
-        args: install innosetup lazarus
+    # - uses: crazy-max/ghaction-chocolatey@v2.0.0
+    #   with:
+    #     args: install innosetup lazarus
     # required for the lib command
     - uses: ilammy/msvc-dev-cmd@v1.10.0
       with:
@@ -128,35 +122,14 @@ jobs:
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-
-        mkdir build
-        cd build
-        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-        ninja
-        ninja test
-        ninja dist
+        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson compile -C meson-build
+        meson test -C meson-build
 
         set +ex
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
-    - name: Secondary build with Autotools 
-      if: matrix.buildsystem == 'meson'
-      run: |
-        set -ex
-        cd build/meson-dist/
-        TARBALL=$(ls *.tar.xz)
-        tar xfJ $TARBALL
-        cd ${TARBALL%.tar.xz}
-        autoreconf -fi
-        ./configure --enable-python --disable-ruby
-        make
-        set +ex
-      env:
-        CC: ${{matrix.cc}}
-        CXX: ${{matrix.cxx}}
-        CYTHON: cython
-        PYTHON: python3
     - name: Primary build and test with Autotools
       if: matrix.buildsystem == 'autotools'
       run: |
@@ -174,7 +147,7 @@ jobs:
         make check
         make distclean
 
-        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --enable-pascal FPC=/c/lazarus/fpc/*/bin/x86_64-win64/fpc --disable-ruby
+        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --disable-ruby
         make
         make check
         make distclean
@@ -182,7 +155,6 @@ jobs:
         ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
         make
         make check
-        make dist
 
         set +ex
       env:
@@ -191,23 +163,6 @@ jobs:
         CYTHON: cython
         PYTHON: python3
     
-    - name: Secondary build with Meson
-      if: matrix.buildsystem == 'autotools'
-      run: |
-        set -ex
-        export PATH=${HOME}/.local/bin:${PATH}
-        TARBALL=$(ls *.tar.gz)
-        tar xfz $TARBALL
-        cd ${TARBALL%.tar.gz}
-        mkdir build-meson
-        cd build-meson
-        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-        ninja
-        set +ex
-      env:
-        CC: ${{matrix.cc}}
-        CXX: ${{matrix.cxx}}
-
   macos:
     timeout-minutes: 60
     runs-on: macos-latest
@@ -254,13 +209,10 @@ jobs:
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-
-        mkdir build
-        cd build
-        meson -Dpython=/usr/local/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-        ninja
-        ninja test
-        ninja dist
+        meson setup meson-build -Dpython=/usr/local/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson compile -C meson-build
+        meson test -C meson-build
+        meson dist -C meson-build
 
         set +ex
       env:
@@ -271,7 +223,7 @@ jobs:
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-        cd build/meson-dist/
+        cd meson-build/meson-dist/
         TARBALL=$(ls *.tar.xz)
         tar xfJ $TARBALL
         cd ${TARBALL%.tar.xz}
@@ -332,10 +284,8 @@ jobs:
         TARBALL=$(ls *.tar.gz)
         tar xfz $TARBALL
         cd ${TARBALL%.tar.gz}
-        mkdir build-meson
-        cd build-meson
-        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-        ninja
+        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson compile -C meson-build
         set +ex
       env:
         CC: ${{matrix.cc}}
@@ -499,12 +449,11 @@ jobs:
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-        mkdir build
-        cd build
-        meson -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled ..
-        ninja
-        ninja test
-        ninja dist
+        git config --global --add safe.directory /__w/xraylib/xraylib
+        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson compile -C meson-build
+        meson test -C meson-build
+        meson dist -C meson-build
         set +ex
       env:
         CYTHON: ${{matrix.cython}}

@@ -4,7 +4,7 @@ import numpy
 print(numpy.get_include())
 '''
 
-rv = run_command(get_option('python'), '-c', numpy_include_script,)
+rv = run_command(get_option('python'), '-c', numpy_include_script, check: false)
 if rv.returncode() != 0
   error('Could not retrieve numpy include location. Please check that numpy has been installed.')
 endif
@@ -33,6 +33,7 @@ if not get_option('python-bindings').disabled()
                 swig,
                 '-DVERSION=\'@0@\''.format(meson.project_version()),
                 '-includeall',
+                '-I@0@'.format(meson.current_source_dir()),
                 '-I@0@'.format(include_source_dir),
                 '-I@0@'.format(src_source_dir),
                 '-o', '@OUTPUT0@',

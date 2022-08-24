@@ -15,6 +15,7 @@ dist_check_SCRIPTS = \
 	test-crystal_diffraction.py \
 	test-nist-compounds.py \
 	test-radionuclides.py \
+	test-numpy.py \
 	$(NULL)
 endif
 
