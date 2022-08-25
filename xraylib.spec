@@ -18,7 +18,7 @@
 %define perl_vendor_autolib	%{perl_vendor_archlib}/auto
 
 Name: xraylib
-Version: 4.1.2
+Version: 4.1.3
 Release:	1%{?dist}
 Summary: A library for X-ray matter interactions cross sections for X-ray fluorescence applications: core C library
 Group:	 Applications/Engineering and Scientific	
