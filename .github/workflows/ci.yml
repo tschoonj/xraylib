@@ -46,7 +46,7 @@ jobs:
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v3
-    - uses: conda-incubator/setup-miniconda@v2.1.1
+    - uses: conda-incubator/setup-miniconda@v2.2.0
       with:
         auto-update-conda: true
         channels: conda-forge
