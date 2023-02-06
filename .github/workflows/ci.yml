@@ -54,7 +54,7 @@ jobs:
     - name: Install meson, ninja, numpy and cython
       run: |
         conda install -q -y meson ninja numpy cython swig
-    - uses: ilammy/msvc-dev-cmd@v1.12.0
+    - uses: ilammy/msvc-dev-cmd@v1.12.1
     - name: Build with meson
       run: |
         meson setup meson-build --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
@@ -89,7 +89,7 @@ jobs:
     #   with:
     #     args: install innosetup lazarus
     # required for the lib command
-    - uses: ilammy/msvc-dev-cmd@v1.12.0
+    - uses: ilammy/msvc-dev-cmd@v1.12.1
       with:
         arch: x64
     - uses: msys2/setup-msys2@v2
