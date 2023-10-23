@@ -20,7 +20,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     name: Pip install with Python ${{ matrix.python-version }} on ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -45,7 +45,7 @@ jobs:
           - clang-cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: conda-incubator/setup-miniconda@v2.1.1
       with:
         auto-update-conda: true
@@ -117,7 +117,7 @@ jobs:
           patch
           wget
           tar
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -188,7 +188,7 @@ jobs:
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -394,7 +394,7 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
