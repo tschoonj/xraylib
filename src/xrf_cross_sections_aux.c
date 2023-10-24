@@ -399,6 +399,8 @@ double PM3_auger_cascade_kissel(int Z, double E, double PK, double PL1, double P
 	double rv;
 
 	rv = CS_Photo_Partial(Z, M3_SHELL, E, error);
+	if (rv == 0.0)
+		return rv;
 
 	if (PK > 0.0)
 		rv += PK * xrf_cross_sections_constants_auger_only[Z][M3_SHELL][K_SHELL];
@@ -500,6 +502,8 @@ double PM4_auger_cascade_kissel(int Z, double E, double PK, double PL1, double P
 	double rv;
 
 	rv = CS_Photo_Partial(Z, M4_SHELL, E, error);
+	if (rv == 0.0)
+		return rv;
 
 	if (PK > 0.0) 
 		rv += PK * xrf_cross_sections_constants_auger_only[Z][M4_SHELL][K_SHELL];
