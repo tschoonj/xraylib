@@ -1,5 +1,10 @@
+import os
+if "EXTRA_DLL_SEARCH_PATHS" in os.environ and hasattr(os, "add_dll_directory"):
+    for path in os.environ["EXTRA_DLL_SEARCH_PATHS"].split(os.pathsep):
+        os.add_dll_directory(path)
 import unittest
 import xraylib
+
 
 class TestComptonProfiles(unittest.TestCase):
     def test_pz_0(self):

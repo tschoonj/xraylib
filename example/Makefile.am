@@ -100,7 +100,7 @@ xrlexample2.sh: ../perl/xraylib.la xrlexample2.pl
 #test the python bindings
 xrlexample5.sh: ../python/_xraylib.la xrlexample5.py
 	@echo "Testing python bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" > xrlexample5.sh
+	@echo "EXTRA_DLL_SEARCH_PATHS=\"${abs_top_builddir}/src/.libs\" LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample5.py" > xrlexample5.sh
 	@chmod +x xrlexample5.sh
 
 #test the java bindings
@@ -134,9 +134,8 @@ xrlexample12.sh: ../php/xraylib.la xrlexample12.php
 #test the numpy-python bindings
 xrlexample13.sh: ../python/xraylib_np.la xrlexample13.py
 	@echo "Testing python-numpy bindings"
-	@echo "LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample13.py" > xrlexample13.sh
+	@echo "EXTRA_DLL_SEARCH_PATHS=\"${abs_top_builddir}/src/.libs\" LD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" DYLD_LIBRARY_PATH=\"${top_builddir}/src/.libs\" PATH=\"${top_builddir}/src/.libs\" PYTHONPATH=\"${top_builddir}/python:${top_builddir}/python/.libs\" $(PYTHON) ${top_srcdir}/example/xrlexample13.py" > xrlexample13.sh
 	@chmod +x xrlexample13.sh
-
 
 #testing the Pascal-Delphi bindings
 xrlexample14.sh: ../pascal/xraylib.ppu xrlexample14.pas
