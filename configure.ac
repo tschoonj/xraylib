@@ -650,7 +650,7 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 	fi
 	if test "x$VALID_PYTHON_EXE" = xyes ; then
 		#now check cython
-		AC_CHECK_PROGS(CYTHON, [cython-[$PYTHON_VERSION] cython],["nocython"])
+		AC_CHECK_PROGS(CYTHON, [cython-[$PYTHON_VERSION] cython3 cython],["nocython"])
 		if test x$CYTHON != "xnocython" ; then
 			VALID_PYTHON_NUMPY=yes
 			AC_MSG_NOTICE([Building with Python-NumPy bindings])
