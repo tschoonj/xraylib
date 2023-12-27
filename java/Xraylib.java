@@ -38,7 +38,6 @@ public class Xraylib {
 
   static {
     try {
-      new GoogleAnalyticsThread().start();
       XRayInit();
     }
     catch (Exception e){

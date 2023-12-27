@@ -18,8 +18,7 @@ java_source = \
 	compoundDataNIST.java \
 	radioNuclideData.java \
 	Crystal_Struct.java \
-	Crystal_Atom.java \
-	GoogleAnalyticsThread.java
+	Crystal_Atom.java
 
 if ENABLE_JAVA
 
