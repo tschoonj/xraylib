@@ -11,10 +11,10 @@
 
 cimport xraylib_np_c as xrl
 import numpy as np
-cimport numpy as np
+cimport numpy as cnp
 from cython.parallel import prange
 
-np.import_array()
+cnp.import_array()
 
 __version__ = xrl.__version__.decode("utf-8")
 
@@ -1491,9 +1491,9 @@ Q1_SHELL = xrl.Q1_SHELL
 Q2_SHELL = xrl.Q2_SHELL
 Q3_SHELL = xrl.Q3_SHELL
 
-def AtomicWeight(np.ndarray[np.int_t, ndim=1] Z not None):
-    #cdef np.ndarray[double] Zcopy = np.reshape(Z, Z.size, order='C')
-    cdef np.ndarray[double, ndim=1, mode='c'] AW = np.empty((Z.shape[0]))
+def AtomicWeight(cnp.ndarray[long, ndim=1] Z not None):
+    #cdef cnp.ndarray[double] Zcopy = np.reshape(Z, Z.size, order='C')
+    cdef cnp.ndarray[double, ndim=1, mode='c'] AW = np.empty((Z.shape[0]))
     for i in range(Z.shape[0]):
         AW[i] = xrl.AtomicWeight(Z[i], NULL)
     return AW
@@ -1523,21 +1523,21 @@ def GetErrorMessages():
     return xrl.GetErrorMessages()
 
 def XRL_1I(fun_wrap):
-    def fun(np.ndarray[np.int_t, ndim=1] arg1 not None):
+    def fun(cnp.ndarray[long, ndim=1] arg1 not None):
         cdef int i
         cdef int i_max = arg1.shape[0]
-        cdef np.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
+        cdef cnp.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
         for i in range(i_max):
             rv[i] = fun_wrap(arg1[i])
         return rv
     return fun
 
 def XRL_2II(fun_wrap):
-    def fun(np.ndarray[np.int_t, ndim=1] arg1 not None,
-        np.ndarray[np.int_t, ndim=1] arg2 not None):
+    def fun(cnp.ndarray[long, ndim=1] arg1 not None,
+        cnp.ndarray[long, ndim=1] arg2 not None):
         cdef int i, j
         cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-        cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+        cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
         for i in range(i_max):
             for j in range(j_max):
                 rv[i,j] = fun_wrap(arg1[i], arg2[j])
@@ -1545,12 +1545,12 @@ def XRL_2II(fun_wrap):
     return fun
 
 def CS_Total(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1558,12 +1558,12 @@ def CS_Total(
     return rv
 
 def CS_Photo(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1571,12 +1571,12 @@ def CS_Photo(
     return rv
 
 def CS_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1584,12 +1584,12 @@ def CS_Rayl(
     return rv
 
 def CS_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1597,12 +1597,12 @@ def CS_Compt(
     return rv
 
 def CS_Energy(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1610,12 +1610,12 @@ def CS_Energy(
     return rv
 
 def CSb_Total(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1623,12 +1623,12 @@ def CSb_Total(
     return rv
 
 def CSb_Photo(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1636,12 +1636,12 @@ def CSb_Photo(
     return rv
 
 def CSb_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1649,12 +1649,12 @@ def CSb_Rayl(
     return rv
 
 def CSb_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1662,12 +1662,12 @@ def CSb_Compt(
     return rv
 
 def CS_Photo_Total(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1675,12 +1675,12 @@ def CS_Photo_Total(
     return rv
 
 def CSb_Photo_Total(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1688,12 +1688,12 @@ def CSb_Photo_Total(
     return rv
 
 def CS_Total_Kissel(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1701,12 +1701,12 @@ def CS_Total_Kissel(
     return rv
 
 def CSb_Total_Kissel(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1714,12 +1714,12 @@ def CSb_Total_Kissel(
     return rv
 
 def FF_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1727,12 +1727,12 @@ def FF_Rayl(
     return rv
 
 def SF_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1740,12 +1740,12 @@ def SF_Compt(
     return rv
 
 def Fi(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1753,12 +1753,12 @@ def Fi(
     return rv
 
 def Fii(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1766,41 +1766,41 @@ def Fii(
     return rv
 
 def ComptonProfile(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
         rv[i,j] = xrl.ComptonProfile(arg1[i], arg2[j], NULL)
     return rv
 
-def CS_KN(np.ndarray[double, ndim=1] arg1 not None):
+def CS_KN(cnp.ndarray[double, ndim=1] arg1 not None):
     cdef int i
     cdef int i_max = arg1.shape[0]
-    cdef np.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
+    cdef cnp.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
     for i in prange(i_max, nogil=True):
         rv[i] = xrl.CS_KN(arg1[i], NULL)
     return rv
 
-def DCS_Thoms(np.ndarray[double, ndim=1] arg1 not None):
+def DCS_Thoms(cnp.ndarray[double, ndim=1] arg1 not None):
     cdef int i
     cdef int i_max = arg1.shape[0]
-    cdef np.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
+    cdef cnp.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
     for i in prange(i_max, nogil=True):
         rv[i] = xrl.DCS_Thoms(arg1[i], NULL)
     return rv
 
 def DCS_KN(
-    np.ndarray[double, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[double, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int ij
     cdef int i, j
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1808,12 +1808,12 @@ def DCS_KN(
     return rv
 
 def DCSP_Thoms(
-    np.ndarray[double, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[double, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int ij
     cdef int i, j
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1821,12 +1821,12 @@ def DCSP_Thoms(
     return rv
 
 def MomentTransf(
-    np.ndarray[double, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[double, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int ij
     cdef int i, j
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1834,12 +1834,12 @@ def MomentTransf(
     return rv
 
 def ComptonEnergy(
-    np.ndarray[double, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None):
+    cnp.ndarray[double, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int ij
     cdef int i, j
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
-    cdef np.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
+    cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
     for ij in prange(i_max * j_max, nogil=True):
         j = ij % j_max
         i = ij // j_max
@@ -1847,13 +1847,13 @@ def ComptonEnergy(
     return rv
 
 def DCS_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
     cdef int i, j, k
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1862,13 +1862,13 @@ def DCS_Rayl(
     return rv
 
 def DCS_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
     cdef int i, j, k
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1877,13 +1877,13 @@ def DCS_Compt(
     return rv
 
 def DCSb_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
     cdef int i, j, k
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1892,13 +1892,13 @@ def DCSb_Rayl(
     return rv
 
 def DCSb_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
     cdef int i, j, k
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1907,13 +1907,13 @@ def DCSb_Compt(
     return rv
 
 def DCSP_KN(
-    np.ndarray[double, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[double, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
     cdef int i, j, k
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1923,13 +1923,13 @@ def DCSP_KN(
 
 
 def CS_FluorLine(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1938,13 +1938,13 @@ def CS_FluorLine(
     return rv
 
 def CSb_FluorLine(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1953,13 +1953,13 @@ def CSb_FluorLine(
     return rv
 
 def CS_FluorShell(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1968,13 +1968,13 @@ def CS_FluorShell(
     return rv
 
 def CSb_FluorShell(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1983,13 +1983,13 @@ def CSb_FluorShell(
     return rv
 
 def CS_Photo_Partial(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -1998,13 +1998,13 @@ def CS_Photo_Partial(
     return rv
 
 def CSb_Photo_Partial(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2013,13 +2013,13 @@ def CSb_Photo_Partial(
     return rv
 
 def ComptonProfile_Partial(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2028,13 +2028,13 @@ def ComptonProfile_Partial(
     return rv
 
 def CS_FluorLine_Kissel(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2043,13 +2043,13 @@ def CS_FluorLine_Kissel(
     return rv
 
 def CSb_FluorLine_Kissel(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2058,13 +2058,13 @@ def CSb_FluorLine_Kissel(
     return rv
 
 def CS_FluorLine_Kissel_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2073,13 +2073,13 @@ def CS_FluorLine_Kissel_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2088,13 +2088,13 @@ def CSb_FluorLine_Kissel_Cascade(
     return rv
 
 def CS_FluorLine_Kissel_no_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2103,13 +2103,13 @@ def CS_FluorLine_Kissel_no_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_no_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2118,13 +2118,13 @@ def CSb_FluorLine_Kissel_no_Cascade(
     return rv
 
 def CS_FluorLine_Kissel_Nonradiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2133,13 +2133,13 @@ def CS_FluorLine_Kissel_Nonradiative_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_Nonradiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2148,13 +2148,13 @@ def CSb_FluorLine_Kissel_Nonradiative_Cascade(
     return rv
 
 def CS_FluorLine_Kissel_Radiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2163,13 +2163,13 @@ def CS_FluorLine_Kissel_Radiative_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_Radiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2178,13 +2178,13 @@ def CSb_FluorLine_Kissel_Radiative_Cascade(
     return rv
 
 def CS_FluorShell_Kissel(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2193,13 +2193,13 @@ def CS_FluorShell_Kissel(
     return rv
 
 def CSb_FluorShell_Kissel(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2208,13 +2208,13 @@ def CSb_FluorShell_Kissel(
     return rv
 
 def CS_FluorShell_Kissel_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2223,13 +2223,13 @@ def CS_FluorShell_Kissel_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2238,13 +2238,13 @@ def CSb_FluorShell_Kissel_Cascade(
     return rv
 
 def CS_FluorShell_Kissel_no_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2253,13 +2253,13 @@ def CS_FluorShell_Kissel_no_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_no_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2268,13 +2268,13 @@ def CSb_FluorShell_Kissel_no_Cascade(
     return rv
 
 def CS_FluorShell_Kissel_Nonradiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2283,13 +2283,13 @@ def CS_FluorShell_Kissel_Nonradiative_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_Nonradiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2298,13 +2298,13 @@ def CSb_FluorShell_Kissel_Nonradiative_Cascade(
     return rv
 
 def CS_FluorShell_Kissel_Radiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2313,13 +2313,13 @@ def CS_FluorShell_Kissel_Radiative_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_Radiative_Cascade(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[np.int_t, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0]
-    cdef np.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
+    cdef cnp.ndarray[double, ndim=3, mode='c'] rv = np.empty((i_max, j_max, k_max))
     for ijk in prange(i_max * j_max * k_max, nogil=True):
         k = ijk % k_max
         j = ijk // k_max % j_max
@@ -2328,14 +2328,14 @@ def CSb_FluorShell_Kissel_Radiative_Cascade(
     return rv
 
 def DCSP_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None,
-    np.ndarray[double, ndim=1] arg4 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None,
+    cnp.ndarray[double, ndim=1] arg4 not None):
     cdef int i, j, k, l
     cdef int ijkl
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0], l_max = arg4.shape[0]
-    cdef np.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
+    cdef cnp.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
     for ijkl in prange(i_max * j_max * k_max * l_max, nogil=True):
         l = ijkl % l_max
         k = ijkl // l_max % k_max
@@ -2345,14 +2345,14 @@ def DCSP_Rayl(
     return rv
 
 def DCSP_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None,
-    np.ndarray[double, ndim=1] arg4 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None,
+    cnp.ndarray[double, ndim=1] arg4 not None):
     cdef int i, j, k, l
     cdef int ijkl
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0], l_max = arg4.shape[0]
-    cdef np.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
+    cdef cnp.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
     for ijkl in prange(i_max * j_max * k_max * l_max, nogil=True):
         l = ijkl % l_max
         k = ijkl // l_max % k_max
@@ -2362,14 +2362,14 @@ def DCSP_Compt(
     return rv
 
 def DCSPb_Rayl(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None,
-    np.ndarray[double, ndim=1] arg4 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None,
+    cnp.ndarray[double, ndim=1] arg4 not None):
     cdef int i, j, k, l
     cdef int ijkl
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0], l_max = arg4.shape[0]
-    cdef np.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
+    cdef cnp.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
     for ijkl in prange(i_max * j_max * k_max * l_max, nogil=True):
         l = ijkl % l_max
         k = ijkl // l_max % k_max
@@ -2379,14 +2379,14 @@ def DCSPb_Rayl(
     return rv
 
 def DCSPb_Compt(
-    np.ndarray[np.int_t, ndim=1] arg1 not None,
-    np.ndarray[double, ndim=1] arg2 not None,
-    np.ndarray[double, ndim=1] arg3 not None,
-    np.ndarray[double, ndim=1] arg4 not None):
+    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[double, ndim=1] arg2 not None,
+    cnp.ndarray[double, ndim=1] arg3 not None,
+    cnp.ndarray[double, ndim=1] arg4 not None):
     cdef int i, j, k, l
     cdef int ijkl
     cdef int i_max = arg1.shape[0], j_max = arg2.shape[0], k_max = arg3.shape[0], l_max = arg4.shape[0]
-    cdef np.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
+    cdef cnp.ndarray[double, ndim=4, mode='c'] rv = np.empty((i_max, j_max, k_max, l_max))
     for ijkl in prange(i_max * j_max * k_max * l_max, nogil=True):
         l = ijkl % l_max
         k = ijkl // l_max % k_max
@@ -2395,27 +2395,27 @@ def DCSPb_Compt(
         rv[i,j,k,l] = xrl.DCSPb_Compt(arg1[i], arg2[j], arg3[k], arg4[l], NULL)
     return rv
 
-def _ElementDensity(np.int_t arg1):
+def _ElementDensity(long arg1):
     return xrl.ElementDensity(arg1, NULL)
-def _LineEnergy(np.int_t arg1, np.int_t arg2):
+def _LineEnergy(long arg1, long arg2):
     return xrl.LineEnergy(arg1, arg2, NULL)
-def _FluorYield(np.int_t arg1, np.int_t arg2):
+def _FluorYield(long arg1, long arg2):
     return xrl.FluorYield(arg1, arg2, NULL)
-def _CosKronTransProb(np.int_t arg1, np.int_t arg2):
+def _CosKronTransProb(long arg1, long arg2):
     return xrl.CosKronTransProb(arg1, arg2, NULL)
-def _EdgeEnergy(np.int_t arg1, np.int_t arg2):
+def _EdgeEnergy(long arg1, long arg2):
     return xrl.EdgeEnergy(arg1, arg2, NULL)
-def _JumpFactor(np.int_t arg1, np.int_t arg2):
+def _JumpFactor(long arg1, long arg2):
     return xrl.JumpFactor(arg1, arg2, NULL)
-def _RadRate(np.int_t arg1, np.int_t arg2):
+def _RadRate(long arg1, long arg2):
     return xrl.RadRate(arg1, arg2, NULL)
-def _ElectronConfig(np.int_t arg1, np.int_t arg2):
+def _ElectronConfig(long arg1, long arg2):
     return xrl.ElectronConfig(arg1, arg2, NULL)
-def _AtomicLevelWidth(np.int_t arg1, np.int_t arg2):
+def _AtomicLevelWidth(long arg1, long arg2):
     return xrl.AtomicLevelWidth(arg1, arg2, NULL)
-def _AugerRate(np.int_t arg1, np.int_t arg2):
+def _AugerRate(long arg1, long arg2):
     return xrl.AugerRate(arg1, arg2, NULL)
-def _AugerYield(np.int_t arg1, np.int_t arg2):
+def _AugerYield(long arg1, long arg2):
     return xrl.AugerYield(arg1, arg2, NULL)
 
 ElementDensity = XRL_1I(_ElementDensity)
