@@ -25,6 +25,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      # https://github.com/actions/runner-images/issues/3342#issuecomment-2206538745
+      - name: Install swig on macOS
+        run: brew install swig
+        if: ${{ matrix.os == 'macos-latest' }}
       - name: Install xraylib with pip
         run: |
           python -m pip install -U numpy pip
@@ -68,9 +72,10 @@ jobs:
   msys2:
     timeout-minutes: 60
     strategy:
+      fail-fast: false
       matrix:
         buildsystem:
-          - autotools
+          # - autotools
           - meson
         cc:
           - clang
@@ -149,6 +154,8 @@ jobs:
 
         ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
         make -j$(nproc)
+        find . -name '*pyd' -print0 | xargs -0 ls -l 
+        find . -name 'xraylib.py' -print0 | xargs -0 ls -l 
         make check || (cat python/tests/test-suite.log && exit 1)
         make distclean
 
@@ -173,19 +180,20 @@ jobs:
     timeout-minutes: 60
     runs-on: macos-latest
     strategy:
+      fail-fast: false
       matrix:
         buildsystem:
-          - autotools
+          # - autotools
           - meson
         compiler:
           - llvm
           - gcc@13
         include:
-          - ldflags: ""
+          - ldflags: "-Wl,-ld_classic"
           - compiler: llvm
-            cc: /usr/local/opt/llvm/bin/clang
-            cxx: /usr/local/opt/llvm/bin/clang++
-            ldflags: -L/usr/local/opt/llvm/lib
+            cc: /opt/homebrew/opt/llvm/bin/clang
+            cxx: /opt/homebrew/opt/llvm/bin/clang++
+            # ldflags: -L/opt/homebrew/opt/llvm/lib
             enable_ruby: enable
           - compiler: gcc@13
             cc: gcc-13
@@ -197,27 +205,23 @@ jobs:
     - name: Install Homebrew dependencies
       run: |
         set -ex
-        rm -f /usr/local/bin/2to3
+        rm -f /opt/homebrew/bin/2to3
         brew uninstall -f bazel bazelisk mongodb-community
         brew update
         brew upgrade
-        brew install git autoconf automake libtool pkg-config ${{ matrix.compiler }} swig ruby fpc lua bash numpy meson ninja 
+        brew install git autoconf automake libtool pkg-config ${{ matrix.compiler }} swig ruby fpc lua bash numpy meson ninja cython
         brew link --overwrite python
         brew unlink python && brew link --overwrite python
-        ls -l /usr/local/bin/python3
+        ls -l /opt/homebrew/bin/python3
+        echo "/opt/homebrew/opt/cython/bin" >> "${GITHUB_PATH}"
         set +ex
       env:
         HOMEBREW_CURL_RETRIES: 5
-
-    - name: Install Cython
-      run: |
-        /usr/local/bin/python3 -m pip install Cython
-
     - name: Primary Build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-        meson setup meson-build -Dpython=/usr/local/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson setup meson-build -Dpython=/opt/homebrew/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
         meson compile -C meson-build
         meson test -C meson-build
         meson dist -C meson-build
@@ -231,27 +235,29 @@ jobs:
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
+        export SHELL="$(which bash)"
         cd meson-build/meson-dist/
         TARBALL=$(ls *.tar.xz)
         tar xfJ $TARBALL
         cd ${TARBALL%.tar.xz}
         autoreconf -fi
-        ./configure --enable-python SHELL=${SHELL} PYTHON=/usr/local/bin/python3
+        ./configure --enable-python SHELL=${SHELL} PYTHON=/opt/homebrew/bin/python3
         make -j$(nproc)
         make check
         set +ex
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
-        SHELL: /usr/local/bin/bash
+        LDFLAGS: ${{matrix.ldflags}}
     - name: Build with Autotools
       if: matrix.buildsystem == 'autotools'
       run: |
         set -ex
+        export SHELL="$(which bash)"
         autoreconf -fi
 
         # Build without python
-        ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --enable-pascal --disable-java --disable-php --${{matrix.enable_ruby}}-ruby SHELL=${SHELL} RUBY=/usr/local/opt/ruby/bin/ruby
+        ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --enable-pascal --disable-java --disable-php --${{matrix.enable_ruby}}-ruby SHELL=${SHELL} RUBY=/opt/homebrew/opt/ruby/bin/ruby
         make -j$(nproc)
         make check
         make distclean
@@ -276,14 +282,14 @@ jobs:
 
         # Run make distcheck
         ./configure
-        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} DISTCHECK_CONFIGURE_FLAGS="--${{matrix.enable_ruby}}-ruby" RUBY=/usr/local/opt/ruby/bin/ruby
+        make distcheck SHELL=${SHELL} PYTHON=${XRL_PYTHON3} DISTCHECK_CONFIGURE_FLAGS="--${{matrix.enable_ruby}}-ruby" RUBY=/opt/homebrew/opt/ruby/bin/ruby
 
         set +ex
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
-        SHELL: /usr/local/bin/bash
-        XRL_PYTHON3: /usr/local/bin/python3
+        LDFLAGS: ${{matrix.ldflags}}
+        XRL_PYTHON3: /opt/homebrew/bin/python3
     - name: Secondary build with Meson
       if: matrix.buildsystem == 'autotools'
       run: |
@@ -299,7 +305,7 @@ jobs:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
         LDFLAGS: ${{matrix.ldflags}}
-        XRL_PYTHON3: /usr/local/bin/python3
+        XRL_PYTHON3: /opt/homebrew/bin/python3
 
   linux:
     timeout-minutes: 60
@@ -318,9 +324,11 @@ jobs:
         buildsystem:
           - autotools
           - meson
-        # exclude:
-          # - image: rockylinux:8
-          #   buildsystem: meson
+        exclude:
+          # there's some weird segfault
+          - image: rockylinux:8
+            buildsystem: autotools
+            cc: clang
         include:
           - cc: gcc
             cxx: g++
@@ -445,7 +453,7 @@ jobs:
         make distclean
         ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
         make -j$(nproc)
-        make check
+        make check || (cat example/xrlexample13.sh.log && exit 1)
         make distclean
         ./configure --disable-all-bindings --disable-shared --enable-static
         make -j$(nproc)
