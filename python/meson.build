@@ -4,7 +4,7 @@ import numpy
 print(numpy.get_include())
 '''
 
-rv = run_command(get_option('python'), '-c', numpy_include_script, check: false)
+rv = run_command(python, '-c', numpy_include_script, check: false)
 if rv.returncode() != 0
   error('Could not retrieve numpy include location. Please check that numpy has been installed.')
 endif
