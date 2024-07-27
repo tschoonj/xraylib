@@ -33,3 +33,7 @@ setup = [
   "--vsenv"
 ]
 install = ['--tags=python-runtime']
+
+[tool.cibuildwheel]
+skip = ["*-win32", "*-manylinux_i686", "pp*"]
+build-verbosity = 1
