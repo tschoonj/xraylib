@@ -38,3 +38,7 @@ install = ['--tags=python-runtime']
 [tool.cibuildwheel]
 skip = ["*-win32", "*-manylinux_i686", "pp*", "*musllinux*"]
 build-verbosity = 1
+test-command = [
+  'python -c "import xraylib"',
+  'python -c "import xraylib_np"',
+]
