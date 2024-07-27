@@ -1,9 +1,10 @@
 [project]
+name = "xraylib"
 authors = [
     {name="Tom Schoonjans", email="Tom.Schoonjans@gmail.com"}
 ]
 description = "pip-installable xraylib"
-requires-python = "~=3.7"
+requires-python = "~=3.8"
 readme = "README.md"
 classifiers = [
     "Intended Audience :: Developers",
@@ -14,20 +15,31 @@ classifiers = [
 dependencies = [
   "numpy"
 ]
+version = "4.1.4"
 
 [project.urls]
 repository = "https://github.com/tschoonj/xraylib"
 documentation = "https://github.com/tschoonj/xraylib"
 
 [build-system]
-requires = ["mesonpep517", "ninja", "Cython", "numpy"]
-build-backend = "mesonpep517.buildapi"
+build-backend = 'mesonpy'
+requires = ['meson-python', 'Cython', 'ninja', 'numpy']
 
-[tool.mesonpep517.metadata]
-meson-python-option-name = "python"
-meson-options = [
+[tool.meson-python.args]
+setup = [
   "-Ddefault_library=static",
   "-Dpython-bindings=enabled",
-  "-Dpython-numpy-bindings=enabled"
+  "-Dpython-numpy-bindings=enabled",
+  "-Dfortran-bindings=disabled",
+  "--vsenv"
 ]
-summary = "pip-installable xraylib"
+install = ['--tags=python-runtime']
+
+[tool.cibuildwheel]
+skip = ["*-win32", "*-manylinux_i686", "pp*", "*musllinux*"]
+build-verbosity = 1
+test-command = [
+  'python -c "import xraylib"',
+  'python -c "import xraylib_np"',
+]
+test-skip = "cp38-macosx_*:arm64"

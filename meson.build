@@ -1,6 +1,6 @@
 project('xraylib',
     'c',
-    meson_version: '>= 0.56.0',
+    meson_version: '>= 0.60.0',
     version: '4.1.4',
     license: 'BSD',
     default_options: ['cpp_std=c++11',]
@@ -104,7 +104,7 @@ subdir('cplusplus')
 
 if not (get_option('python-bindings').disabled() and get_option('python-numpy-bindings').disabled())
     pymod = import('python')
-    python = pymod.find_installation(get_option('python'), required: false, modules: ['numpy',])
+    python = pymod.find_installation(required: false, modules: ['numpy',])
 
     if not python.found() or python.language_version().version_compare('< 3.6')
         if get_option('python-bindings').enabled() or get_option('python-numpy-bindings').enabled()

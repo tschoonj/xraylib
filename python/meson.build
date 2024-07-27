@@ -4,7 +4,7 @@ import numpy
 print(numpy.get_include())
 '''
 
-rv = run_command(get_option('python'), '-c', numpy_include_script, check: false)
+rv = run_command(python, '-c', numpy_include_script, check: false)
 if rv.returncode() != 0
   error('Could not retrieve numpy include location. Please check that numpy has been installed.')
 endif
@@ -43,6 +43,8 @@ if not get_option('python-bindings').disabled()
                 ],
             install_dir: [false, python.get_install_dir(pure: false)],
             install: true,
+            install_tag: [false, 'python-runtime']
+
         )
         xraylib_ext = python.extension_module('_xraylib', xraylib_wrap_c[0],
             dependencies : [python_dep, xraylib_lib_dep],
@@ -50,6 +52,7 @@ if not get_option('python-bindings').disabled()
             install: true,
             install_dir: python.get_install_dir(pure: false),
             c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+            install_tag: ['python-runtime']
         )
         subdir('tests')
     endif
@@ -83,6 +86,7 @@ if not get_option('python-numpy-bindings').disabled()
             install: true,
             install_dir: python.get_install_dir(pure: false),
             c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+            install_tag: ['python-runtime'],
         )
 
     endif
