@@ -43,6 +43,8 @@ if not get_option('python-bindings').disabled()
                 ],
             install_dir: [false, python.get_install_dir(pure: false)],
             install: true,
+            install_tag: [false, 'python-runtime']
+
         )
         xraylib_ext = python.extension_module('_xraylib', xraylib_wrap_c[0],
             dependencies : [python_dep, xraylib_lib_dep],
@@ -50,6 +52,7 @@ if not get_option('python-bindings').disabled()
             install: true,
             install_dir: python.get_install_dir(pure: false),
             c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+            install_tag: ['python-runtime']
         )
         subdir('tests')
     endif
@@ -83,6 +86,7 @@ if not get_option('python-numpy-bindings').disabled()
             install: true,
             install_dir: python.get_install_dir(pure: false),
             c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+            install_tag: ['python-runtime'],
         )
 
     endif
