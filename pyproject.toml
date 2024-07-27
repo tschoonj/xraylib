@@ -36,5 +36,5 @@ setup = [
 install = ['--tags=python-runtime']
 
 [tool.cibuildwheel]
-skip = ["*-win32", "*-manylinux_i686", "pp*"]
+skip = ["*-win32", "*-manylinux_i686", "pp*", "*musllinux*"]
 build-verbosity = 1
