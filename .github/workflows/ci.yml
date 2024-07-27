@@ -61,7 +61,7 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Build with meson
       run: |
-        meson setup meson-build --buildtype=release -Dpython=python -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson setup meson-build --buildtype=release -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
         meson compile -C meson-build
         meson test -C meson-build || (cat meson-build\meson-logs\testlog.txt)
         # ninja -v -C meson-build dist
@@ -221,7 +221,7 @@ jobs:
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-        meson setup meson-build -Dpython=/opt/homebrew/bin/python3 -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
         meson compile -C meson-build
         meson test -C meson-build
         meson dist -C meson-build
@@ -298,14 +298,13 @@ jobs:
         TARBALL=$(ls *.tar.gz)
         tar xfz $TARBALL
         cd ${TARBALL%.tar.gz}
-        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled -Dpython=${XRL_PYTHON3}
+        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
         meson compile -C meson-build
         set +ex
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
         LDFLAGS: ${{matrix.ldflags}}
-        XRL_PYTHON3: /opt/homebrew/bin/python3
 
   linux:
     timeout-minutes: 60
