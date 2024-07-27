@@ -30,6 +30,7 @@ setup = [
   "-Ddefault_library=static",
   "-Dpython-bindings=enabled",
   "-Dpython-numpy-bindings=enabled",
+  "-Dfortran-bindings=disabled",
   "--vsenv"
 ]
 install = ['--tags=python-runtime']
