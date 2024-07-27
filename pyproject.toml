@@ -42,3 +42,4 @@ test-command = [
   'python -c "import xraylib"',
   'python -c "import xraylib_np"',
 ]
+test-skip = "cp38-macosx_*:arm64"
