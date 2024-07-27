@@ -315,7 +315,6 @@ jobs:
         image: 
           - ubuntu:jammy
           - debian:bookworm
-          - rockylinux:8
           - rockylinux:9
           - fedora:latest
         cc:
