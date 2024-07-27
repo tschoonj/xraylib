@@ -51,6 +51,7 @@ jobs:
           retention-days: 1
 
   upload_pypi:
+    name: Upload to pypi
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     environment: pypi
