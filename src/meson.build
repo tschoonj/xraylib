@@ -1,3 +1,6 @@
+src_source_dir = meson.current_source_dir()
+src_build_dir = meson.current_build_dir()
+
 core_c_args = [
   '-DHAVE_CONFIG_H',
   '-D_GNU_SOURCE',
@@ -108,6 +111,10 @@ libxrl_sources = shared_sources + [xrayglob_inline] + files(
     'xrf_cross_sections_aux.c',
 )
 
+libxrl_def_file = join_paths(src_build_dir, 'libxrl-@0@.def'.format(lib_current_minus_age))
+
+libxrl_link_args = cc.get_supported_link_arguments(['-Wl,--output-def,@0@'.format(libxrl_def_file)])
+
 xraylib_lib = library(
   'xrl',
   libxrl_sources,
@@ -118,6 +125,7 @@ xraylib_lib = library(
   c_args: core_c_args + xraylib_error_flags,
   gnu_symbol_visibility: 'hidden',
   include_directories: extra_include_dirs,
+  link_args: libxrl_link_args
 )
 
 xraylib_lib_dep = declare_dependency(
@@ -127,9 +135,6 @@ xraylib_lib_dep = declare_dependency(
 )
 
 swig_interface = files('xraylib.i')
-
-src_source_dir = meson.current_source_dir()
-src_build_dir = meson.current_build_dir()
 
 pkgconfig.generate(
     xraylib_lib,

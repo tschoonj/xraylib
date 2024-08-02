@@ -2,3 +2,4 @@ option('fortran-bindings', type: 'feature', value: 'auto', description: 'Build F
 option('python-bindings', type: 'feature', value: 'auto', description: 'Build classic Python bindings')
 option('python-numpy-bindings', type: 'feature', value: 'auto', description: 'Build numpy Python bindings')
 option('swig', type : 'string', value : 'swig', description: 'Path to swig executable')
+option('windows-installer', type: 'feature', value: 'disabled', description: 'Build Windows installer')

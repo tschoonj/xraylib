@@ -1,4 +1,6 @@
-install_headers(files('xraylib++.h'), subdir: 'xraylib')
+cplusplus_source_files = files('xraylib++.h')
+
+install_headers(cplusplus_source_files, subdir: 'xraylib')
 
 cplusplus_source_dir = meson.current_source_dir()
 
