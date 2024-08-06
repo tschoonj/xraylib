@@ -195,9 +195,12 @@ ENDPROGRAM f2003_main
     endif
 endif
 
-if host_system == 'windows' and \
-    cc.get_id() == 'gcc' and \
-    get_option('windows-installer').enabled() and \
-    meson.version().version_compare('>=1.4.0')
-  subdir('windows')
+if get_option('windows-installer').enabled()
+  if host_system == 'windows' and \
+      cc.get_id() == 'gcc' and \
+      meson.version().version_compare('>=1.4.0')
+    subdir('windows')
+  else
+    warning('The windows-installer option is only supported on Windows systems with gcc selected as compiler')
+  endif
 endif
