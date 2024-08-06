@@ -19,7 +19,6 @@ SUBDIRS = include \
 	  doc \
 	  data \
 	  java \
-	  windows \
 	  perl \
 	  lua \
 	  fortran \
@@ -36,10 +35,4 @@ if ENABLE_FORTRAN
   pkgconfig_DATA += libxrlf03.pc
 endif
 
-windows:
-	$(MAKE) -C windows windows
-
-
 EXTRA_DIST = xraylib.spec Changelog meson.build meson_options.txt
-
-.PHONY: windows 
