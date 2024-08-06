@@ -1,20 +1,3 @@
-Some info on how we have built the Windows package:
-
-We use two separate Windows 7 64-bit VirtualBox VMs, one with 32-bit versions of GCC, and a second one with 64-bit counterparts of these. All work is done using a MSYS shell. In both cases the GCC compilers were packaged by the TDM-GCC project.
-
-Compilation starts out as on Linux/Mac OS X...
-
-  ./configure && make
-
-... followed by:
-
-  make windows
-
-followed by running InnoSetup to create the installer package.
-
-This procedure is heavily adapted to my own directory layout and will require considerable changes to get it working on your system.
-
-
 .NET bindings
 =============
 

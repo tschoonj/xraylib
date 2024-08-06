@@ -48,7 +48,6 @@ jobs:
       fail-fast: false
       matrix:
         buildsystem:
-          # - autotools
           - meson
         cc:
           - clang
@@ -63,9 +62,9 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    # - uses: crazy-max/ghaction-chocolatey@v2.0.0
-    #   with:
-    #     args: install innosetup lazarus
+    - uses: crazy-max/ghaction-chocolatey@v3
+      with:
+        args: install innosetup
     # required for the lib command
     - uses: ilammy/msvc-dev-cmd@v1.12.0
       with:
@@ -89,19 +88,12 @@ jobs:
           mingw-w64-x86_64-python3-numpy
           mingw-w64-x86_64-meson
           mingw-w64-x86_64-swig
-          automake
-          autoconf
-          libtool
-          make
-          patch
-          wget
-          tar
     - uses: actions/checkout@v4
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
         set -ex
-        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled -Dwindows-installer=enabled
         meson compile -C meson-build
         meson test -C meson-build || (cat meson-build/meson-logs/testlog.txt && exit 1)
 
@@ -109,44 +101,12 @@ jobs:
       env:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
-    - name: Primary build and test with Autotools
-      if: matrix.buildsystem == 'autotools'
-      run: |
-        set -ex
-
-        autoreconf -fi
-        ./configure --disable-all-bindings --disable-shared --enable-static
-        make -j$(nproc)
-        make check
-        make distclean
-
-        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --disable-ruby
-        make -j$(nproc)
-        make check
-        make distclean
-
-        ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
-        make -j$(nproc)
-        find . -name '*pyd' -print0 | xargs -0 ls -l 
-        find . -name 'xraylib.py' -print0 | xargs -0 ls -l 
-        make check || (cat python/tests/test-suite.log && exit 1)
-        make distclean
-
-        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || (cat config.log && exit 1)
-        make -j$(nproc)
-        make check
-        make windows
-
-        set +ex
-      env:
-        CC: ${{matrix.cc}}
-        CXX: ${{matrix.cxx}}
     - name: Upload Windows installer
-      if: matrix.buildsystem == 'autotools' && matrix.cc == 'gcc'
+      if: matrix.buildsystem == 'meson' && matrix.cc == 'gcc'
       uses: actions/upload-artifact@v4
       with:
         name: windows-installer
-        path: windows\xraylib-*-win64.exe
+        path: meson-build\windows\xraylib-*-win64.exe
         retention-days: 1
     
   macos: 
@@ -156,7 +116,6 @@ jobs:
       fail-fast: false
       matrix:
         buildsystem:
-          # - autotools
           - meson
         compiler:
           - llvm

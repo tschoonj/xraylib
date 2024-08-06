@@ -60,7 +60,7 @@ Name: "dotnet" ; Description: ".NET/C# bindings" ; Types: full
 Name: "pascal" ; Description: "Delphi/Pascal" ; Types: full
 
 [Files]
-Source: "{#builddir}\src\.libs\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
+Source: "{#builddir}\src\libxrl-{#LIB_CURRENT_MINUS_AGE}.dll"; DestDir: "{sys}" ; Flags: sharedfile ; Components: core
 Source: "{#builddir}\windows\README.txt" ; DestDir: "{app}" ; Flags: isreadme ; Components: core
 Source: "{#builddir}\windows\AUTHORS.txt" ; DestDir: "{app}" ; Components: core
 Source: "{#builddir}\windows\Changelog.txt" ; DestDir: "{app}" ; Components: core
@@ -69,7 +69,7 @@ Source: "{#builddir}\windows\xraydoc.txt" ; DestDir: "{app}\Doc" ; Components: c
 
 Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}.lib" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\windows\libxrl-{#LIB_CURRENT_MINUS_AGE}.exp" ; DestDir: "{app}\Lib" ; Components: sdk
-Source: "{#builddir}\src\.libs\libxrl.dll.a" ; DestDir: "{app}\Lib" ; Components: sdk
+Source: "{#builddir}\src\libxrl.dll.a" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\src\libxrl-{#LIB_CURRENT_MINUS_AGE}.def" ; DestDir: "{app}\Lib" ; Components: sdk
 Source: "{#builddir}\windows\README2.txt" ; DestDir: "{app}\Doc" ; DestName: "README.txt";Components: sdk
 Source: "{#builddir}\windows\xrlexample1.c" ; DestDir: "{app}\Example" ; Components: sdk

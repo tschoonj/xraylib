@@ -17,6 +17,8 @@ lib_current = 12
 lib_revision = 1
 lib_age = 1
 
+lib_current_minus_age = lib_current - lib_age
+
 version = '@0@.@1@.@2@'.format((lib_current - lib_age), lib_age, lib_revision)
 
 current = lib_current + 1
@@ -98,9 +100,12 @@ xraylib_build_dep = [m_dep]
 pkgconfig = import('pkgconfig')
 
 subdir('include')
+subdir('doc')
 subdir('src')
 subdir('tests')
 subdir('cplusplus')
+subdir('example')
+subdir('pascal')
 
 if not (get_option('python-bindings').disabled() and get_option('python-numpy-bindings').disabled())
     pymod = import('python')
@@ -188,4 +193,14 @@ ENDPROGRAM f2003_main
     	endif
 
     endif
+endif
+
+if get_option('windows-installer').enabled()
+  if host_system == 'windows' and \
+      cc.get_id() == 'gcc' and \
+      meson.version().version_compare('>=1.4.0')
+    subdir('windows')
+  else
+    warning('The windows-installer option is only supported on Windows systems with gcc selected as compiler')
+  endif
 endif
