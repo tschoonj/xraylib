@@ -48,7 +48,6 @@ jobs:
       fail-fast: false
       matrix:
         buildsystem:
-          # - autotools
           - meson
         cc:
           - clang
@@ -96,42 +95,7 @@ jobs:
         set -ex
         meson setup meson-build -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled -Dwindows-installer=enabled
         meson compile -C meson-build
-        ls -l meson-build/src
-        ls -l meson-build/windows || true
-        find . -name '*.lib'
         meson test -C meson-build || (cat meson-build/meson-logs/testlog.txt && exit 1)
-
-        set +ex
-      env:
-        CC: ${{matrix.cc}}
-        CXX: ${{matrix.cxx}}
-    - name: Primary build and test with Autotools
-      if: matrix.buildsystem == 'autotools'
-      run: |
-        set -ex
-
-        autoreconf -fi
-        ./configure --disable-all-bindings --disable-shared --enable-static
-        make -j$(nproc)
-        make check
-        make distclean
-
-        ./configure --disable-python --disable-python-numpy --enable-fortran2003 --disable-ruby
-        make -j$(nproc)
-        make check
-        make distclean
-
-        ./configure --enable-python --enable-python-numpy PYTHON=python3 --disable-ruby
-        make -j$(nproc)
-        find . -name '*pyd' -print0 | xargs -0 ls -l 
-        find . -name 'xraylib.py' -print0 | xargs -0 ls -l 
-        make check || (cat python/tests/test-suite.log && exit 1)
-        make distclean
-
-        ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" || (cat config.log && exit 1)
-        make -j$(nproc)
-        make check
-        make windows
 
         set +ex
       env:
@@ -152,7 +116,6 @@ jobs:
       fail-fast: false
       matrix:
         buildsystem:
-          # - autotools
           - meson
         compiler:
           - llvm
