@@ -20,6 +20,8 @@ python_error_flags = [
 
 python_error_flags = cc.get_supported_arguments(python_error_flags)
 
+numpy_cflags = ['-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION']
+
 pydir = meson.current_build_dir()
 
 if not get_option('python-bindings').disabled()
@@ -51,7 +53,7 @@ if not get_option('python-bindings').disabled()
             include_directories: extra_include_dirs,
             install: true,
             install_dir: python.get_install_dir(pure: false),
-            c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+            c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags + numpy_cflags,
             install_tag: ['python-runtime']
         )
         subdir('tests')
@@ -85,7 +87,7 @@ if not get_option('python-numpy-bindings').disabled()
             include_directories: extra_include_dirs,
             install: true,
             install_dir: python.get_install_dir(pure: false),
-            c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
+            c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags + numpy_cflags,
             install_tag: ['python-runtime'],
         )
 
