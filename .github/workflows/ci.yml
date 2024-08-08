@@ -244,7 +244,7 @@ jobs:
       fail-fast: false
       matrix:
         image: 
-          - ubuntu:jammy
+          - ubuntu:noble
           - debian:bookworm
           - rockylinux:9
           - fedora:latest
