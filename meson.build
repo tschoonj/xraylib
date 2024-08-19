@@ -104,30 +104,32 @@ subdir('doc')
 subdir('src')
 subdir('tests')
 subdir('cplusplus')
-subdir('example')
 subdir('pascal')
 
-if not (get_option('python-bindings').disabled() and get_option('python-numpy-bindings').disabled())
-    pymod = import('python')
-    python = pymod.find_installation(required: false, modules: ['numpy',])
+python_enabled = false
+python_numpy_enabled = false
 
-    if not python.found() or python.language_version().version_compare('< 3.6')
-        if get_option('python-bindings').enabled() or get_option('python-numpy-bindings').enabled()
-            error('No suitable Python installation was found. The Python bindings cannot not be built')
-        else
-            warning('No suitable Python installation was found. The Python bindings cannot not be built')
-        endif
+if not (get_option('python-bindings').disabled() and get_option('python-numpy-bindings').disabled())
+  pymod = import('python')
+  python = pymod.find_installation(required: false, modules: ['numpy',])
+
+  if not python.found() or python.language_version().version_compare('< 3.6')
+    if get_option('python-bindings').enabled() or get_option('python-numpy-bindings').enabled()
+      error('No suitable Python installation was found. The Python bindings cannot not be built')
     else
-        python_dep = python.dependency()
-        subdir('python')
+      warning('No suitable Python installation was found. The Python bindings cannot not be built')
     endif
+  else
+    python_dep = python.dependency()
+    subdir('python')
+  endif
 endif
 
-if not get_option('fortran-bindings').disabled()
-    if add_languages('fortran', required: get_option('fortran-bindings'), native: false)
-    	fc = meson.get_compiler('fortran')
+fortran_enabled = false
+if add_languages('fortran', required: get_option('fortran-bindings'), native: false)
+  fc = meson.get_compiler('fortran')
 
-    	c_loc_test = '''
+  c_loc_test = '''
 MODULE f2003_test
 USE, INTRINSIC ::ISO_C_BINDING
 
@@ -182,18 +184,18 @@ tester_C%cpointer = C_LOC(tester_F%fpointer(1))
 ENDPROGRAM f2003_main
 '''
 
-    	if fc.compiles(c_loc_test)
-            subdir('fortran')
-        else
-            if get_option('fortran-bindings').enabled()
-    		    error('The Fortran compiler does not support the required 2003 standard features')
-            else
-    		    warning('The Fortran compiler does not support the required 2003 standard features')
-            endif
-    	endif
-
+  if fc.compiles(c_loc_test)
+    subdir('fortran')
+  else
+    if get_option('fortran-bindings').enabled()
+      error('The Fortran compiler does not support the required 2003 standard features')
+    else
+      warning('The Fortran compiler does not support the required 2003 standard features')
     endif
+  endif
 endif
+
+subdir('example')
 
 if get_option('windows-installer').enabled()
   if host_system == 'windows' and \

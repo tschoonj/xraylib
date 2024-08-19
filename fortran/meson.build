@@ -9,7 +9,11 @@ xraylib_fortran_lib = library(
     link_language: 'fortran',
 )
 
-xraylib_fortran_lib_dep = declare_dependency(link_with: xraylib_fortran_lib, include_directories: ['.'])
+xraylib_fortran_lib_dep = declare_dependency(
+    dependencies: [xraylib_lib_dep],
+    link_with: xraylib_fortran_lib,
+    include_directories: ['.'],
+)
 
 pkgconfig.generate(
     xraylib_fortran_lib,
@@ -23,3 +27,4 @@ pkgconfig.generate(
 meson.add_install_script('install_fortran_mod.py')
 
 subdir('tests')
+fortran_enabled = true

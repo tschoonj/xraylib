@@ -56,7 +56,7 @@ if swig.found()
         c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
         install_tag: ['python-runtime']
     )
-    subdir('tests')
+    python_enabled = true
 endif
 
 # meson has builtin support for cython as a language but it doesn't support cython3 unless you use a very recent version
@@ -86,7 +86,9 @@ if cython.found()
         install: true,
         install_dir: python.get_install_dir(pure: false),
         c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
-        c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags + numpy_cflags,
         install_tag: ['python-runtime'],
     )
+    python_numpy_enabled = true
 endif
+
+subdir('tests')

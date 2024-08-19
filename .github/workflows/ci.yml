@@ -34,7 +34,7 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
     - name: Build with meson
       run: |
-        meson setup meson-build --buildtype=release -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled
+        meson setup meson-build --buildtype=release -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled -Dfortran-bindings=disabled
         meson compile -C meson-build
         meson test -C meson-build || (cat meson-build\meson-logs\testlog.txt)
         # ninja -v -C meson-build dist
