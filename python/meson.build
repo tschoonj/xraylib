@@ -26,7 +26,6 @@ python_error_flags = cc.get_supported_arguments(python_error_flags)
 pydir = meson.current_build_dir()
 
 swig = find_program(get_option('swig'), 'swig', required : get_option('python-bindings'))
-
 if swig.found()
     xraylib_wrap_c = custom_target('xraylib_wrap_c',
         output : ['xraylib_wrap.c', 'xraylib.py'],
@@ -60,20 +59,34 @@ if swig.found()
     subdir('tests')
 endif
 
-if add_languages('cython', required: get_option('python-numpy-bindings'), native: false)
+# meson has builtin support for cython as a language but it doesn't support cython3 unless you use a very recent version
+cython = find_program('cython', 'cython3', 'cython-3', 'cython' + python.language_version(), 'cython-' + python.language_version(), required : get_option('python-numpy-bindings'))
+if cython.found()
     deps = [python_dep, xraylib_lib_dep]
     # lld-link doesnt find the openmp import libraries
     if cc.get_id() != 'clang-cl'
-        deps += [dependency('openmp', language: 'c', required: false)]
+      deps += [dependency('openmp', language: 'c', required: false)]
     endif
-    xraylib_np_ext = python.extension_module('xraylib_np',
-        'xraylib_np.pyx',
+    xraylib_np_c = custom_target('xraylib_np_c',
+        output : 'xraylib_np.c',
+        input : 'xraylib_np.pyx',
+        depend_files : 'xraylib_np_c.pxd',
+        command : [
+            cython,
+            '-X',
+            'language_level=3,boundscheck=False,wraparound=False,cdivision=True',
+            '@INPUT@',
+            '-o',
+            '@OUTPUT@',
+        ],
+    )
+    xraylib_np_ext = python.extension_module('xraylib_np', xraylib_np_c,
         dependencies : deps,
         include_directories: extra_include_dirs,
         install: true,
         install_dir: python.get_install_dir(pure: false),
         c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
-        cython_args: '-Xlanguage_level=3,boundscheck=False,wraparound=False,cdivision=True',
+        c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags + numpy_cflags,
         install_tag: ['python-runtime'],
     )
 endif

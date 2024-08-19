@@ -309,8 +309,6 @@ jobs:
         set -ex
         apt-get --yes --force-yes update
         apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev default-jdk clang
-        # ensure cython3 is used on debian and ubuntu with old versions of meson
-        echo "CYTHON=cython3" >> $GITHUB_ENV
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
