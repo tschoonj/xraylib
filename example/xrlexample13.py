@@ -25,7 +25,7 @@ if __name__ == '__main__' :
         print("xraylib version: {}".format(xrl_np.__version__))
 
 
-        Z = np.arange(1,94,dtype=np.long)
+        Z = np.arange(1,94,dtype=int)
         energies = np.arange(10,10000,dtype=np.double)/100.0
         CS = xrl_np.CS_Total_Kissel(Z,energies)
 
