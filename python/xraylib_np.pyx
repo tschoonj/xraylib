@@ -13,6 +13,7 @@ cimport xraylib_np_c as xrl
 import numpy as np
 cimport numpy as cnp
 from cython.parallel import prange
+from libc.stdint cimport int64_t
 
 cnp.import_array()
 
@@ -1491,7 +1492,7 @@ Q1_SHELL = xrl.Q1_SHELL
 Q2_SHELL = xrl.Q2_SHELL
 Q3_SHELL = xrl.Q3_SHELL
 
-def AtomicWeight(cnp.ndarray[long, ndim=1] Z not None):
+def AtomicWeight(cnp.ndarray[int64_t, ndim=1] Z not None):
     #cdef cnp.ndarray[double] Zcopy = np.reshape(Z, Z.size, order='C')
     cdef cnp.ndarray[double, ndim=1, mode='c'] AW = np.empty((Z.shape[0]))
     for i in range(Z.shape[0]):
@@ -1523,7 +1524,7 @@ def GetErrorMessages():
     return xrl.GetErrorMessages()
 
 def XRL_1I(fun_wrap):
-    def fun(cnp.ndarray[long, ndim=1] arg1 not None):
+    def fun(cnp.ndarray[int64_t, ndim=1] arg1 not None):
         cdef int i
         cdef int i_max = arg1.shape[0]
         cdef cnp.ndarray[double, ndim=1, mode='c'] rv = np.empty((i_max))
@@ -1533,8 +1534,8 @@ def XRL_1I(fun_wrap):
     return fun
 
 def XRL_2II(fun_wrap):
-    def fun(cnp.ndarray[long, ndim=1] arg1 not None,
-        cnp.ndarray[long, ndim=1] arg2 not None):
+    def fun(cnp.ndarray[int64_t, ndim=1] arg1 not None,
+        cnp.ndarray[int64_t, ndim=1] arg2 not None):
         cdef int i, j
         cdef int i_max = arg1.shape[0], j_max = arg2.shape[0]
         cdef cnp.ndarray[double, ndim=2, mode='c'] rv = np.empty((i_max, j_max))
@@ -1545,7 +1546,7 @@ def XRL_2II(fun_wrap):
     return fun
 
 def CS_Total(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1558,7 +1559,7 @@ def CS_Total(
     return rv
 
 def CS_Photo(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1571,7 +1572,7 @@ def CS_Photo(
     return rv
 
 def CS_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1584,7 +1585,7 @@ def CS_Rayl(
     return rv
 
 def CS_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1597,7 +1598,7 @@ def CS_Compt(
     return rv
 
 def CS_Energy(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1610,7 +1611,7 @@ def CS_Energy(
     return rv
 
 def CSb_Total(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1623,7 +1624,7 @@ def CSb_Total(
     return rv
 
 def CSb_Photo(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1636,7 +1637,7 @@ def CSb_Photo(
     return rv
 
 def CSb_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1649,7 +1650,7 @@ def CSb_Rayl(
     return rv
 
 def CSb_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1662,7 +1663,7 @@ def CSb_Compt(
     return rv
 
 def CS_Photo_Total(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1675,7 +1676,7 @@ def CS_Photo_Total(
     return rv
 
 def CSb_Photo_Total(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1688,7 +1689,7 @@ def CSb_Photo_Total(
     return rv
 
 def CS_Total_Kissel(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1701,7 +1702,7 @@ def CS_Total_Kissel(
     return rv
 
 def CSb_Total_Kissel(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1714,7 +1715,7 @@ def CSb_Total_Kissel(
     return rv
 
 def FF_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1727,7 +1728,7 @@ def FF_Rayl(
     return rv
 
 def SF_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1740,7 +1741,7 @@ def SF_Compt(
     return rv
 
 def Fi(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1753,7 +1754,7 @@ def Fi(
     return rv
 
 def Fii(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1766,7 +1767,7 @@ def Fii(
     return rv
 
 def ComptonProfile(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None):
     cdef int i, j
     cdef int ij
@@ -1847,7 +1848,7 @@ def ComptonEnergy(
     return rv
 
 def DCS_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
@@ -1862,7 +1863,7 @@ def DCS_Rayl(
     return rv
 
 def DCS_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
@@ -1877,7 +1878,7 @@ def DCS_Compt(
     return rv
 
 def DCSb_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
@@ -1892,7 +1893,7 @@ def DCSb_Rayl(
     return rv
 
 def DCSb_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int ijk
@@ -1923,8 +1924,8 @@ def DCSP_KN(
 
 
 def CS_FluorLine(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -1938,8 +1939,8 @@ def CS_FluorLine(
     return rv
 
 def CSb_FluorLine(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -1953,8 +1954,8 @@ def CSb_FluorLine(
     return rv
 
 def CS_FluorShell(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -1968,8 +1969,8 @@ def CS_FluorShell(
     return rv
 
 def CSb_FluorShell(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -1983,8 +1984,8 @@ def CSb_FluorShell(
     return rv
 
 def CS_Photo_Partial(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -1998,8 +1999,8 @@ def CS_Photo_Partial(
     return rv
 
 def CSb_Photo_Partial(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2013,8 +2014,8 @@ def CSb_Photo_Partial(
     return rv
 
 def ComptonProfile_Partial(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2028,8 +2029,8 @@ def ComptonProfile_Partial(
     return rv
 
 def CS_FluorLine_Kissel(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2043,8 +2044,8 @@ def CS_FluorLine_Kissel(
     return rv
 
 def CSb_FluorLine_Kissel(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2058,8 +2059,8 @@ def CSb_FluorLine_Kissel(
     return rv
 
 def CS_FluorLine_Kissel_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2073,8 +2074,8 @@ def CS_FluorLine_Kissel_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2088,8 +2089,8 @@ def CSb_FluorLine_Kissel_Cascade(
     return rv
 
 def CS_FluorLine_Kissel_no_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2103,8 +2104,8 @@ def CS_FluorLine_Kissel_no_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_no_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2118,8 +2119,8 @@ def CSb_FluorLine_Kissel_no_Cascade(
     return rv
 
 def CS_FluorLine_Kissel_Nonradiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2133,8 +2134,8 @@ def CS_FluorLine_Kissel_Nonradiative_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_Nonradiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2148,8 +2149,8 @@ def CSb_FluorLine_Kissel_Nonradiative_Cascade(
     return rv
 
 def CS_FluorLine_Kissel_Radiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2163,8 +2164,8 @@ def CS_FluorLine_Kissel_Radiative_Cascade(
     return rv
 
 def CSb_FluorLine_Kissel_Radiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2178,8 +2179,8 @@ def CSb_FluorLine_Kissel_Radiative_Cascade(
     return rv
 
 def CS_FluorShell_Kissel(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2193,8 +2194,8 @@ def CS_FluorShell_Kissel(
     return rv
 
 def CSb_FluorShell_Kissel(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2208,8 +2209,8 @@ def CSb_FluorShell_Kissel(
     return rv
 
 def CS_FluorShell_Kissel_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2223,8 +2224,8 @@ def CS_FluorShell_Kissel_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2238,8 +2239,8 @@ def CSb_FluorShell_Kissel_Cascade(
     return rv
 
 def CS_FluorShell_Kissel_no_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2253,8 +2254,8 @@ def CS_FluorShell_Kissel_no_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_no_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2268,8 +2269,8 @@ def CSb_FluorShell_Kissel_no_Cascade(
     return rv
 
 def CS_FluorShell_Kissel_Nonradiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2283,8 +2284,8 @@ def CS_FluorShell_Kissel_Nonradiative_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_Nonradiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2298,8 +2299,8 @@ def CSb_FluorShell_Kissel_Nonradiative_Cascade(
     return rv
 
 def CS_FluorShell_Kissel_Radiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2313,8 +2314,8 @@ def CS_FluorShell_Kissel_Radiative_Cascade(
     return rv
 
 def CSb_FluorShell_Kissel_Radiative_Cascade(
-    cnp.ndarray[long, ndim=1] arg1 not None,
-    cnp.ndarray[long, ndim=1] arg2 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None):
     cdef int i, j, k
     cdef int ijk
@@ -2328,7 +2329,7 @@ def CSb_FluorShell_Kissel_Radiative_Cascade(
     return rv
 
 def DCSP_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None,
     cnp.ndarray[double, ndim=1] arg4 not None):
@@ -2345,7 +2346,7 @@ def DCSP_Rayl(
     return rv
 
 def DCSP_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None,
     cnp.ndarray[double, ndim=1] arg4 not None):
@@ -2362,7 +2363,7 @@ def DCSP_Compt(
     return rv
 
 def DCSPb_Rayl(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None,
     cnp.ndarray[double, ndim=1] arg4 not None):
@@ -2379,7 +2380,7 @@ def DCSPb_Rayl(
     return rv
 
 def DCSPb_Compt(
-    cnp.ndarray[long, ndim=1] arg1 not None,
+    cnp.ndarray[int64_t, ndim=1] arg1 not None,
     cnp.ndarray[double, ndim=1] arg2 not None,
     cnp.ndarray[double, ndim=1] arg3 not None,
     cnp.ndarray[double, ndim=1] arg4 not None):
@@ -2395,27 +2396,27 @@ def DCSPb_Compt(
         rv[i,j,k,l] = xrl.DCSPb_Compt(arg1[i], arg2[j], arg3[k], arg4[l], NULL)
     return rv
 
-def _ElementDensity(long arg1):
+def _ElementDensity(int64_t arg1):
     return xrl.ElementDensity(arg1, NULL)
-def _LineEnergy(long arg1, long arg2):
+def _LineEnergy(int64_t arg1, int64_t arg2):
     return xrl.LineEnergy(arg1, arg2, NULL)
-def _FluorYield(long arg1, long arg2):
+def _FluorYield(int64_t arg1, int64_t arg2):
     return xrl.FluorYield(arg1, arg2, NULL)
-def _CosKronTransProb(long arg1, long arg2):
+def _CosKronTransProb(int64_t arg1, int64_t arg2):
     return xrl.CosKronTransProb(arg1, arg2, NULL)
-def _EdgeEnergy(long arg1, long arg2):
+def _EdgeEnergy(int64_t arg1, int64_t arg2):
     return xrl.EdgeEnergy(arg1, arg2, NULL)
-def _JumpFactor(long arg1, long arg2):
+def _JumpFactor(int64_t arg1, int64_t arg2):
     return xrl.JumpFactor(arg1, arg2, NULL)
-def _RadRate(long arg1, long arg2):
+def _RadRate(int64_t arg1, int64_t arg2):
     return xrl.RadRate(arg1, arg2, NULL)
-def _ElectronConfig(long arg1, long arg2):
+def _ElectronConfig(int64_t arg1, int64_t arg2):
     return xrl.ElectronConfig(arg1, arg2, NULL)
-def _AtomicLevelWidth(long arg1, long arg2):
+def _AtomicLevelWidth(int64_t arg1, int64_t arg2):
     return xrl.AtomicLevelWidth(arg1, arg2, NULL)
-def _AugerRate(long arg1, long arg2):
+def _AugerRate(int64_t arg1, int64_t arg2):
     return xrl.AugerRate(arg1, arg2, NULL)
-def _AugerYield(long arg1, long arg2):
+def _AugerYield(int64_t arg1, int64_t arg2):
     return xrl.AugerYield(arg1, arg2, NULL)
 
 ElementDensity = XRL_1I(_ElementDensity)
