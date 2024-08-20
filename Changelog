@@ -1,3 +1,10 @@
+Version 4.1.5 Tom Schoonjans
+
+- Python: add support for Numpy 2 (contributed by Thomas Vincent)
+- Python: publish packages to PyPI from GHA workflow
+- meson: remove `python` option, and add various improvements
+- deprecate GNU Autotools based build system
+
 Version 4.1.4 Tom Schoonjans
 
 - Bug fix: return 0.0 early in `PM3_auger_cascade_kissel` and `PM4_auger_cascade_kissel` (reported and fixed by Chris Ninham)
