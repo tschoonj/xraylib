@@ -727,7 +727,7 @@ AM_CONDITIONAL([ENABLE_JAVA],[test x$VALID_JAVA = xyes])
 
 #C++ example
 AC_PROG_CXX
-if test `AS_BASENAME([$CXX])` = $CXX ; then
+if test `AS_BASENAME([$CXX])` = "$CXX" ; then
   AC_CHECK_PROG(CXX_FULL, [$CXX], $CXX, [none])
 fi
 if test x$CXX_FULL != "xnone" ; then
@@ -735,12 +735,12 @@ if test x$CXX_FULL != "xnone" ; then
 	AC_LANG_PUSH([C++])
 	AC_CHECK_HEADERS([cstdio cstdlib], ,[CXX=""])
 	AC_LANG_POP([C++])
-	if test x$CXX != x ; then
+	if test "x$CXX" != x ; then
 		AC_MSG_NOTICE([C++ example and tests enabled])
 		AC_SUBST(CXX)
 	fi
 fi
-AM_CONDITIONAL([ENABLE_CXX],[test $CXX])
+AM_CONDITIONAL([ENABLE_CXX],[test "x$CXX" != x])
 
 
 #
