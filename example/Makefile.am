@@ -79,8 +79,6 @@ endif
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
 #AM_TESTS_FD_REDIRECT = 9>&2
 
-EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php xrlexample13.py xrlexample14.pas
-
 
 #test the idl bindings using this script
 xrlexample4.sh: ../idl/libxrlidl.la xrlexample4.pro
@@ -181,3 +179,5 @@ xrlexample14.sh: ../pascal/xraylib.ppu xrlexample14.pas
 
 clean-local:
 	rm -rf xrlexample4.sh xrlexample2.sh xrlexample5.sh xrlexample7.sh xrlexample7.class xrlexample9.sh xrlexample10.sh xrlexample12.sh xrlexample13.sh xrlexample14.sh
+
+EXTRA_DIST = xrlexample4.pro xrlexample2.pl xrlexample5.py xrlexample7.java xrlexample8.cs xrlexample9.lua xrlexample10.rb xrlexample12.php xrlexample13.py xrlexample14.pas meson.build
