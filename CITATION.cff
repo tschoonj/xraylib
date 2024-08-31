@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Schoonjans"
+  given-names: "Tom"
+- family-names: "Brunetti"
+  given-names: "Antonio"
+- family-names: "Golosio"
+  given-names: "Bruno"
+- family-names: "Sanchez del Rio"
+  given-names: "Manuel"
+- family-names: "Solé"
+  given-names: "Vicente Armando"
+- family-names: "Ferrero"
+  given-names: "Claudio"
+- family-names: "Vincze"
+  given-names: "Laszlo"
+title: "The xraylib library for X-ray–matter interactions"
+version: 4.1.5
+date-released: 2024-08-20
+url: "https://github.com/tschoonj/xraylib"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Schoonjans"
+    given-names: "Tom"
+  - family-names: "Brunetti"
+    given-names: "Antonio"
+  - family-names: "Golosio"
+    given-names: "Bruno"
+  - family-names: "Sanchez del Rio"
+    given-names: "Manuel"
+  - family-names: "Solé"
+    given-names: "Vicente Armando"
+  - family-names: "Ferrero"
+    given-names: "Claudio"
+  - family-names: "Vincze"
+    given-names: "Laszlo"
+  doi: "10.1016/j.sab.2011.09.011"
+  journal: "Spectrochimica Acta Part B: Atomic Spectroscopy"
+  month: 11-12
+  start: 776 # First page number
+  end: 784 # Last page number
+  title: "The xraylib library for X-ray–matter interactions. Recent developments"
+  issue: 11-12
+  volume: 66
+  year: 2011
