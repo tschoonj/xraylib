@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
         compiler:
           - cl
           - clang-cl
@@ -83,7 +83,7 @@ jobs:
           mingw-w64-x86_64-pkg-config
           mingw-w64-x86_64-curl
           mingw-w64-x86_64-cython
-          mingw-w64-x86_64-python3-numpy
+          mingw-w64-x86_64-python-numpy
           mingw-w64-x86_64-meson
           mingw-w64-x86_64-swig
     - uses: actions/checkout@v5
@@ -117,7 +117,7 @@ jobs:
           - meson
         compiler:
           - llvm
-          - gcc@14
+          - gcc@15
         include:
           - ldflags: "-Wl,-ld_classic"
           - compiler: llvm
@@ -125,9 +125,9 @@ jobs:
             cxx: /opt/homebrew/opt/llvm/bin/clang++
             # ldflags: -L/opt/homebrew/opt/llvm/lib
             enable_ruby: enable
-          - compiler: gcc@14
-            cc: gcc-14
-            cxx: g++-14
+          - compiler: gcc@15
+            cc: gcc-15
+            cxx: g++-15
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
@@ -242,8 +242,8 @@ jobs:
       fail-fast: false
       matrix:
         image: 
-          - ubuntu:jammy
-          - debian:bookworm
+          - ubuntu:nobel
+          - debian:trixie
           - rockylinux:9
           - fedora:latest
         cc:
@@ -252,11 +252,6 @@ jobs:
         buildsystem:
           - autotools
           - meson
-        exclude:
-          # there's some weird segfault
-          - image: rockylinux:8
-            buildsystem: autotools
-            cc: clang
         include:
           - cc: gcc
             cxx: g++
@@ -265,18 +260,10 @@ jobs:
           - fpc: enable
             fortran: enable
             python: enable
-          # - cc: clang
-          #   image: rockylinux:8
-          #   libs: -stdlib=libstdc++
-          #   fortran: disable
-          #   clang_cflags: -Qunused-arguments
-          #   python: enable
           - cc: clang
             image: fedora:latest
             python: disable
             clang_cflags: -Qunused-arguments
-          - image: rockylinux:8
-            lua: /usr/bin/lua
           - image: fedora:latest
             lua: /usr/bin/lua
 
@@ -339,7 +326,7 @@ jobs:
       run: |
         set -ex
         yum update -y
-        yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel gcc-c++ which
+        yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-latest-openjdk java-latest-openjdk-devel clang libstdc++-devel gcc-c++ which
         java -version
         which java
         javac -version
