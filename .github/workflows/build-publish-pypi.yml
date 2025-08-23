@@ -20,14 +20,14 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-13, macos-14]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # https://github.com/actions/runner-images/issues/3342#issuecomment-2206538745
       - name: Install swig on macOS
         if: startsWith(matrix.os, 'macos')
         run: brew install swig
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.21.3
+        uses: pypa/cibuildwheel@v3.1.4
 
       - uses: actions/upload-artifact@v4
         with:
@@ -39,7 +39,7 @@ jobs:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build sdist
         run: pipx run build --sdist
@@ -70,7 +70,7 @@ jobs:
   #         path: dist
   #         merge-multiple: true
   #     - name: Publish distribution 📦 to TestPyPI
-  #       uses: pypa/gh-action-pypi-publish@release/v1
+  #       uses: pypa/gh-action-pypi-publish@v1.12.4
   #       with:
   #         repository-url: https://test.pypi.org/legacy/
 
@@ -92,5 +92,5 @@ jobs:
           path: dist
           merge-multiple: true
       - name: Publish distribution 📦 to TestPyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@v1.12.4
   

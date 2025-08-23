@@ -23,15 +23,15 @@ jobs:
           - clang-cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v5.6.0
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install meson, ninja, numpy and cython
       run: |
         python -m pip install -U numpy pip
         python -m pip install meson ninja cython
-    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: ilammy/msvc-dev-cmd@v1.13.0
     - name: Build with meson
       run: |
         meson setup meson-build --buildtype=release -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled -Dfortran-bindings=disabled
@@ -62,14 +62,14 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: crazy-max/ghaction-chocolatey@v3
+    - uses: crazy-max/ghaction-chocolatey@v3.4.0
       with:
         args: install innosetup
     # required for the lib command
-    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
-    - uses: msys2/setup-msys2@v2
+    - uses: msys2/setup-msys2@v2.28.0
       with:
         path-type: inherit
         update: true
@@ -88,7 +88,7 @@ jobs:
           mingw-w64-x86_64-python3-numpy
           mingw-w64-x86_64-meson
           mingw-w64-x86_64-swig
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -133,7 +133,7 @@ jobs:
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -302,7 +302,7 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
