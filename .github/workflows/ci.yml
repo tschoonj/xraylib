@@ -189,7 +189,7 @@ jobs:
         # Build without python
         ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --enable-pascal --disable-java --disable-php --${{matrix.enable_ruby}}-ruby SHELL=${SHELL} RUBY=/opt/homebrew/opt/ruby/bin/ruby
         make -j$(sysctl -n hw.ncpu)
-        make check
+        make check || (find . -name "test-suite.log" -exec echo "=== {} ===" \; -exec cat {} \; && find . -name "*.log" -path "*/example/*" -exec echo "=== {} ===" \; -exec cat {} \; && exit 1)
         make distclean
 
         # Build without bindings in ANSI-C
@@ -360,7 +360,7 @@ jobs:
         # disable java for now
         ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --disable-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
         make -j$(nproc)
-        make check || (cat example/xrlexample12.sh.log && exit 1)
+        make check || (find . -name "test-suite.log" -exec echo "=== {} ===" \; -exec cat {} \; && find . -name "*.log" -path "*/example/*" -exec echo "=== {} ===" \; -exec cat {} \; && exit 1)
         make distclean
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
         make -j$(nproc)
@@ -368,7 +368,7 @@ jobs:
         make distclean
         ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
         make -j$(nproc)
-        make check || (cat example/xrlexample13.sh.log && exit 1)
+        make check || (find . -name "test-suite.log" -exec echo "=== {} ===" \; -exec cat {} \; && find . -name "*.log" -path "*/example/*" -exec echo "=== {} ===" \; -exec cat {} \; && exit 1)
         make distclean
         ./configure --disable-all-bindings --disable-shared --enable-static
         make -j$(nproc)
