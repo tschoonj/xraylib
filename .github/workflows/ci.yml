@@ -172,7 +172,7 @@ jobs:
         cd ${TARBALL%.tar.xz}
         autoreconf -fi
         ./configure --enable-python SHELL=${SHELL} PYTHON=/opt/homebrew/bin/python3
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         set +ex
       env:
@@ -188,25 +188,25 @@ jobs:
 
         # Build without python
         ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --enable-pascal --disable-java --disable-php --${{matrix.enable_ruby}}-ruby SHELL=${SHELL} RUBY=/opt/homebrew/opt/ruby/bin/ruby
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
         # Build without bindings in ANSI-C
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" SHELL=${SHELL}
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
         # Build with Python3 bindings
         ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} SHELL=${SHELL}
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
         # Build static library
         ./configure --disable-all-bindings --disable-shared --enable-static SHELL=${SHELL}
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
@@ -242,7 +242,7 @@ jobs:
       fail-fast: false
       matrix:
         image: 
-          - ubuntu:nobel
+          - ubuntu:noble
           - debian:trixie
           - rockylinux:9
           - fedora:latest
