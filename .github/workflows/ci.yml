@@ -243,6 +243,7 @@ jobs:
       matrix:
         image: 
           - ubuntu:noble
+          - ubuntu:jammy
           - debian:trixie
           - rockylinux:9
           - fedora:latest
@@ -305,14 +306,6 @@ jobs:
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
-    - name: Activate RockyLinux 8 PowerTools and EPEL repo
-      if: matrix.image == 'rockylinux:8'
-      run: |
-        set -ex
-        dnf install -y 'dnf-command(config-manager)'
-        dnf config-manager --set-enabled powertools
-        dnf install -y epel-release
-        set +ex
     - name: Activate RockyLinux 9 PowerTools and EPEL repo
       if: matrix.image == 'rockylinux:9'
       run: |
@@ -322,7 +315,7 @@ jobs:
         dnf install -y epel-release
         set +ex
     - name: Install RHEL dependencies
-      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
+      if: startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
       run: |
         set -ex
         yum update -y
@@ -341,7 +334,7 @@ jobs:
         which javac
         set +ex
     - name: Install RHEL dependencies Meson and Ninja
-      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
       run: |
         set -ex
         yum install -y meson ninja-build
