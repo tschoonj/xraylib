@@ -294,8 +294,15 @@ jobs:
       run: |
         set -ex
         apt-get --yes --force-yes update
-        # Install Java 17 or later for BND plugin compatibility
-        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev openjdk-17-jdk clang
+        # Install Java 17+ for BND plugin compatibility
+        # Debian Trixie doesn't have openjdk-17-jdk, use openjdk-21-jdk instead
+        if grep -q "trixie" /etc/os-release; then
+          JAVA_PACKAGE="openjdk-21-jdk"
+        else
+          JAVA_PACKAGE="openjdk-17-jdk"
+        fi
+        echo "Installing Java package: $JAVA_PACKAGE"
+        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev "$JAVA_PACKAGE" clang
         java -version
         which java
         javac -version
