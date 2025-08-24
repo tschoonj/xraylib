@@ -326,7 +326,11 @@ jobs:
       run: |
         set -ex
         yum update -y
-        yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-latest-openjdk java-latest-openjdk-devel clang libstdc++-devel gcc-c++ which
+        # Install common packages
+        yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit clang libstdc++-devel gcc-c++ which
+        # Install Java - use java-17-openjdk which is available on all RedHat-based distros
+        # and is compatible with Gradle 8.x.y
+        yum install -y java-17-openjdk java-17-openjdk-devel
         java -version
         which java
         javac -version
