@@ -294,7 +294,12 @@ jobs:
       run: |
         set -ex
         apt-get --yes --force-yes update
-        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev default-jdk clang
+        # Install Java 17 or later for BND plugin compatibility
+        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev openjdk-17-jdk clang
+        java -version
+        which java
+        javac -version
+        which javac
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
