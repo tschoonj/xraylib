@@ -328,9 +328,13 @@ jobs:
         yum update -y
         # Install common packages
         yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit clang libstdc++-devel gcc-c++ which
-        # Install Java - use java-17-openjdk which is available on all RedHat-based distros
-        # and is compatible with Gradle 8.x.y
-        yum install -y java-17-openjdk java-17-openjdk-devel
+        # Install Java - different versions for different distros
+        # Fedora:latest uses java-21-openjdk, while older distros use java-17-openjdk
+        if [[ "${{ matrix.image }}" == *"fedora:latest"* ]]; then
+          yum install -y java-21-openjdk java-21-openjdk-devel
+        else
+          yum install -y java-17-openjdk java-17-openjdk-devel
+        fi
         java -version
         which java
         javac -version
