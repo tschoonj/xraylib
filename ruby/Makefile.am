@@ -14,7 +14,7 @@ if ENABLE_RUBY
 plugindir = $(RUBYDIR)
 plugin_LTLIBRARIES = xraylib.la
 xraylib_la_CPPFLAGS = $(RUBY_EXT_CPPFLAGS) -DSWIGRUBY_TRICK -I${top_builddir} -I${top_srcdir}/include $(RUBY_EXT_INC) -I$(top_srcdir)/src
-xraylib_la_CFLAGS = $(WSTRICT_CFLAGS)
+xraylib_la_CFLAGS = $(WSTRICT_CFLAGS) -Wno-error=deprecated-declarations
 xraylib_la_LIBADD = ../src/libxrl.la
 nodist_xraylib_la_SOURCES = xraylib_wrap.c
 xraylib_la_LDFLAGS = -avoid-version -module -shared -export-dynamic -shrext $(RUBY_EXT_DLEXT)

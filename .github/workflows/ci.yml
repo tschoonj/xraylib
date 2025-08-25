@@ -7,8 +7,6 @@ on:
     branches:
       - master
   pull_request:
-    branches:
-      - master
 
 jobs:
   visual-studio:
@@ -17,21 +15,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
         compiler:
           - cl
           - clang-cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v5
+    - uses: actions/setup-python@v5.6.0
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install meson, ninja, numpy and cython
       run: |
         python -m pip install -U numpy pip
         python -m pip install meson ninja cython
-    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: ilammy/msvc-dev-cmd@v1.13.0
     - name: Build with meson
       run: |
         meson setup meson-build --buildtype=release -Dpython-bindings=enabled -Dpython-numpy-bindings=enabled -Dfortran-bindings=disabled
@@ -62,14 +60,14 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: crazy-max/ghaction-chocolatey@v3
+    - uses: crazy-max/ghaction-chocolatey@v3.4.0
       with:
         args: install innosetup
     # required for the lib command
-    - uses: ilammy/msvc-dev-cmd@v1
+    - uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
-    - uses: msys2/setup-msys2@v2
+    - uses: msys2/setup-msys2@v2.28.0
       with:
         path-type: inherit
         update: true
@@ -85,10 +83,10 @@ jobs:
           mingw-w64-x86_64-pkg-config
           mingw-w64-x86_64-curl
           mingw-w64-x86_64-cython
-          mingw-w64-x86_64-python3-numpy
+          mingw-w64-x86_64-python-numpy
           mingw-w64-x86_64-meson
           mingw-w64-x86_64-swig
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -119,7 +117,7 @@ jobs:
           - meson
         compiler:
           - llvm
-          - gcc@14
+          - gcc@15
         include:
           - ldflags: "-Wl,-ld_classic"
           - compiler: llvm
@@ -127,13 +125,13 @@ jobs:
             cxx: /opt/homebrew/opt/llvm/bin/clang++
             # ldflags: -L/opt/homebrew/opt/llvm/lib
             enable_ruby: enable
-          - compiler: gcc@14
-            cc: gcc-14
-            cxx: g++-14
+          - compiler: gcc@15
+            cc: gcc-15
+            cxx: g++-15
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -174,7 +172,7 @@ jobs:
         cd ${TARBALL%.tar.xz}
         autoreconf -fi
         ./configure --enable-python SHELL=${SHELL} PYTHON=/opt/homebrew/bin/python3
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         set +ex
       env:
@@ -190,25 +188,25 @@ jobs:
 
         # Build without python
         ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --enable-pascal --disable-java --disable-php --${{matrix.enable_ruby}}-ruby SHELL=${SHELL} RUBY=/opt/homebrew/opt/ruby/bin/ruby
-        make -j$(nproc)
-        make check
+        make -j$(sysctl -n hw.ncpu)
+        make check || (find . -name "test-suite.log" -exec echo "=== {} ===" \; -exec cat {} \; && find . -name "*.log" -path "*/example/*" -exec echo "=== {} ===" \; -exec cat {} \; && exit 1)
         make distclean
 
         # Build without bindings in ANSI-C
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic" SHELL=${SHELL}
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
         # Build with Python3 bindings
         ./configure --disable-ruby --disable-perl --disable-lua --enable-python-numpy --enable-python PYTHON=${XRL_PYTHON3} SHELL=${SHELL}
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
         # Build static library
         ./configure --disable-all-bindings --disable-shared --enable-static SHELL=${SHELL}
-        make -j$(nproc)
+        make -j$(sysctl -n hw.ncpu)
         make check
         make distclean
 
@@ -244,8 +242,9 @@ jobs:
       fail-fast: false
       matrix:
         image: 
+          - ubuntu:noble
           - ubuntu:jammy
-          - debian:bookworm
+          - debian:trixie
           - rockylinux:9
           - fedora:latest
         cc:
@@ -254,11 +253,6 @@ jobs:
         buildsystem:
           - autotools
           - meson
-        exclude:
-          # there's some weird segfault
-          - image: rockylinux:8
-            buildsystem: autotools
-            cc: clang
         include:
           - cc: gcc
             cxx: g++
@@ -267,18 +261,10 @@ jobs:
           - fpc: enable
             fortran: enable
             python: enable
-          # - cc: clang
-          #   image: rockylinux:8
-          #   libs: -stdlib=libstdc++
-          #   fortran: disable
-          #   clang_cflags: -Qunused-arguments
-          #   python: enable
           - cc: clang
             image: fedora:latest
             python: disable
             clang_cflags: -Qunused-arguments
-          - image: rockylinux:8
-            lua: /usr/bin/lua
           - image: fedora:latest
             lua: /usr/bin/lua
 
@@ -302,13 +288,25 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
         set -ex
         apt-get --yes --force-yes update
-        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev default-jdk clang
+        # Install Java 17+ for BND plugin compatibility
+        # Debian Trixie doesn't have openjdk-17-jdk, use openjdk-21-jdk instead
+        if grep -q "trixie" /etc/os-release; then
+          JAVA_PACKAGE="openjdk-21-jdk"
+        else
+          JAVA_PACKAGE="openjdk-17-jdk"
+        fi
+        echo "Installing Java package: $JAVA_PACKAGE"
+        apt-get --yes --force-yes install autoconf automake libtool python3-pip python3-all-dev python3-numpy cython3 fpc gfortran gcc swig lua5.3 liblua5.3-dev ruby-dev "$JAVA_PACKAGE" clang
+        java -version
+        which java
+        javac -version
+        which javac
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -320,14 +318,6 @@ jobs:
         set +ex
       env:
         DEBIAN_FRONTEND: noninteractive
-    - name: Activate RockyLinux 8 PowerTools and EPEL repo
-      if: matrix.image == 'rockylinux:8'
-      run: |
-        set -ex
-        dnf install -y 'dnf-command(config-manager)'
-        dnf config-manager --set-enabled powertools
-        dnf install -y epel-release
-        set +ex
     - name: Activate RockyLinux 9 PowerTools and EPEL repo
       if: matrix.image == 'rockylinux:9'
       run: |
@@ -337,18 +327,26 @@ jobs:
         dnf install -y epel-release
         set +ex
     - name: Install RHEL dependencies
-      if: startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
+      if: startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux')
       run: |
         set -ex
         yum update -y
-        yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit java-1.8.0-openjdk java-1.8.0-openjdk-devel clang libstdc++-devel gcc-c++ which
+        # Install common packages
+        yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit clang libstdc++-devel gcc-c++ which
+        # Install Java - different versions for different distros
+        # Fedora:latest uses java-21-openjdk, while older distros use java-17-openjdk
+        if [[ "${{ matrix.image }}" == *"fedora:latest"* ]]; then
+          yum install -y java-21-openjdk java-21-openjdk-devel
+        else
+          yum install -y java-17-openjdk java-17-openjdk-devel
+        fi
         java -version
         which java
         javac -version
         which javac
         set +ex
     - name: Install RHEL dependencies Meson and Ninja
-      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'centos') || startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
+      if: matrix.buildsystem == 'meson' && (startsWith(matrix.image, 'fedora') || startsWith(matrix.image, 'rockylinux'))
       run: |
         set -ex
         yum install -y meson ninja-build
@@ -375,7 +373,7 @@ jobs:
         # disable java for now
         ./configure --disable-python --disable-python-numpy --disable-perl --enable-lua --${FPC_ENABLE}-pascal --disable-java --disable-php --enable-ruby --${FORTRAN_ENABLE}-fortran2003 || (cat config.log && exit 1)
         make -j$(nproc)
-        make check || (cat example/xrlexample12.sh.log && exit 1)
+        make check || (find . -name "test-suite.log" -exec echo "=== {} ===" \; -exec cat {} \; && find . -name "*.log" -path "*/example/*" -exec echo "=== {} ===" \; -exec cat {} \; && exit 1)
         make distclean
         ./configure --disable-all-bindings CFLAGS="-std=c89 -pedantic $CFLAGS"
         make -j$(nproc)
@@ -383,7 +381,7 @@ jobs:
         make distclean
         ./configure --disable-ruby --disable-perl --disable-lua --disable-fortran2003 --${PYTHON_ENABLE}-python-numpy --${PYTHON_ENABLE}-python PYTHON=${XRL_PYTHON3}
         make -j$(nproc)
-        make check || (cat example/xrlexample13.sh.log && exit 1)
+        make check || (find . -name "test-suite.log" -exec echo "=== {} ===" \; -exec cat {} \; && find . -name "*.log" -path "*/example/*" -exec echo "=== {} ===" \; -exec cat {} \; && exit 1)
         make distclean
         ./configure --disable-all-bindings --disable-shared --enable-static
         make -j$(nproc)

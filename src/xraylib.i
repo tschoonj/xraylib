@@ -103,6 +103,23 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
 %typemap(out) int Atomic_Factors {}
 
+#ifdef SWIGRUBY
+%typemap(argout) double *f0, double *f_primep, double *f_prime2 {
+    VALUE temp = rb_ary_new();
+    rb_ary_push(temp, rb_float_new(*$1));
+    if ($result == Qnil) {
+        $result = temp;
+    } else if (TYPE($result) == T_ARRAY) {
+        rb_ary_push($result, rb_float_new(*$1));
+    } else {
+        VALUE arr = rb_ary_new();
+        rb_ary_push(arr, $result);
+        rb_ary_push(arr, rb_float_new(*$1));
+        $result = arr;
+    }
+}
+#endif
+
 %typemap(argout) xrl_error **error {
   if (*$1 != NULL) {
     switch ((*$1)->code) {
