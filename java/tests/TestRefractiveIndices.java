@@ -44,10 +44,10 @@ public class TestRefractiveIndices {
 		return Stream.of(
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Re, H2O, 1.0, 1.0, 0.999763450676632),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Im, H2O, 1.0, 1.0, 4.021660592312145e-05),
-			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, H2O, 1.0, 1.0, new Complex(0.999763450676632, 4.021660592312145e-05)),
+			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, H2O, 1.0, 1.0, Complex.ofCartesian(0.999763450676632, 4.021660592312145e-05)),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Re, AIR, 1.0, 1.0, 0.999782559048),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Im, AIR, 1.0, 1.0, 0.000035578193),
-			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, 1.0, new Complex(0.999782559048, 0.000035578193)),
+			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, 1.0, Complex.ofCartesian(0.999782559048, 0.000035578193)),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Re, AIR, 1.0, 0.0, 0.999999737984),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Im, AIR, 1.0, 0.0, 0.000000042872),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, 0.0, Complex.ofCartesian(0.999999737984, 0.000000042872)),
