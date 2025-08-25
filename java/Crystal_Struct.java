@@ -14,7 +14,7 @@ THIS SOFTWARE IS PROVIDED BY Teemu Ikonen and Tom Schoonjans ''AS IS'' AND ANY E
 package com.github.tschoonj.xraylib;
 
 import java.nio.ByteBuffer;
-import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.numbers.complex.Complex;
 
 /** 
  * This class allows for dealing with crystal structures.
@@ -215,7 +215,7 @@ public class Crystal_Struct {
       F_H_im += atom[i].fraction * (f_re[Z] * Math.sin(H_dot_r) + f_im[Z] * Math.cos(H_dot_r));
     }
 
-    return new Complex(F_H_re, F_H_im);
+    return Complex.ofCartesian(F_H_re, F_H_im);
   }
 
   private double pow2(double arg) {

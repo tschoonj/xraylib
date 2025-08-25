@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.numbers.complex.Complex;
 
 
 /** 
@@ -3898,7 +3898,7 @@ public class Xraylib {
     re = 1.0 - re * density;
     im = im * density * 9.8663479e-9 / E;
 
-    return new Complex(re, im);
+    return Complex.ofCartesian(re, im);
   }
 
   /** 

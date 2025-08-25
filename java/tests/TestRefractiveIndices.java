@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
  
 import com.github.tschoonj.xraylib.Xraylib;
-import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.numbers.complex.Complex;
 
 public class TestRefractiveIndices {
 
@@ -28,7 +28,10 @@ public class TestRefractiveIndices {
 		if (Double.class.isInstance(actual) && Double.class.isInstance(expected)) {
 			assertEquals(Double.class.cast(actual), Double.class.cast(expected), delta);
 		} else if (Complex.class.isInstance(actual) && Complex.class.isInstance(expected)) {
-			assertTrue(Complex.equals(Complex.class.cast(actual), Complex.class.cast(expected), delta));
+			Complex actualComplex = Complex.class.cast(actual);
+			Complex expectedComplex = Complex.class.cast(expected);
+			assertEquals(actualComplex.real(), expectedComplex.real(), delta);
+			assertEquals(actualComplex.imag(), expectedComplex.imag(), delta);
 		} else {
 			fail("Unknown type for actual and/or expected");
 		}
@@ -47,8 +50,8 @@ public class TestRefractiveIndices {
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, 1.0, new Complex(0.999782559048, 0.000035578193)),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Re, AIR, 1.0, 0.0, 0.999999737984),
 			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index_Im, AIR, 1.0, 0.0, 0.000000042872),
-			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, 0.0, new Complex(0.999999737984, 0.000000042872)),
-			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, -1.0, new Complex(0.999999737984, 0.000000042872))
+			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, 0.0, Complex.ofCartesian(0.999999737984, 0.000000042872)),
+			arguments((RefractiveIndexWrapper) Xraylib::Refractive_Index, AIR, 1.0, -1.0, Complex.ofCartesian(0.999999737984, 0.000000042872))
 		);
 	}
 
