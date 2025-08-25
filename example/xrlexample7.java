@@ -12,7 +12,7 @@ THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED
 
 import com.github.tschoonj.xraylib.*;
 
-import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.numbers.complex.Complex;
 
 
 public class xrlexample7 {
