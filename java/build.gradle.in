@@ -7,8 +7,7 @@ buildscript {
 plugins {
     id "java-library"
     id "com.adarshr.test-logger" version "4.0.0"
-    id "maven-publish"
-    id "signing"
+    id "com.vanniktech.maven.publish" version "0.34.0"
     id "biz.aQute.bnd.builder" version "7.0.0"
 }
 
@@ -96,50 +95,55 @@ task javadocJar(type: Jar) {
 	archiveClassifier = 'javadoc'
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java 
-            artifact sourcesJar
-            artifact javadocJar
-                        
-            pom {
-                name = 'xraylib'
-                description = 'A library for X-ray matter interaction cross sections for X-ray fluorescence applications'
-                url = 'https://github.com/tschoonj/xraylib'
-                licenses {
-                    license {
-                        name = '3-Clause BSD License'
-                        url = 'https://opensource.org/licenses/BSD-3-Clause'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'tschoonj'
-                        name = 'Tom Schoonjans'
-                        email = 'Tom.Schoonjans@gmail.com'
-                    }
-                }
-                scm {
-                    connection = 'scm:git:git://github.com/tschoonj/xraylib.git'
-                    developerConnection = 'scm:git:git://github.com/tschoonj/xraylib.git'
-                    url = 'https://github.com/tschoonj/xraylib.git'
-                }
+// Maven Central Publishing Configuration using vanniktech plugin
+// Updated for Central Publisher Portal (OSSRH EOL as of June 30, 2025)
+// This plugin handles all the complexity of Central Portal publishing
+// Requires Portal User Token (mavenCentralUsername/mavenCentralPassword)
+// and GPG signing configuration
+//
+// Publishing workflow:
+// 1. For snapshots: ./gradlew publishToMavenCentral
+// 2. For releases: ./gradlew publishToMavenCentral (then manually publish in Portal)
+//    OR: ./gradlew publishAndReleaseToMavenCentral (automatic release)
+//
+// Login to https://central.sonatype.com/publishing to review deployments
+mavenPublishing {
+    // Configure for Central Portal publishing
+    publishToMavenCentral()
+    
+    // Enable GPG signing (required for Maven Central)
+    signAllPublications()
+    
+    // Configure POM metadata
+    coordinates(group, 'xraylib', version)
+    
+    pom {
+        name = 'xraylib'
+        description = 'A library for X-ray matter interaction cross sections for X-ray fluorescence applications'
+        inceptionYear = '2009'
+        url = 'https://github.com/tschoonj/xraylib'
+        
+        licenses {
+            license {
+                name = '3-Clause BSD License'
+                url = 'https://opensource.org/licenses/BSD-3-Clause'
+                distribution = 'https://opensource.org/licenses/BSD-3-Clause'
             }
         }
-    }
-    repositories {
-        maven {
-            name = 'Sonatype'
-            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-            credentials {
-                username System.getenv('SONATYPE_USERNAME')
-                password System.getenv('SONATYPE_PASSWORD')
+        
+        developers {
+            developer {
+                id = 'tschoonj'
+                name = 'Tom Schoonjans'
+                email = 'Tom.Schoonjans@gmail.com'
+                url = 'https://github.com/tschoonj'
             }
         }
+        
+        scm {
+            url = 'https://github.com/tschoonj/xraylib'
+            connection = 'scm:git:git://github.com/tschoonj/xraylib.git'
+            developerConnection = 'scm:git:ssh://git@github.com/tschoonj/xraylib.git'
+        }
     }
-}
-
-signing {
-    sign publishing.publications.maven
 }
