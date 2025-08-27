@@ -57,7 +57,7 @@ publishToMavenLocal:
 	$(srcdir)/gradlew publishToMavenLocal
 
 publish:
-	$(srcdir)/gradlew publish
+	$(srcdir)/gradlew publishToMavenCentral
 
 endif
 
