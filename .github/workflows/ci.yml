@@ -161,6 +161,14 @@ jobs:
         CC: ${{matrix.cc}}
         CXX: ${{matrix.cxx}}
         LDFLAGS: ${{matrix.ldflags}}
+    - name: Upload distribution tarball
+      if: matrix.buildsystem == 'meson' && matrix.compiler == 'llvm'
+      uses: actions/upload-artifact@v4
+      with:
+        name: source-distribution
+        path: meson-build/meson-dist/xraylib-*.tar.xz
+        retention-days: 7
+        if-no-files-found: error
     - name: Secondary build with Autotools 
       if: matrix.buildsystem == 'meson'
       run: |
