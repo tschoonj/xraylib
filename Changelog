@@ -1,3 +1,10 @@
+Version 4.2.0 Tom Schoonjans
+
+- Java: migrate from legacy OSSRH to Maven Central Publisher Portal
+- Java: replace custom publishing setup with vanniktech/gradle-maven-publish-plugin
+- Java: update build automation to use new publishToMavenCentral task
+- Java: improved error handling and validation in publishing workflow
+
 Version 4.1.5 Tom Schoonjans
 
 - Python: add support for Numpy 2 (contributed by Thomas Vincent)
