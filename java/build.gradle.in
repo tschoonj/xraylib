@@ -11,7 +11,7 @@ plugins {
     id "biz.aQute.bnd.builder" version "7.0.0"
 }
 
-version = '4.1.5'
+version = '4.2.0'
 group = 'com.github.tschoonj'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
