@@ -67,7 +67,7 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1.13.0
       with:
         arch: x64
-    - uses: msys2/setup-msys2@v2.28.0
+    - uses: msys2/setup-msys2@v2.29.0
       with:
         path-type: inherit
         update: true
