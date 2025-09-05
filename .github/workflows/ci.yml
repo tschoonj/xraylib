@@ -22,7 +22,7 @@ jobs:
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
     - uses: actions/checkout@v5
-    - uses: actions/setup-python@v5.6.0
+    - uses: actions/setup-python@v6.0.0
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install meson, ninja, numpy and cython
