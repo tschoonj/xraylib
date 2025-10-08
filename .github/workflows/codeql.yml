@@ -39,13 +39,13 @@ jobs:
           ./configure
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3.30.3
+        uses: github/codeql-action/init@v4.30.7
         with:
           languages: ${{ matrix.language }}
           queries: +security-and-quality
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v3.30.3
+        uses: github/codeql-action/autobuild@v4.30.7
         if: ${{ matrix.language == 'python' }}
 
       - name: Build cpp
@@ -65,6 +65,6 @@ jobs:
           make check TESTS=
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3.30.3
+        uses: github/codeql-action/analyze@v4.30.7
         with:
           category: "/language:${{ matrix.language }}"
