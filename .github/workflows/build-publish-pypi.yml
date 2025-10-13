@@ -27,7 +27,7 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: brew install swig
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.2.0
+        uses: pypa/cibuildwheel@v3.2.1
 
       - uses: actions/upload-artifact@v4
         with:
