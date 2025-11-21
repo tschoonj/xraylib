@@ -20,7 +20,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-13, macos-14]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       # https://github.com/actions/runner-images/issues/3342#issuecomment-2206538745
       - name: Install swig on macOS
@@ -39,7 +39,7 @@ jobs:
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Build sdist
         run: pipx run build --sdist

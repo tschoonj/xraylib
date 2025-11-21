@@ -21,7 +21,7 @@ jobs:
           - clang-cl
     name: Visual Studio with ${{matrix.compiler}} and Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - uses: actions/setup-python@v6.0.0
       with:
         python-version: ${{ matrix.python-version }}
@@ -86,7 +86,7 @@ jobs:
           mingw-w64-x86_64-python-numpy
           mingw-w64-x86_64-meson
           mingw-w64-x86_64-swig
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Primary build and test with Meson
       if: matrix.buildsystem == 'meson'
       run: |
@@ -131,7 +131,7 @@ jobs:
             # -fdeclspec is only supported by llvm's clang!
             enable_ruby: disable
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install Homebrew dependencies
       run: |
         set -ex
@@ -296,7 +296,7 @@ jobs:
         set -ex
         yum install -y git
         set +ex
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Install ubuntu dependencies
       if: startsWith(matrix.image, 'ubuntu') || startsWith(matrix.image, 'debian')
       run: |
