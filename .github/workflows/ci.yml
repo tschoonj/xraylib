@@ -60,7 +60,7 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
-    - uses: crazy-max/ghaction-chocolatey@v3.4.0
+    - uses: crazy-max/ghaction-chocolatey@v4.0.0
       with:
         args: install innosetup
     # required for the lib command
