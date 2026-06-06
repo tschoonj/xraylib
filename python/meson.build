@@ -54,7 +54,7 @@ if swig.found()
         install: true,
         install_dir: python.get_install_dir(pure: false),
         c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
-        install_tag: ['python-runtime']
+        install_tag: 'python-runtime'
     )
     python_enabled = true
 endif
@@ -86,7 +86,7 @@ if cython.found()
         install: true,
         install_dir: python.get_install_dir(pure: false),
         c_args: core_c_args + ['-I' + numpy_header_location] + python_error_flags,
-        install_tag: ['python-runtime'],
+        install_tag: 'python-runtime',
     )
     python_numpy_enabled = true
 endif
