@@ -14,8 +14,6 @@ python_numpy_tests = []
 
 python_test_env = environment()
 python_test_env.prepend('PYTHONPATH', pydir)
-# Suppress OpenMP runtime conflict abort (e.g., when numpy and xraylib_np link different libomp variants on macOS)
-python_test_env.set('KMP_DUPLICATE_LIB_OK', 'TRUE')
 if host_system == 'windows'
     python_test_env.prepend('PATH', src_build_dir)
     python_test_env.append('EXTRA_DLL_SEARCH_PATHS', src_build_dir)
