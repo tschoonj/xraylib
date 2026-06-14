@@ -78,7 +78,6 @@ jobs:
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-libxml2
           mingw-w64-x86_64-clang
-          mingw-w64-x86_64-openmp
           mingw-w64-x86_64-lld
           mingw-w64-x86_64-pkg-config
           mingw-w64-x86_64-curl
@@ -341,13 +340,8 @@ jobs:
         yum update -y
         # Install common packages
         yum install -y make autoconf automake libtool python3-setuptools python3-devel python3-numpy python3-Cython fpc gcc-gfortran gcc swig lua lua-devel ruby ruby-devel rubygem-minitest rubygem-test-unit clang libstdc++-devel gcc-c++ which
-        # Install Java - different versions for different distros
-        # Fedora:latest uses java-21-openjdk, while older distros use java-17-openjdk
-        if [[ "${{ matrix.image }}" == *"fedora:latest"* ]]; then
-          yum install -y java-21-openjdk java-21-openjdk-devel
-        else
-          yum install -y java-17-openjdk java-17-openjdk-devel
-        fi
+        # Use version-agnostic virtual packages that work across Fedora and Rocky versions
+        yum install -y java-devel
         java -version
         which java
         javac -version
