@@ -119,6 +119,7 @@ cdef extern from "xraylib.h" nogil:
     int LB_LINE "LB_LINE"
     int KA1_LINE "KA1_LINE"
     int KA2_LINE "KA2_LINE"
+    int KA3_LINE "KA3_LINE"
     int KB1_LINE "KB1_LINE"
     int KB2_LINE "KB2_LINE"
     int KB3_LINE "KB3_LINE"
