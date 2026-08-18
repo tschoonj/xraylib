@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2010-2020, Tom Schoonjans
+Copyright (c) 2010-2026, Tom Schoonjans
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -11,53 +11,39 @@ modification, are permitted provided that the following conditions are met:
 THIS SOFTWARE IS PROVIDED BY Tom Schoonjans ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Tom Schoonjans BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "config.h"
-#include "xraylib-aux.h"
-#include "xraylib-aux-private.h"
-#include <stdlib.h>
-#include <string.h>
+#ifndef XRAYLIB_AUX_PRIVATE_H
+#define XRAYLIB_AUX_PRIVATE_H
 
-char *xrl_strdup(const char *str) {
-#ifdef HAVE__STRDUP
-	return _strdup(str);
-#elif defined(HAVE_STRDUP)
-	return strdup(str);
-#else
-	char *dup= (char *)malloc( strlen(str)+1 );
-	if (dup) strcpy(dup,str);
-	return dup;
-#endif
-}
+/*
+ * The following types and methods are not visible outside the library!
+ *
+ * Minimal cross-platform mutex used to serialize access to process-global
+ * mutable state (currently the built-in crystal array Crystal_arr, which the
+ * SWIG-generated Python bindings mutate through the shared global). Now that the
+ * Python modules declare themselves free-threading (no-GIL) compatible, the GIL
+ * no longer serializes these accesses for us.
+ *
+ * On Windows (including MinGW/MSYS builds, which define _WIN32) we use an
+ * SRWLOCK: it is statically initializable, requires no cleanup, and lives in
+ * kernel32, so no extra library (e.g. libwinpthread) is pulled in. Everywhere
+ * else (Linux, macOS, Cygwin) we use a POSIX mutex; on modern systems pthread is
+ * part of libc, otherwise AX_PTHREAD / dependency('threads') links it in.
+ */
 
-char *xrl_strndup(const char *str, size_t len) {
-#ifndef HAVE_STRNDUP
-	char *dup= (char *)malloc( len+1 );
-	if (dup) {
-		strncpy(dup,str,len);
-		dup[len]= '\0';
-	}
-	return dup;
-#else
-	return strndup(str, len);
-#endif
-}
-
-void *xrl_malloc(size_t size) {
-	return malloc(size);
-}
-
-void xrl_lock_acquire(xrl_lock *lock) {
 #ifdef _WIN32
-	AcquireSRWLockExclusive(lock);
-#else
-	pthread_mutex_lock(lock);
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #endif
-}
+#include <windows.h>
+typedef SRWLOCK xrl_lock;
+#define XRL_LOCK_INITIALIZER SRWLOCK_INIT
+#else
+#include <pthread.h>
+typedef pthread_mutex_t xrl_lock;
+#define XRL_LOCK_INITIALIZER PTHREAD_MUTEX_INITIALIZER
+#endif
 
-void xrl_lock_release(xrl_lock *lock) {
-#ifdef _WIN32
-	ReleaseSRWLockExclusive(lock);
-#else
-	pthread_mutex_unlock(lock);
+void xrl_lock_acquire(xrl_lock *lock);
+void xrl_lock_release(xrl_lock *lock);
+
 #endif
-}

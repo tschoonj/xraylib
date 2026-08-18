@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY David Sagan AND Tom Schoonjans ''AS IS'' AND ANY EX
 
 #include "config.h"
 #include "xraylib-aux.h"
+#include "xraylib-aux-private.h"
 #include "xraylib-crystal-diffraction.h"
 #include "xrayglob.h"
 #include "xraylib.h"
@@ -30,6 +31,14 @@ THIS SOFTWARE IS PROVIDED BY David Sagan AND Tom Schoonjans ''AS IS'' AND ANY EX
 #define pow2(x)  pow(x, 2)
 #define FALSE 0
 #define TRUE 1
+
+/*
+ * Serializes access to the built-in, process-global crystal array Crystal_arr.
+ * Callers that pass their own Crystal_Array own its synchronization, so only the
+ * shared-global paths (c_array == NULL on entry) take this lock. See
+ * xraylib-aux-private.h for the platform-specific lock implementation.
+ */
+static xrl_lock crystal_arr_lock = XRL_LOCK_INITIALIZER;
 
 /*-------------------------------------------------------------------------------------------------- */
 
@@ -182,7 +191,7 @@ void Crystal_Free(Crystal_Struct* crystal) {
 
 /*-------------------------------------------------------------------------------------------------- */
 
-char** Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error **error) {
+static char** Crystal_GetCrystalsList_impl(Crystal_Array *c_array, int *nCrystals, xrl_error **error) {
   char **rv = NULL;
   int i;
 
@@ -205,9 +214,22 @@ char** Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error
   return rv;
 }
 
+char** Crystal_GetCrystalsList(Crystal_Array *c_array, int *nCrystals, xrl_error **error) {
+  char **rv;
+  int shared = (c_array == NULL);
+
+  if (shared)
+    xrl_lock_acquire(&crystal_arr_lock);
+  rv = Crystal_GetCrystalsList_impl(c_array, nCrystals, error);
+  if (shared)
+    xrl_lock_release(&crystal_arr_lock);
+
+  return rv;
+}
+
 /*-------------------------------------------------------------------------------------------------- */
 
-Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array, xrl_error **error) {
+static Crystal_Struct* Crystal_GetCrystal_impl (const char* material, Crystal_Array* c_array, xrl_error **error) {
   Crystal_Struct *rv, *rv_copy;
   if (material == NULL) {
     xrl_set_error_literal(error, XRL_ERROR_INVALID_ARGUMENT, "Crystal cannot be NULL");
@@ -227,6 +249,19 @@ Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array
   rv_copy = Crystal_MakeCopy(rv, error);
 
   return rv_copy;
+}
+
+Crystal_Struct* Crystal_GetCrystal (const char* material, Crystal_Array* c_array, xrl_error **error) {
+  Crystal_Struct *rv;
+  int shared = (c_array == NULL);
+
+  if (shared)
+    xrl_lock_acquire(&crystal_arr_lock);
+  rv = Crystal_GetCrystal_impl(material, c_array, error);
+  if (shared)
+    xrl_lock_release(&crystal_arr_lock);
+
+  return rv;
 }
 
 /*-------------------------------------------------------------------------------------------------- */
@@ -483,7 +518,7 @@ double Crystal_dSpacing(Crystal_Struct* crystal, int i_miller, int j_miller, int
  *
  */
 
-int Crystal_AddCrystal(Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error) {
+static int Crystal_AddCrystal_impl(Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error) {
   Crystal_Struct* a_cryst;
 
   if (c_array == NULL)
@@ -531,12 +566,25 @@ int Crystal_AddCrystal(Crystal_Struct* crystal, Crystal_Array* c_array, xrl_erro
 
 }
 
+int Crystal_AddCrystal(Crystal_Struct* crystal, Crystal_Array* c_array, xrl_error **error) {
+  int rv;
+  int shared = (c_array == NULL);
+
+  if (shared)
+    xrl_lock_acquire(&crystal_arr_lock);
+  rv = Crystal_AddCrystal_impl(crystal, c_array, error);
+  if (shared)
+    xrl_lock_release(&crystal_arr_lock);
+
+  return rv;
+}
+
 /*-------------------------------------------------------------------------------------------------- */
 /*
  * Read in a set of crystal structs.
  */
 
-int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **error) {
+static int Crystal_ReadFile_impl(const char* file_name, Crystal_Array* c_array, xrl_error **error) {
 
   FILE* fp;
   Crystal_Struct* crystal;
@@ -681,4 +729,17 @@ int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **
 
   return 1;
 
+}
+
+int Crystal_ReadFile(const char* file_name, Crystal_Array* c_array, xrl_error **error) {
+  int rv;
+  int shared = (c_array == NULL);
+
+  if (shared)
+    xrl_lock_acquire(&crystal_arr_lock);
+  rv = Crystal_ReadFile_impl(file_name, c_array, error);
+  if (shared)
+    xrl_lock_release(&crystal_arr_lock);
+
+  return rv;
 }

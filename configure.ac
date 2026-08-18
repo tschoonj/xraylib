@@ -213,6 +213,24 @@ case "$host" in
 esac
 AC_SUBST(HIDDEN_VISIBILITY_CFLAGS)
 
+# Thread-safety for the process-global crystal array (Crystal_arr): now that the
+# Python bindings declare themselves free-threading (no-GIL) compatible, the GIL
+# no longer serializes access to it. On Windows (MinGW) we use an SRWLOCK, which
+# lives in kernel32 and pulls in no extra runtime library; everywhere else
+# (Linux, macOS, Cygwin, ...) we use a POSIX mutex, detected with AX_PTHREAD.
+case "$host" in
+    *-*-mingw*)
+        AC_CHECK_DECL([AcquireSRWLockExclusive], [],
+                      [AC_MSG_ERROR([SRWLOCK support (Windows Vista / Server 2008 or later) is required])],
+                      [[#include <windows.h>]])
+        ;;
+    *)
+        AX_PTHREAD([],[AC_MSG_ERROR([pthread support is required])])
+        ;;
+esac
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LIBS)
+
 AM_CONDITIONAL([ENABLE_CROSS],[test x$CROSS_COMPILING = xyes])
 
 AC_ARG_ENABLE([all-bindings],[AS_HELP_STRING([--disable-all-bindings],[build without bindings])],[enable_bindings=$enableval],[enable_bindings=check])

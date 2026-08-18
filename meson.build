@@ -97,6 +97,19 @@ configure_file(output : 'config.h', configuration : config_h_data)
 m_dep = cc.find_library('m', required : false)
 xraylib_build_dep = [m_dep]
 
+# Thread-safety for the process-global crystal array (Crystal_arr): now that the
+# Python bindings declare themselves free-threading (no-GIL) compatible, the GIL
+# no longer serializes access to it. On Windows we use an SRWLOCK (part of
+# kernel32, so no extra runtime dependency is pulled in); everywhere else we use
+# a POSIX mutex provided by the threads dependency.
+if host_system == 'windows'
+  if not cc.has_function('AcquireSRWLockExclusive', prefix : '#include <windows.h>')
+    error('SRWLOCK support (Windows Vista / Server 2008 or later) is required to build xraylib')
+  endif
+else
+  xraylib_build_dep += dependency('threads')
+endif
+
 pkgconfig = import('pkgconfig')
 
 subdir('include')

@@ -39,6 +39,7 @@ shared_sources = files(
     'scattering.c',
     'splint.c',
     'splint.h',
+    'xraylib-aux-private.h',
     'xraylib-aux.c',
     'xraylib-error.c',
     'xraylib-error-private.h',
