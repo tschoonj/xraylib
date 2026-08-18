@@ -40,7 +40,7 @@ if swig.found()
             '-I@0@'.format(src_source_dir),
             '-o', '@OUTPUT0@',
             '-python',
-            '-py3',
+            '-nogil',
             '@INPUT@',
             ],
         install_dir: [false, python.get_install_dir(pure: false)],
@@ -74,7 +74,7 @@ if cython.found()
         command : [
             cython,
             '-X',
-            'language_level=3,boundscheck=False,wraparound=False,cdivision=True',
+            'language_level=3,boundscheck=False,wraparound=False,cdivision=True,freethreading_compatible=True',
             '@INPUT@',
             '-o',
             '@OUTPUT@',
