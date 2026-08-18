@@ -13,6 +13,7 @@ dist_check_SCRIPTS = \
 	test-comptonprofiles.py \
 	test-compoundparser.py \
 	test-crystal_diffraction.py \
+	test-crystal_diffraction-threaded.py \
 	test-nist-compounds.py \
 	test-radionuclides.py \
 	test-numpy.py \

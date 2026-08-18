@@ -404,3 +404,51 @@ jobs:
         FPC_ENABLE: ${{matrix.fpc}}
         DISTCHECK_CONFIGURE_FLAGS: --${{matrix.fpc}}-pascal --enable-java --disable-perl --enable-lua --${{matrix.python}}-python --${{matrix.python}}-python-numpy --disable-php --enable-ruby --${{matrix.fortran}}-fortran2003
         CFLAGS: ${{matrix.clang_cflags}}
+
+  thread-sanitizer:
+    name: ThreadSanitizer with ${{ matrix.cc }}
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cc: gcc
+            cxx: g++
+          - cc: clang
+            cxx: clang++
+    steps:
+    - uses: actions/checkout@v6
+    - name: Install meson and ninja
+      run: |
+        set -ex
+        sudo apt-get --yes update
+        sudo apt-get --yes install meson ninja-build
+        set +ex
+      env:
+        DEBIAN_FRONTEND: noninteractive
+    - name: Check whether the compiler supports -fsanitize=thread
+      id: tsan
+      run: |
+        set -x
+        if printf 'int main(void){return 0;}\n' | "${CC}" -fsanitize=thread -x c - -o /tmp/tsan-probe; then
+          echo "supported=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "-fsanitize=thread not available for ${CC}; skipping ThreadSanitizer run" >&2
+          echo "supported=false" >> "$GITHUB_OUTPUT"
+        fi
+      env:
+        CC: ${{ matrix.cc }}
+    - name: Build and run the crystal array locking tests under ThreadSanitizer
+      if: steps.tsan.outputs.supported == 'true'
+      run: |
+        set -ex
+        # b_lundef=false is required to link the sanitizer runtime against the shared library.
+        meson setup tsan-build -Db_sanitize=thread -Db_lundef=false -Dpython-bindings=disabled -Dpython-numpy-bindings=disabled -Dfortran-bindings=disabled
+        meson compile -C tsan-build
+        meson test -C tsan-build crystal_diffraction crystal_diffraction-threaded --print-errorlogs
+        set +ex
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+        TSAN_OPTIONS: halt_on_error=1

@@ -5,6 +5,7 @@ python_tests = [
 	'compoundparser',
 	'comptonprofiles',
 	'crystal_diffraction',
+	'crystal_diffraction-threaded',
 	'nist-compounds',
 	'radionuclides',
 	'numpy',
