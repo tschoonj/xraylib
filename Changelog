@@ -1,3 +1,9 @@
+Version 4.3.0 Tom Schoonjans
+
+- Python: add support for free-threading (no-GIL) CPython builds. The global crystal array is now locked to make the free-threading declaration truthful, backed by new concurrency tests and a ThreadSanitizer CI job
+- Python: add missing KA3_LINE constant to the NumPy bindings (contributed by desplenterkarel)
+- meson: fix Python bindings install_tag
+
 Version 4.2.1 Tom Schoonjans
 
 - Fix Python bindings compilation with recent clang and swig
