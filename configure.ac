@@ -213,6 +213,24 @@ case "$host" in
 esac
 AC_SUBST(HIDDEN_VISIBILITY_CFLAGS)
 
+# Thread-safety for the process-global crystal array (Crystal_arr): now that the
+# Python bindings declare themselves free-threading (no-GIL) compatible, the GIL
+# no longer serializes access to it. On Windows (MinGW) we use an SRWLOCK, which
+# lives in kernel32 and pulls in no extra runtime library; everywhere else
+# (Linux, macOS, Cygwin, ...) we use a POSIX mutex, detected with AX_PTHREAD.
+case "$host" in
+    *-*-mingw*)
+        AC_CHECK_DECL([AcquireSRWLockExclusive], [],
+                      [AC_MSG_ERROR([SRWLOCK support (Windows Vista / Server 2008 or later) is required])],
+                      [[#include <windows.h>]])
+        ;;
+    *)
+        AX_PTHREAD([],[AC_MSG_ERROR([pthread support is required])])
+        ;;
+esac
+AC_SUBST(PTHREAD_CFLAGS)
+AC_SUBST(PTHREAD_LIBS)
+
 AM_CONDITIONAL([ENABLE_CROSS],[test x$CROSS_COMPILING = xyes])
 
 AC_ARG_ENABLE([all-bindings],[AS_HELP_STRING([--disable-all-bindings],[build without bindings])],[enable_bindings=$enableval],[enable_bindings=check])
@@ -538,11 +556,28 @@ AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
 #Python bindings
 #
 
+# XRL_CHECK_PYTHON_FREETHREADED
+# Determine (once) whether $PYTHON is a free-threaded (no-GIL) build, e.g.
+# 3.13t/3.14t. Free-threading support (PEP 703) in the bindings is only
+# meaningful when actually targeting such a build. Sets PYTHON_IS_FREETHREADED
+# to yes/no; the guard makes repeated calls a no-op.
+AC_DEFUN([XRL_CHECK_PYTHON_FREETHREADED],
+[AS_IF([test "x$PYTHON_IS_FREETHREADED" = x],
+	[AC_MSG_CHECKING([whether Python is a free-threaded (no-GIL) build])
+	 PYTHON_FREETHREADED_RAW=`$PYTHON -c "import sysconfig; print(1 if sysconfig.get_config_var('Py_GIL_DISABLED') else 0)" 2>/dev/null`
+	 AS_IF([test "x$PYTHON_FREETHREADED_RAW" = "x1"],
+		[PYTHON_IS_FREETHREADED=yes],
+		[PYTHON_IS_FREETHREADED=no])
+	 AC_MSG_RESULT([$PYTHON_IS_FREETHREADED])])
+])
+
 
 AC_ARG_ENABLE([python],[AS_HELP_STRING([--disable-python],[build without the python bindings])],[enable_python=$enableval],[enable_python=check])
 
 VALID_PYTHON=
 PYTHON_FOUND=
+PYTHON_IS_FREETHREADED=
+SWIG_PYTHON_GIL_FLAG=
 
 if test "x$SWIG" = xnoswig && test "x$enable_python" = xyes && test "x$DISABLE_BINDINGS" = xno  ; then
 	#don't even bother when swig is not found
@@ -562,6 +597,22 @@ elif test "x$SWIG" != xnoswig && test "x$enable_python" != xno && test "x$DISABL
 			fi
 			VALID_PYTHON=no
 		else
+			XRL_CHECK_PYTHON_FREETHREADED
+
+			if test "x$PYTHON_IS_FREETHREADED" = xyes ; then
+				# -nogil (free-threading support) was only added to swig
+				# in version 4.4.0 (see
+				# https://github.com/swig/swig/issues/3215); with older
+				# versions the flag is simply omitted, in which case the
+				# GIL will be re-enabled when the module is imported
+				SWIG_VERSION=`$SWIG -version 2>&1 | $SED -n 's/^SWIG Version \(.*\)$/\1/p'`
+				AS_IF([test "x$SWIG_VERSION" != x],
+					[AS_VERSION_COMPARE([$SWIG_VERSION],[4.4.0],[:],[SWIG_PYTHON_GIL_FLAG=-nogil],[SWIG_PYTHON_GIL_FLAG=-nogil])])
+				if test "x$SWIG_PYTHON_GIL_FLAG" = x ; then
+					AC_MSG_WARN([swig >= 4.4.0 is required to build free-threading compatible Python bindings; the GIL will be re-enabled when the module is imported])
+				fi
+			fi
+
 			# check for numpy!
 			AC_MSG_CHECKING([for numpy])
 			res=`$PYTHON -c "import numpy" &>/dev/null`
@@ -590,6 +641,7 @@ elif test "x$SWIG" != xnoswig && test "x$enable_python" != xno && test "x$DISABL
 
 	fi
 fi
+AC_SUBST(SWIG_PYTHON_GIL_FLAG)
 
 
 
@@ -665,6 +717,25 @@ if test "x$enable_python_np" != xno && test  "x$DISABLE_BINDINGS" = xno  ; then
 	fi
 fi
 AM_CONDITIONAL([ENABLE_PYTHON_NUMPY],[test x$VALID_PYTHON_NUMPY = xyes])
+
+# the freethreading_compatible directive (free-threading support) was only added in
+# Cython 3.1.0; only request it when actually targeting a free-threaded Python build
+# and cython is new enough, to avoid an 'unknown compiler directive' error
+CYTHON_FREETHREADING_DIRECTIVE=
+if test x$VALID_PYTHON_NUMPY = xyes ; then
+	# PYTHON_IS_FREETHREADED may not have been determined yet if the plain
+	# python bindings were disabled (numpy-only build), so compute it here
+	XRL_CHECK_PYTHON_FREETHREADED
+	if test x$PYTHON_IS_FREETHREADED = xyes ; then
+		CYTHON_VERSION=`$CYTHON --version 2>&1 | tr 'A-Z' 'a-z' | $SED -n 's/^cython version \(.*\)$/\1/p'`
+		AS_IF([test "x$CYTHON_VERSION" != x],
+			[AS_VERSION_COMPARE([$CYTHON_VERSION],[3.1.0],[:],[CYTHON_FREETHREADING_DIRECTIVE=,freethreading_compatible=True],[CYTHON_FREETHREADING_DIRECTIVE=,freethreading_compatible=True])])
+		if test "x$CYTHON_FREETHREADING_DIRECTIVE" = x ; then
+			AC_MSG_WARN([Cython >= 3.1.0 is required to build free-threading compatible Python-NumPy bindings; the GIL will be re-enabled when the module is imported])
+		fi
+	fi
+fi
+AC_SUBST(CYTHON_FREETHREADING_DIRECTIVE)
 
 if test "x$VALID_PYTHON" = xyes || test "x$VALID_PYTHON_NUMPY" = xyes ; then
 #transform PYTHON_INCDIR and PYTHON_LIBS

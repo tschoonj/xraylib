@@ -5,6 +5,7 @@ python_tests = [
 	'compoundparser',
 	'comptonprofiles',
 	'crystal_diffraction',
+	'crystal_diffraction-threaded',
 	'nist-compounds',
 	'radionuclides',
 	'numpy',
@@ -29,6 +30,20 @@ if python_enabled
       depends: [xraylib_ext]
     )
   endforeach
+
+  # the free-threading test spawns subprocesses that import both binary modules,
+  # so it depends on whichever of them were built
+  freethreading_depends = [xraylib_ext]
+  if python_numpy_enabled
+    freethreading_depends += [xraylib_np_ext]
+  endif
+  test('python-freethreading',
+    python,
+    args : files('test-freethreading.py'),
+    env : python_test_env,
+    timeout: 30,
+    depends: freethreading_depends
+  )
 endif
 
 if python_numpy_enabled

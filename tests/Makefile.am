@@ -25,6 +25,7 @@ check_PROGRAMS = \
 	test-coskron \
 	test-cross_sections \
 	test-crystal_diffraction \
+	test-crystal_diffraction-threaded \
 	test-cs_barns \
 	test-cs_cp \
 	test-cs_line \
@@ -74,6 +75,10 @@ test_cross_sections_LDADD = ../src/libxrl.la
 
 test_crystal_diffraction_SOURCES = test-crystal_diffraction.c
 test_crystal_diffraction_LDADD = ../src/libxrl.la $(LIBM)
+
+test_crystal_diffraction_threaded_SOURCES = test-crystal_diffraction-threaded.c
+test_crystal_diffraction_threaded_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
+test_crystal_diffraction_threaded_LDADD = ../src/libxrl.la $(LIBM) $(PTHREAD_LIBS)
 
 test_cs_barns_SOURCES = test-cs_barns.c
 test_cs_barns_LDADD = ../src/libxrl.la

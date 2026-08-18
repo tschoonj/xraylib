@@ -25,7 +25,7 @@ endif
 noinst_PROGRAMS=prdata
 prdata_SOURCES = pr_data.c
 prdata_LDADD = libprdata.la
-libprdata_la_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
+libprdata_la_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS) $(PTHREAD_CFLAGS)
 libprdata_la_SOURCES = \
 		 xrayvars.c \
 		 xrayglob.h \
@@ -49,9 +49,10 @@ libprdata_la_SOURCES = \
 		 auger_trans.c \
 		 kissel_pe.c \
 	     cross_sections.c \
+		 xraylib-aux-private.h \
 		 xraylib-aux.c
 
-libprdata_la_LIBADD = $(LIBM)
+libprdata_la_LIBADD = $(LIBM) $(PTHREAD_LIBS)
 
 prdata_CFLAGS = $(AM_CFLAGS) $(ARCHFLAGS) $(WSTRICT_CFLAGS)
 
@@ -78,6 +79,7 @@ libxrl_la_SOURCES = xrayvars.c \
 		    splint.h \
 		    xrayglob.h \
 		    xrayvars.h \
+		    xraylib-aux-private.h \
 		    xraylib-aux.c \
 		    xraylib-parser.c \
 		    cs_cp.c \
@@ -98,12 +100,12 @@ libxrl_la_SOURCES = xrayvars.c \
 		    xraylib-deprecated-private.h \
 		    $(NULL)
 
-libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS) $(WSTRICT_CFLAGS)
+libxrl_la_CFLAGS = $(ARCHFLAGS) $(HIDDEN_VISIBILITY_CFLAGS) $(WSTRICT_CFLAGS) $(PTHREAD_CFLAGS)
 
 nodist_libxrl_la_SOURCES = xrayglob_inline.c
 
 libxrl_la_LDFLAGS=-version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ $(LDFLAGS_LIBXRL)
-libxrl_la_LIBADD = $(LIBM)
+libxrl_la_LIBADD = $(LIBM) $(PTHREAD_LIBS)
 
 EXTRA_DIST = xraylib.i meson.build
 

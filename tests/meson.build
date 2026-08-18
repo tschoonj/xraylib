@@ -7,6 +7,7 @@ tests = [
 	'coskron',
 	'cross_sections',
 	'crystal_diffraction',
+	'crystal_diffraction-threaded',
 	'cs_barns',
 	'cs_cp',
 	'cs_line',
