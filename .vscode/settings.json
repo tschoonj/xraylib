@@ -15,5 +15,7 @@
         "**/.factorypath": true
     },
     "java.saveActions.organizeImports": true,
-    "javascript.suggest.paths": false
+    "javascript.suggest.paths": false,
+    "C_Cpp.default.compileCommands": "/Users/schoon/github/xraylib/builddir/compile_commands.json",
+    "C_Cpp.default.configurationProvider": "mesonbuild.mesonbuild"
 }
