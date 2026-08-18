@@ -538,6 +538,21 @@ AM_CONDITIONAL([ENABLE_PERL],[test x$VALID_PERL = xyes])
 #Python bindings
 #
 
+# XRL_CHECK_PYTHON_FREETHREADED
+# Determine (once) whether $PYTHON is a free-threaded (no-GIL) build, e.g.
+# 3.13t/3.14t. Free-threading support (PEP 703) in the bindings is only
+# meaningful when actually targeting such a build. Sets PYTHON_IS_FREETHREADED
+# to yes/no; the guard makes repeated calls a no-op.
+AC_DEFUN([XRL_CHECK_PYTHON_FREETHREADED],
+[AS_IF([test "x$PYTHON_IS_FREETHREADED" = x],
+	[AC_MSG_CHECKING([whether Python is a free-threaded (no-GIL) build])
+	 PYTHON_FREETHREADED_RAW=`$PYTHON -c "import sysconfig; print(1 if sysconfig.get_config_var('Py_GIL_DISABLED') else 0)" 2>/dev/null`
+	 AS_IF([test "x$PYTHON_FREETHREADED_RAW" = "x1"],
+		[PYTHON_IS_FREETHREADED=yes],
+		[PYTHON_IS_FREETHREADED=no])
+	 AC_MSG_RESULT([$PYTHON_IS_FREETHREADED])])
+])
+
 
 AC_ARG_ENABLE([python],[AS_HELP_STRING([--disable-python],[build without the python bindings])],[enable_python=$enableval],[enable_python=check])
 
@@ -564,16 +579,7 @@ elif test "x$SWIG" != xnoswig && test "x$enable_python" != xno && test "x$DISABL
 			fi
 			VALID_PYTHON=no
 		else
-			# free-threading support (PEP 703) is only meaningful when actually
-			# targeting a free-threaded (no-GIL) build of Python, e.g. 3.13t/3.14t
-			AC_MSG_CHECKING([whether Python is a free-threaded (no-GIL) build])
-			PYTHON_FREETHREADED_RAW=`$PYTHON -c "import sysconfig; print(1 if sysconfig.get_config_var('Py_GIL_DISABLED') else 0)" 2>/dev/null`
-			if test "x$PYTHON_FREETHREADED_RAW" = "x1" ; then
-				PYTHON_IS_FREETHREADED=yes
-			else
-				PYTHON_IS_FREETHREADED=no
-			fi
-			AC_MSG_RESULT([$PYTHON_IS_FREETHREADED])
+			XRL_CHECK_PYTHON_FREETHREADED
 
 			if test "x$PYTHON_IS_FREETHREADED" = xyes ; then
 				# -nogil (free-threading support) was only added to swig
@@ -701,16 +707,7 @@ CYTHON_FREETHREADING_DIRECTIVE=
 if test x$VALID_PYTHON_NUMPY = xyes ; then
 	# PYTHON_IS_FREETHREADED may not have been determined yet if the plain
 	# python bindings were disabled (numpy-only build), so compute it here
-	if test "x$PYTHON_IS_FREETHREADED" = x ; then
-		AC_MSG_CHECKING([whether Python is a free-threaded (no-GIL) build])
-		PYTHON_FREETHREADED_RAW=`$PYTHON -c "import sysconfig; print(1 if sysconfig.get_config_var('Py_GIL_DISABLED') else 0)" 2>/dev/null`
-		if test "x$PYTHON_FREETHREADED_RAW" = "x1" ; then
-			PYTHON_IS_FREETHREADED=yes
-		else
-			PYTHON_IS_FREETHREADED=no
-		fi
-		AC_MSG_RESULT([$PYTHON_IS_FREETHREADED])
-	fi
+	XRL_CHECK_PYTHON_FREETHREADED
 	if test x$PYTHON_IS_FREETHREADED = xyes ; then
 		CYTHON_VERSION=`$CYTHON --version 2>&1 | tr 'A-Z' 'a-z' | $SED -n 's/^cython version \(.*\)$/\1/p'`
 		AS_IF([test "x$CYTHON_VERSION" != x],

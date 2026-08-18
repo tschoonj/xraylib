@@ -16,6 +16,7 @@ dist_check_SCRIPTS = \
 	test-nist-compounds.py \
 	test-radionuclides.py \
 	test-numpy.py \
+	test-freethreading.py \
 	$(NULL)
 endif
 
