@@ -688,7 +688,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
                 } 
                 PyObject *res = PyTuple_New(len);
                 for (i = 0 ; i < len ; i++) {
-                        PyTuple_SET_ITEM(res, i, PyString_FromString(list[i]));
+                        PyTuple_SET_ITEM(res, i, PyUnicode_FromString(list[i]));
                         xrlFree(list[i]);
                 }
                 xrlFree(list);
@@ -703,19 +703,19 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
         if (rnd) {
                 PyObject *dict = PyDict_New();
-                PyDict_SetItemString(dict, "name",PyString_FromString(rnd->name));
-                PyDict_SetItemString(dict, "Z",PyInt_FromLong(rnd->Z));
-                PyDict_SetItemString(dict, "A",PyInt_FromLong(rnd->A));
-                PyDict_SetItemString(dict, "N",PyInt_FromLong(rnd->N));
-                PyDict_SetItemString(dict, "Z_xray",PyInt_FromLong(rnd->Z_xray));
-                PyDict_SetItemString(dict, "nXrays",PyInt_FromLong(rnd->nXrays));
-                PyDict_SetItemString(dict, "nGammas",PyInt_FromLong(rnd->nGammas));
+                PyDict_SetItemString(dict, "name",PyUnicode_FromString(rnd->name));
+                PyDict_SetItemString(dict, "Z",PyLong_FromLong(rnd->Z));
+                PyDict_SetItemString(dict, "A",PyLong_FromLong(rnd->A));
+                PyDict_SetItemString(dict, "N",PyLong_FromLong(rnd->N));
+                PyDict_SetItemString(dict, "Z_xray",PyLong_FromLong(rnd->Z_xray));
+                PyDict_SetItemString(dict, "nXrays",PyLong_FromLong(rnd->nXrays));
+                PyDict_SetItemString(dict, "nGammas",PyLong_FromLong(rnd->nGammas));
                 PyObject *XrayLines = PyTuple_New(rnd->nXrays);
                 PyObject *XrayIntensities= PyTuple_New(rnd->nXrays);
                 PyObject *GammaEnergies= PyTuple_New(rnd->nGammas);
                 PyObject *GammaIntensities= PyTuple_New(rnd->nGammas);
                 for (i = 0 ; i < rnd->nXrays ; i++) {
-                       PyTuple_SET_ITEM(XrayLines, i, PyInt_FromLong(rnd->XrayLines[i]));
+                       PyTuple_SET_ITEM(XrayLines, i, PyLong_FromLong(rnd->XrayLines[i]));
                        PyTuple_SET_ITEM(XrayIntensities, i, PyFloat_FromDouble(rnd->XrayIntensities[i]));
                 }
                 for (i = 0 ; i < rnd->nGammas ; i++) {
@@ -738,13 +738,13 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
         if (cdn) {
                 PyObject *dict = PyDict_New();
-                PyDict_SetItemString(dict, "name",PyString_FromString(cdn->name));
-                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((int) cdn->nElements));
+                PyDict_SetItemString(dict, "name",PyUnicode_FromString(cdn->name));
+                PyDict_SetItemString(dict, "nElements",PyLong_FromLong((int) cdn->nElements));
                 PyDict_SetItemString(dict, "density",PyFloat_FromDouble(cdn->density));
                 PyObject *Elements = PyTuple_New(cdn->nElements);
                 PyObject *massFractions = PyTuple_New(cdn->nElements);
                 for (i = 0 ; i < cdn->nElements ; i++) {
-                       PyTuple_SET_ITEM(Elements, i, PyInt_FromLong(cdn->Elements[i]));
+                       PyTuple_SET_ITEM(Elements, i, PyLong_FromLong(cdn->Elements[i]));
                        PyTuple_SET_ITEM(massFractions, i, PyFloat_FromDouble(cdn->massFractions[i]));
                 }
                 PyDict_SetItemString(dict, "Elements", Elements);
@@ -759,13 +759,13 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
         struct compoundData *cd = $1;
         if (cd) {
                 PyObject *dict = PyDict_New();
-                PyDict_SetItemString(dict, "nElements",PyInt_FromLong((long) cd->nElements));
+                PyDict_SetItemString(dict, "nElements",PyLong_FromLong((long) cd->nElements));
                 PyDict_SetItemString(dict, "nAtomsAll",PyFloat_FromDouble(cd->nAtomsAll));
                 PyObject *elements = PyTuple_New(cd->nElements);
                 PyObject *massfractions = PyTuple_New(cd->nElements);
                 PyObject *nAtoms = PyTuple_New(cd->nElements);
                 for (i=0 ; i < cd->nElements ; i++) {
-                        PyObject *o = PyInt_FromLong((long) cd->Elements[i]);
+                        PyObject *o = PyLong_FromLong((long) cd->Elements[i]);
                         PyTuple_SET_ITEM(elements, i, o);
                         o = PyFloat_FromDouble(cd->massFractions[i]);
                         PyTuple_SET_ITEM(massfractions, i, o);
@@ -796,7 +796,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
         int i;
         if (cs) {
              PyObject *dict = PyDict_New();
-             PyDict_SetItemString(dict, "name",PyString_FromString(cs->name));
+             PyDict_SetItemString(dict, "name",PyUnicode_FromString(cs->name));
              PyDict_SetItemString(dict, "a",PyFloat_FromDouble(cs->a));
              PyDict_SetItemString(dict, "b",PyFloat_FromDouble(cs->b));
              PyDict_SetItemString(dict, "c",PyFloat_FromDouble(cs->c));
@@ -804,12 +804,12 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
              PyDict_SetItemString(dict, "beta",PyFloat_FromDouble(cs->beta));
              PyDict_SetItemString(dict, "gamma",PyFloat_FromDouble(cs->gamma));
              PyDict_SetItemString(dict, "volume",PyFloat_FromDouble(cs->volume));
-             PyDict_SetItemString(dict, "n_atom",PyInt_FromLong((int) cs->n_atom));
+             PyDict_SetItemString(dict, "n_atom",PyLong_FromLong((int) cs->n_atom));
              PyObject *atom = PyTuple_New(cs->n_atom);
              PyDict_SetItemString(dict, "atom", atom);
              for (i = 0 ; i < cs->n_atom ; i++) {
                 PyObject *dict_temp = PyDict_New();
-                PyDict_SetItemString(dict_temp, "Zatom",PyInt_FromLong((int) cs->atom[i].Zatom));
+                PyDict_SetItemString(dict_temp, "Zatom",PyLong_FromLong((int) cs->atom[i].Zatom));
                 PyDict_SetItemString(dict_temp, "fraction",PyFloat_FromDouble(cs->atom[i].fraction));
                 PyDict_SetItemString(dict_temp, "x",PyFloat_FromDouble(cs->atom[i].x));
                 PyDict_SetItemString(dict_temp, "y",PyFloat_FromDouble(cs->atom[i].y));
@@ -969,7 +969,7 @@ XRL_GNUC_BEGIN_IGNORE_DEPRECATIONS
                        PyErr_SetString(PyExc_KeyError, "Zatom key not present");
                        SWIG_fail;
                }
-               cs->atom[i].Zatom = PyInt_AsLong(temp2);
+               cs->atom[i].Zatom = PyLong_AsLong(temp2);
                if (PyErr_Occurred() != NULL) {
                        PyErr_SetString(PyExc_TypeError, "Zatom key not a number");
                        SWIG_fail;
