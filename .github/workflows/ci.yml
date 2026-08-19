@@ -100,7 +100,7 @@ jobs:
         CXX: ${{matrix.cxx}}
     - name: Upload Windows installer
       if: matrix.buildsystem == 'meson' && matrix.cc == 'gcc'
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: windows-installer
         path: meson-build\windows\xraylib-*-win64.exe
@@ -156,7 +156,7 @@ jobs:
         LDFLAGS: ${{matrix.ldflags}}
     - name: Upload distribution tarball
       if: matrix.buildsystem == 'meson' && matrix.compiler == 'gcc@15'
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: source-distribution
         path: meson-build/meson-dist/xraylib-*.tar.xz
